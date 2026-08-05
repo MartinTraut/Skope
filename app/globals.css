@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   SKOPE — Designsystem
+   Werkstatt-Premium: tiefes Anthrazit, Petrol als Markenfarbe,
+   genau ein Akzent (Orange) ausschließlich für Aktionen und Schlüsselzahlen.
+   ========================================================================= */
+
+@theme {
+  /* --- Farbe: Grundflächen ------------------------------------------- */
+  --color-ink: #080d12;
+  --color-ink-800: #0d141b;
+  --color-ink-700: #131d26;
+  --color-ink-600: #1c2933;
+  --color-ink-500: #2b3a46;
+
+  --color-paper: #f6f4f0;
+  --color-paper-200: #ece8e1;
+  --color-paper-300: #ddd7cd;
+
+  /* --- Farbe: Marke (aus dem bestehenden SKOPE-Siegel) ----------------- */
+  --color-petrol: #1e5d82;
+  --color-petrol-400: #3d88b1;
+  --color-petrol-300: #6fadd0;
+  --color-petrol-900: #0e2c3e;
+
+  /* --- Farbe: Akzent (sparsam!) --------------------------------------- */
+  --color-flame: #f0842b;
+  --color-flame-600: #d96a17;
+  --color-flame-300: #f7b478;
+
+  --color-signal: #4ac07a;
+
+  /* --- Typografie ----------------------------------------------------- */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid Type — clamp(MIN, vw + rem, MAX), nie reines vw */
+  /* Vier klar getrennte Stufen. Die Kennzahl liegt bewusst UNTER der
+     Sektions-Headline — sie stützt die Aussage, sie konkurriert nicht mit ihr. */
+  --text-hero: clamp(2.6rem, 4.4vw + 0.5rem, 5.25rem);
+  --text-page-title: clamp(2.3rem, 3.6vw + 0.6rem, 4.25rem);
+  --text-display: clamp(1.95rem, 2.6vw + 0.75rem, 3.25rem);
+  --text-title: clamp(1.5rem, 1.4vw + 0.85rem, 2.1rem);
+  --text-lead: clamp(1.05rem, 0.5vw + 0.9rem, 1.375rem);
+  --text-stat: clamp(1.75rem, 1.7vw + 0.8rem, 2.75rem);
+
+  /* --- Form ----------------------------------------------------------- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  /* --- Motion --------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --hairline: color-mix(in oklab, white 12%, transparent);
+    --hairline-dark: color-mix(in oklab, black 14%, transparent);
+  }
+
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    /* Letzte Verteidigungslinie gegen horizontales Scrollen auf Mobile.
+       Kein Ersatz für sauberes Layout — nur ein Sicherheitsnetz. */
+    overflow-x: clip;
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-flame);
+    color: #0b1015;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-flame);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Helle Sektionen kippen die Hairline-Farbe mit */
+  .on-paper {
+    --hairline: var(--hairline-dark);
+    color-scheme: light;
+  }
+}
+
+@layer components {
+  /* Eyebrow — kleine Auszeichnungszeile über Headlines */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+  }
+
+  /* Gerasterter Hintergrund — technische Anmutung, sehr dezent */
+  .grid-veil {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, white 4%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, white 4%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 88px 88px;
+  }
+
+  /* Ziffernblock für Preise/Kennzahlen */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  /* Scroll-Reveal — gesteuert von components/motion/reveal.tsx */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+      opacity 0.5s var(--ease-out-expo),
+      transform 0.5s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* will-change nur, solange die Animation noch bevorsteht. Dauerhaft gesetzt
+     hielte es für jedes Element eine eigene Compositor-Layer vor. */
+  .reveal:not([data-shown]) {
+    will-change: opacity, transform;
+  }
+
+  .reveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Ohne JavaScript feuert der IntersectionObserver nie. Der Inhalt muss
+     trotzdem sichtbar sein — sonst bleibt eine leere Seite übrig. */
+  @media (scripting: none) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal[data-shown="true"] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

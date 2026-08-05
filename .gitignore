@@ -1,0 +1,30 @@
+# Abhängigkeiten
+/node_modules
+/.pnp
+.pnp.*
+
+# Build-Artefakte
+/.next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# Umgebungsvariablen — enthalten Zugangsdaten (RESEND_API_KEY o. Ä.)
+.env
+.env*.local
+
+# Deployment
+.vercel
+
+# Betriebssystem und Editor
+.DS_Store
+*.pem
+.idea/
+.vscode/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
