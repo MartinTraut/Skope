@@ -23,7 +23,10 @@ export function Faq({
         <Reveal key={item.q} delay={Math.min(i * 55, 220)}>
           <details className="group">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">
-              <h3 className="max-w-3xl font-display text-lg leading-snug font-semibold tracking-tight transition-colors duration-200 group-hover:text-flame md:text-xl">
+              {/* Breite in Zeichen statt in rem: `max-w-3xl` ergab bei diesem
+                  Schriftgrad rund 90 Zeichen pro Zeile, deutlich über der
+                  angenehmen Lesebreite. */}
+              <h3 className="max-w-[42ch] text-[length:var(--text-subtitle)] transition-colors duration-200 group-hover:text-flame">
                 {item.q}
               </h3>
               <span
@@ -33,7 +36,9 @@ export function Faq({
                 <Plus className="size-4" />
               </span>
             </summary>
-            <p className="max-w-3xl pb-7 leading-relaxed opacity-70">{item.a}</p>
+            <p className="max-w-[68ch] pb-7 leading-relaxed opacity-70">
+              {item.a}
+            </p>
           </details>
         </Reveal>
       ))}

@@ -7,11 +7,17 @@ import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
 import { proof } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
+/** `accent` markiert den Geldbetrag — die einzige Rolle, in der Orange in einer
+ *  Kennzahlenreihe stehen darf (siehe Akzentregel in globals.css). */
 const stats = [
-  { value: "500+", label: "reparierte E-Scooter" },
-  { value: "59,99 €", label: "kompletter Sicherheits-Checkup" },
-  { value: "1 Jahr", label: "Gewährleistung auf Gebrauchtgeräte" },
+  { value: `${proof.repairs}+`, label: "reparierte E-Scooter" },
+  { value: "59,99 €", label: "kompletter Sicherheits-Checkup", accent: true },
+  {
+    value: `${proof.warrantyYears} Jahr`,
+    label: "Gewährleistung auf Gebrauchtgeräte",
+  },
   { value: "8 – 25 km", label: "Einzugsgebiet um Neuenstadt" },
 ];
 
@@ -33,11 +39,16 @@ export function Hero() {
           {/* Textseite */}
           <div className="lg:col-span-7 xl:col-span-6">
             <Reveal immediate>
-              <p className="eyebrow text-current/55">
+              <p className="eyebrow text-current/65">
                 Fachwerkstatt · Neuenstadt am Kocher
               </p>
             </Reveal>
 
+            {/* Der erklärende Absatz stand vorher mit im <h1>: Der Textinhalt
+                der Überschrift war damit rund 230 Zeichen lang, und das
+                Hauptkeyword lag im Fließtext statt in der Überschrift. Jetzt
+                trägt die H1 den Claim und die Ortszeile, der Absatz steht
+                darunter als eigenes Element. */}
             <Reveal immediate>
               <h1 className="mt-7">
                 <span className="block text-[length:var(--text-hero)]">
@@ -46,18 +57,26 @@ export function Hero() {
                   keine&nbsp;
                   <span className="text-flame">Diagnose</span>.
                 </span>
-                <span className="mt-7 block max-w-xl font-sans text-[length:var(--text-lead)] leading-relaxed font-normal tracking-normal text-paper/70">
-                  E-Scooter Reparatur, Wartung und geprüfte
-                  Gebrauchtgeräte&nbsp;— aus einer Werkstatt in Neuenstadt am
-                  Kocher, für Heilbronn, Neckarsulm und die ganze Region.
+                <span className="mt-6 block text-[length:var(--text-title)] text-paper/80">
+                  E-Scooter Werkstatt in Neuenstadt am Kocher
                 </span>
               </h1>
+              <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-paper/70">
+                Reparatur, Wartung und geprüfte Gebrauchtgeräte&nbsp;— aus einer
+                Werkstatt für Heilbronn, Neckarsulm und die ganze Region.
+              </p>
             </Reveal>
 
             <Reveal immediate>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <PhoneButton />
-                <ButtonLink href="/reparatur" variant="outline" size="lg">
+                {/* Direkt auf das Formular der Reparaturseite: „anfragen" darf
+                    nicht am Kopf einer Informationsseite enden. */}
+                <ButtonLink
+                  href="/reparatur#anfrage"
+                  variant="outline"
+                  size="lg"
+                >
                   Reparatur anfragen
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </ButtonLink>
@@ -97,7 +116,7 @@ export function Hero() {
                 <p className="font-display text-sm font-bold tracking-tight">
                   {proof.sealName}
                 </p>
-                <p className="text-xs text-paper/55">
+                <p className="text-xs text-paper/75">
                   Jedes Gerät geprüft, bevor es verkauft wird
                 </p>
               </div>
@@ -115,10 +134,15 @@ export function Hero() {
               key={stat.label}
               className="min-w-0 border-b border-white/8 py-7 pr-6 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:last:border-r-0"
             >
-              <p className="tabular font-display text-[length:var(--text-stat)] leading-none font-extrabold tracking-tight">
+              <p
+                className={cn(
+                  "tabular font-display text-[length:var(--text-stat)] leading-none font-extrabold tracking-tight",
+                  stat.accent && "text-flame",
+                )}
+              >
                 {stat.value}
               </p>
-              <p className="mt-3 text-sm leading-snug text-paper/50">
+              <p className="mt-3 text-sm leading-snug text-paper/70">
                 {stat.label}
               </p>
             </div>

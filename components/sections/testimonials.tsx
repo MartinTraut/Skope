@@ -17,28 +17,41 @@ export function Testimonials() {
           lead="Drei Rückmeldungen aus dem Alltag — unverändert übernommen. Bewusst ohne Sternebewertung: eine belegbare Gesamtnote liegt nicht vor."
         />
 
-        <div className="mt-14 grid gap-px lg:grid-cols-3">
+        {/* `gap-px` erzeugte ohne Zellenhintergrund keine Trennlinie, sondern
+            nur einen toten Pixel — auf Mobile klebte die Bildunterschrift des
+            einen Zitats an der Oberkante des nächsten. */}
+        <div className="mt-14 grid gap-y-12 lg:grid-cols-3 lg:gap-y-0">
           {testimonials.map((item, i) => (
-            <Reveal key={item.author} delay={i * 90} as="figure">
-              <div className="flex h-full flex-col justify-between border-t border-white/12 pt-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0">
-                <blockquote className="font-display text-[clamp(1.25rem,1.1vw+1rem,1.6rem)] leading-[1.35] font-semibold tracking-tight text-balance">
-                  <span aria-hidden="true" className="text-current/25">
-                    &bdquo;
-                  </span>
-                  {item.quote}
-                  <span aria-hidden="true" className="text-current/25">
-                    &ldquo;
-                  </span>
-                </blockquote>
-                <figcaption className="mt-8 border-t border-white/8 pt-5">
-                  <span className="block font-display font-semibold tracking-tight">
-                    {item.author}
-                  </span>
-                  <span className="block text-sm text-paper/60">
-                    {item.context}
-                  </span>
-                </figcaption>
-              </div>
+            /* blockquote und figcaption müssen direkte Kinder der figure sein,
+               sonst geht die Zuordnung Zitat → Quelle für Hilfstechnik verloren.
+               Deshalb trägt die figure selbst das Spaltenlayout. */
+            <Reveal
+              key={item.author}
+              delay={i * 90}
+              as="figure"
+              /* Auf Mobile trägt der SectionHead darüber bereits eine
+                 Unterlinie — mit der eigenen Oberlinie des ersten Zitats
+                 standen zwei Haarlinien 56 px auseinander und lasen sich als
+                 leerer Kasten. */
+              className="flex h-full flex-col justify-between border-t border-white/12 pt-8 max-lg:first:border-t-0 max-lg:first:pt-0 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
+            >
+              <blockquote className="font-display text-[length:var(--text-subtitle)] leading-[1.35] font-semibold tracking-tight text-balance">
+                <span aria-hidden="true" className="text-current/25">
+                  &bdquo;
+                </span>
+                {item.quote}
+                <span aria-hidden="true" className="text-current/25">
+                  &ldquo;
+                </span>
+              </blockquote>
+              <figcaption className="mt-8 border-t border-white/8 pt-5">
+                <span className="block font-display font-semibold tracking-tight">
+                  {item.author}
+                </span>
+                <span className="block text-sm text-paper/70">
+                  {item.context}
+                </span>
+              </figcaption>
             </Reveal>
           ))}
         </div>

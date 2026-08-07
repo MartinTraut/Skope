@@ -31,16 +31,25 @@ export const metadata: Metadata = pageMeta({
 export default function HomePage() {
   return (
     <>
+      {/*
+        Reihenfolge nach Argumentationslogik, nicht nach Leistungsliste:
+        Erst was wir tun (Pillars), dann wie geprüft wird (Workshop), dann was
+        andere darüber sagen (Testimonials) — und erst danach Preise. Die
+        Kundenstimmen standen vorher hinter zwei Preisblöcken; damit kam der
+        erste fremde Beleg nach der teuersten Entscheidung.
+        Der Flächenwechsel ink → ink-800 → paper → ink-800 → ink läuft dabei
+        durchgehend, keine zwei gleichen Töne stoßen aneinander.
+      */}
       <Hero />
       <Pillars />
       <Workshop />
+      <Testimonials />
       <Plans />
       <InsuranceTeaser />
       <Region />
-      <Testimonials />
       <RecyclingTeaser />
 
-      <Section id="faq" tone="ink-800">
+      <Section id="faq" tone="ink">
         <Container>
           <SectionHead
             eyebrow="Häufige Fragen"
@@ -79,7 +88,7 @@ export default function HomePage() {
               item: serviceRef(path),
             })),
           },
-          ...reviews(),
+          ...reviews("/"),
         ])}
       />
     </>

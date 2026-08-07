@@ -36,12 +36,36 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Solange das Menü offen ist, bleibt der Seiteninhalt dahinter stehen.
+  const panelRef = React.useRef<HTMLDivElement>(null);
+
+  /**
+   * Solange das Menü offen ist, bleibt der Seiteninhalt dahinter stehen — und
+   * zwar auch für die Tastatur. Ohne `inert` tabbt man nach dem letzten
+   * Menüpunkt in die verdeckten Links von <main> und <footer> und verliert den
+   * sichtbaren Fokus komplett. Das Attribut wird per DOM gesetzt, weil beide
+   * Elemente im Server-Layout liegen und nicht Kinder dieser Komponente sind.
+   */
   React.useEffect(() => {
+    const outside = [
+      document.getElementById("inhalt"),
+      document.querySelector("footer"),
+      // Die Aktionsleiste liegt unter dem geöffneten Menü und wäre sonst
+      // gleichzeitig sicht- und bedienbar — siehe #mobile-cta in globals.css.
+      document.getElementById("mobile-cta"),
+    ];
     document.body.style.overflow = open ? "hidden" : "";
+    for (const el of outside) el?.toggleAttribute("inert", open);
     return () => {
       document.body.style.overflow = "";
+      for (const el of outside) el?.removeAttribute("inert");
     };
+  }, [open]);
+
+  // Beim Öffnen in das Menü hineinspringen, statt den Fokus auf dem Auslöser
+  // stehen zu lassen — Escape bringt ihn anschließend wieder zurück.
+  React.useEffect(() => {
+    if (!open) return;
+    panelRef.current?.querySelector("a")?.focus();
   }, [open]);
 
   // Escape schließt das Menü und gibt den Fokus an den Auslöser zurück.
@@ -112,7 +136,7 @@ export function Header() {
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
           </a>
-          <ButtonLink href="/kontakt" className="hidden lg:inline-flex">
+          <ButtonLink href="/kontakt#anfrage" className="hidden lg:inline-flex">
             Anfrage senden
           </ButtonLink>
 
@@ -138,6 +162,7 @@ export function Header() {
 
       {/* Mobile / Tablet Navigation */}
       <div
+        ref={panelRef}
         id="mobile-nav"
         hidden={!open}
         className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-white/10 bg-ink xl:hidden"
@@ -163,7 +188,7 @@ export function Header() {
           </ul>
           <div className="mt-7 flex flex-col gap-3">
             <ButtonLink
-              href="/kontakt"
+              href="/kontakt#anfrage"
               size="lg"
               className="w-full"
               onClick={() => setOpen(false)}

@@ -2,11 +2,13 @@
 
 import * as React from "react";
 import { useActionState } from "react";
+import Link from "next/link";
 import {
   AlertCircle,
   CheckCircle2,
   ChevronDown,
   Loader2,
+  MapPin,
   Phone,
 } from "lucide-react";
 
@@ -23,8 +25,13 @@ function subscribeToUrl(onChange: () => void) {
   return () => window.removeEventListener("popstate", onChange);
 }
 
+/**
+ * Kein `focus:outline-none`: Der Rahmenwechsel allein bleibt unter dem für
+ * Fokusindikatoren geforderten Kontrast (WCAG 2.4.11). Die globale
+ * `:focus-visible`-Outline aus globals.css muss hier greifen dürfen.
+ */
 const fieldClass =
-  "w-full rounded-sm border border-current/45 bg-transparent px-4 py-3.5 text-current placeholder:text-current/55 transition-colors duration-200 focus:border-flame focus:outline-none";
+  "w-full rounded-sm border border-current/45 bg-transparent px-4 py-3.5 text-current placeholder:text-current/55 transition-colors duration-200 focus:border-flame";
 
 const labelClass =
   "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-70";
@@ -58,20 +65,36 @@ export function InquiryForm({
     () => "",
   );
   const slug = topicFromQuery ? new URLSearchParams(search).get("anliegen") : null;
+
+  /**
+   * Ohne Vorauswahl nur dort, wo die volle Liste angeboten wird: Bei vierzehn
+   * Optionen und dem Anliegen als erstem Feld würde eine stille Vorbelegung
+   * regelmäßig überlesen — und eine Kaufanfrage käme als Reparatur an. Auf den
+   * Leistungsseiten ist die Teilmenge dagegen eindeutig, dort ist die
+   * Vorauswahl die schnellere Bedienung.
+   */
   const preselected =
-    (slug ? TOPIC_BY_SLUG[slug] : undefined) ?? defaultTopic ?? topics[0];
+    (slug ? TOPIC_BY_SLUG[slug] : undefined) ??
+    defaultTopic ??
+    (topics.length > 6 ? "" : topics[0]);
 
   const successRef = React.useRef<HTMLDivElement>(null);
   const errorRef = React.useRef<HTMLDivElement>(null);
+  const fallbackRef = React.useRef<HTMLDivElement>(null);
 
   /**
    * Ohne Fokuswechsel bekommen Tastatur- und Screenreader-Nutzer nach dem
    * Absenden gar keine Rückmeldung: Der fokussierte Button verschwindet und
-   * der Fokus fällt zurück auf <body>.
+   * der Fokus fällt zurück auf <body>. Das gilt auch für den Fallback — dort
+   * steht der einzige verbliebene Weg zur Werkstatt.
    */
   React.useEffect(() => {
     if (state.status === "ok") successRef.current?.focus();
     if (state.status === "error") errorRef.current?.focus();
+    if (state.status === "fallback") {
+      fallbackRef.current?.focus();
+      fallbackRef.current?.scrollIntoView({ block: "center" });
+    }
   }, [state]);
 
   if (state.status === "ok") {
@@ -95,6 +118,27 @@ export function InquiryForm({
           Anfrage erhalten.
         </h3>
         <p className="mt-3 leading-relaxed opacity-80">{state.message}</p>
+
+        {/* Der Erfolgsfall darf keine Sackgasse sein: Wer es eilig hat,
+            braucht hier den Telefonweg, nicht den Zurück-Button. */}
+        <div className="mt-7 flex flex-col gap-3 border-t border-current/15 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8">
+          <a
+            href={site.phone.href}
+            className="inline-flex items-center gap-2.5 font-display font-semibold text-flame hover:underline"
+          >
+            <Phone className="size-4" aria-hidden="true" />
+            <span className="tabular">{site.phone.display}</span>
+          </a>
+          <a
+            href={site.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 font-display font-semibold hover:underline"
+          >
+            <MapPin className="size-4" aria-hidden="true" />
+            Route zur Werkstatt
+          </a>
+        </div>
       </div>
     );
   }
@@ -146,16 +190,24 @@ export function InquiryForm({
 
       <div className="flex flex-col gap-2">
         <label htmlFor="topic" className={labelClass}>
-          Anliegen
+          Anliegen {preselected === "" ? <span className="text-flame">*</span> : null}
         </label>
         <div className="relative">
           <select
             key={preselected}
             id="topic"
             name="topic"
-            defaultValue={preselected}
+            required={preselected === ""}
+            defaultValue={state.values?.topic ?? preselected}
+            aria-invalid={state.errors?.topic ? true : undefined}
+            aria-describedby={state.errors?.topic ? "topic-error" : undefined}
             className={cn(fieldClass, "appearance-none pr-12")}
           >
+            {preselected === "" ? (
+              <option value="" disabled className="bg-ink-800 text-paper">
+                Bitte wählen
+              </option>
+            ) : null}
             {topics.map((topic) => (
               <option key={topic} value={topic} className="bg-ink-800 text-paper">
                 {topic}
@@ -167,6 +219,11 @@ export function InquiryForm({
             className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 opacity-60"
           />
         </div>
+        {state.errors?.topic ? (
+          <p id="topic-error" className="text-sm text-flame">
+            {state.errors.topic}
+          </p>
+        ) : null}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
@@ -175,6 +232,7 @@ export function InquiryForm({
           label="Name"
           required
           autoComplete="name"
+          defaultValue={state.values?.name}
           error={state.errors?.name}
         />
         <Field
@@ -183,6 +241,7 @@ export function InquiryForm({
           type="email"
           required
           autoComplete="email"
+          defaultValue={state.values?.email}
           error={state.errors?.email}
         />
         <Field
@@ -190,12 +249,14 @@ export function InquiryForm({
           label="Telefon (optional)"
           type="tel"
           autoComplete="tel"
+          defaultValue={state.values?.phone}
           error={state.errors?.phone}
         />
         <Field
           id="scooter"
           label="Marke & Modell (optional)"
           placeholder="z. B. Xiaomi Pro 2"
+          defaultValue={state.values?.scooter}
           error={state.errors?.scooter}
         />
       </div>
@@ -214,6 +275,7 @@ export function InquiryForm({
           name="message"
           required
           rows={5}
+          defaultValue={state.values?.message}
           aria-invalid={state.errors?.message ? true : undefined}
           aria-describedby={
             state.errors?.message ? "message-hint message-error" : "message-hint"
@@ -229,6 +291,8 @@ export function InquiryForm({
 
       {state.status === "fallback" ? (
         <div
+          ref={fallbackRef}
+          tabIndex={-1}
           role="alert"
           className="flex items-start gap-3 rounded-sm border border-flame/50 bg-flame/8 p-5"
         >
@@ -268,8 +332,15 @@ export function InquiryForm({
             "Anfrage senden"
           )}
         </Button>
+        {/* Art. 13 DSGVO verlangt den Verweis an der Erhebungsstelle — und an
+            genau dieser Stelle kostet ein fehlender Link Vertrauen. */}
         <p className="text-sm opacity-70">
           Ihre Daten nutzen wir ausschließlich zur Bearbeitung dieser Anfrage.
+          Mehr dazu in der{" "}
+          <Link href="/datenschutz" className="underline underline-offset-2">
+            Datenschutzerklärung
+          </Link>
+          .
         </p>
       </div>
     </form>

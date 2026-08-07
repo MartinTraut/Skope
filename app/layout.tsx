@@ -4,6 +4,7 @@ import { Archivo, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { MobileCta } from "@/components/layout/mobile-cta";
 import { site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -73,8 +74,14 @@ export default function RootLayout({
           Zum Inhalt springen
         </a>
         <Header />
-        <main id="inhalt">{children}</main>
+        {/* tabIndex, damit der Sprunglink den Fokus wirklich versetzt: Ohne ihn
+            setzen Safari und ältere Engines ihn zurück auf <body>, und der Link
+            tut sichtbar nichts. scroll-mt hält das Ziel unter dem festen Header. */}
+        <main id="inhalt" tabIndex={-1} className="scroll-mt-24 focus:outline-none">
+          {children}
+        </main>
         <Footer />
+        <MobileCta />
       </body>
     </html>
   );

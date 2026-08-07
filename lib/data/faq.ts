@@ -10,11 +10,11 @@ export type FaqItem = { q: string; a: string };
 export const faqRepair: FaqItem[] = [
   {
     q: "Welche E-Scooter Marken repariert ihr in eurer Werkstatt in Neuenstadt?",
-    a: "Alle gängigen Marken. Dazu gehören Xiaomi, Segway-Ninebot, Tier, Lime, Bird, Moover, SoFlow und Trekstor. Auch exotische Modelle und Importgeräte sehen wir uns an — bei über 500 reparierten Scootern ist uns kaum eine Bauform neu. Spezielle technische Details wie ein 3-mm-Nabendurchmesser sind für uns kein Ausschlusskriterium, sondern Alltag.",
+    a: "Alle gängigen Marken. Dazu gehören Xiaomi, Segway-Ninebot, Tier, Lime, Bird, Moover, SoFlow und Trekstor. Auch exotische Modelle und Importgeräte sehen wir uns an — bei über 500 reparierten Scootern ist uns kaum eine Bauform neu. Wenn ein Ersatzteil nicht lieferbar ist, sagen wir Ihnen das vorab, statt Sie warten zu lassen.",
   },
   {
     q: "Was kostet eine E-Scooter Reparatur bei euch ungefähr?",
-    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen transparenten Kostenvoranschlag — es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
+    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag — es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
   },
   {
     q: "Wie lange dauert es, bis ich meinen E-Scooter wieder abholen kann?",
@@ -33,7 +33,7 @@ export const faqRepair: FaqItem[] = [
 export const faqPlans: FaqItem[] = [
   {
     q: "Lohnt sich ein E-Scooter Wartungsvertrag für mich wirklich?",
-    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, VIP-Priorität bei Reparaturen und 20 % Rabatt auf alle Ersatzteile enthalten. Für Pendler rechnet sich das bereits ab dem zweiten Checkup oder der ersten Abholung. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
+    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur innerhalb von 24 Stunden. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
   },
   {
     q: "Welcher Wartungsvertrag passt zu mir — Basis oder Premium?",
@@ -41,11 +41,11 @@ export const faqPlans: FaqItem[] = [
   },
   {
     q: "Wo findet die Wartung statt, und holt ihr den Scooter auch ab?",
-    a: "Die Wartung läuft in unserer Fachwerkstatt Im Kampfrad 3 in Neuenstadt am Kocher. Premium-Kunden nutzen den Hol- und Bringservice im Umkreis von 15 km — das deckt Heilbronn, Neckarsulm und Bad Friedrichshall vollständig ab. Durch die zentrale Lage sind wir aus dem gesamten Umkreis bis 30 km schnell erreichbar.",
+    a: "Die Wartung läuft in unserer Fachwerkstatt Im Kampfrad 3 in Neuenstadt am Kocher. Premium-Kunden nutzen den Hol- und Bringservice im Umkreis von 15 km — das deckt Heilbronn, Neckarsulm und Bad Friedrichshall vollständig ab. Durch die zentrale Lage sind wir aus dem gesamten Umkreis bis 25 km schnell erreichbar — aus Mosbach genauso wie aus Öhringen.",
   },
   {
     q: "Sind Ersatzteile im Wartungsvertrag enthalten?",
-    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir fair und transparent separat — mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
+    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir separat und weisen sie einzeln auf der Rechnung aus — mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
   },
 ];
 

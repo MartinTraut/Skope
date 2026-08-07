@@ -244,6 +244,88 @@ UX & Accessibility, Technical SEO/GEO/Schema, Code & Performance). Umgesetzt:
 
 ---
 
+## 5b. Zweite Audit-Runde
+
+Dasselbe Gremium hat den Stand nach der Bilder- und Markenüberarbeitung erneut
+geprüft. Umgesetzt:
+
+**Falsche oder unbelegte Aussagen**
+- Das Rechenbeispiel auf `/wartungsvertrag` behauptete, Premium (215,88 €/Jahr)
+  rechne sich „ab dem zweiten Checkup" (2 × 59,99 € = 119,98 €). Die Rechnung
+  ging erst bei rund vier Checkups auf, die es im Jahr nicht gibt. Der Abschnitt
+  argumentiert jetzt mit Ausfallzeit statt mit Amortisation — und nennt
+  ausdrücklich, wann Basis die günstigere Wahl ist.
+- Der Startseiten-Teaser zog den günstigsten Tarif der Tabelle („ab 35 €") und
+  beschriftete ihn als Saisonpreis. Das ist ein Ein-Monats-Zeitraum. Jetzt wird
+  über das Feld `full` gezielt die Jahreszeile zitiert (ab 42 €).
+- „ab"-Preise standen im JSON-LD als exakter `price` — eine Falschangabe in
+  strukturierten Daten, die Google als Preis-Snippet ausspielen darf. Offers
+  tragen jetzt wahlweise `minPrice` (`from: true`) oder einen Festpreis.
+- Ein „3-mm-Nabendurchmesser" in der FAQ existiert an keinem E-Scooter
+  (mutmaßlich ein Übernahmefehler aus der Altseite) — ersatzlos gestrichen.
+- Widerspruch beseitigt: Hero sagte „8 – 25 km", FAQ und Region „bis 30 km".
+  Der weiteste Ort in `serviceArea` liegt bei 25 km.
+
+**Formular, Sicherheit, Zugänglichkeit**
+- React 19 setzt nach jeder Form-Action `requestFormReset()` ab: Nach einem
+  Validierungsfehler stand der Nutzer vor leeren Feldern. Die Action gibt die
+  Eingaben jetzt als `values` zurück.
+- Das Rate-Limit hing am ersten Eintrag von `x-forwarded-for` — einem Header,
+  den der Client frei setzen kann. Jetzt letzter Hop bzw. `x-vercel-forwarded-for`.
+- `focus:outline-none` auf allen Feldern unterdrückte den globalen
+  Fokusindikator; übrig blieb ein Randfarbwechsel unter 3:1 (WCAG 2.4.11).
+- Bei geöffnetem Mobilmenü tabbte man nach dem letzten Menüpunkt in die
+  verdeckten Links von `<main>` und `<footer>` → `inert` auf die Geschwister.
+- `figcaption` lag außerhalb der `figure` (Zitate, Tariftafel); die Tariftabelle
+  war als Scroll-Region nicht tastaturbedienbar; der Sprunglink zeigte auf ein
+  nicht fokussierbares `<main>`; die ARIA-Zweige des Siegels waren vertauscht.
+- Das Kontaktformular startet ohne Vorauswahl („Bitte wählen", serverseitig
+  Pflicht): Bei vierzehn Optionen kam eine Kaufanfrage sonst als Reparatur an.
+
+**Conversion-Pfade**
+- Kein einziger CTA sprang bisher auf ein Formular. Alle Wege zeigen jetzt auf
+  `#anfrage`; `/wartungsvertrag` und `/recycling` haben ein eigenes Formular,
+  damit alle fünf Leistungsseiten gleich funktionieren.
+- Neue Aktionsleiste unter `lg`, ab etwa halber Bildschirmhöhe: Auf dem Telefon
+  war schriftlicher Kontakt sonst nur hinter dem Burger-Menü erreichbar.
+- Der Erfolgsfall des Formulars war eine Sackgasse — jetzt mit Telefonweg und
+  Route zur Werkstatt. Neuer Baustein `Related` verlinkt die Leistungen
+  untereinander.
+
+**Gestaltung**
+- `--color-ink-800` lag zwei Prozent Luminanz neben `--color-ink`; der
+  Flächenwechsel war unsichtbar. Auf `#101a23` angehoben.
+- Akzentregel geschärft: Orange markiert Aktionen und Geldbeträge, sonst nichts.
+  Vorher war von je zwei gleichrangigen Kennzahlen willkürlich eine eingefärbt.
+- Kundenstimmen stehen jetzt vor den Preisblöcken statt dahinter.
+- Neun Schriftgrößen (vier freihändige `clamp()`, mehrere `text-xl`-Ketten) auf
+  die Skala zurückgeführt, neue Stufe `--text-subtitle`. `line-height` nach
+  Größe gestaffelt. Lesebreiten in `ch` statt `rem`.
+- Der Preisaushang der ERGO war das größte Bild der Startseite nach dem Hero —
+  ein abfotografierter Ausdruck. Ersetzt durch eine gesetzte Tariftafel; das
+  Foto bleibt als Beleg in Daumennagelgröße.
+- Die 5/7-Teilung war zum Standardlayout geworden — Workshop, Region,
+  Recycling, Siegel-Sektion und alle Anfrage-Blöcke benutzten dieselbe Figur.
+  Jetzt existieren drei Typen nebeneinander: der Split (bleibt für die
+  wiederkehrenden Anfrage-Blöcke, dort ist Gleichförmigkeit richtig), eine
+  volle Containerbreite mit typografisch dominanter Headline (`Region`) und
+  eine geschichtete Komposition, bei der die Materialtafel die Bildkante
+  überlappt (`RecyclingTeaser`). Der Seitenkopf steht auf 8/4 statt 7/5, damit
+  er sich vom `SectionHead` direkt darunter unterscheidet.
+- Unter dem Siegel auf `/e-scooter` stand tote Fläche; Gewährleistung,
+  Widerrufsrecht und Prüfumfang standen als Nachsatz am Ende der anderen
+  Spalte. Sie stehen jetzt als Datentafel neben dem Zeichen, für das sie bürgen.
+
+**Nachgeprüft**
+- `tsc`, ESLint, Produktionsbuild sauber, 17/17 Routen statisch.
+- Alle acht Inhaltsseiten bei 1512 px und 390 px: kein horizontaler Überlauf,
+  keine Konsolenfehler, genau eine H1 pro Seite, keine Sprünge in der
+  Überschriftenkaskade.
+- JSON-LD gegengelesen: `areaServed` 16 Einheiten inkl. Kreisebene, `logo`
+  gesetzt, Review-`@id`s pro Seitenpfad, Festpreis vs. `minPrice` korrekt.
+
+---
+
 ## 6. Offene TODOs für den Betreiber
 
 1. `TODO` Öffnungszeiten festlegen → `lib/site.ts` → `openingHours`.

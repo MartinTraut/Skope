@@ -44,6 +44,18 @@ export const INSURANCE_TOPICS = [
   "Beratung zur Versicherung",
 ] as const satisfies readonly ContactTopic[];
 
+export const PLAN_TOPICS = [
+  "Wartungsvertrag Basis",
+  "Wartungsvertrag Premium",
+  "Sicherheits-Checkup (59,99 €)",
+] as const satisfies readonly ContactTopic[];
+
+export const RECYCLING_TOPICS = [
+  "Altgerät abgeben / Recycling",
+  "Kostenvoranschlag",
+  "Reparatur",
+] as const satisfies readonly ContactTopic[];
+
 export const BUY_TOPICS = [
   "Suchauftrag refurbished E-Scooter",
   "Frage zu einem Gerät",

@@ -14,7 +14,7 @@ export default function NotFound() {
         className="pointer-events-none absolute inset-0 grid-veil opacity-60"
       />
       <Container className="relative">
-        <p className="eyebrow text-current/55">Fehler 404</p>
+        <p className="eyebrow text-current/65">Fehler 404</p>
         <h1 className="mt-6 max-w-2xl text-[length:var(--text-display)]">
           Diese Seite gibt es nicht mehr.
         </h1>

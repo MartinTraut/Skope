@@ -13,7 +13,7 @@ import { pageMeta } from "@/lib/seo";
 import { fullAddress, site } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
-  title: "Die Werkstatt hinter dem Qualitätssiegel",
+  title: "E-Scooter Werkstatt Neuenstadt — über uns",
   description:
     "Thomas Zielke betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Über 500 reparierte E-Scooter, Verkauf und Service in einer Hand.",
   path: "/ueber-uns",
@@ -100,7 +100,7 @@ export default function AboutPage() {
 
             <div className="lg:col-span-7">
               <Reveal delay={70}>
-                <p className="eyebrow text-current/55">Wie hier gearbeitet wird</p>
+                <p className="eyebrow text-current/65">Wie hier gearbeitet wird</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Vier Grundsätze,
                   <br />
@@ -112,7 +112,7 @@ export default function AboutPage() {
                 {principles.map((item, i) => (
                   <Reveal key={item.title} delay={i * 70}>
                     <div className="border-t border-white/12 py-6">
-                      <dt className="font-display text-xl font-bold tracking-tight">
+                      <dt className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
                         {item.title}
                       </dt>
                       <dd className="mt-2.5 max-w-xl leading-relaxed text-paper/65">
@@ -125,7 +125,7 @@ export default function AboutPage() {
 
               <Reveal delay={120}>
                 <div className="mt-12 border-t border-white/12 pt-8">
-                  <h3 className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+                  <h3 className="eyebrow-plain text-paper/70">
                     Marken im Werkstattalltag
                   </h3>
                   <p className="mt-4 leading-relaxed text-paper/65">
@@ -152,7 +152,7 @@ export default function AboutPage() {
       <JsonLd
         nodes={pageGraph([
           breadcrumb([{ name: "Über uns", path: "/ueber-uns" }]),
-          ...reviews(),
+          ...reviews("/ueber-uns"),
         ])}
       />
     </>

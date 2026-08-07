@@ -61,34 +61,30 @@ export function Footer() {
 
           {/* Leistungen */}
           <nav aria-label="Leistungen" className="lg:col-span-3">
-            <p className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+            <p className="eyebrow-plain text-paper/70">
               Leistungen
             </p>
-            <ul className="mt-6 flex flex-col gap-3">
-              {nav.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-paper/70 transition-colors hover:text-flame"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/kontakt"
-                  className="text-paper/70 transition-colors hover:text-flame"
-                >
-                  Kontakt & Anfahrt
-                </Link>
-              </li>
+            {/* Wie die Rechtslinks unten: mindestens 44 px Zielfläche.
+                Bei `gap-3` und Zeilenhöhe blieben davon rund 24 px übrig. */}
+            <ul className="mt-4 -mb-2 flex flex-col">
+              {[...nav, { href: "/kontakt", label: "Kontakt & Anfahrt" }].map(
+                (item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="-mx-2 inline-flex min-h-11 items-center px-2 text-paper/70 transition-colors hover:text-flame"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ),
+              )}
             </ul>
           </nav>
 
           {/* Einzugsgebiet — echter GEO-Nutzen, nicht Keyword-Stapelung */}
           <div className="lg:col-span-4">
-            <p className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+            <p className="eyebrow-plain text-paper/70">
               Einzugsgebiet
             </p>
             <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2.5">

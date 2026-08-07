@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 
+import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Plans } from "@/components/sections/plans";
+import { Related } from "@/components/sections/related";
 import { Faq } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqPlans } from "@/lib/data/faq";
 import { planExclusions, plans } from "@/lib/data/plans";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
+import { PLAN_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -36,23 +39,31 @@ export default function PlansPage() {
         lead="Wer täglich pendelt, merkt einen Defekt meistens genau dann, wenn er losfahren will. Ein Wartungsvertrag verschiebt diesen Moment nach vorn — in die Werkstatt, zu einem geplanten Termin."
       />
 
-      {/* Rechenbeispiel — die härteste Kaufentscheidungs-Hilfe zuerst */}
+      {/* Die Entscheidungshilfe zuerst — und zwar die ehrliche: Premium
+          amortisiert sich rechnerisch nicht, es kauft Reaktionszeit. */}
       <Section tone="paper" className="py-14 md:py-16">
         <Container>
           {/* Einspaltig: eine 5/7-Teilung mit zwei Zeilen links erzeugt nur Leerraum */}
           <Reveal className="max-w-3xl">
-            <p className="eyebrow text-current/55">Rechenbeispiel</p>
+            <p className="eyebrow text-current/65">Entscheidungshilfe</p>
             <h2 className="mt-4 text-[length:var(--text-title)]">
-              Wann sich Premium rechnet
+              Wofür Sie bei Premium bezahlen
             </h2>
             <div className="mt-5">
               <p className="text-[length:var(--text-lead)] leading-relaxed text-ink/70">
-                Ein einzelner Sicherheits-Checkup kostet{" "}
-                <strong className="font-semibold text-ink">59,99 €</strong>. Im
-                Premium-Vertrag für 17,99 € im Monat ist er enthalten — zusammen
-                mit Akku-Deep-Check, 20 % Ersatzteil-Rabatt und Express-Reparatur
-                innerhalb von 24 Stunden. Ab dem zweiten Checkup oder der ersten
-                Abholung im 15-km-Umkreis liegen Sie günstiger.
+                Nicht für die Stückzahl, sondern für die Ausfallzeit. Der
+                jährliche Sicherheits-Checkup kostet einzeln{" "}
+                <strong className="font-semibold text-ink">59,99 €</strong> und
+                ist in beiden Verträgen enthalten — Premium für{" "}
+                <strong className="font-semibold text-ink">
+                  17,99 € im Monat
+                </strong>{" "}
+                ergänzt Akku-Deep-Check, 20 % Ersatzteil-Rabatt, Vorrang bei der
+                Terminvergabe mit Express-Reparatur innerhalb von 24 Stunden und
+                den Hol- und Bringservice im Umkreis von 15 km. Wer den Scooter
+                täglich für den Arbeitsweg braucht, zahlt damit für Planbarkeit.
+                Wer gelegentlich fährt, fährt mit Basis für 130 € im Jahr
+                günstiger.
               </p>
             </div>
           </Reveal>
@@ -65,7 +76,7 @@ export default function PlansPage() {
       <Section tone="ink-800" className="py-16 md:py-20">
         <Container>
           <Reveal className="grid gap-8 border-t border-white/12 pt-10 lg:grid-cols-12 lg:gap-16">
-            <h2 className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase lg:col-span-4">
+            <h2 className="eyebrow-plain text-paper/70 lg:col-span-4">
               Was nicht abgedeckt ist
             </h2>
             <p className="leading-relaxed text-paper/65 lg:col-span-8">
@@ -85,6 +96,50 @@ export default function PlansPage() {
           <Faq items={faqPlans} className="mt-14" />
         </Container>
       </Section>
+
+      {/* Anfrage — bisher zwang diese Seite als einzige Vertragsseite zum
+          Seitenwechsel, obwohl die Vorauswahl längst existiert. */}
+      <Section id="anfrage" tone="ink-800">
+        <Container>
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <p className="eyebrow text-current/65">Vertrag anfragen</p>
+                <h2 className="mt-5 text-[length:var(--text-display)]">
+                  Welcher passt,
+                  <br />
+                  klären wir vorher.
+                </h2>
+                <p className="mt-6 leading-relaxed text-paper/65">
+                  Schreiben Sie uns, wie oft Sie fahren und welches Gerät Sie
+                  nutzen. Wir sagen Ihnen, welcher der beiden Verträge dazu passt
+                  — auch wenn das der günstigere ist.
+                </p>
+              </Reveal>
+            </div>
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <InquiryForm topics={PLAN_TOPICS} />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      <Related
+        items={[
+          {
+            href: "/reparatur",
+            label: "Reparatur",
+            text: "Was außerhalb der Wartung anfällt — mit Kostenvoranschlag vor jeder Arbeit.",
+          },
+          {
+            href: "/e-scooter",
+            label: "Geprüfte E-Scooter",
+            text: "Wer hier kauft, bekommt das Gerät Jahre später in derselben Werkstatt gewartet.",
+          },
+        ]}
+      />
 
       <CtaBand
         eyebrow="Vertrag abschließen"

@@ -4,6 +4,7 @@ import { FileText } from "lucide-react";
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
+import { Related } from "@/components/sections/related";
 import { Faq } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
@@ -21,7 +22,7 @@ import { pageMeta } from "@/lib/seo";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Versicherung ERGO — Tarife 2026/2027",
   description:
-    "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO, deutschlandweit. Versicherungskennzeichen in 5 bis 10 Werktagen per Post.",
+    "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO, deutschlandweit. Versicherungskennzeichen in 5 bis 10 Werktagen per Post. Antrag online starten.",
   path: "/versicherung",
   image: "/img/ergo-tarife.jpg",
   imageAlt: "Preisaushang der ERGO E-Scooter Tarife für die Saison 2026/2027",
@@ -37,7 +38,7 @@ export default function InsurancePage() {
           <>
             E-Scooter Versicherung
             <br />
-            ohne Papierkrieg.
+            mit Kennzeichen per Post.
           </>
         }
         lead="Für jeden E-Scooter mit mehr als 6 km/h Höchstgeschwindigkeit schreibt die Elektrokleinstfahrzeuge-Verordnung eine Haftpflichtversicherung vor. Wir vermitteln sie als ERGO-Partner — Sie müssen dafür nicht in der Region Heilbronn wohnen."
@@ -52,7 +53,16 @@ export default function InsurancePage() {
             lead="Der Beitrag hängt vom Versicherungszeitraum ab: Wer mitten in der Saison einsteigt, zahlt für weniger Monate. Die Werte sind Startpreise der günstigsten Risikoklasse."
           />
 
-          <Reveal delay={60} className="mt-14 overflow-x-auto">
+          {/* Fokussierbare Scroll-Region: Die Tabelle ist auf schmalen Screens
+              breiter als der Viewport, und ohne tabIndex kommt man per Tastatur
+              nicht an die rechten Spalten (WCAG 2.1.1). */}
+          <Reveal
+            delay={60}
+            className="mt-14 overflow-x-auto"
+            role="region"
+            aria-label="ERGO Tarife für die Saison 2026/2027"
+            tabIndex={0}
+          >
             <table className="w-full min-w-[36rem] border-collapse text-left">
               <caption className="sr-only">
                 ERGO Tarife für E-Scooter, Saison 2026/2027, nach
@@ -62,19 +72,19 @@ export default function InsurancePage() {
                 <tr className="border-b border-white/20">
                   <th
                     scope="col"
-                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-paper/50 uppercase"
+                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-paper/70 uppercase"
                   >
                     Zeitraum
                   </th>
                   <th
                     scope="col"
-                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-paper/50 uppercase"
+                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-paper/70 uppercase"
                   >
                     Haftpflicht
                   </th>
                   <th
                     scope="col"
-                    className="py-4 font-display text-xs font-semibold tracking-[0.14em] text-paper/50 uppercase"
+                    className="py-4 font-display text-xs font-semibold tracking-[0.14em] text-paper/70 uppercase"
                   >
                     Teilkasko inkl. Diebstahl
                   </th>
@@ -128,10 +138,10 @@ export default function InsurancePage() {
                     aria-hidden="true"
                     className="absolute top-1.5 -left-[2.3rem] size-2.5 rounded-full bg-ink/25 md:-left-[3.3rem]"
                   />
-                  <span className="tabular font-display text-sm font-bold text-ink/45">
+                  <span className="tabular font-display text-sm font-bold text-ink/65">
                     {step.step}
                   </span>
-                  <h3 className="mt-1.5 font-display text-[clamp(1.25rem,1vw+1rem,1.6rem)] font-bold tracking-tight">
+                  <h3 className="mt-1.5 text-[length:var(--text-subtitle)]">
                     {step.title}
                   </h3>
                   <p className="mt-2.5 leading-relaxed text-ink/65">
@@ -149,7 +159,7 @@ export default function InsurancePage() {
                 className="size-7 text-current/45"
                 strokeWidth={1.5}
               />
-              <h3 className="mt-5 font-display text-xl font-bold tracking-tight">
+              <h3 className="mt-5 text-[length:var(--text-subtitle)]">
                 Diese Angaben brauchen wir für den Antrag
               </h3>
               <ul className="mt-6 grid gap-x-10 md:grid-cols-3">
@@ -178,7 +188,7 @@ export default function InsurancePage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/55">Versicherung anfragen</p>
+                <p className="eyebrow text-current/65">Versicherung anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Antrag anstoßen.
                 </h2>
@@ -213,6 +223,21 @@ export default function InsurancePage() {
         </Container>
       </Section>
 
+      <Related
+        items={[
+          {
+            href: "/e-scooter",
+            label: "Geprüfte E-Scooter",
+            text: "Vor dem Kennzeichen kommt das Gerät — generalüberholt, mit einem Jahr Gewährleistung.",
+          },
+          {
+            href: "/reparatur",
+            label: "Reparatur",
+            text: "Rahmennummer nicht auffindbar? Bei einem Werkstatttermin suchen wir sie gemeinsam.",
+          },
+        ]}
+      />
+
       <CtaBand
         eyebrow="Versicherung"
         title="Kennzeichen rechtzeitig bestellen."
@@ -236,6 +261,7 @@ export default function InsurancePage() {
                 name: "Haftpflichtversicherung E-Scooter (ERGO)",
                 price: "42.00",
                 unit: "ANN",
+                from: true,
                 description:
                   "Gesetzlich vorgeschriebene Haftpflicht inklusive Versicherungskennzeichen. Startpreis der günstigsten Risikoklasse für ein volles Versicherungsjahr.",
               },
@@ -243,6 +269,7 @@ export default function InsurancePage() {
                 name: "Teilkasko inklusive Diebstahlschutz (ERGO)",
                 price: "49.00",
                 unit: "ANN",
+                from: true,
                 description:
                   "Haftpflicht zuzüglich Teilkasko mit Diebstahlschutz. Startpreis der günstigsten Risikoklasse.",
               },

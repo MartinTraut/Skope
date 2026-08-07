@@ -21,7 +21,7 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                 Einer davon passt.
               </>
             }
-            lead="Regelmäßige Wartung verlängert die Lebensdauer eines E-Scooters deutlich und verhindert teure Folgeschäden. Der Unterschied zwischen den beiden Verträgen ist nicht der Umfang der Prüfung, sondern wie schnell Sie drankommen."
+            lead="Verschleiß an Bremsen, Lagern und Klappmechanik kündigt sich an, bevor er zum Ausfall führt — wenn jemand danach sucht. Der Unterschied zwischen den beiden Verträgen ist nicht der Prüfumfang, sondern wie schnell Sie drankommen."
           />
         ) : null}
 
@@ -64,7 +64,7 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                   <span className="tabular font-display text-[length:var(--text-stat)] leading-[0.9] font-extrabold tracking-tight">
                     {plan.price}
                   </span>
-                  <span className="pb-1.5 font-display text-lg font-semibold text-paper/55">
+                  <span className="pb-1.5 font-display text-lg font-semibold text-paper/75">
                     € {plan.period}
                   </span>
                 </div>
@@ -98,7 +98,9 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
 
                 <div className="mt-10 pt-2 lg:mt-auto">
                   <ButtonLink
-                    href={`/kontakt?anliegen=wartungsvertrag-${plan.id}`}
+                    // Anker mit: Ohne ihn landet der Nutzer oben auf der
+                    // Kontaktseite und sieht von seiner Vorauswahl nichts.
+                    href={`/kontakt?anliegen=wartungsvertrag-${plan.id}#anfrage`}
                     size="lg"
                     variant={plan.popular ? "flame" : "outline"}
                     className="w-full"

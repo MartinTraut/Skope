@@ -6,9 +6,11 @@ import { Seal } from "@/components/brand/seal";
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
+import { Related } from "@/components/sections/related";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
+import { buttonVariants } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
@@ -19,9 +21,9 @@ import { BUY_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Refurbished E-Scooter kaufen — geprüft",
+  title: "E-Scooter gebraucht kaufen — Heilbronn",
   description:
-    "Generalüberholte E-Scooter mit Skope-Qualitätssiegel aus der eigenen Werkstatt in Neuenstadt am Kocher. Vollständig geprüft, ein Jahr Gewährleistung.",
+    "Generalüberholte E-Scooter mit Skope-Qualitätssiegel aus der eigenen Werkstatt in Neuenstadt am Kocher. Vollständig geprüft, ein Jahr Gewährleistung. Suchauftrag hinterlegen.",
   path: "/e-scooter",
   image: "/img/scooter-studio.jpg",
   imageAlt:
@@ -48,23 +50,47 @@ export default function ScooterPage() {
       <Section tone="ink-800">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+            {/* Das Siegel füllt seine Spalte nur zur Hälfte; darunter stand
+                bisher tote Fläche. Die Gewährleistung, vorher als Nachsatz am
+                Ende der rechten Spalte versteckt, steht jetzt hier — direkt
+                neben dem Zeichen, für das sie bürgt. */}
             <Reveal className="lg:col-span-5">
               <Seal className="w-full max-w-md" />
+              <dl className="mt-10 max-w-md border-t border-white/12">
+                <div className="flex items-baseline justify-between gap-6 border-b border-white/12 py-4">
+                  <dt className="text-paper/70">Gewährleistung</dt>
+                  <dd className="font-display font-semibold tracking-tight">
+                    1 Jahr ab Übergabe
+                  </dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-6 border-b border-white/12 py-4">
+                  <dt className="text-paper/70">Widerrufsrecht</dt>
+                  <dd className="font-display font-semibold tracking-tight">
+                    14 Tage
+                  </dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-6 border-b border-white/12 py-4">
+                  <dt className="text-paper/70">Prüfpositionen</dt>
+                  <dd className="tabular font-display font-semibold tracking-tight">
+                    {checkupIncludes.length}
+                  </dd>
+                </div>
+              </dl>
             </Reveal>
 
             <div className="lg:col-span-7">
               <Reveal delay={70}>
-                <p className="eyebrow text-current/55">Das Siegel</p>
+                <p className="eyebrow text-current/65">Das Siegel</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Kein Gerät ohne
                   <br />
                   vollständige Prüfung.
                 </h2>
                 <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-paper/70">
-                  Das Skope-Qualitätssiegel ist kein Aufkleber, sondern das
-                  Protokoll unseres Sicherheits-Checkups. Jeder Scooter durchläuft
-                  vor dem Verkauf denselben Prüfumfang, den auch Kundengeräte im
-                  Checkup bekommen.
+                  Das Skope-Qualitätssiegel steht für das Prüfprotokoll unseres
+                  Sicherheits-Checkups. Jeder Scooter durchläuft vor dem Verkauf
+                  denselben Prüfumfang wie ein Kundengerät im Checkup — dieselben
+                  sechs Positionen, dieselbe Dokumentation.
                 </p>
 
                 <ul className="mt-9 grid gap-x-10 sm:grid-cols-2">
@@ -82,10 +108,9 @@ export default function ScooterPage() {
                   ))}
                 </ul>
 
-                <p className="mt-7 text-paper/60">
-                  Erst wenn alles passt, bekommt das Gerät das Siegel — und Sie
-                  ein Jahr Gewährleistung ab Übergabe sowie das gesetzliche
-                  14-tägige Widerrufsrecht.
+                <p className="mt-7 text-paper/70">
+                  Erst wenn alle sechs Positionen passen, bekommt das Gerät das
+                  Siegel. Ein Scooter ohne Siegel verlässt den Laden nicht.
                 </p>
               </Reveal>
             </div>
@@ -118,7 +143,7 @@ export default function ScooterPage() {
                         />
                       </div>
                     ) : null}
-                    <h3 className="font-display text-xl font-bold tracking-tight">
+                    <h3 className="text-[length:var(--text-subtitle)]">
                       {item.model}
                     </h3>
                     <dl className="mt-4 flex flex-col gap-2 text-sm">
@@ -150,7 +175,7 @@ export default function ScooterPage() {
                   className="size-8 text-current/45"
                   strokeWidth={1.5}
                 />
-                <h3 className="mt-6 font-display text-[clamp(1.5rem,1.6vw+1rem,2.25rem)] font-bold tracking-tight">
+                <h3 className="mt-6 text-[length:var(--text-title)]">
                   Der Bestand steht nicht online — er steht in der Werkstatt.
                 </h3>
                 <p className="mt-5 max-w-2xl text-[length:var(--text-lead)] leading-relaxed text-ink/70">
@@ -164,7 +189,10 @@ export default function ScooterPage() {
                   <PhoneButton />
                   <a
                     href="#suchauftrag"
-                    className="inline-flex h-[3.25rem] items-center justify-center rounded-sm border border-ink/25 px-7 font-display font-semibold tracking-tight text-ink transition-colors duration-200 hover:border-ink/60"
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "lg",
+                    })}
                   >
                     Suchauftrag hinterlegen
                   </a>
@@ -181,7 +209,7 @@ export default function ScooterPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/55">Suchauftrag</p>
+                <p className="eyebrow text-current/65">Suchauftrag</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Sagen Sie uns,
                   <br />
@@ -218,6 +246,21 @@ export default function ScooterPage() {
         </Container>
       </Section>
 
+      <Related
+        items={[
+          {
+            href: "/versicherung",
+            label: "Versicherungskennzeichen",
+            text: "Ohne Haftpflicht darf kein E-Scooter über 6 km/h auf die Straße — wir vermitteln sie über ERGO.",
+          },
+          {
+            href: "/wartungsvertrag",
+            label: "Wartungsvertrag",
+            text: "Damit das gekaufte Gerät jährlich durch dieselbe Werkstatt geht, die es freigegeben hat.",
+          },
+        ]}
+      />
+
       <CtaBand
         eyebrow="Kauf"
         title="Probefahren geht am besten vor Ort."
@@ -229,7 +272,7 @@ export default function ScooterPage() {
           breadcrumb([{ name: "E-Scooter kaufen", path: "/e-scooter" }]),
           refurbishedService(),
           faqPage(faqBuy, "/e-scooter"),
-          ...reviews(),
+          ...reviews("/e-scooter"),
         ])}
       />
     </>

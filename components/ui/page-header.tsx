@@ -54,16 +54,19 @@ export function PageHeader({
           </nav>
         </Reveal>
 
+        {/* 8/4 mit Lücke statt 7/5: Direkt darunter folgt auf jeder Unterseite
+            ein SectionHead in 7/5 — bei gleicher Teilung stünde dieselbe Figur
+            zweimal untereinander. Die breitere H1-Spalte trennt die Ebenen. */}
         <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-8">
             <Reveal immediate>
-              <p className="eyebrow text-current/55">{eyebrow}</p>
+              <p className="eyebrow text-current/65">{eyebrow}</p>
               <h1 className="mt-6 text-[length:var(--text-page-title)]">
                 {title}
               </h1>
             </Reveal>
           </div>
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-4 lg:col-start-9">
             <Reveal immediate>
               <p className="text-[length:var(--text-lead)] leading-relaxed text-paper/70">
                 {lead}

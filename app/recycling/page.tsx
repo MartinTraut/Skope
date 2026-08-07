@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
+import { Related } from "@/components/sections/related";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph, service } from "@/lib/schema";
+import { RECYCLING_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress } from "@/lib/site";
 
@@ -70,11 +73,11 @@ export default function RecyclingPage() {
                 {steps.map((step, i) => (
                   <Reveal key={step.n} delay={i * 70} as="li">
                     <div className="flex gap-6 border-t border-white/12 py-7 md:gap-10">
-                      <span className="tabular font-display text-lg font-bold text-current/40">
+                      <span className="tabular font-display text-lg font-bold text-current/65">
                         {step.n}
                       </span>
                       <div>
-                        <h3 className="font-display text-xl font-bold tracking-tight">
+                        <h3 className="text-[length:var(--text-subtitle)]">
                           {step.title}
                         </h3>
                         <p className="mt-2.5 max-w-xl leading-relaxed text-paper/65">
@@ -102,16 +105,60 @@ export default function RecyclingPage() {
                   Warum wir das machen
                 </h3>
                 <p className="mt-3 leading-relaxed text-paper/65">
-                  Aus den verwerteten Geräten entstehen die geprüften
-                  Ersatzteile, mit denen wir andere Scooter wieder fahrbereit
-                  machen. Reparieren statt ersetzen ist hier keine Haltung aus
-                  der Werbung, sondern die Grundlage des Betriebs.
+                  Brauchbare Nabenmotoren, Bremsen und Elektronikbauteile werden
+                  geprüft, eingelagert und in anderen Reparaturen wieder verbaut.
+                  Das hält die Ersatzteilkosten für unsere Kunden niedrig und
+                  spart Neuteile.
                 </p>
               </div>
             </Reveal>
           </div>
         </Container>
       </Section>
+
+      {/* Anfrage — dieselbe Behandlung wie auf den übrigen Leistungsseiten:
+          Wer hier ankommt, soll nicht erst auf die Kontaktseite wechseln. */}
+      <Section id="anfrage" tone="paper">
+        <Container>
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <p className="eyebrow text-current/65">Altgerät anmelden</p>
+                <h2 className="mt-5 text-[length:var(--text-display)]">
+                  Sagen Sie kurz,
+                  <br />
+                  worum es geht.
+                </h2>
+                <p className="mt-6 leading-relaxed text-ink/70">
+                  Marke, Modell und was defekt ist. Wir sagen Ihnen vorab, ob
+                  sich eine Reparatur noch lohnt — und wenn nicht, übernehmen wir
+                  die Verwertung kostenlos.
+                </p>
+              </Reveal>
+            </div>
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <InquiryForm topics={RECYCLING_TOPICS} />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      <Related
+        items={[
+          {
+            href: "/reparatur",
+            label: "Reparatur",
+            text: "Bevor ein Gerät verwertet wird, prüfen wir, ob ein einzelnes Bauteil es wieder fahrbereit macht.",
+          },
+          {
+            href: "/e-scooter",
+            label: "Geprüfte E-Scooter",
+            text: "Aus verwerteten Geräten kommen die Ersatzteile für die Scooter, die wir mit Siegel verkaufen.",
+          },
+        ]}
+      />
 
       <CtaBand
         eyebrow="Altgerät abgeben"

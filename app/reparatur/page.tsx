@@ -4,6 +4,7 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
+import { Related } from "@/components/sections/related";
 import { Faq } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
@@ -22,7 +23,7 @@ import { priceNote } from "@/lib/site";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Reparatur Heilbronn & Neuenstadt",
   description:
-    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Akku, Elektronik, Bremsen, Motor. Alle Marken, Kostenvoranschlag vorab, Bremsen oft am selben Tag.",
+    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Akku, Elektronik, Bremsen, Motor. Alle Marken, Kostenvoranschlag vorab, Bremsen oft am selben Tag. Jetzt anfragen.",
   path: "/reparatur",
   image: "/img/akku-diagnose.jpg",
   imageAlt:
@@ -69,14 +70,15 @@ export default function RepairPage() {
         aside={
           <dl className="grid grid-cols-2 gap-6 border-t border-white/12 pt-6">
             <div>
-              <dt className="text-sm text-paper/50">Reparierte Scooter</dt>
-              <dd className="tabular font-display text-3xl font-extrabold tracking-tight text-flame">
+              <dt className="text-sm text-paper/70">Reparierte Scooter</dt>
+              <dd className="tabular font-display text-3xl font-extrabold tracking-tight">
                 500+
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-paper/50">Diagnose im Checkup</dt>
-              <dd className="tabular font-display text-3xl font-extrabold tracking-tight">
+              <dt className="text-sm text-paper/70">Diagnose im Checkup</dt>
+              {/* Orange nur auf dem Geldbetrag — siehe Akzentregel in globals.css */}
+              <dd className="tabular font-display text-3xl font-extrabold tracking-tight text-flame">
                 59,99 €
               </dd>
             </div>
@@ -97,7 +99,7 @@ export default function RepairPage() {
             {repairAreas.map((area, i) => (
               <Reveal key={area.slug} delay={(i % 2) * 80} as="article">
                 <div className="flex h-full flex-col border-t border-white/12 pt-7">
-                  <p className="tabular font-display text-sm font-semibold text-current/40">
+                  <p className="tabular font-display text-sm font-semibold text-current/65">
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <h3 className="mt-3 text-[length:var(--text-title)]">
@@ -129,7 +131,7 @@ export default function RepairPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <Reveal>
-                <p className="eyebrow text-current/55">So läuft es ab</p>
+                <p className="eyebrow text-current/65">So läuft es ab</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Vier Schritte,
                   <br />
@@ -141,11 +143,11 @@ export default function RepairPage() {
                 {steps.map((step, i) => (
                   <Reveal key={step.n} delay={i * 70} as="li">
                     <div className="flex gap-6 border-t border-ink/12 py-7 md:gap-10">
-                      <span className="tabular font-display text-lg font-bold text-current/40">
+                      <span className="tabular font-display text-lg font-bold text-current/65">
                         {step.n}
                       </span>
                       <div>
-                        <h3 className="font-display text-xl font-bold tracking-tight">
+                        <h3 className="text-[length:var(--text-subtitle)]">
                           {step.title}
                         </h3>
                         <p className="mt-2.5 max-w-xl leading-relaxed text-ink/65">
@@ -161,7 +163,7 @@ export default function RepairPage() {
             <div className="lg:col-span-5">
               <Reveal delay={90}>
                 <div className="rounded-lg border border-ink/15 bg-paper-200/70 p-8">
-                  <h3 className="font-display text-xl font-bold tracking-tight">
+                  <h3 className="text-[length:var(--text-subtitle)]">
                     Preisanker
                   </h3>
                   <p className="mt-2 text-sm text-ink/65">
@@ -193,7 +195,7 @@ export default function RepairPage() {
                 </div>
 
                 <div className="mt-8 rounded-lg border border-ink/15 p-8">
-                  <h3 className="font-display text-xl font-bold tracking-tight">
+                  <h3 className="text-[length:var(--text-subtitle)]">
                     Bearbeitungszeit
                   </h3>
                   <dl className="mt-6">
@@ -220,14 +222,14 @@ export default function RepairPage() {
       <Section tone="ink" className="py-16 md:py-20">
         <Container>
           <Reveal className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-            <h2 className="shrink-0 font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+            <h2 className="shrink-0 eyebrow-plain text-paper/70">
               Marken, die wir betreuen
             </h2>
             <ul className="flex flex-wrap items-center gap-x-8 gap-y-4">
               {brands.map((brand) => (
                 <li
                   key={brand}
-                  className="font-display text-lg font-semibold tracking-tight text-paper/55"
+                  className="font-display text-lg font-semibold tracking-tight text-paper/75"
                 >
                   {brand}
                 </li>
@@ -246,7 +248,7 @@ export default function RepairPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/55">Reparatur anfragen</p>
+                <p className="eyebrow text-current/65">Reparatur anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Beschreiben Sie,
                   <br />
@@ -282,6 +284,22 @@ export default function RepairPage() {
         </Container>
       </Section>
 
+      <Related
+        tone="ink-800"
+        items={[
+          {
+            href: "/wartungsvertrag",
+            label: "Wartungsvertrag",
+            text: "Express-Reparatur innerhalb von 24 Stunden und Vorrang bei der Terminvergabe.",
+          },
+          {
+            href: "/recycling",
+            label: "Kostenlose Verwertung",
+            text: "Wenn sich eine Reparatur nicht mehr rechnet, nehmen wir das Altgerät kostenlos zurück.",
+          },
+        ]}
+      />
+
       <Region />
       <CtaBand
         eyebrow="Werkstatttermin"
@@ -305,9 +323,10 @@ export default function RepairPage() {
                 description:
                   "Bremsen einstellen, Reifendruck und Profil prüfen, Schrauben nachziehen, Akku-Diagnose, Elektronik-Prüfung, Verschleißteil-Kontrolle mit Protokoll.",
               },
-              { name: "Bremsbeläge ersetzen", price: "15.00" },
-              { name: "Reifenwechsel", price: "25.00" },
-              { name: "Elektronik-Reparatur", price: "40.00" },
+              // `from`, weil sichtbar „ab 15 €" steht — siehe Kommentar bei service().
+              { name: "Bremsbeläge ersetzen", price: "15.00", from: true },
+              { name: "Reifenwechsel", price: "25.00", from: true },
+              { name: "Elektronik-Reparatur", price: "40.00", from: true },
             ],
           }),
           faqPage(faqRepair, "/reparatur"),

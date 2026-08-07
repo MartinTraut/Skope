@@ -5,11 +5,27 @@ import { headers } from "next/headers";
 import { FALLBACK_TOPIC, isKnownTopic } from "@/lib/data/topics";
 import { sendInquiry } from "@/lib/notify";
 
+export type InquiryValues = {
+  topic: string;
+  name: string;
+  email: string;
+  phone: string;
+  scooter: string;
+  message: string;
+};
+
 export type FormState = {
   status: "idle" | "ok" | "fallback" | "error";
   message?: string;
   /** Feldname → Fehlermeldung */
   errors?: Record<string, string>;
+  /**
+   * Die eingegebenen Werte, zurück an das Formular.
+   * React 19 setzt nach jeder Form-Action `requestFormReset()` ab — ohne diese
+   * Rückgabe stünde der Nutzer nach einem Validierungsfehler vor leeren
+   * Feldern und müsste alles neu tippen.
+   */
+  values?: InquiryValues;
 };
 
 const MAX = {
@@ -53,6 +69,25 @@ function rateLimited(key: string, now: number) {
   return false;
 }
 
+/**
+ * Schlüssel für die Drosselung.
+ *
+ * `x-forwarded-for` ist vom Client frei setzbar: Wer den Header selbst mit
+ * einer Zufalls-IP füllt, bekommt bei jedem Aufruf einen neuen Eimer und hebelt
+ * das Limit aus. Vertrauenswürdig ist nur der Eintrag, den der eigene Proxy
+ * anhängt — das ist der LETZTE, nicht der erste. Auf Vercel steht die geprüfte
+ * Adresse zusätzlich in `x-vercel-forwarded-for`; die hat Vorrang.
+ */
+async function clientKey() {
+  const h = await headers();
+  return (
+    h.get("x-vercel-forwarded-for") ??
+    h.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
+    h.get("x-real-ip") ??
+    "unknown"
+  );
+}
+
 function str(data: FormData, key: string) {
   const value = data.get(key);
   // Zeilenumbrüche raus: die Werte landen in Mail-Headern.
@@ -71,7 +106,7 @@ export async function submitInquiry(
   }
 
   const topicRaw = str(data, "topic");
-  const inquiry = {
+  const inquiry: InquiryValues = {
     topic: isKnownTopic(topicRaw) ? topicRaw : FALLBACK_TOPIC,
     name: str(data, "name"),
     email: str(data, "email"),
@@ -85,6 +120,9 @@ export async function submitInquiry(
   };
 
   const errors: Record<string, string> = {};
+  // Das Kontaktformular startet ohne Vorauswahl, damit eine Kaufanfrage nicht
+  // stillschweigend als Reparatur im Postfach landet.
+  if (!topicRaw) errors.topic = "Bitte wählen Sie Ihr Anliegen aus.";
   if (inquiry.name.length < 2) errors.name = "Bitte tragen Sie Ihren Namen ein.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(inquiry.email)) {
     errors.email = "Bitte eine gültige E-Mail-Adresse angeben.";
@@ -92,22 +130,22 @@ export async function submitInquiry(
   if (inquiry.message.length < 10) {
     errors.message = "Bitte beschreiben Sie Ihr Anliegen in einem Satz.";
   }
-  for (const [key, limit] of Object.entries(MAX)) {
-    if ((inquiry as Record<string, string>)[key].length > limit) {
+  for (const key of Object.keys(MAX) as (keyof typeof MAX)[]) {
+    if (inquiry[key].length > MAX[key]) {
       errors[key] = "Diese Angabe ist zu lang.";
     }
   }
 
   if (Object.keys(errors).length > 0) {
-    return { status: "error", errors };
+    return { status: "error", errors, values: inquiry };
   }
 
-  const forwarded = (await headers()).get("x-forwarded-for") ?? "unknown";
-  if (rateLimited(forwarded.split(",")[0].trim(), Date.now())) {
+  if (rateLimited(await clientKey(), Date.now())) {
     return {
       status: "fallback",
       message:
         "Es sind gerade mehrere Anfragen von hier eingegangen. Bitte warten Sie einen Moment oder rufen Sie uns direkt an.",
+      values: { ...inquiry, topic: topicRaw },
     };
   }
 
@@ -119,12 +157,14 @@ export async function submitInquiry(
           status: "fallback",
           message:
             "Der Formularversand ist auf diesem Server noch nicht eingerichtet. Bitte rufen Sie uns kurz an oder schreiben Sie direkt eine E-Mail — wir kümmern uns sofort darum.",
+          values: { ...inquiry, topic: topicRaw },
         };
   } catch {
     return {
       status: "fallback",
       message:
         "Die Anfrage konnte gerade nicht übermittelt werden. Rufen Sie uns bitte kurz an oder schreiben Sie direkt eine E-Mail.",
+      values: { ...inquiry, topic: topicRaw },
     };
   }
 }

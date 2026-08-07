@@ -40,7 +40,6 @@ export const site = {
 export const proof = {
   repairs: 500,
   warrantyYears: 1,
-  insurancePartner: "ERGO",
   sealName: "Skope-Qualitätssiegel",
 } as const;
 

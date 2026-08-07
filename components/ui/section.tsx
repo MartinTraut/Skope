@@ -80,7 +80,7 @@ export function SectionHead({
       >
         <div className="lg:col-span-7">
           {eyebrow ? (
-            <p className="eyebrow mb-5 text-current/55">{eyebrow}</p>
+            <p className="eyebrow mb-5 text-current/65">{eyebrow}</p>
           ) : null}
           <h2 className="text-[length:var(--text-display)]">{title}</h2>
         </div>
@@ -104,7 +104,7 @@ export function SectionHead({
       {eyebrow ? (
         <p
           className={cn(
-            "eyebrow mb-5 text-current/55",
+            "eyebrow mb-5 text-current/65",
             align === "center" && "justify-center",
           )}
         >

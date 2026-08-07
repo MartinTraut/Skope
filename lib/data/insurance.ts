@@ -8,10 +8,16 @@ export type Tariff = {
   period: string;
   liability: string;
   comprehensive: string;
+  /**
+   * Der Tarif über ein volles Versicherungsjahr. Nur diese Zeile darf als
+   * Jahresbeitrag zitiert werden — der günstigste Wert der Tabelle gehört zu
+   * einem Ein-Monats-Zeitraum und wäre als Saisonpreis eine Falschangabe.
+   */
+  full?: boolean;
 };
 
 export const tariffs: Tariff[] = [
-  { period: "01.04.2026 – 31.03.2027", liability: "ab 42 €", comprehensive: "ab 69 €" },
+  { period: "01.04.2026 – 31.03.2027", liability: "ab 42 €", comprehensive: "ab 69 €", full: true },
   { period: "01.05.2026 – 31.05.2026", liability: "ab 35 €", comprehensive: "ab 69 €" },
   { period: "01.07.2026 – 30.09.2026", liability: "ab 57 €", comprehensive: "ab 70 €" },
   { period: "01.10.2026 – 31.12.2026", liability: "ab 57 €", comprehensive: "ab 59 €" },

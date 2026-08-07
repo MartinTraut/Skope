@@ -19,14 +19,14 @@ const pillars = [
     image: "/img/akku-diagnose.jpg",
     kicker: "Reparieren",
     title: "Erst messen, dann tauschen",
-    text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert — und legen vor jeder Arbeit einen transparenten Kostenvoranschlag vor.",
+    text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert — und legen vor jeder Arbeit einen Kostenvoranschlag vor.",
     meta: "Checkup 59,99 €",
   },
   {
     href: "/versicherung",
     image: "/img/scooter-allee.jpg",
     kicker: "Absichern",
-    title: "Kennzeichen, ohne Papierkrieg",
+    title: "Versicherungskennzeichen über ERGO",
     text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit — Kennzeichen in 5 bis 10 Werktagen per Post nach Hause.",
     meta: "ERGO Partner",
   },
@@ -42,12 +42,15 @@ export function Pillars() {
           lead="Der Unterschied zum Kleinanzeigen-Kauf: Wer Ihnen den Scooter verkauft, kann ihn auch Jahre später noch warten. Verkauf und Service liegen hier in einer Hand."
         />
 
-        <div className="mt-16 grid gap-px lg:grid-cols-3">
+        {/* `gap-px` erzeugte ohne Zellenhintergrund keine Trennlinie, sondern
+            nur einen toten Pixel: Auf Mobile klebte die Meta-Zeile der einen
+            Kachel direkt an der Oberkante der nächsten. */}
+        <div className="mt-16 grid gap-y-14 lg:grid-cols-3 lg:gap-y-0">
           {pillars.map((pillar, i) => (
             <Reveal key={pillar.href} delay={i * 90}>
               <Link
                 href={pillar.href}
-                className="group flex h-full flex-col border-t border-white/10 pt-8 transition-colors duration-300 hover:border-flame lg:border-t-0 lg:border-l lg:pt-0 lg:pr-8 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
+                className="group flex h-full flex-col border-t border-white/10 pt-8 transition-colors duration-300 hover:border-flame lg:border-t-0 lg:border-l lg:px-10 lg:pt-0 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-sm bg-ink">
                   <Image

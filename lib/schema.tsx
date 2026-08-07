@@ -11,7 +11,7 @@
 
 import type { FaqItem } from "@/lib/data/faq";
 import { testimonials } from "@/lib/data/testimonials";
-import { fullAddress, proof, serviceArea, site } from "@/lib/site";
+import { fullAddress, nearbyPlaces, proof, serviceArea, site } from "@/lib/site";
 
 const ORG_ID = `${site.url}/#organization`;
 const SITE_ID = `${site.url}/#website`;
@@ -19,10 +19,21 @@ const PERSON_ID = `${site.url}/ueber-uns#thomas-zielke`;
 
 type Node = Record<string, unknown>;
 
-const cities = serviceArea.map((place) => ({
-  "@type": "City",
-  name: place.name,
-}));
+/**
+ * Einzugsgebiet für `areaServed`.
+ *
+ * Der eigene Ort gehört ausdrücklich dazu — er fehlte, weil `serviceArea` nur
+ * die Nachbarorte mit Entfernung führt. Die Kreisebene ergänzt, was
+ * Ortsnamen allein nicht abdecken: Suchanfragen mit Landkreisbezug.
+ */
+const cities: Node[] = [
+  { "@type": "City", name: site.address.city },
+  ...serviceArea.map((place) => ({ "@type": "City", name: place.name })),
+  ...nearbyPlaces.map((name) => ({ "@type": "City", name })),
+  { "@type": "AdministrativeArea", name: "Landkreis Heilbronn" },
+  { "@type": "AdministrativeArea", name: "Hohenlohekreis" },
+  { "@type": "AdministrativeArea", name: "Neckar-Odenwald-Kreis" },
+];
 
 /** Basisknoten: LocalBusiness, Inhaber und WebSite. Steht auf jeder Seite. */
 function baseNodes(): Node[] {
@@ -72,6 +83,14 @@ function baseNodes(): Node[] {
         "E-Scooter Versicherung",
       ],
       image: `${site.url}/img/werkstatt-service.jpg`,
+      // Pflichtfeld für das Marken-Panel. Quelle ist dieselbe Glyphe, aus der
+      // auch das App-Icon gerastert wird — Next liefert sie unter /icon.png aus.
+      logo: {
+        "@type": "ImageObject",
+        url: `${site.url}/icon.png`,
+        width: 512,
+        height: 512,
+      },
       // TODO Betreiber: Google-Business-Profil in site.sameAs eintragen —
       // ohne dieses Signal fehlt im Local Pack ein Hauptranking-Faktor.
       ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
@@ -144,6 +163,13 @@ export function service({
     price: string;
     unit?: string;
     description?: string;
+    /**
+     * Setzt den Wert als Untergrenze statt als Festpreis. Pflicht überall dort,
+     * wo sichtbar „ab 15 €" steht: Ein `price` im Markup ist eine Zusage, und
+     * Google darf ihn als Preis-Snippet ausspielen. Ein Startpreis, der als
+     * Festpreis ausgezeichnet ist, ist damit eine Falschangabe.
+     */
+    from?: boolean;
   }[];
   /** Überschreibt das lokale Einzugsgebiet, z. B. für deutschlandweite Angebote. */
   areaServed?: Node[];
@@ -164,19 +190,24 @@ export function service({
             itemListElement: offers.map((offer) => ({
               "@type": "Offer",
               name: offer.name,
-              price: offer.price,
-              priceCurrency: "EUR",
               ...(offer.description ? { description: offer.description } : {}),
-              ...(offer.unit
-                ? {
-                    priceSpecification: {
-                      "@type": "UnitPriceSpecification",
-                      price: offer.price,
-                      priceCurrency: "EUR",
-                      unitText: offer.unit,
-                    },
-                  }
-                : {}),
+              priceSpecification: {
+                "@type": offer.unit
+                  ? "UnitPriceSpecification"
+                  : "PriceSpecification",
+                ...(offer.from
+                  ? { minPrice: offer.price }
+                  : { price: offer.price }),
+                priceCurrency: "EUR",
+                // Kleinunternehmerregelung: Der genannte Betrag ist der Endpreis.
+                valueAddedTaxIncluded: true,
+                ...(offer.unit ? { unitText: offer.unit } : {}),
+              },
+              // Festpreise zusätzlich flach als `price` — nur so erzeugt Google
+              // ein Preis-Snippet. Bei „ab"-Preisen bleibt das Feld bewusst leer.
+              ...(offer.from
+                ? {}
+                : { price: offer.price, priceCurrency: "EUR" }),
             })),
           },
         }
@@ -223,10 +254,13 @@ export function refurbishedService(): Node {
  * Kundenstimmen als Review-Knoten — ohne reviewRating, weil keine
  * belegbaren Sterne vorliegen. Nur dort ausgeben, wo die Zitate sichtbar sind.
  */
-export function reviews(): Node[] {
+export function reviews(path: string): Node[] {
   return testimonials.map((item, i) => ({
     "@type": "Review",
-    "@id": `${site.url}/#review-${i + 1}`,
+    // Die @id muss aus dem Seitenpfad kommen: Die Zitate stehen auf drei
+    // Seiten, und drei URLs, die dieselbe @id definieren, sind genau der
+    // Konflikt, vor dem der Kommentar bei service() warnt.
+    "@id": `${site.url}${path === "/" ? "" : path}#review-${i + 1}`,
     author: { "@type": "Person", name: item.author },
     reviewBody: item.quote,
     itemReviewed: { "@id": ORG_ID },

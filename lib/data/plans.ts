@@ -30,7 +30,7 @@ export const plans: Plan[] = [
       "1× großer Jahres-Sicherheitscheck",
       "Komplette Funktionsprüfung (Bremsen, Lager, Elektronik)",
       "10 % Rabatt auf alle Ersatzteile",
-      "Bevorzugte Behandlung bei Werkstatt-Terminen",
+      "Bevorzugte Terminvergabe in der Werkstatt",
     ],
   },
   {
@@ -48,7 +48,7 @@ export const plans: Plan[] = [
     features: [
       "Jährlicher Sicherheits-Check inklusive",
       "Akku-Deep-Check inklusive",
-      "VIP-Behandlung: Priorität bei Reparaturen",
+      "Vorrang bei der Terminvergabe für Reparaturen",
       "20 % Rabatt auf alle Ersatzteile",
       "Express-Reparatur, bevorzugt innerhalb 24 h",
       "Hol- und Bringservice im Umkreis von 15 km",
@@ -59,4 +59,4 @@ export const plans: Plan[] = [
 
 /** Was ein Vertrag nicht abdeckt — steht so auf der Altseite. */
 export const planExclusions =
-  "Die Service-Verträge decken die reguläre Wartung ab. Schäden durch unsachgemäßen Umgang — Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle — sind ausgeschlossen. Benötigte Ersatzteile berechnen wir fair und transparent separat.";
+  "Die Service-Verträge decken die reguläre Wartung ab. Schäden durch unsachgemäßen Umgang — Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle — sind ausgeschlossen. Benötigte Ersatzteile berechnen wir separat und weisen sie einzeln auf der Rechnung aus.";

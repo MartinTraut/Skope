@@ -33,7 +33,7 @@ export function CtaBand({
 
       <Container className="relative">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow justify-center text-current/55">{eyebrow}</p>
+          <p className="eyebrow justify-center text-current/65">{eyebrow}</p>
           <h2 className="mt-6 text-[length:var(--text-display)]">{title}</h2>
           <p className="mx-auto mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-paper/65">
             {text}
@@ -42,7 +42,7 @@ export function CtaBand({
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <PhoneButton />
             <ButtonLink
-              href="/kontakt"
+              href="/kontakt#anfrage"
               variant="outline"
               size="lg"
               className="w-full sm:w-auto"

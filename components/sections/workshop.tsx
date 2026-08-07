@@ -32,7 +32,7 @@ export function Workshop() {
 
           <div className="lg:col-span-7">
             <Reveal>
-              <p className="eyebrow text-current/55">Der Sicherheits-Checkup</p>
+              <p className="eyebrow text-current/65">Der Sicherheits-Checkup</p>
               <h2 className="mt-5 text-[length:var(--text-display)]">
                 Was für 59,99 €<br />
                 tatsächlich passiert.
@@ -51,7 +51,7 @@ export function Workshop() {
                     key={item}
                     className="flex items-baseline gap-4 border-b border-ink/12 py-4"
                   >
-                    <span className="tabular font-display text-xs font-semibold text-current/45">
+                    <span className="tabular font-display text-xs font-semibold text-current/65">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="text-ink/80">{item}</span>
@@ -62,7 +62,7 @@ export function Workshop() {
 
             <Reveal delay={140}>
               <div className="mt-12">
-                <h3 className="font-display text-xs font-semibold tracking-[0.18em] text-ink/65 uppercase">
+                <h3 className="eyebrow-plain text-ink/70">
                   Wie lange es dauert
                 </h3>
                 <dl className="mt-5 flex flex-col gap-3">
@@ -80,13 +80,16 @@ export function Workshop() {
                 </dl>
               </div>
 
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href="/reparatur" size="lg">
+              {/* Eine Hauptaktion, ein Textlink daneben: Dasselbe Button-Paar
+                  stand auf der Startseite vorher viermal. Der zweite Weg bleibt
+                  erhalten, tritt aber nicht mehr als gleichwertig auf. */}
+              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <ButtonLink href="/reparatur#anfrage" size="lg">
                   Reparatur anfragen
                 </ButtonLink>
                 <ButtonLink
                   href="/wartungsvertrag"
-                  variant="outline"
+                  variant="quiet"
                   size="lg"
                   className="text-ink"
                 >

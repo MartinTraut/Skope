@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
+import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section } from "@/components/ui/section";
@@ -41,10 +42,12 @@ export default function ContactPage() {
       <Section tone="ink-800">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-            {/* Kontaktdaten */}
-            <div className="lg:col-span-5">
+            {/* Kontaktdaten — auf Mobile bewusst NACH dem Formular: Wer über
+                einen „Anfrage senden"-CTA hier landet, will schreiben, nicht
+                erst an Adresse und Anfahrtsliste vorbeiscrollen. */}
+            <div className="order-2 lg:order-1 lg:col-span-5">
               <Reveal>
-                <h2 className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+                <h2 className="eyebrow-plain text-paper/70">
                   Direkt erreichbar
                 </h2>
                 <address className="mt-7 flex flex-col gap-6 not-italic">
@@ -57,10 +60,10 @@ export default function ContactPage() {
                       className="mt-1.5 size-5 shrink-0 text-current/40"
                     />
                     <span>
-                      <span className="block text-sm text-paper/50">
+                      <span className="block text-sm text-paper/70">
                         Telefon
                       </span>
-                      <span className="tabular font-display text-xl font-bold tracking-tight transition-colors group-hover:text-flame">
+                      <span className="tabular font-display text-[length:var(--text-subtitle)] font-bold tracking-tight transition-colors group-hover:text-flame">
                         {site.phone.display}
                       </span>
                     </span>
@@ -75,7 +78,7 @@ export default function ContactPage() {
                       className="mt-1.5 size-5 shrink-0 text-current/40"
                     />
                     <span className="min-w-0">
-                      <span className="block text-sm text-paper/50">
+                      <span className="block text-sm text-paper/70">
                         E-Mail
                       </span>
                       <span className="block font-display text-lg font-bold tracking-tight break-all transition-colors group-hover:text-flame">
@@ -95,13 +98,13 @@ export default function ContactPage() {
                       className="mt-1.5 size-5 shrink-0 text-current/40"
                     />
                     <span>
-                      <span className="block text-sm text-paper/50">
+                      <span className="block text-sm text-paper/70">
                         Werkstatt
                       </span>
-                      <span className="font-display text-xl font-bold tracking-tight transition-colors group-hover:text-flame">
+                      <span className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight transition-colors group-hover:text-flame">
                         {fullAddress}
                       </span>
-                      <span className="mt-1 block text-sm text-paper/50">
+                      <span className="mt-1 block text-sm text-paper/70">
                         Route in Google Maps öffnen
                       </span>
                     </span>
@@ -117,7 +120,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mt-9">
-                  <h3 className="font-display text-xs font-semibold tracking-[0.18em] text-paper/60 uppercase">
+                  <h3 className="eyebrow-plain text-paper/70">
                     Anfahrt aus der Region
                   </h3>
                   <ul className="mt-5 grid grid-cols-2 gap-x-6">
@@ -141,7 +144,10 @@ export default function ContactPage() {
             </div>
 
             {/* Formular */}
-            <div className="lg:col-span-7">
+            <div
+              id="anfrage"
+              className="order-1 scroll-mt-28 lg:order-2 lg:col-span-7"
+            >
               <Reveal delay={80}>
                 <h2 className="text-[length:var(--text-title)]">
                   Anfrage schreiben
@@ -171,8 +177,8 @@ export default function ContactPage() {
         <Container>
           <Reveal className="grid items-center gap-8 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <p className="eyebrow text-current/55">Anfahrt</p>
-              <p className="mt-4 font-display text-[clamp(1.5rem,2vw+1rem,2.4rem)] font-bold tracking-tight">
+              <p className="eyebrow text-current/65">Anfahrt</p>
+              <p className="mt-4 font-display text-[length:var(--text-title)] font-bold tracking-tight">
                 {fullAddress}
               </p>
               <p className="mt-3 max-w-xl leading-relaxed text-paper/70">
@@ -185,7 +191,7 @@ export default function ContactPage() {
                 href={site.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-[3.25rem] items-center justify-center gap-2.5 rounded-sm border border-white/45 px-7 font-display font-semibold tracking-tight transition-colors duration-200 hover:border-white"
+                className={buttonVariants({ variant: "outline", size: "lg" })}
               >
                 <MapPin className="size-4" aria-hidden="true" />
                 Route in Google Maps öffnen

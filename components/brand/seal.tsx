@@ -21,20 +21,28 @@ export function Seal({
   className,
   decorative = false,
   compact = false,
+  titleId = "skope-seal-title",
 }: {
   className?: string;
   decorative?: boolean;
   compact?: boolean;
+  /**
+   * Nur nötig, wenn zwei nicht-dekorative Siegel auf derselben Seite stehen —
+   * sonst gäbe es die ID zweimal und die Verknüpfung zeigt auf den falschen
+   * Titel. `useId` scheidet aus: Die Komponente läuft als Server Component.
+   */
+  titleId?: string;
 }) {
-  const titleId = "skope-seal-title";
-
   return (
     <svg
       viewBox="0 0 200 200"
       className={cn("h-auto w-full", className)}
+      // Dekorativ heißt: kein Titel im DOM, also darf auch nichts darauf
+      // verweisen. Genau umgekehrt braucht die sprechende Fassung die
+      // Verknüpfung — sonst bleibt das role="img" ohne Namen.
       role={decorative ? undefined : "img"}
-      aria-hidden={decorative ? "true" : undefined}
-      aria-labelledby={decorative ? titleId : undefined}
+      aria-hidden={decorative || undefined}
+      aria-labelledby={decorative ? undefined : titleId}
     >
       {decorative ? null : (
         <title id={titleId}>
