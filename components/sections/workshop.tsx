@@ -22,7 +22,7 @@ export function Workshop() {
                 alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover"
+                className="parallax object-cover"
               />
             </div>
             <p className="mt-4 text-sm text-ink/65">

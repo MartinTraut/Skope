@@ -66,7 +66,7 @@ export default function AboutPage() {
                   alt="Arbeit an einem eingespannten E-Scooter über einer Werkbank mit sortiertem Werkzeug"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="object-cover"
+                  className="parallax object-cover"
                 />
               </div>
               {/* TODO Betreiber: durch ein echtes Foto von Thomas Zielke und der

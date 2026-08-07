@@ -57,7 +57,7 @@ export function RecyclingTeaser() {
                 alt="Ausgediente E-Scooter an einer Betonwand, bereit zur Verwertung"
                 fill
                 sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover"
+                className="parallax object-cover"
               />
             </div>
           </Reveal>

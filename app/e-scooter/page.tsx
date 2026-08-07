@@ -55,7 +55,7 @@ export default function ScooterPage() {
                 Ende der rechten Spalte versteckt, steht jetzt hier — direkt
                 neben dem Zeichen, für das sie bürgt. */}
             <Reveal className="lg:col-span-5">
-              <Seal className="w-full max-w-md" />
+              <Seal className="seal-stamp w-full max-w-md" />
               <dl className="mt-10 max-w-md border-t border-white/12">
                 <div className="flex items-baseline justify-between gap-6 border-b border-white/12 py-4">
                   <dt className="text-paper/70">Gewährleistung</dt>
@@ -139,7 +139,7 @@ export default function ScooterPage() {
                           alt={`Generalüberholter ${item.model}`}
                           fill
                           sizes="(max-width: 640px) 100vw, 32vw"
-                          className="object-cover"
+                          className="parallax object-cover"
                         />
                       </div>
                     ) : null}

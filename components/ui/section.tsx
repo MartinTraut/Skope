@@ -70,9 +70,12 @@ export function SectionHead({
   align?: "split" | "left" | "center";
   className?: string;
 }) {
+  /* Nur die Headline bekommt den Masken-Reveal, Eyebrow und Lead das ruhige
+     Einblenden mit Versatz. Liefe alles maskiert, wäre der Effekt kein Akzent
+     mehr, sondern die Grundeinstellung. */
   if (align === "split") {
     return (
-      <Reveal
+      <div
         className={cn(
           "grid items-end gap-8 border-b border-current/12 pb-10 lg:grid-cols-12 lg:gap-16",
           className,
@@ -80,21 +83,27 @@ export function SectionHead({
       >
         <div className="lg:col-span-7">
           {eyebrow ? (
-            <p className="eyebrow mb-5 text-current/65">{eyebrow}</p>
+            <Reveal>
+              <p className="eyebrow mb-5 text-current/65">{eyebrow}</p>
+            </Reveal>
           ) : null}
-          <h2 className="text-[length:var(--text-display)]">{title}</h2>
+          <Reveal mask delay={60}>
+            <h2 className="text-[length:var(--text-display)]">{title}</h2>
+          </Reveal>
         </div>
         {lead ? (
-          <p className="text-[length:var(--text-lead)] leading-relaxed opacity-70 lg:col-span-5">
-            {lead}
-          </p>
+          <Reveal delay={140} className="lg:col-span-5">
+            <p className="text-[length:var(--text-lead)] leading-relaxed opacity-70">
+              {lead}
+            </p>
+          </Reveal>
         ) : null}
-      </Reveal>
+      </div>
     );
   }
 
   return (
-    <Reveal
+    <div
       className={cn(
         "max-w-3xl",
         align === "center" && "mx-auto text-center",
@@ -102,21 +111,27 @@ export function SectionHead({
       )}
     >
       {eyebrow ? (
-        <p
-          className={cn(
-            "eyebrow mb-5 text-current/65",
-            align === "center" && "justify-center",
-          )}
-        >
-          {eyebrow}
-        </p>
+        <Reveal>
+          <p
+            className={cn(
+              "eyebrow mb-5 text-current/65",
+              align === "center" && "justify-center",
+            )}
+          >
+            {eyebrow}
+          </p>
+        </Reveal>
       ) : null}
-      <h2 className="text-[length:var(--text-display)]">{title}</h2>
+      <Reveal mask delay={60}>
+        <h2 className="text-[length:var(--text-display)]">{title}</h2>
+      </Reveal>
       {lead ? (
-        <p className="mt-6 text-[length:var(--text-lead)] leading-relaxed opacity-70">
-          {lead}
-        </p>
+        <Reveal delay={140}>
+          <p className="mt-6 text-[length:var(--text-lead)] leading-relaxed opacity-70">
+            {lead}
+          </p>
+        </Reveal>
       ) : null}
-    </Reveal>
+    </div>
   );
 }

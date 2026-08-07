@@ -326,6 +326,43 @@ geprüft. Umgesetzt:
 
 ---
 
+## 5c. Mutigere Fassung (auf Wunsch des Betreibers)
+
+Der Betreiber hat sich ausdrücklich für eine auffälligere Optik entschieden.
+Umgesetzt, ohne die sachliche Tonalität aufzugeben:
+
+- **Typografische Dominanz.** Hero von 5,25 auf 6,75 rem, Seitentitel auf
+  5,5 rem, Sektions-Headlines auf 4,25 rem, Kennzahlen auf 3,5 rem. Durchschuss
+  der großen Grade auf 0,95, Tracking auf −0,038 em. Die Schrift trägt jetzt die
+  Seite, nicht die Dekoration.
+- **Hero neu komponiert.** Die Headline läuft über die volle Containerbreite,
+  erst darunter teilt sich die Fläche in Text und Bild. Im Sieben-Spalten-Aufbau
+  lief sie bei diesen Graden unter das Bild und wurde beschnitten.
+- **Masken-Reveal für Überschriften.** `clip-path` gibt die Zeile von oben nach
+  unten frei, statt sie nur einzublenden.
+- **Scrollgebundene Bildbewegung** über `animation-timeline: view()` — ohne
+  JavaScript, ohne Scroll-Listener, vom Browser im Compositor gerechnet.
+- **Das Siegel setzt sich auf**, wenn es ins Bild scrollt. Der eine markante
+  Moment der Seite, inhaltlich passend: Ein Siegel wird aufgebracht.
+
+**Zwei Fehler, die dabei aufgetreten und behoben sind**
+
+- Der Masken-Reveal lief zuerst auf dem beobachteten Element selbst. Das ist ein
+  geschlossener Kreis: IntersectionObserver rechnet `clip-path` in die
+  Sichtbarkeit ein, das Element meldete dauerhaft 0 % und konnte sich nie selbst
+  freigeben — die Überschriften blieben unsichtbar. Die Maske liegt jetzt auf
+  einem Kind. Der Kommentar in `globals.css` hält das fest.
+- Mit `items-end` stand der Anruf-Button auf einem 1440×780-Laptop 52 px unter
+  dem Falz. Gemessen, nicht geschätzt; jetzt `items-start`, Button auf allen drei
+  geprüften Formaten im ersten Bild.
+
+**Nachgeprüft:** Build sauber, 17/17 statisch, 16/16 Seiten-Viewport-Kombinationen
+ohne Überlauf, Konsolenfehler oder Heading-Sprünge. Bei erzwungenem
+`prefers-reduced-motion: reduce` sind alle 43 Reveal-Elemente ohne Scrollen
+sichtbar und die Bildbewegung steht still.
+
+---
+
 ## 6. Offene TODOs für den Betreiber
 
 1. `TODO` Öffnungszeiten festlegen → `lib/site.ts` → `openingHours`.

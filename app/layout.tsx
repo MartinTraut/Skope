@@ -65,7 +65,7 @@ export default function RootLayout({
         {/* Sicherheitsnetz für Browser ohne Unterstützung für
             @media (scripting: none) — siehe .reveal in globals.css */}
         <noscript>
-          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
+          <style>{`.reveal,.reveal-mask-inner{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
         <a
           href="#inhalt"

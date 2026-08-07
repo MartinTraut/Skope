@@ -54,6 +54,7 @@ export function Reveal({
   className,
   delay = 0,
   immediate = false,
+  mask = false,
   as: Tag = "div",
   ...rest
 }: {
@@ -62,6 +63,11 @@ export function Reveal({
   /** Staffelung in ms — bewusst klein halten (max. ~240 ms). */
   delay?: number;
   immediate?: boolean;
+  /**
+   * Masken-Reveal statt Einblenden: Der Inhalt wird von oben nach unten
+   * freigegeben. Nur für große Überschriften — auf Fließtext wirkt es unruhig.
+   */
+  mask?: boolean;
   as?: RevealTag;
   /** Durchgereicht, damit ein Reveal auch eine Scroll-Region oder Figur sein kann. */
 } & Omit<React.HTMLAttributes<HTMLElement>, "className" | "children">) {
@@ -81,7 +87,7 @@ export function Reveal({
   return (
     <Element
       ref={ref}
-      className={cn("reveal", className)}
+      className={cn(mask ? "reveal-mask" : "reveal", className)}
       data-shown={immediate ? "true" : undefined}
       style={
         delay && !immediate
@@ -90,7 +96,11 @@ export function Reveal({
       }
       {...rest}
     >
-      {children}
+      {mask ? (
+        <span className="reveal-mask-inner">{children}</span>
+      ) : (
+        children
+      )}
     </Element>
   );
 }

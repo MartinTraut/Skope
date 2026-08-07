@@ -23,7 +23,7 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-ink pt-32 pb-0 md:pt-40">
+    <section className="relative overflow-hidden bg-ink pt-28 pb-0 md:pt-36">
       {/* Tiefenstaffelung: Petrol-Licht hinter der Bildseite, dezentes Raster */}
       <div
         aria-hidden="true"
@@ -35,40 +35,52 @@ export function Hero() {
       />
 
       <Container className="relative">
-        <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-14 xl:gap-20">
-          {/* Textseite */}
-          <div className="lg:col-span-7 xl:col-span-6">
-            <Reveal immediate>
-              <p className="eyebrow text-current/65">
-                Fachwerkstatt · Neuenstadt am Kocher
-              </p>
-            </Reveal>
+        {/*
+          Typografisch geführter Hero: Die Headline läuft über die volle
+          Containerbreite, erst darunter teilt sich die Fläche in Text und Bild.
+          Im vorherigen Aufbau saß sie in einer Sieben-Spalten-Säule — bei den
+          jetzigen Graden lief sie dort unter das Bild und wurde beschnitten.
+          Die volle Breite ist nicht nur die Lösung dafür, sie ist auch die
+          stärkere Komposition: Der Satz ist das Argument der Seite.
+        */}
+        <Reveal immediate>
+          <p className="eyebrow text-current/65">
+            Fachwerkstatt · Neuenstadt am Kocher
+          </p>
+        </Reveal>
 
-            {/* Der erklärende Absatz stand vorher mit im <h1>: Der Textinhalt
-                der Überschrift war damit rund 230 Zeichen lang, und das
-                Hauptkeyword lag im Fließtext statt in der Überschrift. Jetzt
-                trägt die H1 den Claim und die Ortszeile, der Absatz steht
-                darunter als eigenes Element. */}
+        <Reveal immediate>
+          <h1 className="mt-6">
+            <span className="block text-[length:var(--text-hero)]">
+              Wegwerfen ist
+              <br />
+              keine&nbsp;<span className="text-flame">Diagnose</span>.
+            </span>
+            {/* Die Ortszeile bleibt im h1: Sie trägt das Hauptkeyword, das der
+                Claim selbst nicht hat. Als eigenes Element unterhalb wäre sie
+                für die Suche wertlos und für Screenreader eine Dopplung. */}
+            <span className="mt-5 block max-w-[46ch] text-[length:var(--text-title)] text-paper/75">
+              E-Scooter Werkstatt in Neuenstadt am Kocher
+            </span>
+          </h1>
+        </Reveal>
+
+        {/* `items-start`, nicht `items-end`: Am unteren Bildrand ausgerichtet
+            sah die Textspalte zwar aufgeräumter aus, schob den Anruf-Button auf
+            einem 1440×780-Laptop aber 52 px unter den Falz. Gemessen, nicht
+            geschätzt — die Hauptaktion muss im ersten Bild stehen. */}
+        <div className="mt-10 grid items-start gap-10 lg:mt-12 lg:grid-cols-12 lg:gap-14">
+          {/* Textseite */}
+          <div className="lg:col-span-5">
             <Reveal immediate>
-              <h1 className="mt-7">
-                <span className="block text-[length:var(--text-hero)]">
-                  Wegwerfen ist
-                  <br />
-                  keine&nbsp;
-                  <span className="text-flame">Diagnose</span>.
-                </span>
-                <span className="mt-6 block text-[length:var(--text-title)] text-paper/80">
-                  E-Scooter Werkstatt in Neuenstadt am Kocher
-                </span>
-              </h1>
-              <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-paper/70">
+              <p className="max-w-md text-[length:var(--text-lead)] leading-relaxed text-paper/70">
                 Reparatur, Wartung und geprüfte Gebrauchtgeräte&nbsp;— aus einer
                 Werkstatt für Heilbronn, Neckarsulm und die ganze Region.
               </p>
             </Reveal>
 
             <Reveal immediate>
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <PhoneButton />
                 {/* Direkt auf das Formular der Reparaturseite: „anfragen" darf
                     nicht am Kopf einer Informationsseite enden. */}
@@ -81,26 +93,23 @@ export function Hero() {
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </ButtonLink>
               </div>
-              <p className="mt-5 text-sm text-paper/60">
+              <p className="mt-5 text-sm text-paper/70">
                 Kostenvoranschlag vor jeder Arbeit. Bremsen und Reifen meist am
                 selben Tag.
               </p>
             </Reveal>
           </div>
 
-          {/* Bildseite — bewusst nach unten versetzt, bricht die Mittelachse */}
-          <Reveal
-            immediate
-            className="relative lg:col-span-5 lg:translate-y-8 xl:col-span-6"
-          >
-            <div className="relative aspect-[5/4] w-full overflow-hidden rounded-lg border border-white/10 bg-ink-800 lg:aspect-[4/5]">
+          {/* Bildseite */}
+          <Reveal immediate className="relative lg:col-span-7">
+            <div className="relative aspect-[5/4] w-full overflow-hidden rounded-lg border border-white/10 bg-ink-800 lg:aspect-[16/10]">
               <Image
                 src="/img/scooter-studio.jpg"
                 alt="Generalüberholter E-Scooter mit Skope-Qualitätssiegel in Studioaufnahme"
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 46vw"
-                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                className="parallax object-cover"
               />
               <div
                 aria-hidden="true"
