@@ -71,7 +71,7 @@ function baseNodes(): Node[] {
         "Refurbished E-Scooter",
         "E-Scooter Versicherung",
       ],
-      image: `${site.url}/img/skope-siegel.jpg`,
+      image: `${site.url}/img/werkstatt-service.jpg`,
       // TODO Betreiber: Google-Business-Profil in site.sameAs eintragen —
       // ohne dieses Signal fehlt im Local Pack ein Hauptranking-Faktor.
       ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),

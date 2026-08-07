@@ -63,7 +63,7 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-white/12 bg-ink">
                 <Image
                   src="/img/werkstatt-service.jpg"
-                  alt={`Arbeit an einem E-Scooter in der Fachwerkstatt ${fullAddress}`}
+                  alt="Arbeit an einem eingespannten E-Scooter über einer Werkbank mit sortiertem Werkzeug"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"

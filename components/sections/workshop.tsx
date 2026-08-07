@@ -19,7 +19,7 @@ export function Workshop() {
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-paper-200">
               <Image
                 src="/img/werkstatt-service.jpg"
-                alt="Sicherheitsprüfung an einem E-Scooter in der Werkstatt in Neuenstadt am Kocher"
+                alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"

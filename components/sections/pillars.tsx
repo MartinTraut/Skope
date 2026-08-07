@@ -16,7 +16,7 @@ const pillars = [
   },
   {
     href: "/reparatur",
-    image: "/img/werkstatt-service.jpg",
+    image: "/img/akku-diagnose.jpg",
     kicker: "Reparieren",
     title: "Erst messen, dann tauschen",
     text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert — und legen vor jeder Arbeit einen transparenten Kostenvoranschlag vor.",

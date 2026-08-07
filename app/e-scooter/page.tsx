@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { BadgeCheck, PhoneCall } from "lucide-react";
 
+import { Seal } from "@/components/brand/seal";
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
@@ -22,8 +23,9 @@ export const metadata: Metadata = pageMeta({
   description:
     "Generalüberholte E-Scooter mit Skope-Qualitätssiegel aus der eigenen Werkstatt in Neuenstadt am Kocher. Vollständig geprüft, ein Jahr Gewährleistung.",
   path: "/e-scooter",
-  image: "/img/skope-siegel.jpg",
-  imageAlt: "Das Skope-Qualitätssiegel für geprüfte generalüberholte E-Scooter",
+  image: "/img/scooter-studio.jpg",
+  imageAlt:
+    "Generalüberholter E-Scooter in Studioaufnahme, geprüft mit Skope-Qualitätssiegel",
 });
 
 export default function ScooterPage() {
@@ -47,15 +49,7 @@ export default function ScooterPage() {
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5">
-              <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-lg border border-white/12 bg-ink">
-                <Image
-                  src="/img/skope-siegel.jpg"
-                  alt="Das Skope-Qualitätssiegel für geprüfte generalüberholte E-Scooter"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 38vw"
-                  className="object-cover"
-                />
-              </div>
+              <Seal className="w-full max-w-md" />
             </Reveal>
 
             <div className="lg:col-span-7">

@@ -24,8 +24,9 @@ export const metadata: Metadata = pageMeta({
   description:
     "E-Scooter Reparatur für Heilbronn und Neckarsulm: Akku, Elektronik, Bremsen, Motor. Alle Marken, Kostenvoranschlag vorab, Bremsen oft am selben Tag.",
   path: "/reparatur",
-  image: "/img/werkstatt-service.jpg",
-  imageAlt: "Sicherheitsprüfung an einem E-Scooter in der Werkstatt",
+  image: "/img/akku-diagnose.jpg",
+  imageAlt:
+    "Kapazitätsmessung an einem geöffneten E-Scooter-Akku auf der Werkbank",
 });
 
 const steps = [

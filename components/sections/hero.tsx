@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
+import { Seal } from "@/components/brand/seal";
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
@@ -91,13 +92,7 @@ export function Hero() {
             {/* Siegel: ab lg als überlappendes Objekt an der Bildkante, darunter
                 im Fluss — sonst verdeckt es auf dem Telefon ein Drittel des Bilds. */}
             <div className="mt-4 flex items-center gap-4 rounded-sm border border-white/12 bg-ink-800/95 py-3.5 pr-6 pl-3.5 backdrop-blur-sm lg:absolute lg:-bottom-7 lg:-left-8 lg:mt-0">
-              <Image
-                src="/img/skope-siegel.jpg"
-                alt=""
-                width={56}
-                height={56}
-                className="size-14 rounded-full object-cover"
-              />
+              <Seal decorative compact className="size-14 shrink-0" />
               <div>
                 <p className="font-display text-sm font-bold tracking-tight">
                   {proof.sealName}

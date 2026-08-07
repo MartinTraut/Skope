@@ -141,6 +141,27 @@ Markenidentität bleibt erhalten und wird präzisiert — kein Identitätsbruch.
   `prefers-reduced-motion` respektiert. Keine Motion-Library — kleinere Bundles,
   stabiler auf Mobile.
 
+### Marke: Bildmarke und Siegel
+
+Der Name SKOPE trägt das griechische *skopein* — betrachten, prüfen. Das ist
+zugleich das Verkaufsargument der Werkstatt („erst messen, dann tauschen"),
+also trägt die Bildmarke genau das: ein Roller in einem offenen **Messring**
+mit Skalenstrichen, mit einem Flame-Punkt in der Vorderradnabe als geprüftem
+Punkt. Der vorherige Glyph war ein austauschbarer Icon-Set-Roller ohne Aussage.
+
+- `components/brand/logo.tsx` — `ScooterGlyph` (reine `<g>`-Gruppe im
+  48er-Raum, in fremde Zeichnungen einsetzbar), `ScooterMark` (Glyph im
+  Messring), `Logo` (Wortmarke mit Haarlinien-Trenner).
+- `components/brand/seal.tsx` — das Qualitätssiegel als **Vektor**, nicht als
+  Bilddatei. Es erscheint einmal 56 px neben dem Hero und einmal spaltenfüllend
+  auf `/e-scooter`; eine einzelne JPEG-Datei bedient beides nicht. `compact`
+  lässt unter ~90 px die Umschrift weg, die dort zu grauem Schleier zerfiele.
+  Nebeneffekt: rund 1 KB statt 164 KB, und der Umlaut in „GEPRÜFT" stimmt
+  garantiert — bei generierten Grafiken ist er ein Glücksspiel.
+- Farben kommen über Utility-Klassen, nicht über Präsentationsattribute:
+  `var(--color-flame)` wird in einem `fill="…"`-Attribut nicht aufgelöst.
+- `app/icon.png` / `app/apple-icon.png` sind aus derselben Glyphe gerastert.
+
 ---
 
 ## 4. Annahmen
@@ -233,8 +254,12 @@ UX & Accessibility, Technical SEO/GEO/Schema, Code & Performance). Umgesetzt:
    optional `INQUIRY_TO`. Ohne Keys zeigt das Formular ehrlich Telefon und
    E-Mail statt einer Erfolgsmeldung für eine Mail, die nie ankommt.
 4. `TODO` Echte Werkstatt- und Inhaberfotos ersetzen die generierten Bilder in
-   `public/img/`. `werkstatt-service.jpg` liegt zudem nur bei 800×1000 und ist
-   für die Ausspielung mit `100vw` auf Mobile zu knapp.
+   `public/img/`. Alle sechs Motive sind KI-generiert (Higgsfield, Nano Banana,
+   2K) und zeigen **nicht** die Werkstatt Im Kampfrad 3. Die Alt-Texte sind
+   deshalb rein beschreibend formuliert und behaupten keinen Ort — beim Tausch
+   gegen echte Fotos dürfen sie konkreter werden. Nichts baut auf einer Seite,
+   deren Verkaufsargument Ehrlichkeit ist, mehr Vertrauen auf als ein echtes
+   Bild des Inhabers an der Werkbank.
 5. `TODO` Google-Business-Profil verknüpfen → `site.sameAs`
 6. `TODO` ERGO-Tarife jährlich aktualisieren → `lib/data/insurance.ts`
 7. `TODO` Domain final festlegen (`.com` vs `.de`) → `lib/site.ts` → `url`.
