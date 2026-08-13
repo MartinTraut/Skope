@@ -12,7 +12,7 @@ export function pageMeta({
   image = "/img/scooter-studio.jpg",
   imageAlt = "Generalüberholter E-Scooter mit Skope-Qualitätssiegel",
 }: {
-  /** Ohne Marken-Suffix — das Template hängt „| SKOPE" an. Ziel: ≤ 52 Zeichen. */
+  /** Ohne Marken-Suffix – das Template hängt „| SKOPE" an. Ziel: ≤ 52 Zeichen. */
   title: string;
   /** Ziel: 150–158 Zeichen, wichtigstes Signal zuerst. */
   description: string;

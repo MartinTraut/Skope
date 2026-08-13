@@ -75,9 +75,8 @@ export default function ImprintPage() {
           . Unsere E-Mail-Adresse finden Sie oben im Impressum.
         </p>
         <p>
-          Wir sind nicht bereit oder verpflichtet, an
-          Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
-          teilzunehmen.
+          Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren
+          vor einer Verbraucherschlichtungsstelle teilzunehmen.
         </p>
 
         <h2>Haftung für Inhalte</h2>
@@ -86,8 +85,8 @@ export default function ImprintPage() {
           auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach
           §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht
           verpflichtet, übermittelte oder gespeicherte fremde Informationen zu
-          überwachen oder nach Umständen zu forschen, die auf eine
-          rechtswidrige Tätigkeit hinweisen.
+          überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
+          Tätigkeit hinweisen.
         </p>
 
         <h2>Haftung für Links</h2>
@@ -109,7 +108,11 @@ export default function ImprintPage() {
         </p>
       </LegalPage>
 
-      <JsonLd nodes={pageGraph([breadcrumb([{ name: "Impressum", path: "/impressum" }])])} />
+      <JsonLd
+        nodes={pageGraph([
+          breadcrumb([{ name: "Impressum", path: "/impressum" }]),
+        ])}
+      />
     </>
   );
 }

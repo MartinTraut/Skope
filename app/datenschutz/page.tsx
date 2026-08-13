@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = pageMeta({
   title: "Datenschutzerklärung",
   description:
-    "Welche personenbezogenen Daten beim Besuch dieser Website und bei einer Anfrage über das Formular verarbeitet werden — und welche Rechte Sie dabei haben.",
+    "Welche personenbezogenen Daten beim Besuch dieser Website und bei einer Anfrage über das Formular verarbeitet werden, und welche Rechte Sie dabei haben.",
   path: "/datenschutz",
 });
 
@@ -56,22 +56,22 @@ export default function PrivacyPage() {
           Unsere Website verwendet Cookies. Das sind kleine Textdateien, die Ihr
           Webbrowser auf Ihrem Endgerät speichert. Cookies helfen uns dabei,
           unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen.
-          Einige Cookies sind &bdquo;Session-Cookies&ldquo; und werden nach Ende Ihres
-          Besuchs automatisch gelöscht, andere bleiben gespeichert, bis Sie sie
-          löschen.
+          Einige Cookies sind &bdquo;Session-Cookies&ldquo; und werden nach Ende
+          Ihres Besuchs automatisch gelöscht, andere bleiben gespeichert, bis
+          Sie sie löschen.
         </p>
 
         <h3>Kontakt- und Anfrageformular</h3>
         <p>
           Wenn Sie uns über das Formular auf dieser Website eine Anfrage
-          schicken, verarbeiten wir die von Ihnen angegebenen Daten — Name,
-          E-Mail-Adresse, optional Telefonnummer und Angaben zum Fahrzeug sowie
-          Ihre Nachricht — ausschließlich zur Bearbeitung dieser Anfrage.
-          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO bei
-          vertragsanbahnenden Anfragen, im Übrigen Art. 6 Abs. 1 lit. f DSGVO
-          (berechtigtes Interesse an der Beantwortung von Anfragen). Die Daten
-          verbleiben bei uns, bis der Zweck entfällt oder Sie uns zur Löschung
-          auffordern; gesetzliche Aufbewahrungsfristen bleiben unberührt.
+          schicken, verarbeiten wir die von Ihnen angegebenen Daten
+          ausschließlich zur Bearbeitung dieser Anfrage: Name, E-Mail-Adresse,
+          optional Telefonnummer und Angaben zum Fahrzeug sowie Ihre Nachricht.
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO bei vertragsanbahnenden
+          Anfragen, im Übrigen Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an der Beantwortung von Anfragen). Die Daten verbleiben bei
+          uns, bis der Zweck entfällt oder Sie uns zur Löschung auffordern;
+          gesetzliche Aufbewahrungsfristen bleiben unberührt.
         </p>
 
         <h3>Vermittlung von Versicherungen</h3>

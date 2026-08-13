@@ -13,6 +13,7 @@ import { planExclusions, plans } from "@/lib/data/plans";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
 import { PLAN_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
+import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Wartungsvertrag ab 17,99 € im Monat",
@@ -31,17 +32,15 @@ export default function PlansPage() {
         eyebrow="Service-Verträge"
         title={
           <>
-            Wartung, bevor
-            <br />
-            etwas kaputtgeht.
+            Wartung, <Mark>bevor</Mark> etwas kaputtgeht.
           </>
         }
-        lead="Wer täglich pendelt, merkt einen Defekt meistens genau dann, wenn er losfahren will. Ein Wartungsvertrag verschiebt diesen Moment nach vorn — in die Werkstatt, zu einem geplanten Termin."
+        lead="Wer täglich pendelt, merkt einen Defekt meistens genau dann, wenn er losfahren will. Ein Wartungsvertrag verschiebt diesen Moment nach vorn, in die Werkstatt, zu einem geplanten Termin."
       />
 
-      {/* Die Entscheidungshilfe zuerst — und zwar die ehrliche: Premium
+      {/* Die Entscheidungshilfe zuerst – und zwar die ehrliche: Premium
           amortisiert sich rechnerisch nicht, es kauft Reaktionszeit. */}
-      <Section tone="paper" className="py-14 md:py-16">
+      <Section tone="silver-200" className="py-14 md:py-16">
         <Container>
           {/* Einspaltig: eine 5/7-Teilung mit zwei Zeilen links erzeugt nur Leerraum */}
           <Reveal className="max-w-3xl">
@@ -50,11 +49,11 @@ export default function PlansPage() {
               Wofür Sie bei Premium bezahlen
             </h2>
             <div className="mt-5">
-              <p className="text-[length:var(--text-lead)] leading-relaxed text-ink/70">
+              <p className="text-[length:var(--text-lead)] leading-relaxed text-current/70">
                 Nicht für die Stückzahl, sondern für die Ausfallzeit. Der
                 jährliche Sicherheits-Checkup kostet einzeln{" "}
                 <strong className="font-semibold text-ink">59,99 €</strong> und
-                ist in beiden Verträgen enthalten — Premium für{" "}
+                ist in beiden Verträgen enthalten. Premium für{" "}
                 <strong className="font-semibold text-ink">
                   17,99 € im Monat
                 </strong>{" "}
@@ -72,14 +71,14 @@ export default function PlansPage() {
 
       <Plans />
 
-      {/* Ausschlüsse — Ehrlichkeit ist hier das Verkaufsargument */}
-      <Section tone="ink-800" className="py-16 md:py-20">
+      {/* Ausschlüsse – Ehrlichkeit ist hier das Verkaufsargument */}
+      <Section tone="silver" className="py-16 md:py-20">
         <Container>
-          <Reveal className="grid gap-8 border-t border-white/12 pt-10 lg:grid-cols-12 lg:gap-16">
-            <h2 className="eyebrow-plain text-paper/70 lg:col-span-4">
+          <Reveal className="grid gap-8 border-t border-current/12 pt-10 lg:grid-cols-12 lg:gap-16">
+            <h2 className="eyebrow-plain text-current/70 lg:col-span-4">
               Was nicht abgedeckt ist
             </h2>
-            <p className="leading-relaxed text-paper/65 lg:col-span-8">
+            <p className="leading-relaxed text-current/65 lg:col-span-8">
               {planExclusions}
             </p>
           </Reveal>
@@ -90,30 +89,32 @@ export default function PlansPage() {
         <Container>
           <SectionHead
             eyebrow="Häufige Fragen zum Wartungsvertrag"
-            title="Was im Vertrag steht — und was nicht."
+            title={
+              <>
+                Was im Vertrag steht und was <Mark>nicht</Mark>.
+              </>
+            }
             lead="Umfang, Ersatzteile, Ort der Wartung und die Frage, welcher der beiden Verträge zu welchem Fahrprofil passt."
           />
           <Faq items={faqPlans} className="mt-14" />
         </Container>
       </Section>
 
-      {/* Anfrage — bisher zwang diese Seite als einzige Vertragsseite zum
+      {/* Anfrage – bisher zwang diese Seite als einzige Vertragsseite zum
           Seitenwechsel, obwohl die Vorauswahl längst existiert. */}
-      <Section id="anfrage" tone="ink-800">
+      <Section id="anfrage" tone="silver">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
                 <p className="eyebrow text-current/65">Vertrag anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Welcher passt,
-                  <br />
-                  klären wir vorher.
+                  Welcher passt, klären wir vorher.
                 </h2>
-                <p className="mt-6 leading-relaxed text-paper/65">
+                <p className="mt-6 leading-relaxed text-current/65">
                   Schreiben Sie uns, wie oft Sie fahren und welches Gerät Sie
-                  nutzen. Wir sagen Ihnen, welcher der beiden Verträge dazu passt
-                  — auch wenn das der günstigere ist.
+                  nutzen. Wir sagen Ihnen, welcher der beiden Verträge dazu
+                  passt, auch wenn das der günstigere ist.
                 </p>
               </Reveal>
             </div>
@@ -131,7 +132,7 @@ export default function PlansPage() {
           {
             href: "/reparatur",
             label: "Reparatur",
-            text: "Was außerhalb der Wartung anfällt — mit Kostenvoranschlag vor jeder Arbeit.",
+            text: "Was außerhalb der Wartung anfällt, mit Kostenvoranschlag vor jeder Arbeit.",
           },
           {
             href: "/e-scooter",
@@ -143,7 +144,11 @@ export default function PlansPage() {
 
       <CtaBand
         eyebrow="Vertrag abschließen"
-        title="Kurz durchsprechen, dann steht es."
+        title={
+          <>
+            <Mark>Kurz</Mark> durchsprechen, dann steht es.
+          </>
+        }
         text="Welcher Vertrag passt, hängt vor allem davon ab, wie oft Sie fahren. Ein Anruf reicht, um das in zwei Minuten zu klären."
       />
 
@@ -157,7 +162,7 @@ export default function PlansPage() {
             path: "/wartungsvertrag",
             serviceType: "E-Scooter Wartung",
             // Preise und Leistungen kommen aus derselben Quelle wie die
-            // sichtbaren Karten — sonst laufen Anzeige und Schema auseinander,
+            // sichtbaren Karten – sonst laufen Anzeige und Schema auseinander,
             // sobald jemand einen Preis ändert.
             offers: plans.map((plan) => ({
               name: `${plan.name}-Wartungsvertrag`,

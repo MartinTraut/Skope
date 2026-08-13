@@ -1,7 +1,7 @@
 /**
  * Erlaubte Anliegen der Formulare.
  * Serverseitig als Whitelist geprüft: `topic` landet im Mail-Betreff, und
- * FormData ist frei manipulierbar — ohne Prüfung wäre das ein Einfallstor
+ * FormData ist frei manipulierbar – ohne Prüfung wäre das ein Einfallstor
  * für Header-Injection.
  */
 
@@ -30,7 +30,7 @@ export function isKnownTopic(value: string): value is ContactTopic {
   return (CONTACT_TOPICS as readonly string[]).includes(value);
 }
 
-/** Vorauswahl je Leistungsseite — Teilmengen der Whitelist. */
+/** Vorauswahl je Leistungsseite – Teilmengen der Whitelist. */
 export const REPAIR_TOPICS = [
   "Reparatur",
   "Sicherheits-Checkup (59,99 €)",

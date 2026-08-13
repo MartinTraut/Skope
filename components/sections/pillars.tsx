@@ -4,6 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { Container, Section, SectionHead } from "@/components/ui/section";
+import { cn } from "@/lib/utils";
+import { Mark } from "@/components/ui/mark";
 
 const pillars = [
   {
@@ -11,7 +13,7 @@ const pillars = [
     image: "/img/scooter-stadt.jpg",
     kicker: "Kaufen",
     title: "Geprüfte E-Scooter statt Glücksspiel",
-    text: "Jedes Gerät läuft vor dem Verkauf durch unsere Werkstatt: Bremsen, Akkukapazität, Elektronik, Verschleißteile. Erst dann bekommt es das Skope-Qualitätssiegel — plus ein Jahr Gewährleistung.",
+    text: "Jedes Gerät läuft vor dem Verkauf durch unsere Werkstatt: Bremsen, Akkukapazität, Elektronik, Verschleißteile. Erst dann bekommt es das Skope-Qualitätssiegel, plus ein Jahr Gewährleistung.",
     meta: "1 Jahr Gewährleistung",
   },
   {
@@ -19,7 +21,7 @@ const pillars = [
     image: "/img/akku-diagnose.jpg",
     kicker: "Reparieren",
     title: "Erst messen, dann tauschen",
-    text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert — und legen vor jeder Arbeit einen Kostenvoranschlag vor.",
+    text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert, und legen vor jeder Arbeit einen Kostenvoranschlag vor.",
     meta: "Checkup 59,99 €",
   },
   {
@@ -27,18 +29,23 @@ const pillars = [
     image: "/img/scooter-allee.jpg",
     kicker: "Absichern",
     title: "Versicherungskennzeichen über ERGO",
-    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit — Kennzeichen in 5 bis 10 Werktagen per Post nach Hause.",
+    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. Kennzeichen in 5 bis 10 Werktagen per Post nach Hause.",
     meta: "ERGO Partner",
   },
 ];
 
 export function Pillars() {
   return (
-    <Section id="leistungen" tone="ink-800">
+    <Section id="leistungen" tone="ink">
       <Container>
         <SectionHead
           eyebrow="Drei Wege, ein Ansprechpartner"
-          title="Kaufen, reparieren, absichern — alles bei derselben Werkstatt."
+          title={
+            <>
+              Kaufen, reparieren, absichern: alles bei <Mark>derselben</Mark>{" "}
+              Werkstatt.
+            </>
+          }
           lead="Der Unterschied zum Kleinanzeigen-Kauf: Wer Ihnen den Scooter verkauft, kann ihn auch Jahre später noch warten. Verkauf und Service liegen hier in einer Hand."
         />
 
@@ -47,12 +54,22 @@ export function Pillars() {
             Kachel direkt an der Oberkante der nächsten. */}
         <div className="mt-16 grid gap-y-14 lg:grid-cols-3 lg:gap-y-0">
           {pillars.map((pillar, i) => (
-            <Reveal key={pillar.href} delay={i * 90}>
-              <Link
-                href={pillar.href}
-                className="group flex h-full flex-col border-t border-white/10 pt-8 transition-colors duration-300 hover:border-flame lg:border-t-0 lg:border-l lg:px-10 lg:pt-0 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
-              >
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-sm bg-ink">
+            /* Trennlinien und Innenabstände liegen auf dem Rasterkind, nicht
+               auf dem Link. Vorher standen sie am Link mit `lg:first:…` –
+               und der ist immer einziges Kind seines Reveal, `:first-child`
+               traf also bei allen drei Kacheln. Die senkrechten Trennlinien
+               sind deshalb nie erschienen. */
+            <Reveal
+              key={pillar.href}
+              delay={i * 90}
+              className={cn(
+                "border-t border-current/10 pt-8 lg:border-t-0 lg:pt-0",
+                i > 0 && "lg:border-l lg:border-current/10 lg:pl-10",
+                i < pillars.length - 1 && "lg:pr-10",
+              )}
+            >
+              <Link href={pillar.href} className="group flex h-full flex-col">
+                <div className="lift relative aspect-[16/10] w-full overflow-hidden rounded-lg bg-ink-700">
                   <Image
                     src={pillar.image}
                     alt=""
@@ -60,7 +77,7 @@ export function Pillars() {
                     sizes="(max-width: 1024px) 100vw, 30vw"
                     className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
                   />
-                  <span className="absolute top-4 left-4 rounded-xs bg-ink/80 px-3 py-1.5 font-display text-[0.6875rem] font-semibold tracking-[0.14em] uppercase backdrop-blur-sm">
+                  <span className="absolute top-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 font-display text-[0.6875rem] font-semibold tracking-[0.14em] uppercase backdrop-blur-sm text-silver on-dark">
                     {pillar.kicker}
                   </span>
                 </div>
@@ -69,15 +86,15 @@ export function Pillars() {
                   <span className="max-w-[16ch]">{pillar.title}</span>
                   <ArrowUpRight
                     aria-hidden="true"
-                    className="mt-1.5 size-6 shrink-0 text-paper/30 transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-flame"
+                    className="mt-1.5 size-6 shrink-0 text-current/30 transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
                   />
                 </h3>
 
-                <p className="mt-4 leading-relaxed text-paper/60">
+                <p className="mt-4 leading-relaxed text-current/60">
                   {pillar.text}
                 </p>
 
-                <p className="mt-6 border-t border-white/8 pt-4 font-display text-sm font-semibold tracking-tight text-paper/85">
+                <p className="mt-6 border-t border-current/8 pt-4 font-display text-sm font-semibold tracking-tight text-current/85">
                   {pillar.meta}
                 </p>
               </Link>

@@ -17,11 +17,11 @@ const parts = [
  * Bewusst weder 5/7-Split noch Kartenraster: Beides steht auf der Seite
  * mehrfach. Hier trägt eine breite Headline über die volle Containerbreite,
  * darunter überlappt die Materialtafel die rechte Bildkante. Die Tiefenstaffelung
- * ist die einzige Stelle dieser Art auf der Startseite — genau deshalb wirkt sie.
+ * ist die einzige Stelle dieser Art auf der Startseite – genau deshalb wirkt sie.
  */
 export function RecyclingTeaser() {
   return (
-    <Section id="recycling" tone="paper">
+    <Section id="recycling" tone="ink">
       <Container>
         <Reveal className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <div>
@@ -31,18 +31,14 @@ export function RecyclingTeaser() {
             </h2>
           </div>
           <div className="lg:max-w-sm lg:shrink-0">
-            <p className="leading-relaxed text-ink/70">
-              Haben Sie ein Altgerät, das nur noch Platz wegnimmt? Wir übernehmen
-              die Verwertung und das fachgerechte Recycling kostenlos — auch
-              dann, wenn Sie den Scooter nicht bei uns gekauft haben.
+            <p className="leading-relaxed text-current/70">
+              Haben Sie ein Altgerät, das nur noch Platz wegnimmt? Wir
+              übernehmen die Verwertung und das fachgerechte Recycling
+              kostenlos, auch dann, wenn Sie den Scooter nicht bei uns gekauft
+              haben.
             </p>
             <div className="mt-7">
-              <ButtonLink
-                href="/recycling#anfrage"
-                variant="outline"
-                size="lg"
-                className="text-ink"
-              >
+              <ButtonLink href="/recycling#anfrage" variant="outline" size="lg">
                 So läuft die Abgabe
               </ButtonLink>
             </div>
@@ -51,7 +47,7 @@ export function RecyclingTeaser() {
 
         <div className="mt-14 grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-0">
           <Reveal className="lg:col-span-7 lg:col-start-1 lg:row-start-1">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-paper-300">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-ink-700">
               <Image
                 src="/img/scooter-strasse.jpg"
                 alt="Ausgediente E-Scooter an einer Betonwand, bereit zur Verwertung"
@@ -62,13 +58,13 @@ export function RecyclingTeaser() {
             </div>
           </Reveal>
 
-          {/* Ab lg über die Bildkante gezogen — auf schmalen Screens steht die
+          {/* Ab lg über die Bildkante gezogen – auf schmalen Screens steht die
               Tafel schlicht darunter, ohne das Bild zu verdecken. */}
           <Reveal
             delay={90}
             className="lg:z-10 lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:-ml-10"
           >
-            <div className="rounded-lg border border-ink/12 bg-paper p-8 shadow-[0_18px_50px_-24px_rgba(8,13,18,0.45)] md:p-10">
+            <div className="lift-lg rounded-lg border border-current/12 bg-ink-700 p-8 md:p-10">
               <Recycle
                 aria-hidden="true"
                 className="size-8 text-current/45"
@@ -81,19 +77,19 @@ export function RecyclingTeaser() {
                 {parts.map((row) => (
                   <div
                     key={row.part}
-                    className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-ink/12 py-4"
+                    className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-silver/12 py-4"
                   >
-                    <dt className="font-display font-semibold tracking-tight text-ink">
+                    <dt className="font-display font-semibold tracking-tight text-silver">
                       {row.part}
                     </dt>
-                    <dd className="text-ink/70">{row.use}</dd>
+                    <dd className="text-current/70">{row.use}</dd>
                   </div>
                 ))}
               </dl>
-              <p className="mt-6 border-t border-ink/12 pt-5 text-sm text-ink/70">
-                Aus den verwerteten Geräten kommen die geprüften Ersatzteile, mit
-                denen wir andere Scooter wieder fahrbereit machen. Deshalb ist
-                die Rücknahme kostenlos: Das Altgerät hat für uns einen
+              <p className="mt-6 border-t border-silver/12 pt-5 text-sm text-current/70">
+                Aus den verwerteten Geräten kommen die geprüften Ersatzteile,
+                mit denen wir andere Scooter wieder fahrbereit machen. Deshalb
+                ist die Rücknahme kostenlos: Das Altgerät hat für uns einen
                 Materialwert.
               </p>
             </div>

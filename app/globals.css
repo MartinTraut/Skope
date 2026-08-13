@@ -1,66 +1,143 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   SKOPE — Designsystem
-   Werkstatt-Premium: tiefes Anthrazit, Petrol als Markenfarbe,
-   genau ein Akzent (Orange), und zwar nach einer harten Regel:
-   Orange markiert Aktionen (Buttons, Links im Hover) und Geldbeträge.
-   Niemals Stückzahlen, Fristen, Entfernungen oder Werktage — sonst steht in
-   jeder Kennzahlenreihe willkürlich einer der Werte hervor und der Akzent
-   verliert genau die Bedeutung, für die es ihn gibt.
+   SKOPE — Designsystem „Stahl & Neon"
+
+   Die Marke kommt aus dem Logo, nicht aus einer Farbtabelle: gebürstetes
+   Metall auf sattem Schwarz, ein einziger Neonton im K. Genau diese drei
+   Werte tragen die Seite — Schwarz als Raum, Silber als Schrift und Fläche,
+   Neon als der eine Punkt, an dem etwas passiert.
+
+   Schwarz ist wieder die Grundfläche. Das war schon einmal so und ist
+   gescheitert: Zehn Sektionen lagen zwischen #08090b und #181c21, also fünf
+   fast identische Grautöne über 10.653 px, und die Startseite las sich als
+   eine einzige endlose Fläche. Der Fehler war nicht das Schwarz, sondern der
+   fehlende Sprung.
+
+   Deshalb gibt es hier zwei Räume, nicht fünf Nuancen: satt Schwarz und
+   helles Silber. Dazwischen liegt nichts. Ein Wechsel ist als Wechsel
+   lesbar, nicht als Tonwertfehler — und die Silberflächen tragen die dichten
+   Lesestrecken, weil dunkle Schrift auf hell über lange Absätze ruhiger
+   liest.
+
+   Akzentregel:
+   Neon markiert drei Dinge und sonst nichts — die Hauptaktion, die harte Zahl
+   und das Schlüsselwort einer Überschrift. Also: der eine Knopf pro Ansicht;
+   Preise, Entfernungen, Schritt- und Menünummern, das erledigte Häkchen; und
+   in jeder H1/H2 genau EIN Wort, das die Aussage trägt.
+
+   Die dritte Regel ist die neue und die gefährlichste, deshalb steht sie hier
+   mit ihrer Bedingung: ein Wort, nicht zwei, und nur in der Überschrift, nie
+   im Fließtext. Sobald eine Überschrift zwei farbige Wörter hat, markiert die
+   Farbe nichts mehr, sondern dekoriert — und die Überschrift wird schlechter
+   lesbar, nicht besser. Wo kein einzelnes Wort die Aussage trägt, bleibt die
+   Überschrift einfarbig. Das ist kein Versäumnis, sondern die Anwendung der
+   Regel.
+
+   Nicht markiert werden weiterhin: Fließtext, Ränder, Flächen, Hover-Zustände.
+
+   Die Grenze bleibt eng, weil Neon auf Schwarz mit 14,8:1 die stärkste
+   verfügbare Auszeichnung ist. Läge es zusätzlich auf Rändern und Flächen,
+   wäre es ein zweites Silber — und die Seite hätte keinen Ort mehr, an dem
+   sie „hier entlang" sagen kann.
+
+   EIN Grünton, #9ef605, und sonst keiner:
+   Auf Schwarz ist Neon Schrift. Auf Silber ist Neon Fläche — Knopf,
+   Kennzeichen, markiertes Wort — und die Schrift darauf ist Schwarz. Als
+   Schrift kann Neon auf Silber nicht stehen, das sind gemessene 1,18:1.
+
+   Hier stand deshalb lange ein zweiter, tieferer Grünschnitt für helle
+   Flächen. Der ist ersatzlos weg. Er war rechnerisch korrekt und trotzdem
+   falsch: Zwei Grüntöne auf einer Seite lesen sich nicht als eine Marke,
+   sondern als Unfall — und genau so ist er auch aufgefallen. Der Textakzent
+   auf Silber ist jetzt schlicht Schwarz. Wer dort wieder Grün will, braucht
+   eine Fläche, keinen zweiten Ton.
    ========================================================================= */
 
 @theme {
-  /* --- Farbe: Grundflächen ------------------------------------------- */
-  --color-ink: #080d12;
-  /* Muss vom Grundton unterscheidbar sein: Bei #0d141b lagen beide Flächen
-     rund zwei Prozent Luminanz auseinander, der Wechsel war nicht zu sehen und
-     die Startseite las sich als eine einzige durchlaufende dunkle Fläche. */
-  --color-ink-800: #101a23;
-  --color-ink-700: #131d26;
-  --color-ink-600: #1c2933;
-  --color-ink-500: #2b3a46;
+  /* --- Schwarz: die Grundfläche ---------------------------------------
+     Kein Grauschleier. #08090b hat einen Hauch Blau, damit das Silber
+     darauf kühl bleibt statt ins Beige zu kippen. Die drei Stufen darüber
+     sind Karten und Kanten, keine eigenen Sektionsflächen. */
+  --color-ink: #08090b;
+  --color-ink-800: #101216;
+  --color-ink-700: #191d23;
+  --color-ink-600: #272c34;
 
-  --color-paper: #f6f4f0;
-  --color-paper-200: #ece8e1;
-  --color-paper-300: #ddd7cd;
+  /* --- Silber: die helle Gegenfläche ----------------------------------
+     Gebürstetes Metall, kein Papier und kein Weiß: leicht blaustichig, damit
+     es neben dem Neon als Metall liest und nicht als Druckerpapier. */
+  --color-silver: #eef1f4;
+  --color-silver-200: #dee2e8;
+  --color-silver-300: #c3c9d2;
 
-  /* --- Farbe: Marke (aus dem bestehenden SKOPE-Siegel) ----------------- */
-  --color-petrol: #1e5d82;
-  --color-petrol-400: #3d88b1;
-  --color-petrol-300: #6fadd0;
-  --color-petrol-900: #0e2c3e;
+  /* --- Schriftränge ----------------------------------------------------
+     `steel` ist die zweite Textebene auf Schwarz (7,8:1), `muted` dieselbe
+     Rolle auf Silber (5,9:1). Beide gemessen, nicht geschätzt: Die frühere
+     Fassung löste die zweite Ebene über Deckkraft, und auf der tieferen der
+     beiden Flächen fiel sie regelmäßig unter AA. */
+  --color-steel: #9aa3af;
+  --color-muted: #565c66;
+  --color-line: #c9cfd8;
 
-  /* --- Farbe: Akzent (sparsam!) --------------------------------------- */
-  --color-flame: #f0842b;
-  --color-flame-600: #d96a17;
-  --color-flame-300: #f7b478;
+  /* --- Neon ------------------------------------------------------------
+     Aus dem Logo gemessen, nicht geraten: Der Grünanteil der Bildmarke liegt
+     im Median bei #8ee506 und im hellen Kern bei #9ef604.
 
-  --color-signal: #4ac07a;
+     Es gibt genau einen Grünton. Ein zweiter, dunklerer Schnitt für helle
+     Flächen stand hier schon einmal und ist wieder weg: Zwei Grüntöne lesen
+     sich nicht als eine Marke, sondern als Versehen — und genau so ist es
+     auch aufgefallen.
 
-  /* --- Typografie ----------------------------------------------------- */
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+     `neon-300` ist keine zweite Farbe, sondern derselbe Ton aufgehellt für
+     den Hover-Zustand des einen Knopfes. */
+  --color-neon: #9ef605;
+  --color-neon-300: #c6ff5e;
 
-  /* Fluid Type — clamp(MIN, vw + rem, MAX), nie reines vw */
-  /* Vier klar getrennte Stufen. Die Kennzahl liegt bewusst UNTER der
-     Sektions-Headline — sie stützt die Aussage, sie konkurriert nicht mit ihr. */
-  --text-hero: clamp(2.85rem, 5.4vw + 0.4rem, 6.75rem);
+  --color-signal: #2e9e5b;
+
+  /* --- Typografie -----------------------------------------------------
+     Instrument Sans trägt alle Displaygrade, Inter den Lesetext. Zwei
+     Familien, klar getrennte Aufgaben — die Auszeichnungen (Eyebrows,
+     Preise, Messwerte) laufen in derselben Inter mit Sperrung und
+     Tabellenziffern, statt eine dritte Familie einzuführen. */
+  --font-display: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid Type — clamp(MIN, vw + rem, MAX), nie reines vw.
+     Die Kennzahl liegt bewusst UNTER der Sektions-Headline — sie stützt die
+     Aussage, sie konkurriert nicht mit ihr. */
+  /* Die beiden kleinsten Grade eine Stufe höher. Gemessen liefen 47 Textstellen
+     bei 12 bis 14 px – Preishinweise, Rechtszeilen, Bildunterschriften. Das ist
+     kein Etikett mehr, sondern Fließtext, und 12 px liest auf einem Telefon
+     niemand freiwillig. Hier gesetzt statt in 47 Klassen geändert. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.6;
+
+  /* Der Deckel ist an die Spaltenbreite gerechnet, nicht frei gewählt: Die
+     Hero-Überschrift steht in 8 von 12 Spalten, das sind bei ausgereiztem
+     Satzspiegel 808 px. Im Browser gemessen läuft „E-Scooter reparieren" mit
+     0,50 em je Zeichen, bei 5 rem also 760 px — 48 px Luft. Wer die
+     Aufteilung im Hero ändert, muss diesen Deckel nachmessen. */
+  --text-hero: clamp(2.6rem, 4.4vw + 0.6rem, 5rem);
   --text-page-title: clamp(2.6rem, 4.6vw + 0.5rem, 5.5rem);
   --text-display: clamp(2.15rem, 3.4vw + 0.7rem, 4.25rem);
   --text-title: clamp(1.5rem, 1.4vw + 0.85rem, 2.1rem);
-  /* Stufe unter --text-title: Karten-, Schritt- und Zitat-Überschriften.
-     Ersetzt vier freihändige clamp()-Werte und drei text-xl/2xl-Ketten, die
-     sich über die Seiten verteilt hatten. */
   --text-subtitle: clamp(1.3rem, 1.1vw + 0.95rem, 1.75rem);
   --text-lead: clamp(1.05rem, 0.5vw + 0.9rem, 1.375rem);
   --text-stat: clamp(2rem, 2.4vw + 0.85rem, 3.5rem);
 
   /* --- Form ----------------------------------------------------------- */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  /* Großzügige Radien. Die vorherige Staffel (2/4/8/14 px) war an einer
+     technisch-kantigen Anmutung ausgerichtet; hier trägt jede Fläche eine
+     sichtbare Rundung, und die Stufen bleiben trotzdem unterscheidbar. */
+  --radius-xs: 8px;
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
 
   /* --- Motion --------------------------------------------------------- */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
@@ -69,12 +146,57 @@
 @layer base {
   :root {
     color-scheme: dark;
-    --hairline: color-mix(in oklab, white 12%, transparent);
-    --hairline-dark: color-mix(in oklab, black 14%, transparent);
+    /* Die Haarlinie leitet sich aus der Textfarbe der Fläche ab, statt fest
+       auf Weiß oder Schwarz zu stehen. Dadurch stimmt sie in beiden Räumen,
+       ohne dass jede Sektion ihre Ränder selbst überschreiben muss. */
+    --hairline: color-mix(in oklab, currentColor 16%, transparent);
   }
 
   * {
     border-color: var(--hairline);
+  }
+
+  /**
+   * Der Akzent ist EIN Token, das die Fläche umschaltet – nicht zwei Farben,
+   * die an jeder Stelle von Hand gewählt werden.
+   *
+   * Auf Schwarz trägt das reine Neon (14,8:1). Auf Silber liegt genau dieses
+   * Neon bei 1,2:1 und ist als Schrift unbrauchbar; dort braucht es den
+   * tiefen Schnitt. Der ist gegen die *tiefere* der beiden hellen Flächen
+   * gerechnet, nicht gegen die hellere: #3f6b02 erreicht auf `silver` 5,59:1
+   * und auf `silver-200` noch 4,87:1, liegt also auf beiden über AA.
+   *
+   * Schwarz ist der Normalfall, deshalb steht der helle Akzent in `:root`.
+   * `.on-light` setzen die Silbersektionen, `.on-dark` jede dunkle Karte, die
+   * auf einer Silberfläche liegt. Damit stimmt der Akzent überall, ohne dass
+   * eine Komponente wissen muss, worauf sie gerade liegt.
+   */
+  :root {
+    --accent: #9ef605;
+    /* Schrift, sobald der Akzent selbst die Fläche ist. */
+    --on-accent: #08090b;
+  }
+
+  /**
+   * Auf Silber ist der Textakzent Schwarz, nicht Grün.
+   *
+   * Das ist der Punkt, an dem das System vorher einen zweiten, dunkleren
+   * Grünton eingeführt hat. Der ist weg. Neon bleibt exakt #9ef605 und tritt
+   * auf hellen Flächen ausschließlich als Fläche auf – Knopf, Kennzeichen,
+   * markiertes Wort. Als Schrift kann es dort nicht stehen: 1,18:1.
+   *
+   * Damit hat Grün auf der ganzen Seite genau eine Bedeutung und genau einen
+   * Wert. Was auf Schwarz grüne Schrift ist, ist auf Silber eine grüne
+   * Fläche – dieselbe Farbe, andere Rolle.
+   */
+  .on-light {
+    --accent: #08090b;
+    --on-accent: #eef1f4;
+  }
+
+  .on-dark {
+    --accent: #9ef605;
+    --on-accent: #08090b;
   }
 
   html {
@@ -87,7 +209,7 @@
 
   body {
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-silver);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.65;
@@ -96,25 +218,51 @@
     overflow-x: clip;
   }
 
+  /* Instrument Sans läuft von Haus aus eng und hat kurze Endstriche. Das
+     Tracking der weiter laufenden Vorgängerin würde die Buchstaben hier
+     ineinanderschieben, deshalb liegen beide Werte flacher. */
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-display);
     font-weight: 700;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.014em;
     text-wrap: balance;
   }
 
+  /* Deutsche Komposita sprengen die Zeile, nicht der Satzbau. „Werkstatt-
+     besuch" misst bei 2,15 rem genau 276 px – exakt die Spaltenbreite auf
+     einem 320-px-Gerät; „Versicherungskennzeichen" lief dort gemessen 1 px
+     darüber. Das Wort steht dann Kante an Kante mit dem Rand und liest sich
+     als abgeschnitten.
+
+     Die Trennung greift erst ab zwölf Zeichen und lässt links wie rechts
+     mindestens sechs stehen. Kurze Wörter bleiben damit unangetastet – die
+     Silbentrennung ist die Ausnahme für lange Komposita, nicht die Regel
+     für jede Zeile.
+
+     Sechs, nicht vier: Der Browser nimmt die letzte Trennstelle, die noch
+     passt, und das war bei vier „Werkstattbe-such". Sechs Zeichen hinter
+     dem Strich verbieten diese Stelle und lassen nur die Fuge des
+     Kompositums übrig – „Werkstatt-besuch". Safari kennt
+     `hyphenate-limit-chars` nicht und braucht die eigenen Grenzwerte. */
+  h1,
+  h2,
+  h3 {
+    hyphens: auto;
+    hyphenate-limit-chars: 12 6 6;
+    -webkit-hyphenate-limit-before: 6;
+    -webkit-hyphenate-limit-after: 6;
+  }
+
   /* Der Durchschuss muss mit der Schriftgröße wandern: 0.95 trägt eine
-     7,5-rem-Hero-Zeile und wäre auf einer zweizeiligen 1,3-rem-H3 zu eng —
-     dort berühren sich Ober- und Unterlängen fast.
-     Das engere Tracking gilt nur den großen Graden: Auf kleinen Größen fräse
-     es die Wortbilder zusammen. */
+     6,75-rem-Hero-Zeile und wäre auf einer zweizeiligen 1,3-rem-H3 zu eng.
+     Das engere Tracking gilt nur den großen Graden. */
   h1,
   h2 {
-    line-height: 0.95;
-    letter-spacing: -0.038em;
+    line-height: 1.03;
+    letter-spacing: -0.022em;
   }
 
   h3,
@@ -126,31 +274,91 @@
     text-wrap: pretty;
   }
 
-  ::selection {
-    background: var(--color-flame);
-    color: #0b1015;
+  /**
+   * Lesebreite. Gemessen liefen auf Desktop 56 Absätze über 78 Zeichen pro
+   * Zeile, der längste bei 156 – der Hinweis zur Rahmennummer zog sich über
+   * die volle Containerbreite. Jenseits von etwa 75 Zeichen findet das Auge
+   * beim Zeilenwechsel den Anfang der nächsten Zeile nicht mehr zuverlässig;
+   * man verliert die Zeile und liest sie doppelt.
+   *
+   * In `ch` statt in Pixeln: Die Grenze wandert mit der Schriftgröße mit, ein
+   * 13-px-Hinweis bekommt dieselbe Zeichenzahl wie ein 17-px-Absatz. Genau
+   * daran sind die Preishinweise gescheitert – sie trugen `max-w-3xl`, also
+   * 768 px, was bei 17 px vernünftig ist und bei 13 px 112 Zeichen ergibt.
+   *
+   * 58ch, nicht 68: `1ch` ist die Breite der Null und liegt in Inter rund 20 %
+   * über der mittleren Kleinbuchstabenbreite. 58ch ergeben damit gemessene
+   * ~70 Zeichen und landen mitten im Zielband von 60 bis 75.
+   *
+   * Nur eine Obergrenze – schmalere Spalten bleiben unberührt, und auf Mobile
+   * greift die Regel gar nicht erst. Im Basis-Layer, damit eine bewusst
+   * gesetzte engere Utility-Klasse weiterhin gewinnt.
+   *
+   * Auszeichnungszeilen sind ausgenommen: Sie sind Etiketten, keine
+   * Lesestrecke, und ihre Sperrung von 0,2 em macht aus 58ch eine harte
+   * Kante. Die Hero-Zeile brach dadurch grundlos zweizeilig um.
+   */
+  :where(main, footer)
+    :where(p, li, dd, blockquote):not(.eyebrow, .eyebrow-plain) {
+    max-inline-size: 58ch;
   }
 
+  /* Zentrierte Blöcke müssen die begrenzte Zeile mittig halten, sonst sitzt
+     der Text links im zentrierten Kasten. */
+  :where(main, footer) :where(.text-center) :where(p, li, dd) {
+    margin-inline: auto;
+  }
+
+  ::selection {
+    background: var(--color-neon);
+    color: #08090b;
+  }
+
+  /* Der Fokusring läuft in currentColor, damit er auf Silber wie auf der
+     dunklen Fläche sichtbar bleibt. Ein fest neongrüner Ring läge auf der
+     hellen Fläche bei 1,2:1 und wäre praktisch unsichtbar. */
   :focus-visible {
-    outline: 2px solid var(--color-flame);
+    outline: 2px solid currentColor;
     outline-offset: 3px;
     border-radius: 2px;
-  }
-
-  /* Helle Sektionen kippen die Hairline-Farbe mit */
-  .on-paper {
-    --hairline: var(--hairline-dark);
-    color-scheme: light;
   }
 }
 
 @layer components {
-  /* Eyebrow — kleine Auszeichnungszeile über Headlines */
+  /**
+   * Der feste Seitenkopf liegt über dem Seiteninhalt, hängt im DOM aber an
+   * <body>. Er erbt seine Schriftfarbe deshalb von der Grundfläche – nicht von
+   * dem, was optisch unter ihm liegt. Solange nicht gescrollt ist, hat er
+   * keine eigene Fläche, und genau daran ist er schon einmal gescheitert:
+   * Die Navigation stand in Ink auf einem Kopfbereich in Ink.
+   *
+   * Seit Schwarz die Grundfläche ist, stimmt der Normalfall von allein – jede
+   * Seite beginnt dunkel, der Kopf erbt Silber. Die Regel bleibt trotzdem
+   * stehen, nur umgedreht: Beginnt eine Seite auf einer Silberfläche, meldet
+   * sie das über `page-top-light`, und der Kopf dreht Schrift und Akzent um.
+   * Ohne Routenliste, ohne JavaScript. Sobald `data-scrolled="true"` gesetzt
+   * ist, liegt seine eigene dunkle Fläche darunter und die normale Vererbung
+   * stimmt wieder.
+   */
+  body:has(main > :first-child.page-top-light) header[data-scrolled="false"] {
+    color: var(--color-ink);
+    --accent: #08090b;
+    --on-accent: #eef1f4;
+  }
+
+  /**
+   * Eyebrow — kleine Auszeichnungszeile über Headlines.
+   *
+   * Jetzt im Monoschnitt: Das ist der technische Marker der Seite und
+   * unterscheidet die Auszeichnung klar vom Lesetext. Der goldene Strich
+   * davor ist weg — er war eine von sechs Stellen, an denen Gold gleichzeitig
+   * um Aufmerksamkeit bat.
+   */
   .eyebrow {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
@@ -159,40 +367,24 @@
 
   .eyebrow::before {
     content: "";
-    width: 1.75rem;
+    width: 1.5rem;
     height: 1px;
     background: currentColor;
-    opacity: 0.55;
+    opacity: 0.45;
+    border-radius: 1px;
   }
 
   /**
    * Dieselbe Metrik ohne den Strich. Zuständigkeit:
-   * `.eyebrow` steht über der H1/H2 einer Sektion, `.eyebrow-plain` über einer
-   * Unterliste innerhalb einer Sektion. Vorher war diese zweite Variante
-   * siebenmal als Klassenkette abgeschrieben, ohne Regel, wann welche gilt.
+   * `.eyebrow` steht über der H1/H2 einer Sektion, `.eyebrow-plain` über
+   * einer Unterliste innerhalb einer Sektion.
    */
   .eyebrow-plain {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-  }
-
-  /* Gerasterter Hintergrund — technische Anmutung, sehr dezent */
-  .grid-veil {
-    background-image:
-      linear-gradient(
-        to right,
-        color-mix(in oklab, white 4%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        to bottom,
-        color-mix(in oklab, white 4%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: 88px 88px;
   }
 
   /* Bei geöffnetem Mobilmenü setzt der Header `inert` auf die Aktionsleiste.
@@ -200,6 +392,198 @@
   #mobile-cta[inert] {
     opacity: 0;
     transform: translateY(100%);
+  }
+
+  /* Akzent-Utilities. Bewusst hier und nicht als @theme-Farbe: Der Wert soll
+     aus der Fläche kommen, und @theme-Token sind statisch. */
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .border-accent {
+    border-color: var(--accent);
+  }
+
+  /**
+   * Das eine farbige Wort einer Überschrift — siehe components/ui/mark.tsx.
+   *
+   * Auf Schwarz ist es grüne Schrift (14,8:1). Auf Silber wird dieselbe Farbe
+   * zur Fläche und die Schrift darauf schwarz (17,6:1). Das ist kein
+   * Kompromiss, sondern die einzige Möglichkeit, mit EINEM Grünton auf beiden
+   * Räumen zu arbeiten: Neon auf Silber liegt als Schrift bei 1,18:1.
+   *
+   * `box-decoration-break: clone` ist Pflicht, sobald die Markierung umbricht
+   * — ohne sie bekommt nur die erste Zeile ihren Innenabstand und die zweite
+   * klebt am Rand der Fläche.
+   */
+  .mark-accent {
+    font-style: normal;
+    color: var(--color-neon);
+  }
+
+  .on-light .mark-accent {
+    color: var(--color-ink);
+    background-color: var(--color-neon);
+    padding-inline: 0.14em;
+    margin-inline: -0.04em;
+    border-radius: 0.08em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* Fläche und Schrift kommen zusammen: Wer den Akzent als Hintergrund setzt,
+     bekommt die dazu passende Schriftfarbe mit. Vorher musste jede Stelle das
+     selbst wissen – das Kennzeichen „Für Pendler" stand deshalb in Ink auf
+     Gold und lag bei 3,55:1. */
+  .bg-accent {
+    background-color: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /* SVG-Pendants zum Akzent. Die Bildmarke trug vorher `stroke-flame` und
+     `fill-flame` – beide Klassen gab es im Stylesheet nicht. Trittbrett und
+     Messpunkt liefen dadurch in Browser-Schwarz und waren auf jeder dunklen
+     Fläche unsichtbar. */
+  .fill-accent {
+    fill: var(--accent);
+  }
+
+  .stroke-accent {
+    stroke: var(--accent);
+  }
+
+  .bg-accent\/10 {
+    background-color: color-mix(in oklab, var(--accent) 10%, transparent);
+  }
+
+  .hover\:text-accent:hover,
+  .group:hover .group-hover\:text-accent {
+    color: var(--accent);
+  }
+
+  .group-open\:text-accent,
+  .group[open] .group-open\:text-accent {
+    color: var(--accent);
+  }
+
+  .group[open] .group-open\:border-accent {
+    border-color: var(--accent);
+  }
+
+  /**
+   * Weiche Tiefe.
+   *
+   * Zwei Schatten übereinander: ein enger für die Kante und ein weiter, sehr
+   * weicher für den Raum darunter. Ein einzelner mittlerer Schatten sieht
+   * nach Standard-Box aus; erst die Kombination liest sich als Objekt, das
+   * über der Fläche liegt.
+   *
+   * Dazu ein Innenring in currentColor. Der ist auf Schwarz die eigentliche
+   * Arbeit: Ein schwarzer Schatten auf schwarzem Grund ist per Definition
+   * unsichtbar, und ohne den Ring stand die dunkle Karte auf der dunklen
+   * Sektion völlig kantenlos da. Auf Silber liegt es umgekehrt – dort trägt
+   * der Schatten und der Ring ist nur eine feine Fase.
+   */
+  .lift {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, currentColor 9%, transparent),
+      0 1px 2px rgb(0 0 0 / 0.28),
+      0 18px 40px -20px rgb(0 0 0 / 0.5);
+  }
+
+  .lift-lg {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, currentColor 11%, transparent),
+      0 2px 4px rgb(0 0 0 / 0.3),
+      0 34px 70px -28px rgb(0 0 0 / 0.6);
+  }
+
+  /**
+   * Neonschein. Kein Dekorschimmer, sondern der Ersatz für den Schlagschatten:
+   * Auf Schwarz kann ein Objekt nicht durch Abdunkeln hervortreten, nur durch
+   * Licht. Nur dort einsetzen, wo etwas tatsächlich die Hauptaktion ist.
+   */
+  .glow-neon {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-neon) 55%, transparent),
+      0 10px 40px -12px color-mix(in oklab, var(--color-neon) 42%, transparent);
+  }
+
+  /**
+   * Liquid Glass — die Fläche des Seitenkopfs.
+   *
+   * Nicht einfach „durchsichtig plus Weichzeichner". Was echtes Glas von
+   * abgeblendetem Hintergrund unterscheidet, sind drei Dinge, und alle drei
+   * stehen hier:
+   *
+   * 1. `saturate(180%)`. Ein reiner Blur wäscht die Farben aus, die durch die
+   *    Scheibe kommen. Ohne die Sättigungsanhebung wirkt die Leiste wie
+   *    Milchglas – der Neonpunkt darunter käme als schmutziges Grau an.
+   * 2. Eine Lichtkante oben, eine Schattenkante unten. Glas hat eine Dicke;
+   *    sichtbar wird sie nur an der Kante, an der das Licht bricht. Der
+   *    `inset`-Schatten oben ist diese Brechung.
+   * 3. Ein Lichtsaum oben statt gleichmäßiger Deckkraft. Eine Scheibe
+   *    reflektiert dort, wo sie den Rahmen berührt.
+   *
+   * Die Dichte steht in `background-color`, der Saum in `background-image` —
+   * bewusst getrennt und nicht als `background`-Kurzform. Die Kurzform setzt
+   * `background-color` auf transparent zurück, und dann meldet jedes
+   * Prüfwerkzeug (auch das eigene) die Navigation gegen die Sektion darunter
+   * statt gegen die Scheibe. Eine Fläche, deren Deckkraft nur in einem
+   * Verlauf steckt, ist maschinell nicht prüfbar.
+   *
+   * `-webkit-backdrop-filter` steht mit, weil Safari es bis heute braucht.
+   * Kennt ein Browser `backdrop-filter` gar nicht, greift der @supports-Block
+   * nicht und es bleibt die dichtere Fläche darunter – der richtige Rückfall,
+   * denn eine halbdurchsichtige Leiste ohne Weichzeichner wäre unlesbar.
+   */
+  /**
+   * Glasscheibe des Seitenkopfs.
+   *
+   * Ohne `backdrop-filter` bleibt es eine fast deckende Fläche – das ist die
+   * ehrliche Notlösung, nicht der Entwurf.
+   */
+  .liquid-glass {
+    background-color: color-mix(in oklab, var(--color-ink) 92%, transparent);
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-silver) 9%, transparent),
+      color-mix(in oklab, var(--color-silver) 2%, transparent) 42%,
+      transparent
+    );
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--color-silver) 18%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, var(--color-neon) 12%, transparent),
+      0 1px 0 color-mix(in oklab, #000 45%, transparent),
+      0 16px 40px -20px rgb(0 0 0 / 0.75);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .liquid-glass {
+      /**
+       * Grau war die Farbe, nicht das Material.
+       *
+       * Vorher lagen 76 % deckendes Schwarz auf der Scheibe. Das hält den
+       * Kontrast, tötet aber genau das, was Glas ausmacht: Was dahinter
+       * liegt, kommt als gleichmäßiger Schleier an – eine graue Folie.
+       *
+       * Jetzt macht `brightness(0.4)` die Arbeit. Der Unterschied ist nicht
+       * kosmetisch: Deckfarbe ersetzt den Hintergrund, Helligkeit dämpft ihn.
+       * Form, Sättigung und Farbstich der Fläche darunter bleiben also
+       * erhalten – der Neonschein des Kopfbereichs und die Kontur des Rollers
+       * wandern sichtbar durch die Scheibe, statt unter ihr zu verschwinden.
+       * Erst dadurch liest sie sich als Glas.
+       *
+       * Der Kontrast steht dabei nicht schlechter, sondern gleich: Über der
+       * hellsten Sektion (#eef1f4) ergibt 0,4 × 238 plus 32 % Tinte rgb(67) –
+       * heute sind es rgb(63). Silberner Text hält damit 6,9:1, die auf 65 %
+       * gedämpften Navigationslinks 4,7:1, Neon 5,9:1. Der 65-%-Wert ist der
+       * enge: Wer die Deckkraft der Tinte senkt, muss ihn nachrechnen.
+       */
+      background-color: color-mix(in oklab, var(--color-ink) 32%, transparent);
+      -webkit-backdrop-filter: blur(30px) saturate(220%) brightness(0.4);
+      backdrop-filter: blur(30px) saturate(220%) brightness(0.4);
+    }
   }
 
   /* Ziffernblock für Preise/Kennzahlen */
@@ -210,6 +594,116 @@
 }
 
 @layer utilities {
+  /**
+   * Laufband — siehe components/ui/marquee.tsx.
+   *
+   * Der Weg ist genau eine Kopienbreite plus eine Lücke. Nur dann steht am
+   * Ende des Durchlaufs wieder exakt das Ausgangsbild und die Schleife hat
+   * keine Naht. Ein runder Wert wie `-100vw` wäre bei jeder Fensterbreite
+   * anders falsch.
+   */
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(calc(-100% - var(--gap)), 0, 0);
+    }
+  }
+
+  /**
+   * Schleier über dem bewegten Grund des Kopfbereichs.
+   *
+   * Er löst den Zielkonflikt, der sonst den ganzen Entwurf deckelt: Der
+   * Shader soll leuchten, der Text darauf muss lesbar bleiben. Beides über
+   * die Helligkeit des Shaders zu regeln heißt, die Fläche auf das Maß
+   * herunterzuziehen, das die dunkelste Textstelle verträgt – dann leuchtet
+   * nirgends etwas.
+   *
+   * Stattdessen ist der Schleier ortsabhängig: dicht über der Textspalte,
+   * offen über der Bildspalte. Der Text steht damit praktisch auf #08090b
+   * und hält seine 16:1, während rechts daneben die volle Sättigung steht.
+   *
+   * Die 66 % sind die Spaltengrenze: Die Textspalte belegt 8 von 12 Spalten,
+   * das sind 808 von 1232 px. Wer die Aufteilung im Hero ändert, verschiebt
+   * auch diesen Haltepunkt.
+   */
+  .hero-scrim {
+    background-image:
+      linear-gradient(
+        to bottom,
+        transparent 62%,
+        color-mix(in oklab, var(--color-ink) 78%, transparent) 88%,
+        var(--color-ink)
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--color-ink) 88%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 82%, transparent) 45%,
+        color-mix(in oklab, var(--color-ink) 62%, transparent) 62%,
+        color-mix(in oklab, var(--color-ink) 15%, transparent) 78%,
+        transparent 95%
+      );
+  }
+
+  /* Unterhalb von `lg` steht der Text über die volle Breite – dort kann der
+     Schleier nicht seitlich ausblenden, sonst liegt die Überschrift im
+     hellsten Bereich. Er deckt dann flächig und lässt nur den unteren Rand
+     durchleuchten, wo nichts steht. */
+  @media (width < 64rem) {
+    .hero-scrim {
+      background-image: linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ink) 55%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 66%, transparent) 55%,
+        var(--color-ink) 100%
+      );
+    }
+  }
+
+  /**
+   * Zeilenweiser Aufstieg der Hero-Überschrift.
+   *
+   * Bewusst reines CSS ohne Beobachter: Die Überschrift steht über der
+   * Falz, sie ist beim ersten Bild schon da. Ein IntersectionObserver
+   * könnte hier nur später auslösen, nie früher.
+   *
+   * Animiert wird ausschließlich `transform`. Ein Einblenden über `opacity`
+   * verbietet sich, weil die Überschrift ein Kandidat für das LCP ist – ein
+   * transparent gemaltes Element zählt nicht als gezeichnet und verschiebt
+   * die Messung um die volle Dauer der Animation.
+   *
+   * Die Zeile ist die Maske, das Kind bewegt sich darin. `padding-bottom`
+   * mit ausgleichendem negativem `margin` schafft der Unterlänge Platz –
+   * ohne das kappt `overflow: hidden` das p in „reparieren".
+   */
+  .rise-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  .rise-line > span {
+    display: block;
+    animation: rise-line 0.78s var(--ease-out-expo) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+
+  @keyframes rise-line {
+    from {
+      transform: translate3d(0, 105%, 0);
+    }
+  }
+
+  /* Ohne JavaScript läuft die Animation trotzdem – sie hängt an nichts.
+     Bei reduzierter Bewegung steht die Zeile sofort. */
+  @media (prefers-reduced-motion: reduce) {
+    .rise-line > span {
+      animation: none;
+    }
+  }
+
   /* Scroll-Reveal — gesteuert von components/motion/reveal.tsx */
   .reveal {
     opacity: 0;
@@ -244,20 +738,12 @@
   /**
    * Masken-Reveal für große Überschriften.
    *
-   * Der Text wird über `clip-path` von oben nach unten freigegeben, statt nur
-   * eingeblendet zu werden — bei 7,5-rem-Graden ist das der Unterschied
-   * zwischen „Element erscheint" und „Zeile wird gesetzt". Der Endzustand
-   * arbeitet mit negativen Insets, damit Unterlängen und der Fokusring nicht
-   * beschnitten werden.
-   */
-  /**
    * Die Maske liegt auf einem Kind, nicht auf dem beobachteten Element.
-   *
-   * Das ist kein Stilfrage, sondern Pflicht: IntersectionObserver rechnet
-   * `clip-path` in die Sichtbarkeit ein. Läge die Maske auf dem Element selbst,
-   * meldete es dauerhaft 0 % Sichtbarkeit, bekäme nie `data-shown` und könnte
-   * sich damit nie selbst freigeben — ein geschlossener Kreis, in dem die
-   * Überschrift für immer unsichtbar bleibt.
+   * Das ist keine Stilfrage, sondern Pflicht: IntersectionObserver rechnet
+   * `clip-path` in die Sichtbarkeit ein. Läge die Maske auf dem Element
+   * selbst, meldete es dauerhaft 0 % Sichtbarkeit, bekäme nie `data-shown`
+   * und könnte sich damit nie selbst freigeben — ein geschlossener Kreis,
+   * in dem die Überschrift für immer unsichtbar bleibt.
    */
   .reveal-mask > .reveal-mask-inner {
     display: block;
@@ -285,11 +771,11 @@
   /**
    * Scrollgebundene Bildbewegung — ohne JavaScript, ohne Scroll-Listener.
    *
-   * `view()` bindet die Bewegung an die Sichtbarkeit des Elements, der Browser
-   * rechnet sie im Compositor. Die 10 % Übergröße verhindern, dass beim
-   * Verschieben Kanten frei werden. Kennt ein Browser `animation-timeline`
-   * nicht, greift der @supports-Block gar nicht erst: Dann steht das Bild
-   * still, was der korrekte Ausgangszustand ist.
+   * `view()` bindet die Bewegung an die Sichtbarkeit des Elements, der
+   * Browser rechnet sie im Compositor. Die 10 % Übergröße verhindern, dass
+   * beim Verschieben Kanten frei werden. Kennt ein Browser
+   * `animation-timeline` nicht, greift der @supports-Block gar nicht erst:
+   * Dann steht das Bild still, was der korrekte Ausgangszustand ist.
    */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -308,11 +794,10 @@
         }
       }
 
-      /* Das Siegel setzt sich beim Hereinscrollen einmal auf — der eine
-         markante Moment der Seite, und inhaltlich der richtige: Ein Siegel
-         wird aufgebracht, es liegt nicht einfach da.
-         Bewusst kein Strichzeichnen: Das bräuchte `pathLength` auf jedem
-         Element und sähe bei der feinen Umschrift nach Zappeln aus. */
+      /* Das Siegel setzt sich beim Hereinscrollen einmal auf — inhaltlich
+         der richtige Moment: Ein Siegel wird aufgebracht, es liegt nicht
+         einfach da. Bewusst kein Strichzeichnen: Das bräuchte `pathLength`
+         auf jedem Element und sähe bei der feinen Umschrift nach Zappeln aus. */
       .seal-stamp {
         animation: seal-set 1s var(--ease-out-expo) both;
         animation-timeline: view();

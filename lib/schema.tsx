@@ -4,14 +4,20 @@
  * Wichtig: Basis- und Seitenknoten müssen im selben <script>-Block stehen.
  * Google führt zwar alle JSON-LD-Blöcke einer Seite zusammen, aber
  * validator.schema.org, Bing und generische RDF-Parser behandeln jedes
- * Script-Tag als eigenes Dokument — dort würden `provider`, `brand` und
+ * Script-Tag als eigenes Dokument – dort würden `provider`, `brand` und
  * `isPartOf` sonst auf leere Knoten zeigen. Deshalb rendert jede Seite
  * `pageGraph([...])`, nicht das Layout.
  */
 
 import type { FaqItem } from "@/lib/data/faq";
 import { testimonials } from "@/lib/data/testimonials";
-import { fullAddress, nearbyPlaces, proof, serviceArea, site } from "@/lib/site";
+import {
+  fullAddress,
+  nearbyPlaces,
+  proof,
+  serviceArea,
+  site,
+} from "@/lib/site";
 
 const ORG_ID = `${site.url}/#organization`;
 const SITE_ID = `${site.url}/#website`;
@@ -22,7 +28,7 @@ type Node = Record<string, unknown>;
 /**
  * Einzugsgebiet für `areaServed`.
  *
- * Der eigene Ort gehört ausdrücklich dazu — er fehlte, weil `serviceArea` nur
+ * Der eigene Ort gehört ausdrücklich dazu – er fehlte, weil `serviceArea` nur
  * die Nachbarorte mit Entfernung führt. Die Kreisebene ergänzt, was
  * Ortsnamen allein nicht abdecken: Suchanfragen mit Landkreisbezug.
  */
@@ -84,14 +90,14 @@ function baseNodes(): Node[] {
       ],
       image: `${site.url}/img/werkstatt-service.jpg`,
       // Pflichtfeld für das Marken-Panel. Quelle ist dieselbe Glyphe, aus der
-      // auch das App-Icon gerastert wird — Next liefert sie unter /icon.png aus.
+      // auch das App-Icon gerastert wird – Next liefert sie unter /icon.png aus.
       logo: {
         "@type": "ImageObject",
         url: `${site.url}/icon.png`,
         width: 512,
         height: 512,
       },
-      // TODO Betreiber: Google-Business-Profil in site.sameAs eintragen —
+      // TODO Betreiber: Google-Business-Profil in site.sameAs eintragen –
       // ohne dieses Signal fehlt im Local Pack ein Hauptranking-Faktor.
       ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
       // Bewusst kein aggregateRating: keine belegbare Gesamtbewertung vorhanden.
@@ -112,7 +118,7 @@ function baseNodes(): Node[] {
       "@type": "WebSite",
       "@id": SITE_ID,
       url: site.url,
-      name: `${site.name} — ${site.tagline}`,
+      name: `${site.name}: ${site.tagline}`,
       inLanguage: "de-DE",
       publisher: { "@id": ORG_ID },
     },
@@ -143,7 +149,7 @@ export function breadcrumb(trail: { name: string; path: string }[]): Node {
 /**
  * Ein Serviceknoten, immer mit dem Betrieb als provider verknüpft.
  * Die vollständige Definition gehört ausschließlich auf die jeweilige
- * Leistungsseite — anderswo nur `serviceRef()` benutzen, sonst beschreiben
+ * Leistungsseite – anderswo nur `serviceRef()` benutzen, sonst beschreiben
  * zwei URLs dieselbe @id unterschiedlich.
  */
 export function service({
@@ -203,7 +209,7 @@ export function service({
                 valueAddedTaxIncluded: true,
                 ...(offer.unit ? { unitText: offer.unit } : {}),
               },
-              // Festpreise zusätzlich flach als `price` — nur so erzeugt Google
+              // Festpreise zusätzlich flach als `price` – nur so erzeugt Google
               // ein Preis-Snippet. Bei „ab"-Preisen bleibt das Feld bewusst leer.
               ...(offer.from
                 ? {}
@@ -220,7 +226,7 @@ export function serviceRef(path: string): Node {
   return { "@id": `${site.url}${path}#service` };
 }
 
-/** FAQPage — nur ausgeben, wenn die Fragen sichtbar auf der Seite stehen. */
+/** FAQPage – nur ausgeben, wenn die Fragen sichtbar auf der Seite stehen. */
 export function faqPage(items: FaqItem[], path: string): Node {
   return {
     "@type": "FAQPage",
@@ -251,7 +257,7 @@ export function refurbishedService(): Node {
 }
 
 /**
- * Kundenstimmen als Review-Knoten — ohne reviewRating, weil keine
+ * Kundenstimmen als Review-Knoten – ohne reviewRating, weil keine
  * belegbaren Sterne vorliegen. Nur dort ausgeben, wo die Zitate sichtbar sind.
  */
 export function reviews(path: string): Node[] {

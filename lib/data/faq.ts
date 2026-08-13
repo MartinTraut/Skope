@@ -1,5 +1,5 @@
 /**
- * FAQ — interview-artig aufgebaut:
+ * FAQ – interview-artig aufgebaut:
  * Frage so, wie sie tatsächlich gestellt wird (Long-Tail),
  * Antwort beginnt mit der direkten Antwort, danach die Details.
  * Alle Fakten stammen aus der Altseite.
@@ -10,23 +10,23 @@ export type FaqItem = { q: string; a: string };
 export const faqRepair: FaqItem[] = [
   {
     q: "Welche E-Scooter Marken repariert ihr in eurer Werkstatt in Neuenstadt?",
-    a: "Alle gängigen Marken. Dazu gehören Xiaomi, Segway-Ninebot, Tier, Lime, Bird, Moover, SoFlow und Trekstor. Auch exotische Modelle und Importgeräte sehen wir uns an — bei über 500 reparierten Scootern ist uns kaum eine Bauform neu. Wenn ein Ersatzteil nicht lieferbar ist, sagen wir Ihnen das vorab, statt Sie warten zu lassen.",
+    a: "Alle gängigen Marken. Dazu gehören Xiaomi, Segway-Ninebot, Tier, Lime, Bird, Moover, SoFlow und Trekstor. Auch exotische Modelle und Importgeräte sehen wir uns an. Bei über 500 reparierten Scootern ist uns kaum eine Bauform neu. Wenn ein Ersatzteil nicht lieferbar ist, sagen wir Ihnen das vorab, statt Sie warten zu lassen.",
   },
   {
     q: "Was kostet eine E-Scooter Reparatur bei euch ungefähr?",
-    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag — es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
+    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag. Es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
   },
   {
     q: "Wie lange dauert es, bis ich meinen E-Scooter wieder abholen kann?",
     a: "Standard-Reparaturen an Bremsen und Reifen erledigen wir meist noch am selben Tag. Elektronik-Reparaturen brauchen in der Regel ein bis drei Werktage, weil Fehlerdiagnose und Bauteilbeschaffung Zeit kosten. Kunden mit Premium-Wartungsvertrag erhalten Express-Service und werden bevorzugt innerhalb von 24 Stunden bearbeitet.",
   },
   {
-    q: "Mein Akku hält kaum noch — muss ich gleich einen neuen kaufen?",
-    a: "Meistens nicht. Wir messen zuerst die tatsächliche Restkapazität und lesen die Ladezyklen aus, bevor über einen Austausch gesprochen wird. Häufig steckt das Problem im BMS, dem Batterie-Management-System, oder in einzelnen schwachen Zellen — beides lässt sich reparieren beziehungsweise gezielt tauschen. Ein kompletter Akkuwechsel ist die letzte Option, nicht die erste.",
+    q: "Mein Akku hält kaum noch. Muss ich gleich einen neuen kaufen?",
+    a: "Meistens nicht. Wir messen zuerst die tatsächliche Restkapazität und lesen die Ladezyklen aus, bevor über einen Austausch gesprochen wird. Häufig steckt das Problem im BMS, dem Batterie-Management-System, oder in einzelnen schwachen Zellen. Beides lässt sich reparieren beziehungsweise gezielt tauschen. Ein kompletter Akkuwechsel ist die letzte Option, nicht die erste.",
   },
   {
     q: "Lohnt sich eine Reparatur überhaupt, oder soll ich lieber einen neuen Scooter kaufen?",
-    a: "In den allermeisten Fällen lohnt sich die Reparatur. Ein Fachbetrieb behebt kaputte Reifen, defekte Bremsen oder Elektronikfehler zu einem Bruchteil des Neupreises, und der Scooter ist danach wieder sicher und voll funktionsfähig. Dazu kommt: Sie verbrauchen keine neuen Ressourcen. Sollte sich eine Reparatur im Einzelfall wirtschaftlich wirklich nicht rechnen, sagen wir Ihnen das offen — und verwerten das Altgerät kostenlos.",
+    a: "In den allermeisten Fällen lohnt sich die Reparatur. Ein Fachbetrieb behebt kaputte Reifen, defekte Bremsen oder Elektronikfehler zu einem Bruchteil des Neupreises, und der Scooter ist danach wieder sicher und voll funktionsfähig. Dazu kommt: Sie verbrauchen keine neuen Ressourcen. Sollte sich eine Reparatur im Einzelfall wirtschaftlich wirklich nicht rechnen, sagen wir Ihnen das offen und verwerten das Altgerät kostenlos.",
   },
 ];
 
@@ -36,23 +36,23 @@ export const faqPlans: FaqItem[] = [
     a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur innerhalb von 24 Stunden. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
   },
   {
-    q: "Welcher Wartungsvertrag passt zu mir — Basis oder Premium?",
+    q: "Welcher Wartungsvertrag passt zu mir, Basis oder Premium?",
     a: "Basis für Gelegenheitsfahrer, Premium für Pendler. Der Basis-Vertrag (130 € pro Jahr) bringt einmal jährlich den großen Sicherheitscheck mit kompletter Funktionsprüfung und 10 % Ersatzteil-Rabatt. Premium (17,99 € pro Monat, 215,88 € im Jahr, Mindestlaufzeit 12 Monate) ist auf Leute zugeschnitten, die den Scooter aus Heilbronn oder Neckarsulm täglich zur Arbeit nutzen: Akku-Deep-Check, 20 % Rabatt, Express-Reparatur innerhalb von 24 Stunden und Hol- und Bringservice im Umkreis von 15 km.",
   },
   {
     q: "Wo findet die Wartung statt, und holt ihr den Scooter auch ab?",
-    a: "Die Wartung läuft in unserer Fachwerkstatt Im Kampfrad 3 in Neuenstadt am Kocher. Premium-Kunden nutzen den Hol- und Bringservice im Umkreis von 15 km — das deckt Heilbronn, Neckarsulm und Bad Friedrichshall vollständig ab. Durch die zentrale Lage sind wir aus dem gesamten Umkreis bis 25 km schnell erreichbar — aus Mosbach genauso wie aus Öhringen.",
+    a: "Die Wartung läuft in unserer Fachwerkstatt Im Kampfrad 3 in Neuenstadt am Kocher. Premium-Kunden nutzen den Hol- und Bringservice im Umkreis von 15 km. Das deckt Heilbronn, Neckarsulm und Bad Friedrichshall vollständig ab. Durch die zentrale Lage sind wir aus dem gesamten Umkreis bis 25 km schnell erreichbar, aus Mosbach genauso wie aus Öhringen.",
   },
   {
     q: "Sind Ersatzteile im Wartungsvertrag enthalten?",
-    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir separat und weisen sie einzeln auf der Rechnung aus — mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
+    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir separat und weisen sie einzeln auf der Rechnung aus, mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
   },
 ];
 
 export const faqInsurance: FaqItem[] = [
   {
     q: "Ist eine Haftpflichtversicherung für meinen E-Scooter wirklich Pflicht?",
-    a: "Ja. Nach der Elektrokleinstfahrzeuge-Verordnung (eKFV) und § 1 Pflichtversicherungsgesetz ist eine Haftpflichtversicherung für jeden E-Scooter mit einer Höchstgeschwindigkeit über 6 km/h gesetzlich vorgeschrieben. Ohne gültiges Versicherungskennzeichen dürfen Sie nicht am Straßenverkehr teilnehmen — es drohen Bußgelder und volle persönliche Haftung im Schadensfall.",
+    a: "Ja. Nach der Elektrokleinstfahrzeuge-Verordnung (eKFV) und § 1 Pflichtversicherungsgesetz ist eine Haftpflichtversicherung für jeden E-Scooter mit einer Höchstgeschwindigkeit über 6 km/h gesetzlich vorgeschrieben. Ohne gültiges Versicherungskennzeichen dürfen Sie nicht am Straßenverkehr teilnehmen. Es drohen Bußgelder und volle persönliche Haftung im Schadensfall.",
   },
   {
     q: "Was kostet eine E-Scooter Versicherung über euch als ERGO-Partner?",
@@ -60,15 +60,15 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Wie lange dauert es, bis ich mein Versicherungskennzeichen bekomme?",
-    a: "Fünf bis zehn Werktage. Nach Eingang Ihres Antrags bearbeiten wir ihn umgehend und übermitteln die Daten verschlüsselt an die ERGO. Das Kennzeichen wird Ihnen anschließend per Post direkt nach Hause geschickt. Eine Abholung bei uns in Neuenstadt ist aus versicherungstechnischen Gründen leider nicht möglich — der Versand erfolgt immer direkt durch die ERGO.",
+    a: "Fünf bis zehn Werktage. Nach Eingang Ihres Antrags bearbeiten wir ihn umgehend und übermitteln die Daten verschlüsselt an die ERGO. Das Kennzeichen wird Ihnen anschließend per Post direkt nach Hause geschickt. Eine Abholung bei uns in Neuenstadt ist aus versicherungstechnischen Gründen leider nicht möglich. Der Versand erfolgt immer direkt durch die ERGO.",
   },
   {
     q: "Welche Unterlagen brauche ich für den Versicherungsantrag?",
-    a: "Drei Dinge: Ihre persönlichen Daten (Name, Adresse, Geburtsdatum), die Fahrzeugdaten (Marke und Modell, Rahmennummer beziehungsweise FIN, Baujahr) und Ihre IBAN für die Beitragszahlung. Die Rahmennummer finden Sie meist am Trittbrett oder an der Lenkstange — wenn Sie sie nicht finden, suchen wir sie bei einem Termin in der Werkstatt gemeinsam.",
+    a: "Drei Dinge: Ihre persönlichen Daten (Name, Adresse, Geburtsdatum), die Fahrzeugdaten (Marke und Modell, Rahmennummer beziehungsweise FIN, Baujahr) und Ihre IBAN für die Beitragszahlung. Die Rahmennummer finden Sie meist am Trittbrett oder an der Lenkstange. Wenn Sie sie nicht finden, suchen wir sie bei einem Termin in der Werkstatt gemeinsam.",
   },
   {
     q: "Kann ich die Versicherung auch abschließen, wenn ich nicht in der Region Heilbronn wohne?",
-    a: "Ja, die Versicherung vermitteln wir deutschlandweit. Reparatur, Wartung und Verkauf sind an unseren Standort in Neuenstadt am Kocher gebunden, der Versicherungsabschluss über die ERGO ist es nicht. Sie stellen den Antrag online, das Kennzeichen kommt per Post zu Ihnen nach Hause — egal, wo in Deutschland Sie wohnen.",
+    a: "Ja, die Versicherung vermitteln wir deutschlandweit. Reparatur, Wartung und Verkauf sind an unseren Standort in Neuenstadt am Kocher gebunden, der Versicherungsabschluss über die ERGO ist es nicht. Sie stellen den Antrag online, das Kennzeichen kommt per Post zu Ihnen nach Hause, egal wo in Deutschland Sie wohnen.",
   },
 ];
 

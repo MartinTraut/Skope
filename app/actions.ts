@@ -21,7 +21,7 @@ export type FormState = {
   errors?: Record<string, string>;
   /**
    * Die eingegebenen Werte, zurück an das Formular.
-   * React 19 setzt nach jeder Form-Action `requestFormReset()` ab — ohne diese
+   * React 19 setzt nach jeder Form-Action `requestFormReset()` ab – ohne diese
    * Rückgabe stünde der Nutzer nach einem Validierungsfehler vor leeren
    * Feldern und müsste alles neu tippen.
    */
@@ -37,7 +37,7 @@ const MAX = {
 } as const;
 
 const SUCCESS_MESSAGE =
-  "Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich — bei Reparaturen mit einem Kostenvoranschlag.";
+  "Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich, bei Reparaturen mit einem Kostenvoranschlag.";
 
 /**
  * Einfache Drosselung pro IP. Der Endpunkt ist unauthentifiziert: ohne Limit
@@ -45,7 +45,7 @@ const SUCCESS_MESSAGE =
  * Betreibers sowie das Kontingent des Mail-Providers erschöpfen.
  *
  * TODO Betreiber: Bei Deployment auf mehrere Instanzen (Vercel) reicht
- * Modul-State nicht aus — dann auf @upstash/ratelimit oder @vercel/kv wechseln.
+ * Modul-State nicht aus – dann auf @upstash/ratelimit oder @vercel/kv wechseln.
  */
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_PER_WINDOW = 3;
@@ -75,7 +75,7 @@ function rateLimited(key: string, now: number) {
  * `x-forwarded-for` ist vom Client frei setzbar: Wer den Header selbst mit
  * einer Zufalls-IP füllt, bekommt bei jedem Aufruf einen neuen Eimer und hebelt
  * das Limit aus. Vertrauenswürdig ist nur der Eintrag, den der eigene Proxy
- * anhängt — das ist der LETZTE, nicht der erste. Auf Vercel steht die geprüfte
+ * anhängt – das ist der LETZTE, nicht der erste. Auf Vercel steht die geprüfte
  * Adresse zusätzlich in `x-vercel-forwarded-for`; die hat Vorrang.
  */
 async function clientKey() {
@@ -112,7 +112,7 @@ export async function submitInquiry(
     email: str(data, "email"),
     phone: str(data, "phone"),
     scooter: str(data, "scooter"),
-    // Die Nachricht ist Body, kein Header — Umbrüche bleiben erhalten.
+    // Die Nachricht ist Body, kein Header – Umbrüche bleiben erhalten.
     message:
       typeof data.get("message") === "string"
         ? String(data.get("message")).trim()
@@ -123,7 +123,8 @@ export async function submitInquiry(
   // Das Kontaktformular startet ohne Vorauswahl, damit eine Kaufanfrage nicht
   // stillschweigend als Reparatur im Postfach landet.
   if (!topicRaw) errors.topic = "Bitte wählen Sie Ihr Anliegen aus.";
-  if (inquiry.name.length < 2) errors.name = "Bitte tragen Sie Ihren Namen ein.";
+  if (inquiry.name.length < 2)
+    errors.name = "Bitte tragen Sie Ihren Namen ein.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(inquiry.email)) {
     errors.email = "Bitte eine gültige E-Mail-Adresse angeben.";
   }
@@ -156,7 +157,7 @@ export async function submitInquiry(
       : {
           status: "fallback",
           message:
-            "Der Formularversand ist auf diesem Server noch nicht eingerichtet. Bitte rufen Sie uns kurz an oder schreiben Sie direkt eine E-Mail — wir kümmern uns sofort darum.",
+            "Der Formularversand ist auf diesem Server noch nicht eingerichtet. Bitte rufen Sie uns kurz an oder schreiben Sie direkt eine E-Mail. Wir kümmern uns sofort darum.",
           values: { ...inquiry, topic: topicRaw },
         };
   } catch {

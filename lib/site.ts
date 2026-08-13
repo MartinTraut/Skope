@@ -28,7 +28,7 @@ export const site = {
 
   // TODO Betreiber: verbindliche Öffnungszeiten festlegen und hier eintragen.
   // Bis dahin bewusst ohne Schema-Angabe, um keine falschen Zeiten auszuspielen.
-  openingHours: "Termine nach Vereinbarung — telefonisch jederzeit erreichbar",
+  openingHours: "Termine nach Vereinbarung, telefonisch jederzeit erreichbar",
 
   // TODO Betreiber: Google-Business-Profil und Social-Profile ergänzen.
   sameAs: [] as string[],
@@ -43,7 +43,7 @@ export const proof = {
   sealName: "Skope-Qualitätssiegel",
 } as const;
 
-/** Einzugsgebiet mit Entfernungen — von der Altseite übernommen. */
+/** Einzugsgebiet mit Entfernungen – von der Altseite übernommen. */
 export const serviceArea = [
   { name: "Bad Friedrichshall", distance: "8 km" },
   { name: "Neckarsulm", distance: "12 km" },

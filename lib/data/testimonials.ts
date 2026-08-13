@@ -1,5 +1,5 @@
 /**
- * Echte Kundenstimmen der Altseite — unverändert übernommen.
+ * Echte Kundenstimmen der Altseite – unverändert übernommen.
  * Bewusst ohne AggregateRating-Schema: es liegt keine belegbare
  * Gesamtbewertung vor, und erfundene Sterne wären ein Richtlinienverstoß.
  */

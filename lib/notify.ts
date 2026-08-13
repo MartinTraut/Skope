@@ -14,11 +14,11 @@ export type Inquiry = {
 /**
  * Versand-Adapter für Formularanfragen.
  *
- * TODO Betreiber: einen Mail-Provider anbinden. Vorbereitet für Resend —
+ * TODO Betreiber: einen Mail-Provider anbinden. Vorbereitet für Resend –
  * `RESEND_API_KEY` und optional `INQUIRY_TO` in den Umgebungsvariablen setzen,
  * dann läuft der Versand ohne weitere Codeänderung.
  * Ohne Key wird die Anfrage nur serverseitig protokolliert und die Nutzerin
- * bekommt einen ehrlichen Hinweis, direkt anzurufen — statt einer stillen
+ * bekommt einen ehrlichen Hinweis, direkt anzurufen – statt einer stillen
  * Erfolgsmeldung für eine Mail, die nie ankommt.
  */
 export async function sendInquiry(
@@ -32,7 +32,7 @@ export async function sendInquiry(
     // Bewusst ohne Namen oder E-Mail: Serverlogs sind ein eigener
     // Verarbeitungsort mit eigener Aufbewahrungsfrist (Art. 5 Abs. 1 lit. c DSGVO).
     console.warn(
-      "[anfrage] Kein Mail-Provider konfiguriert — Anfrage nicht zugestellt.",
+      "[anfrage] Kein Mail-Provider konfiguriert, Anfrage nicht zugestellt.",
       { topic: inquiry.topic },
     );
     return { delivered: false };
@@ -62,7 +62,7 @@ export async function sendInquiry(
       text: lines.join("\n"),
     }),
     // Ohne Timeout blockiert eine hängende API die Server Action bis zum
-    // Plattform-Limit — der Nutzer sähe minutenlang den Spinner.
+    // Plattform-Limit – der Nutzer sähe minutenlang den Spinner.
     signal: AbortSignal.timeout(8000),
   });
 

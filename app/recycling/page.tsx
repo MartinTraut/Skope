@@ -11,6 +11,7 @@ import { JsonLd, breadcrumb, pageGraph, service } from "@/lib/schema";
 import { RECYCLING_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress } from "@/lib/site";
+import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter kostenlos entsorgen in Neuenstadt",
@@ -25,7 +26,7 @@ const steps = [
   {
     n: "01",
     title: "Vorbeibringen oder anrufen",
-    text: `Bringen Sie das Altgerät direkt zu uns nach ${fullAddress}. Wenn der Transport schwierig ist, rufen Sie kurz an — wir finden eine Lösung.`,
+    text: `Bringen Sie das Altgerät direkt zu uns nach ${fullAddress}. Wenn der Transport schwierig ist, rufen Sie kurz an. Wir finden eine Lösung.`,
   },
   {
     n: "02",
@@ -52,27 +53,29 @@ export default function RecyclingPage() {
         eyebrow="Kreislaufwirtschaft"
         title={
           <>
-            Ausgedienter Scooter?
-            <br />
-            Bringen Sie ihn vorbei.
+            Ausgedienter Scooter? Bringen Sie ihn <Mark>vorbei</Mark>.
           </>
         }
-        lead="Ein defekter E-Scooter ist kein Sperrmüll. Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Wir übernehmen die Verwertung und das fachgerechte Recycling kostenlos — auch für Geräte, die nicht bei uns gekauft wurden."
+        lead="Ein defekter E-Scooter ist kein Sperrmüll. Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Wir übernehmen die Verwertung und das fachgerechte Recycling kostenlos, auch für Geräte, die nicht bei uns gekauft wurden."
       />
 
-      <Section tone="ink-800">
+      <Section tone="silver">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <SectionHead
                 align="left"
                 eyebrow="So läuft die Abgabe"
-                title="Vier Schritte, kein Aufwand für Sie."
+                title={
+                  <>
+                    <Mark>Vier</Mark> Schritte, kein Aufwand für Sie.
+                  </>
+                }
               />
               <ol className="mt-12">
                 {steps.map((step, i) => (
                   <Reveal key={step.n} delay={i * 70} as="li">
-                    <div className="flex gap-6 border-t border-white/12 py-7 md:gap-10">
+                    <div className="flex gap-6 border-t border-current/12 py-7 md:gap-10">
                       <span className="tabular font-display text-lg font-bold text-current/65">
                         {step.n}
                       </span>
@@ -80,7 +83,7 @@ export default function RecyclingPage() {
                         <h3 className="text-[length:var(--text-subtitle)]">
                           {step.title}
                         </h3>
-                        <p className="mt-2.5 max-w-xl leading-relaxed text-paper/65">
+                        <p className="mt-2.5 max-w-xl leading-relaxed text-current/65">
                           {step.text}
                         </p>
                       </div>
@@ -91,24 +94,24 @@ export default function RecyclingPage() {
             </div>
 
             <Reveal delay={90} className="lg:col-span-5">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-white/12 bg-ink">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-ink text-silver on-dark">
                 <Image
                   src="/img/scooter-strasse.jpg"
-                  alt="Abgestellte E-Scooter am Straßenrand — Altgeräte, die verwertet werden können"
+                  alt="Abgestellte E-Scooter am Straßenrand, Altgeräte für die Verwertung"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="parallax object-cover"
                 />
               </div>
-              <div className="mt-8 rounded-lg border border-white/12 p-7">
+              <div className="mt-8 rounded-lg border border-current/12 p-7">
                 <h3 className="font-display text-lg font-bold tracking-tight">
                   Warum wir das machen
                 </h3>
-                <p className="mt-3 leading-relaxed text-paper/65">
+                <p className="mt-3 leading-relaxed text-current/65">
                   Brauchbare Nabenmotoren, Bremsen und Elektronikbauteile werden
-                  geprüft, eingelagert und in anderen Reparaturen wieder verbaut.
-                  Das hält die Ersatzteilkosten für unsere Kunden niedrig und
-                  spart Neuteile.
+                  geprüft, eingelagert und in anderen Reparaturen wieder
+                  verbaut. Das hält die Ersatzteilkosten für unsere Kunden
+                  niedrig und spart Neuteile.
                 </p>
               </div>
             </Reveal>
@@ -116,23 +119,21 @@ export default function RecyclingPage() {
         </Container>
       </Section>
 
-      {/* Anfrage — dieselbe Behandlung wie auf den übrigen Leistungsseiten:
+      {/* Anfrage – dieselbe Behandlung wie auf den übrigen Leistungsseiten:
           Wer hier ankommt, soll nicht erst auf die Kontaktseite wechseln. */}
-      <Section id="anfrage" tone="paper">
+      <Section id="anfrage" tone="silver-200">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
                 <p className="eyebrow text-current/65">Altgerät anmelden</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Sagen Sie kurz,
-                  <br />
-                  worum es geht.
+                  Sagen Sie kurz, worum es geht.
                 </h2>
-                <p className="mt-6 leading-relaxed text-ink/70">
+                <p className="mt-6 leading-relaxed text-current/70">
                   Marke, Modell und was defekt ist. Wir sagen Ihnen vorab, ob
-                  sich eine Reparatur noch lohnt — und wenn nicht, übernehmen wir
-                  die Verwertung kostenlos.
+                  sich eine Reparatur noch lohnt. Wenn nicht, übernehmen wir die
+                  Verwertung kostenlos.
                 </p>
               </Reveal>
             </div>
@@ -162,7 +163,11 @@ export default function RecyclingPage() {
 
       <CtaBand
         eyebrow="Altgerät abgeben"
-        title="Kostenlos, ohne Bedingungen."
+        title={
+          <>
+            <Mark>Kostenlos</Mark>, ohne Bedingungen.
+          </>
+        }
         text={`Vorbeibringen nach ${fullAddress} oder kurz anrufen, wenn der Transport ein Problem ist. Wir sagen Ihnen vorher ehrlich, ob sich eine Reparatur nicht doch noch lohnt.`}
       />
 
@@ -180,7 +185,7 @@ export default function RecyclingPage() {
                 name: "Verwertung eines ausgedienten E-Scooters",
                 price: "0",
                 description:
-                  "Rücknahme und fachgerechtes Recycling — für Kundinnen und Kunden kostenlos.",
+                  "Rücknahme und fachgerechtes Recycling, für Kundinnen und Kunden kostenlos.",
               },
             ],
           }),

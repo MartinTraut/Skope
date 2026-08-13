@@ -70,11 +70,15 @@ export default function TermsPage() {
 
         {/* TODO Betreiber: Diese Bedingungen entsprechen inhaltlich der
             Altseite. Vor dem Livegang bitte durch eine fachkundige Stelle
-            prüfen lassen — insbesondere, falls künftig ein Online-Verkauf mit
+            prüfen lassen – insbesondere, falls künftig ein Online-Verkauf mit
             Versand hinzukommt. */}
       </LegalPage>
 
-      <JsonLd nodes={pageGraph([breadcrumb([{ name: "AGB & Widerruf", path: "/agb" }])])} />
+      <JsonLd
+        nodes={pageGraph([
+          breadcrumb([{ name: "AGB & Widerruf", path: "/agb" }]),
+        ])}
+      />
     </>
   );
 }

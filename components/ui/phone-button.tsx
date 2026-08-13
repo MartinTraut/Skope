@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
  * mehrfach auf. Eine Komponente statt sechsmal derselben Klassenkette.
  */
 export function PhoneButton({
-  variant = "flame",
+  variant = "neon",
   size = "lg",
   className,
   iconOnly = false,
 }: {
-  variant?: "flame" | "outline" | "solid";
+  variant?: "neon" | "solid" | "invert" | "outline";
   size?: "md" | "lg";
   className?: string;
   iconOnly?: boolean;

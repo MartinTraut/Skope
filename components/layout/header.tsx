@@ -18,7 +18,7 @@ export function Header() {
 
   /**
    * Das Menü merkt sich, auf welcher Route es geöffnet wurde. Sobald sich die
-   * Route ändert, ist es abgeleitet wieder zu — ohne setState im Effect und
+   * Route ändert, ist es abgeleitet wieder zu – ohne setState im Effect und
    * damit auch korrekt bei Vor- und Zurück-Navigation.
    */
   const [openedOn, setOpenedOn] = React.useState<string | null>(null);
@@ -29,17 +29,42 @@ export function Header() {
   );
   const toggleRef = React.useRef<HTMLButtonElement>(null);
 
+  /**
+   * Zwei Schwellen, nicht eine – und ein Bild pro Zustandswechsel.
+   *
+   * Vorher stand hier ein einziger Vergleich gegen 24 px. Gemessen: Wer in
+   * dieser Höhe stehenbleibt, schaltet den Kopf mit Bewegungen von einem
+   * Pixel um; ein Test mit zehn Mikro-Scrolls zwischen 21 und 28 px ergab
+   * zehn Umschaltungen. Jede davon startet eine 300-ms-Blende, die nächste
+   * unterbricht sie – das ist das Flackern. Trägheitsscrollen und der
+   * Gummiband-Effekt auf dem Telefon treffen diesen Bereich ständig.
+   *
+   * Mit getrennten Schwellen muss der Nutzer 32 px überschreiten, um die
+   * Scheibe einzublenden, und wieder unter 8 px kommen, um sie loszuwerden.
+   * Dazwischen passiert nichts. Der rAF-Riegel fasst zusätzlich die vielen
+   * Scroll-Ereignisse pro Bild zu einer Messung zusammen.
+   */
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      setScrolled((was) => (was ? window.scrollY > 8 : window.scrollY > 32));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const panelRef = React.useRef<HTMLDivElement>(null);
 
   /**
-   * Solange das Menü offen ist, bleibt der Seiteninhalt dahinter stehen — und
+   * Solange das Menü offen ist, bleibt der Seiteninhalt dahinter stehen – und
    * zwar auch für die Tastatur. Ohne `inert` tabbt man nach dem letzten
    * Menüpunkt in die verdeckten Links von <main> und <footer> und verliert den
    * sichtbaren Fokus komplett. Das Attribut wird per DOM gesetzt, weil beide
@@ -50,7 +75,7 @@ export function Header() {
       document.getElementById("inhalt"),
       document.querySelector("footer"),
       // Die Aktionsleiste liegt unter dem geöffneten Menü und wäre sonst
-      // gleichzeitig sicht- und bedienbar — siehe #mobile-cta in globals.css.
+      // gleichzeitig sicht- und bedienbar – siehe #mobile-cta in globals.css.
       document.getElementById("mobile-cta"),
     ];
     document.body.style.overflow = open ? "hidden" : "";
@@ -62,7 +87,7 @@ export function Header() {
   }, [open]);
 
   // Beim Öffnen in das Menü hineinspringen, statt den Fokus auf dem Auslöser
-  // stehen zu lassen — Escape bringt ihn anschließend wieder zurück.
+  // stehen zu lassen – Escape bringt ihn anschließend wieder zurück.
   React.useEffect(() => {
     if (!open) return;
     panelRef.current?.querySelector("a")?.focus();
@@ -82,23 +107,46 @@ export function Header() {
 
   return (
     <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300",
-        scrolled || open
-          ? "border-b border-white/10 bg-ink/85 backdrop-blur-xl"
-          : "border-b border-transparent",
-      )}
+      data-scrolled={scrolled || open ? "true" : "false"}
+      className="fixed inset-x-0 top-0 z-50"
     >
-      <Container className="flex h-[4.5rem] items-center justify-between gap-6 md:h-20">
+      {/* Die Glasscheibe liegt als eigene Fläche hinter dem Inhalt, nicht auf
+          dem <header> selbst. Grund: `backdrop-filter` lässt sich nicht sauber
+          animieren – ein Übergang von `blur(0)` auf `blur(24px)` ruckelt in
+          Chromium sichtbar, weil der Filter pro Bild neu gerechnet wird.
+          `opacity` an einer eigenen Ebene läuft dagegen im Compositor, und die
+          Scheibe blendet sauber ein.
+
+          `-z-10` innerhalb des Stapelkontexts, den `z-50` am <header> ohnehin
+          aufmacht: Die Scheibe liegt damit hinter Navigation und Knöpfen, aber
+          weiterhin vor dem Seiteninhalt. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "liquid-glass absolute inset-0 -z-10 transition-opacity duration-300",
+          scrolled || open ? "opacity-100" : "opacity-0",
+        )}
+      />
+
+      <Container className="flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
+        {/* Ohne Unterzeile: Gestapelt war der Logoblock 56 px hoch, der
+            Schriftzug selbst saß dadurch bei 34 px Mitte, während Navigation,
+            Telefonpille und CTA alle bei 40 px liegen. Sechs Pixel daneben –
+            genug, dass die Kopfzeile nicht auf einer Linie liest. Die Zeile
+            „Gebrauchtwarenhandel" steht weiterhin im Footer, wo Platz dafür
+            ist. */}
+        {/* `flex items-center` am Link selbst: Sonst sitzt die Wortmarke als
+            inline-Element auf der Grundlinie und schleppt den Unterlängen-
+            Durchschuss mit – gemessen weitere 4 px Versatz nach oben. */}
         <Link
           href="/"
-          aria-label={`${site.name} — Startseite`}
-          className="text-paper"
+          aria-label={`${site.name}, Startseite`}
+          className="flex min-h-11 items-center"
         >
-          <Logo />
+          <Logo showSub={false} />
         </Link>
 
-        <nav aria-label="Hauptnavigation" className="hidden xl:block">
+        <nav aria-label="Hauptnavigation" className="hidden shrink-0 xl:block">
           <ul className="flex items-center gap-1">
             {nav.map((item) => {
               const active = pathname === item.href;
@@ -108,16 +156,21 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative rounded-sm px-3.5 py-2 text-[0.9375rem] transition-colors duration-200",
+                      "relative inline-flex min-h-11 items-center rounded-md px-2.5 text-[0.9375rem] whitespace-nowrap transition-colors duration-200",
+                      // 70 %, nicht 65. Auf der Glasscheibe über einer
+                      // Silbersektion misst der Grund rgb(70,72,74); bei 65 %
+                      // liegt der Link dort bei 4,51:1 und damit einen
+                      // Hundertstel über AA. 70 % geben 4,95:1 – Luft für den
+                      // Fall, dass die Scheibe irgendwann heller wird.
                       active
-                        ? "text-paper"
-                        : "text-paper/65 hover:text-paper",
+                        ? "text-current"
+                        : "text-current/70 hover:text-current",
                     )}
                   >
                     {item.label}
                     <span
                       className={cn(
-                        "absolute inset-x-3.5 -bottom-0.5 h-px origin-left bg-flame transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
+                        "absolute inset-x-2.5 bottom-1.5 h-px origin-left bg-accent transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
                         active ? "scale-x-100" : "scale-x-0",
                       )}
                     />
@@ -131,7 +184,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a
             href={site.phone.href}
-            className="hidden items-center gap-2.5 rounded-sm border border-white/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap text-paper transition-colors duration-200 hover:border-flame hover:text-flame lg:inline-flex"
+            className="hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-colors duration-200 hover:border-current/50 lg:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
@@ -149,7 +202,7 @@ export function Header() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
-            className="inline-flex size-11 items-center justify-center rounded-sm border border-white/20 text-paper xl:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-md border border-current/20 xl:hidden"
           >
             {open ? (
               <X className="size-5" aria-hidden="true" />
@@ -165,20 +218,20 @@ export function Header() {
         ref={panelRef}
         id="mobile-nav"
         hidden={!open}
-        className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-white/10 bg-ink xl:hidden"
+        className="max-h-[calc(100svh-4.5rem)] min-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark"
       >
         <Container className="py-6">
           <ul className="flex flex-col">
             {nav.map((item, i) => (
-              <li key={item.href} className="border-b border-white/8">
+              <li key={item.href} className="border-b border-current/8">
                 <Link
                   href={item.href}
-                  // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist —
+                  // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist –
                   // dann ändert sich `pathname` nicht und das Menü bliebe offen.
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline gap-4 py-4 font-display text-2xl font-bold tracking-tight text-paper"
+                  className="flex items-baseline gap-4 py-4 font-display text-2xl font-bold"
                 >
-                  <span className="tabular font-sans text-xs font-medium text-flame">
+                  <span className="tabular font-sans text-xs font-medium text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {item.label}
@@ -197,7 +250,7 @@ export function Header() {
             </ButtonLink>
             <a
               href={site.phone.href}
-              className="inline-flex h-[3.25rem] w-full items-center justify-center gap-2.5 rounded-sm border border-white/25 font-display font-semibold text-paper"
+              className="inline-flex h-[3.25rem] w-full items-center justify-center gap-2.5 rounded-md border border-current/25 font-display font-semibold"
             >
               <Phone className="size-4" aria-hidden="true" />
               <span className="tabular">{site.phone.display}</span>

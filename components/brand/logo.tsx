@@ -1,91 +1,153 @@
 import { cn } from "@/lib/utils";
 
+/* =========================================================================
+   Bildmarke SKOPE
+
+   Vektorisiert aus der gelieferten Logodatei mit potrace, in zwei getrennten
+   Durchläufen: einmal alles über 30 % Helligkeit für das Metall, einmal alles
+   mit über 55 % Sättigung im Grünbereich für das Neon. Eine einzelne
+   Luminanzschwelle hätte den Neonanteil verschluckt – er liegt heller als das
+   Metall und wäre in derselben Fläche aufgegangen.
+
+   Getrennte Pfade sind hier keine Fleißarbeit, sondern die Bedingung dafür,
+   dass die Marke mit der Fläche mitgehen kann: Das Metall läuft in
+   `currentColor` und wird auf Schwarz zu Silber, auf Silber zu Schwarz. Das
+   Neon bleibt Neon. Ein Logo, dessen Markenfarbe je nach Sektion wechselt,
+   ist kein Logo mehr.
+
+   Die Zeichnung ist auf 2 × Auflösung vektorisiert und dann halbiert. Der
+   Trace auf Originalgröße war rund 40 % kleiner, zeigte aber an den langen
+   geraden Kanten von Trittbrett und Schriftzug sichtbares Zittern – bei einer
+   Wortmarke, die überwiegend aus Geraden besteht, ist das der falsche Handel.
+
+   Koordinaten stammen aus potrace (Ursprung unten links); das `transform` an
+   der Gruppe dreht die y-Achse zurück. Gemessene Kästen im so entstandenen
+   Nutzerraum:
+     Roller      x 645,5  y 555,3   b 1312,6  h 810,2
+     Schriftzug  x  99,1  y 1372,1  b 2322,9  h 342,7
+     Gesamt      x  99,1  y 555,3   b 2322,9  h 1159,5
+   ========================================================================= */
+
+const SCOOTER_METAL =
+  "M16985 19514 c-44 -8 -95 -16 -113 -20 -40 -6 -39 -16 5 -189 14 -55 31 -133 37 -174 6 -41 17 -76 24 -79 6 -2 12 4 12 13 0 11 7 16 23 14 30 -3 134 10 174 22 41 13 117 95 133 143 35 108 -30 233 -143 270 -54 18 -46 18 -152 0z M16570 19439 c-30 -5 -125 -22 -210 -39 -177 -34 -268 -50 -680 -121 -680 -117 -652 -112 -692 -140 -64 -46 -86 -155 -53 -265 20 -70 84 -126 156 -138 31 -6 188 23 294 54 63 19 200 46 470 96 360 66 432 76 500 69 42 -4 90 0 160 14 144 29 177 42 95 35 -41 -3 -60 -1 -50 4 22 14 147 35 165 29 25 -10 25 7 0 109 -13 54 -34 144 -47 199 -27 110 -23 108 -108 94z M16568 18777 c-167 -30 -180 -36 -155 -66 8 -9 24 -50 36 -91 13 -41 63 -199 111 -350 48 -151 109 -342 135 -425 26 -82 102 -319 170 -525 67 -206 146 -449 174 -540 29 -91 111 -343 181 -560 71 -217 158 -490 194 -606 36 -116 103 -325 149 -465 46 -140 101 -310 121 -379 53 -178 67 -223 168 -530 49 -151 108 -336 129 -410 39 -131 104 -334 215 -670 68 -204 86 -259 219 -690 68 -218 115 -353 128 -368 70 -77 189 -96 252 -40 47 41 95 124 95 165 0 38 -189 647 -492 1578 -121 374 -258 799 -305 945 -46 146 -124 389 -173 540 -209 650 -410 1270 -522 1615 -65 204 -137 426 -159 495 -22 69 -67 206 -99 305 -50 154 -89 278 -129 410 -5 17 -32 100 -59 185 -27 85 -75 235 -107 333 -66 208 -31 190 -277 144z M17304 14373 c-50 -71 -162 -227 -249 -348 -87 -121 -215 -301 -285 -400 -69 -99 -171 -243 -225 -320 -136 -192 -223 -318 -324 -465 -150 -220 -185 -257 -306 -325 -96 -54 -190 -76 -345 -81 -74 -2 -1870 -6 -3990 -7 l-3855 -2 -45 -25 c-100 -56 -124 -205 -47 -288 55 -59 71 -62 384 -62 161 0 282 -4 275 -9 -22 -13 11 -21 81 -19 l62 1 -55 6 -55 6 55 7 c71 10 277 10 310 0 21 -6 19 -8 -20 -12 -25 -3 54 -5 175 -5 121 -1 202 2 180 6 -23 3 23 6 105 7 89 0 137 -3 125 -8 -15 -6 -9 -9 27 -9 69 -1 95 12 38 20 -25 3 109 7 298 7 259 2 349 -1 365 -10 16 -9 99 -14 287 -16 267 -4 375 2 365 19 -4 5 59 9 157 9 1786 4 5059 0 5079 -5 34 -8 136 24 117 37 -9 7 -4 8 14 4 21 -5 26 -3 22 7 -3 10 14 24 53 42 126 61 257 168 331 270 20 27 88 115 152 194 185 231 255 320 338 425 42 55 126 158 185 230 60 72 132 165 162 206 29 41 94 122 145 180 51 58 104 121 118 140 46 62 75 90 95 90 11 0 17 6 15 14 -14 65 -205 615 -213 616 -6 0 -51 -57 -101 -127z M7665 14143 c-381 -46 -704 -182 -951 -400 -85 -74 -266 -281 -259 -294 4 -5 10 -7 16 -4 16 11 209 -143 202 -161 -4 -12 -2 -15 8 -12 8 3 13 13 11 24 -3 26 122 148 218 212 156 104 355 194 393 179 6 -3 2 -6 -10 -6 -13 -1 -23 -5 -23 -10 0 -4 26 -1 57 8 49 13 54 16 32 22 -19 6 -16 8 16 7 22 0 78 6 125 14 108 17 566 16 583 -1 6 -6 26 -11 44 -11 18 0 33 -4 33 -10 0 -5 7 -10 16 -10 26 0 333 -155 424 -214 59 -39 86 -52 91 -44 12 19 118 -82 119 -112 1 -15 25 -44 149 -177 93 -100 211 -330 211 -413 0 -30 16 -39 36 -21 5 6 26 5 54 -1 57 -13 266 -22 288 -12 9 4 28 6 41 5 22 -3 23 0 17 36 -27 146 -142 403 -267 593 -236 361 -649 657 -1068 766 -164 42 -457 66 -606 47z M7535 13275 c-33 -7 -87 -23 -120 -35 -33 -12 -69 -24 -80 -27 -37 -9 -225 -104 -225 -114 0 -5 -4 -9 -9 -9 -5 0 -26 -16 -47 -35 -20 -19 -40 -33 -42 -30 -2 2 -15 -9 -29 -26 -14 -16 -28 -27 -32 -24 -5 2 -21 -10 -37 -28 -16 -18 -19 -24 -6 -13 12 11 22 15 22 10 0 -15 -66 -79 -82 -79 -7 0 -13 -4 -13 -10 0 -5 -13 -31 -29 -57 -51 -86 -26 -91 36 -7 155 209 413 383 648 437 270 62 523 29 740 -97 174 -101 274 -186 367 -311 57 -76 103 -127 103 -114 0 5 -4 14 -10 20 -5 5 -11 19 -13 30 -3 26 -28 64 -62 98 -14 14 -25 31 -25 37 0 7 -3 10 -6 7 -3 -3 -33 24 -67 60 -34 37 -62 65 -62 62 0 -3 -13 5 -27 16 -15 12 -24 25 -20 29 4 3 2 5 -4 3 -6 -2 -27 11 -45 27 -19 17 -46 36 -61 44 -16 8 -28 18 -28 23 0 5 -4 7 -9 3 -5 -3 -17 2 -25 11 -9 8 -16 13 -16 10 0 -3 -13 0 -30 5 -16 6 -30 15 -30 21 0 5 -5 6 -10 3 -14 -9 -52 4 -45 16 3 5 0 6 -8 4 -7 -3 -31 2 -53 11 -21 10 -43 18 -49 20 -131 27 -356 32 -460 9z M18740 13220 c0 -6 15 -17 33 -24 17 -8 57 -25 87 -38 111 -47 269 -150 348 -227 119 -116 241 -310 283 -450 12 -41 29 -55 29 -24 0 9 -9 44 -21 77 -26 77 -27 80 -25 87 0 3 -6 14 -14 23 -8 10 -15 25 -16 33 -2 8 -9 22 -17 31 -8 10 -17 24 -21 32 -16 36 -35 62 -52 75 -11 7 -19 17 -20 22 0 8 -187 198 -217 221 -9 6 -20 12 -26 12 -5 0 -11 6 -14 13 -6 15 -101 67 -123 67 -8 0 -14 5 -14 11 0 5 -4 7 -10 4 -5 -3 -10 -1 -10 6 0 7 -3 10 -6 6 -3 -3 -21 3 -41 14 -19 11 -43 21 -53 22 -11 2 -23 6 -26 10 -11 11 -54 8 -54 -3z M17775 13084 c-221 -173 -364 -390 -426 -644 -30 -123 -37 -358 -15 -468 31 -152 103 -317 200 -455 l40 -59 111 6 c87 4 114 2 129 -10 23 -17 46 -18 46 -3 0 6 -34 47 -75 92 -85 91 -168 244 -205 377 -43 151 -33 457 17 581 78 191 243 389 326 389 15 0 27 2 27 4 0 24 -83 241 -92 243 -7 1 -44 -23 -83 -53z M6836 11890 c6 -66 21 -118 40 -144 18 -26 31 -12 15 17 -7 13 -11 27 -10 33 4 10 -20 84 -31 99 -4 6 -10 19 -14 30 -3 11 -3 -5 0 -35z M19222 11669 c-20 -31 -36 -48 -44 -43 -7 4 -8 3 -4 -5 4 -6 0 -14 -8 -17 -9 -3 -14 -10 -11 -14 3 -4 -2 -14 -11 -21 -19 -15 -47 -69 -40 -76 14 -14 138 146 162 210 13 36 -14 15 -44 -34z";
+
+const SCOOTER_NEON =
+  "M7590 13249 c-25 -5 -67 -14 -95 -20 -80 -17 -113 -30 -238 -92 -166 -82 -305 -198 -415 -346 -40 -54 -57 -71 -60 -58 -5 23 37 94 79 133 19 17 58 60 87 95 43 51 35 44 -38 -30 -344 -351 -432 -878 -220 -1323 32 -68 64 -109 53 -69 -6 22 12 30 19 9 2 -6 22 7 44 29 21 22 51 48 67 58 15 9 27 25 27 34 0 9 5 22 11 28 6 6 8 21 4 33 -6 18 -9 20 -16 9 -19 -31 -54 53 -63 151 -3 30 -3 46 0 35 3 -11 11 -24 16 -30 7 -7 9 -2 4 15 -18 62 -19 256 -2 339 40 195 109 323 255 473 121 124 192 169 367 233 124 46 352 52 474 13 229 -73 362 -161 452 -300 l31 -48 122 0 c136 0 185 7 185 24 0 12 -59 126 -65 126 -6 0 8 -40 16 -46 5 -3 9 -11 9 -17 0 -14 -44 35 -103 113 -155 208 -414 373 -662 421 -72 15 -292 19 -345 8z M18747 13198 c13 -17 33 -143 33 -213 0 -61 -9 -52 100 -98 162 -70 362 -323 414 -524 65 -251 24 -529 -107 -723 -25 -37 -26 -41 -8 -25 13 11 34 39 48 62 24 42 51 60 39 26 -24 -64 -148 -224 -163 -210 -6 6 13 43 36 73 9 11 -10 -7 -41 -40 -32 -34 -57 -66 -58 -73 0 -15 73 -26 175 -27 123 -1 121 -2 197 128 144 243 198 512 153 761 -17 95 -43 181 -44 148 -2 -36 -17 -27 -30 18 -42 140 -164 334 -283 450 -79 77 -237 180 -348 227 -30 13 -70 31 -89 39 -27 11 -32 11 -24 1z M8365 12041 c-32 -6 -19 -9 67 -15 118 -9 297 1 263 15 -24 9 -272 9 -330 0z M9030 12029 c56 -10 198 -9 225 2 11 4 -44 7 -125 7 -107 0 -133 -3 -100 -9z";
+
+const TYPE_METAL =
+  "M8878 11350 l-677 -5 -36 -42 c-33 -39 -67 -60 -49 -31 4 7 3 8 -5 4 -6 -4 -9 -11 -6 -16 5 -7 -52 -55 -65 -55 -3 0 -4 -3 -3 -7 4 -11 -157 -148 -171 -145 -6 1 -10 -3 -9 -10 2 -6 -36 -47 -84 -90 -48 -43 -114 -103 -148 -133 -130 -116 -333 -300 -459 -415 -258 -235 -398 -361 -454 -409 -112 -97 -245 -226 -239 -232 8 -8 118 80 177 141 25 26 72 70 105 98 68 57 176 152 280 247 40 36 123 110 185 165 63 55 148 132 190 170 42 39 174 158 294 265 121 107 282 253 359 325 l140 130 675 1 c512 0 677 3 680 12 2 7 10 19 19 27 13 13 12 15 -4 13 -10 -2 -323 -5 -695 -8z M4055 11340 c-2162 -6 -2039 -3 -2187 -53 -344 -119 -603 -403 -684 -753 -24 -104 -25 -329 -1 -426 57 -234 209 -451 426 -612 53 -39 59 -46 35 -41 l-29 7 25 -21 c22 -18 54 -30 85 -32 6 -1 12 -4 15 -8 3 -4 39 -12 80 -19 120 -18 308 -60 277 -61 -16 -1 -26 -5 -22 -11 4 -6 104 -10 267 -10 248 0 311 7 195 21 -57 7 131 9 1033 14 484 2 1048 -7 845 -14 -27 -1 -57 -6 -65 -11 -10 -6 49 -10 175 -10 126 0 185 4 175 10 -8 5 -35 11 -60 12 -25 1 32 4 125 8 171 6 251 -5 254 -35 1 -5 20 -20 43 -33 36 -21 40 -21 34 -5 -12 37 75 -71 101 -125 81 -166 -8 -386 -183 -452 -54 -20 -70 -20 -1696 -20 l-1641 0 -206 -212 c-113 -117 -270 -278 -348 -358 -78 -80 -138 -147 -132 -149 6 -1 32 6 59 18 l49 21 1948 0 c1903 0 2004 2 2123 31 235 59 458 214 600 418 25 35 59 84 77 109 35 50 96 225 114 329 17 97 6 309 -21 402 -85 299 -322 571 -585 672 -208 81 -49 73 -1700 79 l-1470 5 -50 23 c-107 49 -158 132 -159 257 -2 157 53 263 164 318 l45 22 1197 -2 c806 -2 1204 -6 1217 -13 33 -17 512 -13 547 5 22 11 63 15 161 15 l131 0 129 132 c363 375 497 503 543 518 66 22 68 51 3 48 -26 -2 -952 -5 -2058 -8z M9550 11281 c-34 -37 -56 -52 -91 -61 -33 -8 -71 -32 -125 -77 -87 -71 -111 -94 -75 -70 13 8 29 13 36 11 6 -3 18 2 25 11 7 8 9 15 6 15 -4 0 4 11 18 25 14 14 29 25 33 25 40 1 191 106 210 147 6 13 10 23 10 23 -1 0 -22 -22 -47 -49z M10960 11304 c-519 -94 -906 -481 -1022 -1021 -22 -105 -23 -122 -23 -628 0 -463 2 -531 19 -620 10 -55 22 -104 26 -109 5 -5 6 -15 3 -22 -3 -8 0 -14 6 -14 7 0 9 -10 5 -26 -5 -19 -3 -25 4 -20 8 5 11 -2 8 -21 -2 -15 -1 -22 1 -14 5 13 115 -202 116 -226 0 -7 6 -14 13 -17 8 -3 11 -12 8 -21 -3 -8 -11 -12 -17 -8 -6 3 12 -21 39 -54 27 -33 51 -58 53 -56 3 2 -5 13 -15 26 -23 26 -54 73 -54 83 0 4 15 -13 34 -37 53 -68 211 -217 308 -289 139 -104 264 -160 468 -206 l105 -24 1470 0 c1231 0 1484 3 1558 15 369 60 698 302 924 678 52 86 129 319 148 446 18 116 21 912 5 1056 -35 303 -166 574 -380 785 -191 188 -398 298 -649 344 -117 22 -3041 22 -3161 0z m427 -654 c88 -16 1176 -12 1199 5 25 19 44 19 44 -1 0 -18 47 -17 230 5 149 17 1055 14 1125 -4 76 -20 176 -65 169 -76 -2 -5 15 -22 38 -39 24 -17 64 -51 90 -76 50 -47 64 -54 53 -26 -14 37 65 -54 93 -107 84 -160 88 -197 81 -736 -5 -416 -7 -455 -26 -510 -80 -237 -261 -407 -490 -459 -104 -23 -2797 -24 -2908 -1 -215 45 -371 163 -463 350 -66 133 -67 140 -67 670 l0 480 37 108 c79 229 209 344 468 419 69 19 221 19 327 -2z M15480 11236 c0 -8 6 -19 14 -23 8 -4 27 -33 44 -63 16 -30 52 -93 79 -140 49 -85 130 -234 187 -342 l29 -58 149 0 c125 0 148 -2 148 -15 0 -13 44 -15 333 -15 197 0 338 4 347 10 12 8 10 10 -10 12 -67 5 263 16 470 15 223 0 599 -11 535 -15 -26 -2 -28 -4 -12 -13 25 -15 680 -7 698 8 9 7 91 12 232 15 l217 3 23 -26 c12 -15 40 -37 62 -50 148 -87 170 -121 170 -259 0 -125 -26 -193 -99 -257 -97 -85 70 -78 -1778 -81 -1687 -2 -1664 -2 -1628 -38 7 -7 9 -336 8 -977 -2 -532 -1 -967 3 -967 3 0 11 6 18 13 18 18 557 19 572 0 19 -22 42 -16 35 10 -3 13 -6 313 -6 668 l-1 644 1228 3 c1137 3 1396 -1 1243 -18 -44 -6 -34 -7 50 -8 107 -1 234 19 195 31 -11 4 5 5 36 3 55 -4 103 8 63 16 -11 2 11 15 56 32 153 60 236 114 352 228 145 143 233 286 273 442 83 327 7 657 -208 909 -103 121 -281 230 -463 285 l-89 27 -1787 3 c-1567 2 -1788 1 -1788 -12z M20316 11195 c3 -11 6 -158 6 -327 0 -170 3 -308 7 -308 4 0 14 9 23 20 17 19 43 19 1660 22 904 1 1671 2 1705 2 l61 1 84 120 c46 66 133 191 192 278 69 101 118 163 137 172 78 41 111 40 -1927 40 -1951 0 -1955 0 -1948 -20z M8934 10783 c-52 -29 -153 -117 -149 -129 2 -6 -2 -18 -8 -25 -7 -8 22 18 63 57 41 38 89 80 105 92 36 26 31 28 -11 5z M8625 10532 c-22 -20 -39 -41 -37 -45 1 -5 -1 -6 -6 -3 -4 2 -35 -21 -67 -52 -33 -31 -63 -56 -67 -56 -5 -1 -8 -5 -9 -11 0 -5 -12 -23 -27 -39 l-27 -29 35 23 c44 31 65 51 65 64 1 6 6 10 13 9 7 -2 12 2 12 8 0 5 4 8 9 4 5 -3 16 3 23 12 7 10 33 36 58 58 25 22 45 44 45 50 0 5 6 10 14 10 8 0 15 8 17 18 3 25 -6 21 -51 -21z M8327 10254 c-16 -13 -33 -21 -39 -18 -7 4 -8 2 -4 -4 4 -7 2 -12 -4 -12 -17 0 -57 -44 -57 -63 0 -13 12 -7 45 25 25 24 56 53 70 66 33 32 24 36 -11 6z M8133 10103 c-13 -9 -23 -22 -23 -29 0 -8 -3 -14 -7 -14 -5 0 -21 -11 -37 -23 -21 -17 -24 -24 -13 -24 10 0 17 4 17 9 0 5 3 7 8 5 4 -3 31 16 60 42 52 46 48 70 -5 34z M20320 9942 c-3 -106 2 -1967 5 -1971 3 -2 12 4 19 15 14 19 50 19 1720 24 l1705 5 56 80 c31 44 118 172 194 285 95 140 149 210 170 222 17 9 31 22 31 28 0 7 -500 10 -1624 10 -893 0 -1631 3 -1640 6 -14 5 -16 41 -16 301 0 170 -4 302 -10 312 -7 14 -5 23 8 34 15 14 114 15 867 15 468 0 1015 0 1216 1 l367 1 159 223 c88 122 179 250 202 284 28 42 55 70 82 84 22 11 39 25 37 30 -4 12 -3548 22 -3548 11z M7770 9674 c0 -10 159 -160 194 -183 12 -8 46 -37 76 -65 212 -194 271 -247 400 -358 80 -69 179 -156 221 -194 41 -38 116 -103 165 -144 49 -41 114 -98 144 -126 30 -29 71 -64 90 -80 19 -15 65 -55 101 -88 238 -220 474 -427 497 -440 21 -10 -142 147 -228 221 -93 79 -280 246 -374 333 -45 41 -133 121 -196 176 -63 56 -162 143 -220 194 -58 51 -161 143 -230 204 -69 61 -172 150 -230 198 -58 47 -155 132 -216 189 -100 95 -123 115 -177 158 -9 7 -17 10 -17 5z M7125 9075 c107 -104 246 -219 193 -159 -9 10 -17 24 -18 29 -1 6 -4 12 -7 15 -4 3 -3 -1 1 -7 15 -27 -12 -11 -54 32 -24 25 -40 45 -36 45 5 0 3 7 -4 15 -6 8 -15 14 -18 13 -19 -2 -33 3 -28 11 3 4 -6 19 -21 32 -14 13 -23 18 -19 12 8 -14 -4 -17 -20 -5 -5 4 9 -11 31 -33z M5270 8016 c-52 -18 -135 -38 -185 -45 -107 -15 -132 -23 -90 -29 41 -5 167 16 240 40 64 22 145 58 145 64 0 6 -10 4 -110 -30z M9035 7963 c-38 -2 -74 -8 -79 -14 -12 -11 409 -11 439 0 46 18 -135 25 -360 14z M8500 7950 c0 -6 38 -10 95 -10 57 0 95 4 95 10 0 6 -38 10 -95 10 -57 0 -95 -4 -95 -10z";
+
+const TYPE_NEON =
+  "M9577 11345 c-9 -8 -17 -20 -19 -27 -3 -9 -168 -12 -680 -12 l-675 -1 -140 -130 c-77 -72 -238 -218 -359 -325 -120 -107 -252 -226 -294 -265 -42 -38 -127 -115 -190 -170 -62 -55 -145 -129 -185 -165 -104 -95 -212 -190 -280 -247 -33 -28 -80 -72 -105 -98 -59 -61 -169 -149 -177 -141 -6 6 127 135 239 232 56 48 196 174 454 409 193 176 375 340 489 441 55 49 134 121 175 159 123 113 242 218 287 253 24 19 52 48 64 65 20 29 18 28 -22 -10 -24 -22 -85 -76 -135 -120 -50 -43 -252 -222 -449 -398 -197 -176 -384 -342 -415 -370 -32 -27 -138 -122 -235 -210 -97 -88 -224 -201 -281 -252 -199 -175 -258 -232 -243 -237 44 -13 50 -17 47 -27 -5 -15 95 -110 119 -114 10 -1 17 -8 15 -15 -1 -6 1 -9 6 -6 11 7 94 -59 225 -180 59 -54 134 -121 165 -148 98 -84 282 -246 302 -266 3 -3 23 -20 45 -39 22 -18 63 -54 90 -80 28 -25 86 -77 130 -116 44 -38 114 -101 155 -140 42 -38 122 -110 179 -160 57 -49 131 -115 165 -146 33 -31 117 -105 186 -165 69 -60 136 -119 150 -132 l25 -23 620 2 620 3 48 -23 c95 -46 70 -8 -84 129 -82 74 -188 169 -234 210 -46 41 -179 160 -297 265 -117 104 -229 204 -248 221 -19 17 -84 75 -145 128 -60 54 -175 155 -255 225 -80 71 -260 229 -400 353 -140 123 -256 230 -257 238 -2 8 10 30 26 48 18 20 28 40 24 50 -4 13 -3 14 5 4 9 -14 82 41 189 143 42 39 56 63 31 50 -7 -4 13 19 45 49 53 51 89 74 71 44 -12 -18 48 27 76 58 14 15 19 24 13 20 -49 -28 61 81 192 190 39 32 104 89 146 126 70 63 99 83 84 58 -3 -5 -2 -10 3 -10 12 0 62 54 62 67 0 6 8 17 18 24 15 13 16 12 3 -3 -7 -10 -9 -18 -4 -18 13 0 65 55 58 62 -8 7 91 88 135 109 20 10 50 34 66 54 16 19 43 52 59 72 61 75 334 290 383 303 48 12 142 96 142 127 0 17 -5 16 -23 -2z m-1748 -1710 c14 -11 74 -67 135 -124 61 -57 158 -142 216 -189 58 -48 161 -137 230 -198 69 -61 172 -153 230 -204 58 -51 157 -138 220 -194 63 -55 151 -135 196 -176 94 -87 281 -254 374 -333 86 -74 249 -231 228 -221 -23 13 -259 220 -497 440 -36 33 -82 73 -101 88 -19 16 -60 51 -90 80 -30 28 -95 85 -144 126 -49 41 -124 106 -165 144 -42 38 -141 125 -221 194 -129 111 -188 164 -400 358 -30 28 -64 57 -76 65 -35 23 -194 173 -194 183 0 5 8 2 17 -5 10 -8 28 -23 42 -34z M9995 8785 c15 -90 109 -271 126 -243 5 8 4 17 -4 23 -6 6 -13 15 -14 20 -1 6 -27 62 -58 125 -44 90 -55 106 -50 75z";
+
+/** Gemeinsames `transform`: potrace legt den Ursprung unten links. */
+const FLIP = "translate(0,2508) scale(0.1,-0.1)";
+
 /**
- * Der Roller als reine SVG-Gruppe im 48×48-Koordinatenraum.
+ * Der gemessene Kasten des Rollers. Wer die Glyphe in eine fremde Zeichnung
+ * setzt, braucht ihn – sonst muss er ihn nachmessen und rät am Ende.
+ */
+export const SCOOTER_VIEWBOX = "645 555 1313 811";
+
+/**
+ * Der Roller als Zeichnung ohne eigenes `<svg>`.
  *
- * Als `<g>` statt als eigenes `<svg>`, damit die Glyphe in fremde Zeichnungen
- * eingesetzt werden kann — im Siegel etwa sitzt sie ohne den Messring mitten in
- * der Umschrift. Farben kommen über Utility-Klassen, nicht über
- * Präsentationsattribute: `var()` wird in Attributen nicht aufgelöst.
+ * Als Fragment, damit die Glyphe in fremde Koordinatenräume eingesetzt werden
+ * kann – das Siegel etwa setzt sie über den Schriftzug in seinen 200er-Raum.
+ * Wer sie einsetzt, umgibt sie mit einem `<svg viewBox={SCOOTER_VIEWBOX}>`.
  */
 export function ScooterGlyph() {
   return (
-    <>
-      <g
-        className="stroke-current"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      >
-        <circle cx="13" cy="34" r="6" />
-        <circle cx="35" cy="34" r="6" />
-        {/* Lenkrohr nach hinten geneigt wie am echten Gerät, plus Lenkstange */}
-        <path d="M34.6 28.1 29.4 12.6" />
-        <path d="M25 11.8h8.8" />
-      </g>
-
-      {/* Trittbrett auf Achshöhe: verbindet beide Räder, ohne sie zu schneiden.
-          Als einziger Vollton trägt es die Marke auch im Ein-Farb-Druck. */}
-      <path
-        d="M19.6 34h9.8"
-        className="stroke-flame"
-        strokeWidth="3.4"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Messpunkt in der Vorderradnabe: der geprüfte Punkt */}
-      <circle cx="35" cy="34" r="1.9" className="fill-flame" />
-    </>
+    <g transform={FLIP}>
+      <path d={SCOOTER_METAL} fill="currentColor" />
+      <path d={SCOOTER_NEON} className="fill-neon" />
+    </g>
   );
 }
 
 /**
- * Bildmarke: Roller im Messring.
+ * Nur der Roller, ohne Schriftzug.
  *
- * Der Name SKOPE trägt das griechische „skopein" — betrachten, prüfen. Genau
- * darauf liegt das Versprechen der Werkstatt („erst messen, dann tauschen"),
- * deshalb sitzt der Roller in einem offenen Messring mit Skalenstrichen statt
- * in einem beliebigen Kreis. Der Ring öffnet sich nach vorn rechts, damit die
- * Fahrtrichtung frei bleibt und die Marke nicht statisch wirkt.
+ * Für Stellen, an denen der Name schon danebensteht – das Siegel etwa trägt
+ * „SKOPE" bereits als Satzschrift und bräuchte die Wortmarke ein zweites Mal
+ * nicht.
  */
 export function ScooterMark({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox={SCOOTER_VIEWBOX}
       fill="none"
       aria-hidden="true"
       className={cn("h-7 w-auto", className)}
     >
-      {/* Messring — bei 28 px verschmelzen die Skalenstriche optisch zu einem
-          ruhigen Ring, erst bei großer Darstellung werden sie einzeln lesbar. */}
-      <g
-        className="stroke-current"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        opacity="0.45"
-      >
-        <path d="M40.5 13.2A22 22 0 1 0 43.6 28" />
-        <path d="M24 2v3.4" />
-        <path d="M46 24h-3.4" />
-        <path d="M24 46v-3.4" />
-        <path d="M2 24h3.4" />
-      </g>
+      <ScooterGlyph />
+    </svg>
+  );
+}
 
-      {/* Etwas verkleinert, damit Lenkstange und Räder den Ring nicht berühren */}
-      <g transform="translate(24 25) scale(0.82) translate(-24 -25)">
-        <ScooterGlyph />
+/**
+ * Der Schriftzug allein, ohne Roller.
+ *
+ * Bei einem Seitenverhältnis von 6,8 : 1 stehen die Buchstaben hier auch bei
+ * 20 px Höhe noch sauber – in der Vollmarke wären sie bei derselben Bauhöhe
+ * nur ein Drittel so groß, weil der Roller zwei Drittel der Höhe belegt.
+ */
+export function Wordmark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="99 1372 2323 343"
+      fill="none"
+      role="img"
+      aria-label="SKOPE"
+      className={cn("h-5 w-auto", className)}
+    >
+      <g transform={FLIP}>
+        <path d={TYPE_METAL} fill="currentColor" />
+        <path d={TYPE_NEON} className="fill-neon" />
       </g>
     </svg>
   );
 }
 
 /**
- * Wortmarke mit Bildmarke — Hauptlogo in Header und Footer.
+ * Die Vollmarke: Roller über dem Schriftzug, so wie geliefert.
  *
- * `showSub` blendet die Zeile „Gebrauchtwarenhandel" aus, wo der Platz eng ist.
- * Die Haarlinie zwischen Marke und Schrift gibt beiden Teilen eine eigene Zone,
- * statt sie zu einer diffusen Gruppe verlaufen zu lassen.
+ * Für großzügige Platzierungen – Footer, Siegelseite, Social Preview. Im
+ * Seitenkopf steht sie nicht: Dort stünden die Buchstaben bei 56 px Bauhöhe
+ * auf 16 px Versalhöhe, und die feinen Rollerkonturen fallen bei dieser Größe
+ * ohnehin zu einem grauen Strich zusammen.
+ */
+export function LogoLockup({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="99 555 2323 1160"
+      fill="none"
+      role="img"
+      aria-label="SKOPE"
+      className={cn("h-16 w-auto", className)}
+    >
+      <g transform={FLIP}>
+        <path d={SCOOTER_METAL} fill="currentColor" />
+        <path d={TYPE_METAL} fill="currentColor" />
+        <path d={SCOOTER_NEON} className="fill-neon" />
+        <path d={TYPE_NEON} className="fill-neon" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Hauptlogo in Seitenkopf und Footer.
+ *
+ * Nebeneinander statt übereinander. Die gelieferte Marke ist gestapelt und
+ * hat damit ein Seitenverhältnis von 2 : 1 – in einem 80 px hohen Seitenkopf
+ * bleiben davon 56 px Bauhöhe und 16 px Versalhöhe für „SKOPE" übrig, also
+ * kleiner als der Fließtext daneben. Als waagerechte Lockup-Variante trägt
+ * der Roller volle 40 px und die Buchstaben 22 px, ohne dass die Marke breiter
+ * baut als der frühere Schriftzug.
+ *
+ * Beide Teile stammen aus derselben Zeichnung; es ist dieselbe Marke, nur
+ * anders gesetzt.
  */
 export function Logo({
   className,
@@ -95,18 +157,12 @@ export function Logo({
   showSub?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <ScooterMark className="h-8 w-auto" />
-      <span
-        aria-hidden="true"
-        className="h-6 w-px shrink-0 bg-current opacity-20"
-      />
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-[1.3rem] leading-none font-extrabold tracking-[-0.045em]">
-          SKOPE
-        </span>
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      <ScooterMark className="h-5 w-auto md:h-6" />
+      <span className="inline-flex flex-col gap-1">
+        <Wordmark className="h-[1.05rem] w-auto md:h-[1.2rem]" />
         {showSub ? (
-          <span className="font-display mt-1 text-[0.5rem] leading-none font-semibold tracking-[0.24em] uppercase opacity-55">
+          <span className="text-[0.5rem] leading-none font-semibold tracking-[0.24em] uppercase opacity-55">
             Gebrauchtwarenhandel
           </span>
         ) : null}

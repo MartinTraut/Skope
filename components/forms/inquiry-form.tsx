@@ -31,7 +31,7 @@ function subscribeToUrl(onChange: () => void) {
  * `:focus-visible`-Outline aus globals.css muss hier greifen dürfen.
  */
 const fieldClass =
-  "w-full rounded-sm border border-current/45 bg-transparent px-4 py-3.5 text-current placeholder:text-current/55 transition-colors duration-200 focus:border-flame";
+  "w-full rounded-md border border-current/45 bg-transparent px-4 py-3.5 text-current placeholder:text-current/55 transition-colors duration-200 focus:border-accent";
 
 const labelClass =
   "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-70";
@@ -45,7 +45,7 @@ export function InquiryForm({
   topics: readonly ContactTopic[];
   defaultTopic?: ContactTopic;
   /**
-   * Wertet `?anliegen=` aus — die Tarifkarten verlinken so auf das Formular.
+   * Wertet `?anliegen=` aus – die Tarifkarten verlinken so auf das Formular.
    * Bewusst im Client statt über searchParams der Seite: sonst müsste
    * /kontakt bei jedem Aufruf serverseitig gerendert werden.
    */
@@ -64,12 +64,14 @@ export function InquiryForm({
     () => window.location.search,
     () => "",
   );
-  const slug = topicFromQuery ? new URLSearchParams(search).get("anliegen") : null;
+  const slug = topicFromQuery
+    ? new URLSearchParams(search).get("anliegen")
+    : null;
 
   /**
    * Ohne Vorauswahl nur dort, wo die volle Liste angeboten wird: Bei vierzehn
    * Optionen und dem Anliegen als erstem Feld würde eine stille Vorbelegung
-   * regelmäßig überlesen — und eine Kaufanfrage käme als Reparatur an. Auf den
+   * regelmäßig überlesen – und eine Kaufanfrage käme als Reparatur an. Auf den
    * Leistungsseiten ist die Teilmenge dagegen eindeutig, dort ist die
    * Vorauswahl die schnellere Bedienung.
    */
@@ -85,7 +87,7 @@ export function InquiryForm({
   /**
    * Ohne Fokuswechsel bekommen Tastatur- und Screenreader-Nutzer nach dem
    * Absenden gar keine Rückmeldung: Der fokussierte Button verschwindet und
-   * der Fokus fällt zurück auf <body>. Das gilt auch für den Fallback — dort
+   * der Fokus fällt zurück auf <body>. Das gilt auch für den Fallback – dort
    * steht der einzige verbliebene Weg zur Werkstatt.
    */
   React.useEffect(() => {
@@ -124,7 +126,7 @@ export function InquiryForm({
         <div className="mt-7 flex flex-col gap-3 border-t border-current/15 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8">
           <a
             href={site.phone.href}
-            className="inline-flex items-center gap-2.5 font-display font-semibold text-flame hover:underline"
+            className="inline-flex items-center gap-2.5 font-display font-semibold text-accent hover:underline"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
@@ -147,7 +149,7 @@ export function InquiryForm({
 
   return (
     <form action={action} className={cn("flex flex-col gap-6", className)}>
-      {/* Honeypot — für Menschen unsichtbar. Neutraler Feldname, damit
+      {/* Honeypot – für Menschen unsichtbar. Neutraler Feldname, damit
           Passwortmanager und Autofill ihn nicht befüllen. */}
       <div aria-hidden="true" className="absolute -left-[9999px]">
         <label htmlFor="company_ref">Firmenreferenz</label>
@@ -164,7 +166,7 @@ export function InquiryForm({
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          className="rounded-sm border border-flame/50 bg-flame/8 p-5"
+          className="rounded-md border border-accent bg-accent/10 p-5"
         >
           <p className="font-display font-semibold">
             {errorCount === 1
@@ -174,7 +176,7 @@ export function InquiryForm({
           <ul className="mt-2 list-disc pl-5 text-sm">
             {Object.entries(state.errors ?? {}).map(([field, message]) => (
               <li key={field}>
-                <a href={`#${field}`} className="text-flame underline">
+                <a href={`#${field}`} className="text-accent underline">
                   {message}
                 </a>
               </li>
@@ -184,13 +186,14 @@ export function InquiryForm({
       ) : null}
 
       <p className="text-sm opacity-70">
-        Mit <span className="text-flame">*</span> markierte Felder sind
+        Mit <span className="text-accent">*</span> markierte Felder sind
         Pflichtfelder.
       </p>
 
       <div className="flex flex-col gap-2">
         <label htmlFor="topic" className={labelClass}>
-          Anliegen {preselected === "" ? <span className="text-flame">*</span> : null}
+          Anliegen{" "}
+          {preselected === "" ? <span className="text-accent">*</span> : null}
         </label>
         <div className="relative">
           <select
@@ -204,12 +207,20 @@ export function InquiryForm({
             className={cn(fieldClass, "appearance-none pr-12")}
           >
             {preselected === "" ? (
-              <option value="" disabled className="bg-ink-800 text-paper">
+              <option
+                value=""
+                disabled
+                className="bg-ink-800 text-silver on-dark"
+              >
                 Bitte wählen
               </option>
             ) : null}
             {topics.map((topic) => (
-              <option key={topic} value={topic} className="bg-ink-800 text-paper">
+              <option
+                key={topic}
+                value={topic}
+                className="bg-ink-800 text-silver on-dark"
+              >
                 {topic}
               </option>
             ))}
@@ -220,7 +231,7 @@ export function InquiryForm({
           />
         </div>
         {state.errors?.topic ? (
-          <p id="topic-error" className="text-sm text-flame">
+          <p id="topic-error" className="text-sm text-accent">
             {state.errors.topic}
           </p>
         ) : null}
@@ -263,12 +274,12 @@ export function InquiryForm({
 
       <div className="flex flex-col gap-2">
         <label htmlFor="message" className={labelClass}>
-          Was ist los? <span className="text-flame">*</span>
+          Was ist los? <span className="text-accent">*</span>
         </label>
         {/* Als sichtbarer Hilfetext statt als Placeholder: die Anleitung darf
             nicht verschwinden, sobald jemand zu tippen beginnt. */}
         <p id="message-hint" className="text-sm opacity-70">
-          Fehlermeldung, Geräusch, Reichweite — und seit wann.
+          Fehlermeldung, Geräusch, Reichweite und seit wann.
         </p>
         <textarea
           id="message"
@@ -278,12 +289,14 @@ export function InquiryForm({
           defaultValue={state.values?.message}
           aria-invalid={state.errors?.message ? true : undefined}
           aria-describedby={
-            state.errors?.message ? "message-hint message-error" : "message-hint"
+            state.errors?.message
+              ? "message-hint message-error"
+              : "message-hint"
           }
           className={cn(fieldClass, "resize-y")}
         />
         {state.errors?.message ? (
-          <p id="message-error" className="text-sm text-flame">
+          <p id="message-error" className="text-sm text-accent">
             {state.errors.message}
           </p>
         ) : null}
@@ -294,25 +307,25 @@ export function InquiryForm({
           ref={fallbackRef}
           tabIndex={-1}
           role="alert"
-          className="flex items-start gap-3 rounded-sm border border-flame/50 bg-flame/8 p-5"
+          className="flex items-start gap-3 rounded-md border border-accent bg-accent/10 p-5"
         >
           <AlertCircle
             aria-hidden="true"
-            className="mt-0.5 size-5 shrink-0 text-flame"
+            className="mt-0.5 size-5 shrink-0 text-accent"
           />
           <div>
             <p className="leading-relaxed">{state.message}</p>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-display font-semibold">
               <a
                 href={site.phone.href}
-                className="inline-flex items-center gap-2 text-flame hover:underline"
+                className="inline-flex items-center gap-2 text-accent hover:underline"
               >
                 <Phone className="size-4" aria-hidden="true" />
                 <span className="tabular">{site.phone.display}</span>
               </a>
               <a
                 href={`mailto:${site.email}`}
-                className="break-all text-flame hover:underline"
+                className="break-all text-accent hover:underline"
               >
                 {site.email}
               </a>
@@ -332,7 +345,7 @@ export function InquiryForm({
             "Anfrage senden"
           )}
         </Button>
-        {/* Art. 13 DSGVO verlangt den Verweis an der Erhebungsstelle — und an
+        {/* Art. 13 DSGVO verlangt den Verweis an der Erhebungsstelle – und an
             genau dieser Stelle kostet ein fehlender Link Vertrauen. */}
         <p className="text-sm opacity-70">
           Ihre Daten nutzen wir ausschließlich zur Bearbeitung dieser Anfrage.
@@ -361,7 +374,7 @@ function Field({
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className={labelClass}>
         {label}
-        {props.required ? <span className="text-flame"> *</span> : null}
+        {props.required ? <span className="text-accent"> *</span> : null}
       </label>
       <input
         id={id}
@@ -372,7 +385,7 @@ function Field({
         {...props}
       />
       {error ? (
-        <p id={`${id}-error`} className="text-sm text-flame">
+        <p id={`${id}-error`} className="text-sm text-accent">
           {error}
         </p>
       ) : null}

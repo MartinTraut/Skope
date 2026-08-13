@@ -11,12 +11,12 @@ import { checkupIncludes, turnaround } from "@/lib/data/services";
  */
 export function Workshop() {
   return (
-    <Section tone="paper">
+    <Section tone="ink">
       <Container>
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-          {/* Bild — hochformatig, bricht das Raster der übrigen Sektionen */}
+          {/* Bild – hochformatig, bricht das Raster der übrigen Sektionen */}
           <Reveal className="lg:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-paper-200">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700">
               <Image
                 src="/img/werkstatt-service.jpg"
                 alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
@@ -25,7 +25,7 @@ export function Workshop() {
                 className="parallax object-cover"
               />
             </div>
-            <p className="mt-4 text-sm text-ink/65">
+            <p className="mt-4 text-sm text-current/65">
               Werkstatt Im Kampfrad 3, Neuenstadt am Kocher.
             </p>
           </Reveal>
@@ -34,12 +34,11 @@ export function Workshop() {
             <Reveal>
               <p className="eyebrow text-current/65">Der Sicherheits-Checkup</p>
               <h2 className="mt-5 text-[length:var(--text-display)]">
-                Was für 59,99 €<br />
-                tatsächlich passiert.
+                Was für 59,99 € tatsächlich passiert.
               </h2>
-              <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-ink/65">
+              <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
                 Der Checkup ist kein Blick über den Lenker. Er ist eine
-                vollständige Aufnahme des Zustands — dieselbe Prüfung, die jeder
+                vollständige Aufnahme des Zustands: dieselbe Prüfung, die jeder
                 Scooter durchläuft, bevor er unser Qualitätssiegel bekommt.
               </p>
             </Reveal>
@@ -49,12 +48,12 @@ export function Workshop() {
                 {checkupIncludes.map((item, i) => (
                   <li
                     key={item}
-                    className="flex items-baseline gap-4 border-b border-ink/12 py-4"
+                    className="flex items-baseline gap-4 border-b border-silver/12 py-4"
                   >
                     <span className="tabular font-display text-xs font-semibold text-current/65">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-ink/80">{item}</span>
+                    <span className="text-current/80">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -62,17 +61,17 @@ export function Workshop() {
 
             <Reveal delay={140}>
               <div className="mt-12">
-                <h3 className="eyebrow-plain text-ink/70">
+                <h3 className="eyebrow-plain text-current/70">
                   Wie lange es dauert
                 </h3>
                 <dl className="mt-5 flex flex-col gap-3">
                   {turnaround.map((row) => (
                     <div
                       key={row.label}
-                      className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-ink/12 pb-3"
+                      className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-silver/12 pb-3"
                     >
-                      <dt className="text-ink/70">{row.label}</dt>
-                      <dd className="font-display font-semibold tracking-tight text-ink">
+                      <dt className="text-current/70">{row.label}</dt>
+                      <dd className="font-display font-semibold tracking-tight text-silver">
                         {row.value}
                       </dd>
                     </div>
@@ -91,7 +90,7 @@ export function Workshop() {
                   href="/wartungsvertrag"
                   variant="quiet"
                   size="lg"
-                  className="text-ink"
+                  className="text-silver"
                 >
                   Checkup im Vertrag ab 17,99 €
                 </ButtonLink>

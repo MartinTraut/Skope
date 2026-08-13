@@ -1,4 +1,4 @@
-/** Leistungsdaten — Fakten und Preise 1:1 aus der Altseite. */
+/** Leistungsdaten – Fakten und Preise 1:1 aus der Altseite. */
 
 export type RepairArea = {
   slug: string;
@@ -25,7 +25,7 @@ export const repairAreas: RepairArea[] = [
     slug: "akku",
     title: "Akku-Service",
     description:
-      "Der Akku ist das teuerste Bauteil — und fast nie komplett defekt. Wir messen die tatsächliche Restkapazität, bevor über einen Austausch gesprochen wird.",
+      "Der Akku ist das teuerste Bauteil und fast nie komplett defekt. Wir messen die tatsächliche Restkapazität, bevor über einen Austausch gesprochen wird.",
     items: [
       "Kapazitätsmessung",
       "Zellentausch",
@@ -60,7 +60,7 @@ export const repairAreas: RepairArea[] = [
   },
 ];
 
-/** Preisanker aus der Altseite — Richtwerte, kein verbindliches Angebot. */
+/** Preisanker aus der Altseite – Richtwerte, kein verbindliches Angebot. */
 export const priceAnchors = [
   { label: "Sicherheits-Checkup (komplett)", price: "59,99 €", lead: true },
   { label: "Bremsbeläge", price: "ab 15 €" },
@@ -76,7 +76,7 @@ export const turnaround = [
   },
   {
     label: "Elektronik-Reparaturen",
-    value: "1 – 3 Werktage",
+    value: "1 bis 3 Werktage",
   },
   {
     label: "Premium-Wartungskunden",

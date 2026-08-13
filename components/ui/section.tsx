@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 
-/** Einheitliche Seitenbreite — ein Container, keine Sonderfälle. */
+/** Einheitliche Seitenbreite – ein Container, keine Sonderfälle. */
 export function Container({
   className,
   children,
@@ -10,15 +10,36 @@ export function Container({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-[82rem] px-6 md:px-10", className)}>
+    <div
+      className={cn("mx-auto w-full max-w-[82rem] px-6 md:px-10", className)}
+    >
       {children}
     </div>
   );
 }
 
 /**
- * Sektionsrahmen. `tone` steuert Grundfläche und Hairline-Farbe;
- * `.on-paper` kippt die Hairlines für helle Flächen mit.
+ * Sektionsrahmen. `tone` steuert die Grundfläche.
+ *
+ * Vier Töne, aber nur zwei Räume – und der Sprung zwischen den Räumen ist
+ * der eigentliche Rhythmus der Seite:
+ *
+ * - `ink`        satt Schwarz, der Normalfall
+ * - `ink-800`    eine Stufe heller im dunklen Raum
+ * - `silver`     helles Metall, trägt die dichten Lesestrecken
+ * - `silver-200` eine Stufe tiefer, für die abwechselnde helle Sektion
+ *
+ * Die Zwischenstufen sind bewusst keine eigenen Sektionsflächen. Eine frühere
+ * Fassung hatte vier Abstufungen, die alle im Dunkeln lagen und sich um
+ * wenige Prozent Helligkeit unterschieden. Auf einem normalen Display war
+ * davon nichts zu sehen: Die Startseite las sich über 10.653 px als eine
+ * einzige Fläche. Der Sprung von Schwarz auf Silber ist dagegen nicht zu
+ * übersehen — deshalb darf es ihn nur selten geben, sonst flackert die Seite.
+ *
+ * `text-*` und die Flächenklasse (`on-light` / `on-dark`) werden hier
+ * mitgesetzt, damit Kindelemente ihre Abstufungen über `text-current/70` und
+ * `text-accent` aus der Fläche ableiten können, statt eine feste Farbe zu
+ * verdrahten. Genau daran wäre der Wechsel sonst gescheitert.
  */
 export function Section({
   id,
@@ -27,15 +48,15 @@ export function Section({
   children,
 }: {
   id?: string;
-  tone?: "ink" | "ink-800" | "paper" | "petrol";
+  tone?: "silver" | "silver-200" | "ink" | "ink-800";
   className?: string;
   children: React.ReactNode;
 }) {
   const tones = {
-    ink: "bg-ink text-paper",
-    "ink-800": "bg-ink-800 text-paper",
-    paper: "on-paper bg-paper text-ink",
-    petrol: "bg-petrol-900 text-paper",
+    silver: "bg-silver text-ink on-light",
+    "silver-200": "bg-silver-200 text-ink on-light",
+    ink: "bg-ink text-silver on-dark",
+    "ink-800": "bg-ink-800 text-silver on-dark",
   } as const;
 
   return (
@@ -54,7 +75,7 @@ export function Section({
 
 /**
  * Sektionskopf: Eyebrow, H2 und optionaler Lead.
- * `align="split"` setzt die Headline links und den Lead rechts —
+ * `align="split"` setzt die Headline links und den Lead rechts –
  * das bricht die Mittelachse auf und wirkt weniger schematisch.
  */
 export function SectionHead({

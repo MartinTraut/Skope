@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 /**
  * Ein einziger IntersectionObserver für die gesamte Seite.
  *
- * Vorher legte jede Instanz einen eigenen an — auf der Startseite über
+ * Vorher legte jede Instanz einen eigenen an – auf der Startseite über
  * dreißig, auf /reparatur über zwanzig. Die Beobachtungsparameter sind für
  * alle identisch, also reicht einer: Er nimmt Elemente auf, setzt beim ersten
  * Sichtkontakt das Attribut und entlässt sie wieder. Das ist die einzige
@@ -30,13 +30,7 @@ function shared() {
 }
 
 type RevealTag =
-  | "div"
-  | "section"
-  | "article"
-  | "li"
-  | "header"
-  | "figure"
-  | "figcaption";
+  "div" | "section" | "article" | "li" | "header" | "figure" | "figcaption";
 
 /**
  * Scroll-Reveal ohne Motion-Library.
@@ -60,12 +54,12 @@ export function Reveal({
 }: {
   children: React.ReactNode;
   className?: string;
-  /** Staffelung in ms — bewusst klein halten (max. ~240 ms). */
+  /** Staffelung in ms – bewusst klein halten (max. ~240 ms). */
   delay?: number;
   immediate?: boolean;
   /**
    * Masken-Reveal statt Einblenden: Der Inhalt wird von oben nach unten
-   * freigegeben. Nur für große Überschriften — auf Fließtext wirkt es unruhig.
+   * freigegeben. Nur für große Überschriften – auf Fließtext wirkt es unruhig.
    */
   mask?: boolean;
   as?: RevealTag;
@@ -96,11 +90,7 @@ export function Reveal({
       }
       {...rest}
     >
-      {mask ? (
-        <span className="reveal-mask-inner">{children}</span>
-      ) : (
-        children
-      )}
+      {mask ? <span className="reveal-mask-inner">{children}</span> : children}
     </Element>
   );
 }

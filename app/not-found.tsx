@@ -8,18 +8,18 @@ import { nav } from "@/lib/site";
 
 export default function NotFound() {
   return (
-    <section className="relative flex min-h-[70svh] items-center overflow-hidden bg-ink pt-32 pb-24">
+    <section className="relative flex min-h-[70svh] items-center overflow-hidden bg-ink pt-32 pb-24 text-silver on-dark">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 grid-veil opacity-60"
+        className="pointer-events-none absolute inset-0 opacity-60"
       />
       <Container className="relative">
         <p className="eyebrow text-current/65">Fehler 404</p>
         <h1 className="mt-6 max-w-2xl text-[length:var(--text-display)]">
           Diese Seite gibt es nicht mehr.
         </h1>
-        <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-paper/65">
-          Vielleicht hat sich die Adresse geändert. Diese Wege führen weiter —
+        <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
+          Vielleicht hat sich die Adresse geändert. Diese Wege führen weiter,
           oder rufen Sie einfach kurz an.
         </p>
 
@@ -30,12 +30,12 @@ export default function NotFound() {
           <PhoneButton variant="outline" />
         </div>
 
-        <ul className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/12 pt-8">
+        <ul className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-current/12 pt-8">
           {nav.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="text-paper/60 transition-colors hover:text-flame"
+                className="text-current/60 transition-colors hover:text-accent"
               >
                 {item.label}
               </Link>

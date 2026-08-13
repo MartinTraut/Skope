@@ -1,4 +1,4 @@
-/** Wartungsverträge — Preise und Leistungen 1:1 aus der Altseite. */
+/** Wartungsverträge – Preise und Leistungen 1:1 aus der Altseite. */
 
 export type Plan = {
   id: "basis" | "premium";
@@ -19,7 +19,7 @@ export const plans: Plan[] = [
   {
     id: "basis",
     name: "Basis",
-    price: "130,–",
+    price: "130",
     priceValue: "130.00",
     period: "pro Jahr",
     paymentType: "Jährlich",
@@ -57,6 +57,6 @@ export const plans: Plan[] = [
   },
 ];
 
-/** Was ein Vertrag nicht abdeckt — steht so auf der Altseite. */
+/** Was ein Vertrag nicht abdeckt – steht so auf der Altseite. */
 export const planExclusions =
-  "Die Service-Verträge decken die reguläre Wartung ab. Schäden durch unsachgemäßen Umgang — Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle — sind ausgeschlossen. Benötigte Ersatzteile berechnen wir separat und weisen sie einzeln auf der Rechnung aus.";
+  "Die Service-Verträge decken die reguläre Wartung ab. Schäden durch unsachgemäßen Umgang sind ausgeschlossen: Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle. Benötigte Ersatzteile berechnen wir separat und weisen sie einzeln auf der Rechnung aus.";

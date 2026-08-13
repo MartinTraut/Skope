@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Wohin „Anfrage" auf der jeweiligen Seite führt.
- * Seiten mit eigenem Formular bekommen den Sprung dorthin — ein Seitenwechsel
+ * Seiten mit eigenem Formular bekommen den Sprung dorthin – ein Seitenwechsel
  * mitten im Lesefluss ist der teuerste Schritt im Conversion-Pfad.
  */
 const FORM_ANCHOR: Record<string, string> = {
@@ -38,8 +38,7 @@ export function MobileCta() {
   const [shown, setShown] = React.useState(false);
 
   React.useEffect(() => {
-    const onScroll = () =>
-      setShown(window.scrollY > window.innerHeight * 0.55);
+    const onScroll = () => setShown(window.scrollY > window.innerHeight * 0.55);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -58,7 +57,7 @@ export function MobileCta() {
       <div
         id="mobile-cta"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-40 border-t border-white/12 bg-ink/95 backdrop-blur-xl lg:hidden",
+          "liquid-glass fixed inset-x-0 bottom-0 z-40 text-silver lg:hidden on-dark",
           "pb-[env(safe-area-inset-bottom)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
           shown
             ? "translate-y-0 opacity-100"
@@ -68,14 +67,14 @@ export function MobileCta() {
         <div className="flex items-stretch gap-2.5 px-4 py-3">
           <a
             href={site.phone.href}
-            className="flex h-12 flex-1 items-center justify-center gap-2.5 rounded-sm bg-flame font-display font-semibold tracking-tight text-ink"
+            className="flex h-12 flex-1 items-center justify-center gap-2.5 rounded-md bg-accent font-display font-semibold tracking-tight text-ink"
           >
             <Phone className="size-4" aria-hidden="true" />
             Anrufen
           </a>
           <Link
             href={href}
-            className="flex h-12 flex-1 items-center justify-center gap-2.5 rounded-sm border border-white/30 font-display font-semibold tracking-tight text-paper"
+            className="flex h-12 flex-1 items-center justify-center gap-2.5 rounded-md border border-current/30 font-display font-semibold tracking-tight text-silver"
           >
             <MessageSquareText className="size-4" aria-hidden="true" />
             Anfrage

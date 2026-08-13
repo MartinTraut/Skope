@@ -11,9 +11,10 @@ import { brands } from "@/lib/data/services";
 import { JsonLd, breadcrumb, pageGraph, reviews } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress, site } from "@/lib/site";
+import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
-  title: "E-Scooter Werkstatt Neuenstadt — über uns",
+  title: "Über uns: E-Scooter Werkstatt Neuenstadt",
   description:
     "Thomas Zielke betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Über 500 reparierte E-Scooter, Verkauf und Service in einer Hand.",
   path: "/ueber-uns",
@@ -24,7 +25,7 @@ export const metadata: Metadata = pageMeta({
 const principles = [
   {
     title: "Erst messen, dann tauschen",
-    text: "Ein Bauteil wird ersetzt, wenn die Messung es hergibt — nicht, weil es der schnellste Weg zur Rechnung wäre.",
+    text: "Ein Bauteil wird ersetzt, wenn die Messung es hergibt, nicht, weil es der schnellste Weg zur Rechnung wäre.",
   },
   {
     title: "Preis vor der Arbeit",
@@ -36,7 +37,7 @@ const principles = [
   },
   {
     title: "Nichts wird erfunden",
-    text: "Wenn sich eine Reparatur nicht mehr rechnet, sagen wir das — und verwerten das Altgerät kostenlos.",
+    text: "Wenn sich eine Reparatur nicht mehr rechnet, sagen wir das und verwerten das Altgerät kostenlos.",
   },
 ];
 
@@ -48,19 +49,17 @@ export default function AboutPage() {
         eyebrow="Die Werkstatt"
         title={
           <>
-            Über 500 Scooter.
-            <br />
-            Ein Ansprechpartner.
+            Über <Mark>500</Mark> Scooter. Ein Ansprechpartner.
           </>
         }
-        lead={`${site.owner} betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Verkauf, Reparatur, Wartung und Versicherung laufen über dieselbe Person — Sie erklären Ihr Problem einmal, nicht dreimal.`}
+        lead={`${site.owner} betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Verkauf, Reparatur, Wartung und Versicherung laufen über dieselbe Person. Sie erklären Ihr Problem einmal, nicht dreimal.`}
       />
 
-      <Section tone="ink-800">
+      <Section tone="silver">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-white/12 bg-ink">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-ink text-silver on-dark">
                 <Image
                   src="/img/werkstatt-service.jpg"
                   alt="Arbeit an einem eingespannten E-Scooter über einer Werkbank mit sortiertem Werkzeug"
@@ -70,28 +69,30 @@ export default function AboutPage() {
                 />
               </div>
               {/* TODO Betreiber: durch ein echtes Foto von Thomas Zielke und der
-                  Werkstatt ersetzen — nichts baut mehr Vertrauen auf als das. */}
-              <p className="mt-4 text-sm text-paper/60">
+                  Werkstatt ersetzen – nichts baut mehr Vertrauen auf als das. */}
+              <p className="mt-4 text-sm text-current/60">
                 Werkstatt {fullAddress}.
               </p>
 
               {/* Füllt die kurze linke Spalte mit echtem Nutzen statt Leerraum */}
-              <dl className="mt-8 rounded-lg border border-white/12 p-7">
-                <div className="border-b border-white/10 pb-4">
-                  <dt className="text-sm text-paper/60">Betrieb</dt>
+              <dl className="mt-8 rounded-lg border border-current/12 p-7">
+                <div className="border-b border-current/10 pb-4">
+                  <dt className="text-sm text-current/60">Betrieb</dt>
                   <dd className="mt-1 font-display text-lg font-bold tracking-tight">
                     Einzelunternehmen, Inhaber {site.owner}
                   </dd>
                 </div>
-                <div className="border-b border-white/10 py-4">
-                  <dt className="text-sm text-paper/60">Reparierte E-Scooter</dt>
+                <div className="border-b border-current/10 py-4">
+                  <dt className="text-sm text-current/60">
+                    Reparierte E-Scooter
+                  </dt>
                   <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
                     über 500
                   </dd>
                 </div>
                 <div className="pt-4">
-                  <dt className="text-sm text-paper/60">Erreichbarkeit</dt>
-                  <dd className="mt-1 leading-relaxed text-paper/80">
+                  <dt className="text-sm text-current/60">Erreichbarkeit</dt>
+                  <dd className="mt-1 leading-relaxed text-current/80">
                     {site.openingHours}
                   </dd>
                 </div>
@@ -100,22 +101,22 @@ export default function AboutPage() {
 
             <div className="lg:col-span-7">
               <Reveal delay={70}>
-                <p className="eyebrow text-current/65">Wie hier gearbeitet wird</p>
+                <p className="eyebrow text-current/65">
+                  Wie hier gearbeitet wird
+                </p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Vier Grundsätze,
-                  <br />
-                  an denen sich alles misst.
+                  Vier Grundsätze, an denen sich alles misst.
                 </h2>
               </Reveal>
 
               <dl className="mt-12">
                 {principles.map((item, i) => (
                   <Reveal key={item.title} delay={i * 70}>
-                    <div className="border-t border-white/12 py-6">
+                    <div className="border-t border-current/12 py-6">
                       <dt className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
                         {item.title}
                       </dt>
-                      <dd className="mt-2.5 max-w-xl leading-relaxed text-paper/65">
+                      <dd className="mt-2.5 max-w-xl leading-relaxed text-current/65">
                         {item.text}
                       </dd>
                     </div>
@@ -124,13 +125,13 @@ export default function AboutPage() {
               </dl>
 
               <Reveal delay={120}>
-                <div className="mt-12 border-t border-white/12 pt-8">
-                  <h3 className="eyebrow-plain text-paper/70">
+                <div className="mt-12 border-t border-current/12 pt-8">
+                  <h3 className="eyebrow-plain text-current/70">
                     Marken im Werkstattalltag
                   </h3>
-                  <p className="mt-4 leading-relaxed text-paper/65">
-                    {brands.join(" · ")} — und weitere. Auch exotische Modelle
-                    und Importgeräte sehen wir uns an; bei über 500 reparierten
+                  <p className="mt-4 leading-relaxed text-current/65">
+                    {brands.join(" · ")} und weitere. Auch exotische Modelle und
+                    Importgeräte sehen wir uns an; bei über 500 reparierten
                     Scootern ist kaum eine Bauform neu.
                   </p>
                 </div>
@@ -145,8 +146,12 @@ export default function AboutPage() {
 
       <CtaBand
         eyebrow="Kennenlernen"
-        title="Am besten persönlich."
-        text={`Kommen Sie in der Werkstatt vorbei — ${fullAddress}. Ein kurzer Anruf vorher stellt sicher, dass jemand da ist.`}
+        title={
+          <>
+            Am besten <Mark>persönlich</Mark>.
+          </>
+        }
+        text={`Kommen Sie in der Werkstatt vorbei, ${fullAddress}. Ein kurzer Anruf vorher stellt sicher, dass jemand da ist.`}
       />
 
       <JsonLd

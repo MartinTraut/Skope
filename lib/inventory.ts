@@ -3,7 +3,7 @@
  *
  * TODO Betreiber: Hier die tatsächlich verfügbaren Geräte pflegen.
  * Der alte Shopify-Shop war inaktiv, echte Bestandsdaten lagen beim Relaunch
- * nicht vor — deshalb bewusst leer statt mit erfundenen Modellen und Preisen
+ * nicht vor – deshalb bewusst leer statt mit erfundenen Modellen und Preisen
  * gefüllt. Solange die Liste leer ist, zeigt die Seite den Anfrage-Weg;
  * sobald Einträge existieren, erscheint automatisch das Bestandsraster.
  *
