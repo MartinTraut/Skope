@@ -10,6 +10,7 @@
  */
 
 import type { FaqItem } from "@/lib/data/faq";
+import { inventory } from "@/lib/inventory";
 import { testimonials } from "@/lib/data/testimonials";
 import {
   fullAddress,
@@ -254,6 +255,53 @@ export function refurbishedService(): Node {
     path: "/e-scooter",
     serviceType: "Verkauf generalüberholter Elektrokleinstfahrzeuge",
   });
+}
+
+/**
+ * Bestandsgeräte als Product mit Offer.
+ *
+ * Der Kommentar über `refurbishedService()` nennt den Grund, warum der
+ * Verkauf dort als Service steht: ein Product ohne `offers` ist ein Fehler in
+ * der Search Console. Sobald ein Gerät mit Preis und Bildern sichtbar auf der
+ * Seite steht, kehrt sich das um – dann sind alle Pflichtfelder da, und genau
+ * dieser Knoten ist es, der in der Suche Preis und Verfügbarkeit trägt.
+ * Deshalb hängt die Ausgabe an `inventory`: leerer Bestand, kein Product.
+ *
+ * `itemCondition` steht auf RefurbishedCondition und nicht auf UsedCondition,
+ * weil jedes Gerät die Werkstattprüfung durchlaufen hat. Das ist der Zustand,
+ * den das Siegel beschreibt.
+ */
+export function inventoryProducts(): Node[] {
+  return inventory.map((item) => ({
+    "@type": "Product",
+    "@id": `${site.url}/e-scooter#${item.id}`,
+    name: item.model,
+    description: item.summary,
+    image: item.images.map((image) => `${site.url}${image.src}`),
+    itemCondition: "https://schema.org/RefurbishedCondition",
+    additionalProperty: item.specs.map((spec) => ({
+      "@type": "PropertyValue",
+      name: spec.label,
+      value: spec.value,
+    })),
+    offers: {
+      "@type": "Offer",
+      price: item.priceValue,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/RefurbishedCondition",
+      url: `${site.url}/e-scooter#bestand`,
+      seller: { "@id": ORG_ID },
+      warranty: {
+        "@type": "WarrantyPromise",
+        durationOfWarranty: {
+          "@type": "QuantitativeValue",
+          value: proof.warrantyYears,
+          unitCode: "ANN",
+        },
+      },
+    },
+  }));
 }
 
 /**

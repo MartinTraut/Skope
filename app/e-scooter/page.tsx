@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { BadgeCheck, PhoneCall } from "lucide-react";
 
 import { Seal } from "@/components/brand/seal";
@@ -9,6 +8,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/ui/faq";
+import { Gallery } from "@/components/ui/gallery";
 import { PageHeader } from "@/components/ui/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
@@ -20,6 +20,7 @@ import {
   JsonLd,
   breadcrumb,
   faqPage,
+  inventoryProducts,
   pageGraph,
   refurbishedService,
   reviews,
@@ -136,42 +137,72 @@ export default function ScooterPage() {
           />
 
           {inventory.length > 0 ? (
-            <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            /* Ein Gerät, eine Karte über die volle Breite – kein dreispaltiges
+               Raster. Bei Einzelstücken gibt es nichts zu vergleichen, und ein
+               einzelner Kachelrest neben zwei leeren Spalten sieht aus wie ein
+               Bestand, der gerade leergekauft wurde. Die Karte hat stattdessen
+               Platz für das, was beim Gebrauchtkauf zählt: sechs Aufnahmen und
+               die vollständigen Daten nebeneinander. */
+            <div className="mt-14 flex flex-col gap-10">
               {inventory.map((item, i) => (
-                <Reveal key={item.id} delay={(i % 3) * 80} as="article">
-                  <div className="flex h-full flex-col rounded-lg border border-silver/15 lift bg-ink p-6 text-silver on-dark">
-                    {item.image ? (
-                      <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-md bg-ink-600 text-silver on-dark">
-                        <Image
-                          src={item.image}
-                          alt={`Generalüberholter ${item.model}`}
-                          fill
-                          sizes="(max-width: 640px) 100vw, 32vw"
-                          className="parallax object-cover"
-                        />
-                      </div>
-                    ) : null}
-                    <h3 className="text-[length:var(--text-subtitle)]">
-                      {item.model}
-                    </h3>
-                    <dl className="mt-4 flex flex-col gap-2 text-sm">
-                      <div className="flex justify-between gap-4 border-t border-silver/12 pt-2">
-                        <dt className="text-current/65">Akku</dt>
-                        <dd className="font-medium">{item.batteryHealth}</dd>
-                      </div>
-                      <div className="flex justify-between gap-4 border-t border-silver/12 pt-2">
-                        <dt className="text-current/65">Reichweite</dt>
-                        <dd className="font-medium">{item.range}</dd>
-                      </div>
-                    </dl>
-                    {item.note ? (
-                      <p className="mt-4 text-sm text-current/60">
-                        {item.note}
+                <Reveal key={item.id} delay={i * 80} as="article">
+                  <div className="grid gap-10 rounded-lg border border-silver/15 lift-lg bg-ink p-6 text-silver md:p-10 lg:grid-cols-12 lg:gap-14 on-dark">
+                    <Gallery
+                      images={item.images}
+                      className="lg:col-span-5 xl:col-span-4"
+                    />
+
+                    <div className="lg:col-span-7 xl:col-span-8">
+                      <h3 className="text-[length:var(--text-title)]">
+                        {item.model}
+                      </h3>
+                      <p className="mt-4 max-w-xl leading-relaxed text-current/70">
+                        {item.summary}
                       </p>
-                    ) : null}
-                    <p className="tabular mt-6 font-display text-2xl font-bold tracking-tight text-accent">
-                      {item.price}
-                    </p>
+
+                      <p className="tabular mt-7 font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
+                        {item.price}
+                      </p>
+
+                      <dl className="mt-8 grid gap-x-10 sm:grid-cols-2">
+                        {item.specs.map((spec) => (
+                          <div
+                            key={spec.label}
+                            className="flex items-baseline justify-between gap-6 border-b border-silver/12 py-3 text-sm"
+                          >
+                            <dt className="shrink-0 text-current/65">
+                              {spec.label}
+                            </dt>
+                            <dd className="text-right font-medium">
+                              {spec.value}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+
+                      {item.note ? (
+                        <p className="mt-6 text-sm text-current/55">
+                          {item.note}
+                        </p>
+                      ) : null}
+
+                      <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                        <PhoneButton />
+                        <a
+                          href="#suchauftrag"
+                          className={buttonVariants({
+                            variant: "outline",
+                            size: "lg",
+                          })}
+                        >
+                          Gerät anfragen
+                        </a>
+                      </div>
+                      <p className="mt-5 text-sm text-current/60">
+                        Probefahrt vor Ort in Neuenstadt am Kocher, nach kurzer
+                        Absprache am Telefon
+                      </p>
+                    </div>
                   </div>
                 </Reveal>
               ))}
@@ -286,6 +317,7 @@ export default function ScooterPage() {
         nodes={pageGraph([
           breadcrumb([{ name: "E-Scooter kaufen", path: "/e-scooter" }]),
           refurbishedService(),
+          ...inventoryProducts(),
           faqPage(faqBuy, "/e-scooter"),
           ...reviews("/e-scooter"),
         ])}

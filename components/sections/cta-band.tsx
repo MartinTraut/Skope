@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Reveal } from "@/components/motion/reveal";
+import { Velaris } from "@/components/motion/velaris";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
@@ -22,14 +23,19 @@ export function CtaBand({
 }) {
   return (
     <section className="relative overflow-hidden border-t border-current/10 bg-ink py-24 md:py-32 text-silver on-dark">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-60"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-[-40%] left-1/2 h-[36rem] w-[52rem] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,var(--color-neon)_0%,transparent_68%)] opacity-[0.13] blur-2xl"
-      />
+      {/* Bewegter Grund statt eines statischen Neonflecks am unteren Rand.
+          Der Fleck lag ausserhalb der Fläche und leuchtete nur in eine Ecke;
+          davor stand zusätzlich eine leere Ebene mit `opacity-60`, die gar
+          nichts gezeichnet hat.
+
+          Der Schleier ist hier `band-scrim` und nicht `hero-scrim`: Der Text
+          steht mittig, also deckt die Ellipse die Mitte und die Ränder
+          leuchten – bei seitlichem Ausblenden läge die Überschrift genau im
+          hellsten Bereich. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <Velaris />
+        <div className="band-scrim absolute inset-0" />
+      </div>
 
       <Container className="relative">
         <Reveal className="mx-auto max-w-3xl text-center">

@@ -646,6 +646,70 @@
       );
   }
 
+  /**
+   * Schleier für den Kopf der Unterseiten – siehe components/ui/page-header.tsx.
+   *
+   * Nicht `hero-scrim`, obwohl die Aufteilung ähnlich ist. Zwei Unterschiede
+   * machen eine eigene Regel nötig:
+   *
+   * Erstens liegt hier nichts in der rechten Hälfte. Im Hero deckt dort das
+   * Studiofoto den hellsten Bereich ab; auf einer Unterseite leuchtete der
+   * Shader ungebremst bis an den Rand, und die Navigation des festen
+   * Seitenkopfs stand ungescrollt mitten darin.
+   * Deshalb endet der seitliche Verlauf bei 46 Prozent Tinte statt bei null.
+   *
+   * Zweitens sind die ersten 5,5 rem für den festen Seitenkopf reserviert.
+   * Solange er ungescrollt ist, hat er keine eigene Fläche und erbt die
+   * Lesbarkeit von dem, was hier steht.
+   */
+  .head-scrim {
+    background-image:
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ink) 82%, transparent) 0,
+        color-mix(in oklab, var(--color-ink) 30%, transparent) 5.5rem,
+        transparent 60%,
+        color-mix(in oklab, var(--color-ink) 72%, transparent) 86%,
+        var(--color-ink)
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--color-ink) 88%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 80%, transparent) 48%,
+        color-mix(in oklab, var(--color-ink) 58%, transparent) 72%,
+        color-mix(in oklab, var(--color-ink) 46%, transparent) 100%
+      );
+  }
+
+  /**
+   * Schleier für das Abschlussband – siehe components/sections/cta-band.tsx.
+   *
+   * Derselbe Gedanke wie bei `hero-scrim`, nur um 90 Grad gedreht: Dort steht
+   * der Text links, hier in der Mitte. Also deckt die Ellipse die Mitte und
+   * lässt die Ränder durchleuchten, statt seitlich auszublenden.
+   *
+   * Oben und unten schließt der lineare Verlauf voll auf Tinte. Das Band
+   * grenzt an eine Sektion und an den Fußbereich, beide in derselben Farbe;
+   * ohne den vollen Abschluss entstünde an beiden Kanten eine sichtbare Naht.
+   */
+  .band-scrim {
+    background-image:
+      radial-gradient(
+        ellipse 72% 78% at 50% 48%,
+        color-mix(in oklab, var(--color-ink) 90%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 80%, transparent) 46%,
+        color-mix(in oklab, var(--color-ink) 34%, transparent) 76%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--color-ink) 0%,
+        transparent 16%,
+        transparent 84%,
+        var(--color-ink) 100%
+      );
+  }
+
   /* Unterhalb von `lg` steht der Text über die volle Breite – dort kann der
      Schleier nicht seitlich ausblenden, sonst liegt die Überschrift im
      hellsten Bereich. Er deckt dann flächig und lässt nur den unteren Rand

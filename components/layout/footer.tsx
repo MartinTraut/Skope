@@ -17,7 +17,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-current/10 bg-ink-800 pt-20 pb-10 text-silver on-dark">
+    <footer className="border-t border-current/10 bg-ink pt-20 pb-10 text-silver on-dark">
       <Container>
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
           {/* Marke + Kontakt */}
