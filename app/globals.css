@@ -431,6 +431,34 @@
     box-decoration-break: clone;
   }
 
+  /**
+   * Die Fläche ist genau eine Zeile hoch, nicht so hoch wie die Schrift.
+   *
+   * Gemessen an der FAQ-Überschrift der Kaufseite: Schriftgrad 48,6 px,
+   * Zeilenabstand 50,06 px – die farbige Fläche war aber 59 px hoch, weil ein
+   * Hintergrund die Ober- und Unterlängen der Schriftart abdeckt und nicht
+   * die Zeile. Bricht ein ausgezeichnetes Wort um, überlappten die beiden
+   * Flächen deshalb um neun Pixel und die zweite schnitt in die erste.
+   *
+   * `1lh` ist exakt der Zeilenabstand des Elements, in dem die Auszeichnung
+   * steht. Mittig gesetzt liegt die Fläche damit deckungsgleich auf der
+   * Zeilenbox: aufeinanderfolgende Zeilen stossen aneinander, statt sich zu
+   * überlappen – und es entsteht auch keine Lücke.
+   *
+   * Als Verlauf und nicht als `background-color`, weil nur ein Bild sich in
+   * der Höhe begrenzen lässt. Browser ohne `lh` behalten die Deckfarbe von
+   * oben; dort bleibt der alte Stand, statt dass die Auszeichnung verschwindet.
+   */
+  @supports (height: 1lh) {
+    .on-light .mark-accent {
+      background-color: transparent;
+      background-image: linear-gradient(var(--color-neon), var(--color-neon));
+      background-repeat: no-repeat;
+      background-position: 0 50%;
+      background-size: 100% 1lh;
+    }
+  }
+
   /* Fläche und Schrift kommen zusammen: Wer den Akzent als Hintergrund setzt,
      bekommt die dazu passende Schriftfarbe mit. Vorher musste jede Stelle das
      selbst wissen – das Kennzeichen „Für Pendler" stand deshalb in Ink auf

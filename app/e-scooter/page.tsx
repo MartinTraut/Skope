@@ -12,6 +12,7 @@ import { Gallery } from "@/components/ui/gallery";
 import { PageHeader } from "@/components/ui/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
+import { cn } from "@/lib/utils";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
 import { checkupIncludes } from "@/lib/data/services";
@@ -137,71 +138,69 @@ export default function ScooterPage() {
           />
 
           {inventory.length > 0 ? (
-            /* Ein Gerät, eine Karte über die volle Breite – kein dreispaltiges
-               Raster. Bei Einzelstücken gibt es nichts zu vergleichen, und ein
-               einzelner Kachelrest neben zwei leeren Spalten sieht aus wie ein
-               Bestand, der gerade leergekauft wurde. Die Karte hat stattdessen
-               Platz für das, was beim Gebrauchtkauf zählt: sechs Aufnahmen und
-               die vollständigen Daten nebeneinander. */
-            <div className="mt-14 flex flex-col gap-10">
+            /* Raster statt gestapelter Vollbreite-Karten: Bei einem einzelnen
+               Gerät hätte eine breite Karte Sinn, bei dreizehn wären das rund
+               achttausend Pixel Scrollstrecke, und vergleichen liesse sich
+               nichts. Zwei Spalten ab 640 px, drei ab 1280 – die Galerie
+               bleibt dabei über 300 px breit und damit gross genug, um etwas
+               zu erkennen.
+
+               Jede Karte trägt trotzdem alle Daten. Ein Gebrauchtkauf
+               entscheidet sich an Akku, Zulassung und Bremsen; eine Karte,
+               die nur Modell und Preis zeigt, verschiebt genau die Fragen auf
+               das Telefonat, das sie ersparen soll. */
+            <div className="mt-14 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
               {inventory.map((item, i) => (
-                <Reveal key={item.id} delay={i * 80} as="article">
-                  <div className="grid gap-10 rounded-lg border border-silver/15 lift-lg bg-ink p-6 text-silver md:p-10 lg:grid-cols-12 lg:gap-14 on-dark">
-                    <Gallery
-                      images={item.images}
-                      className="lg:col-span-5 xl:col-span-4"
-                    />
+                <Reveal key={item.id} delay={(i % 3) * 70} as="article">
+                  <div className="flex h-full flex-col rounded-lg border border-silver/15 lift bg-ink p-5 text-silver on-dark">
+                    <Gallery images={item.images} />
 
-                    <div className="lg:col-span-7 xl:col-span-8">
-                      <h3 className="text-[length:var(--text-title)]">
-                        {item.model}
-                      </h3>
-                      <p className="mt-4 max-w-xl leading-relaxed text-current/70">
-                        {item.summary}
-                      </p>
+                    <h3 className="mt-6 text-[length:var(--text-subtitle)]">
+                      {item.model}
+                    </h3>
+                    <p className="mt-3 leading-relaxed text-current/70">
+                      {item.summary}
+                    </p>
 
-                      <p className="tabular mt-7 font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
-                        {item.price}
-                      </p>
+                    <p className="tabular mt-5 font-display text-3xl leading-none font-bold tracking-tight text-accent">
+                      {item.price}
+                    </p>
 
-                      <dl className="mt-8 grid gap-x-10 sm:grid-cols-2">
-                        {item.specs.map((spec) => (
-                          <div
-                            key={spec.label}
-                            className="flex items-baseline justify-between gap-6 border-b border-silver/12 py-3 text-sm"
-                          >
-                            <dt className="shrink-0 text-current/65">
-                              {spec.label}
-                            </dt>
-                            <dd className="text-right font-medium">
-                              {spec.value}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-
-                      {item.note ? (
-                        <p className="mt-6 text-sm text-current/55">
-                          {item.note}
-                        </p>
-                      ) : null}
-
-                      <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                        <PhoneButton />
-                        <a
-                          href="#suchauftrag"
-                          className={buttonVariants({
-                            variant: "outline",
-                            size: "lg",
-                          })}
+                    <dl className="mt-6">
+                      {item.specs.map((spec) => (
+                        <div
+                          key={spec.label}
+                          className="flex items-baseline justify-between gap-5 border-b border-silver/12 py-2.5 text-sm"
                         >
-                          Gerät anfragen
-                        </a>
-                      </div>
-                      <p className="mt-5 text-sm text-current/60">
-                        Probefahrt vor Ort in Neuenstadt am Kocher, nach kurzer
-                        Absprache am Telefon
+                          <dt className="shrink-0 text-current/65">
+                            {spec.label}
+                          </dt>
+                          <dd className="text-right font-medium">
+                            {spec.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+
+                    {item.note ? (
+                      <p className="mt-5 text-sm text-current/55">
+                        {item.note}
                       </p>
+                    ) : null}
+
+                    {/* `mt-auto` zieht den Knopf auf die Unterkante: In einer
+                        Rasterreihe sind die Karten unterschiedlich hoch, und
+                        Knöpfe auf verschiedenen Höhen lesen sich als Fehler. */}
+                    <div className="mt-auto pt-7">
+                      <a
+                        href="#suchauftrag"
+                        className={cn(
+                          buttonVariants({ variant: "outline", size: "lg" }),
+                          "w-full",
+                        )}
+                      >
+                        Gerät anfragen
+                      </a>
                     </div>
                   </div>
                 </Reveal>
