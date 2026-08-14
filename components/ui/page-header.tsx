@@ -72,7 +72,7 @@ export function PageHeader({
             Lesebreite, damit auf grossen Bildschirmen keine Zeile über 20
             Wörter läuft. */}
         <Reveal immediate className="mt-10">
-          <p className="eyebrow text-current/65">{eyebrow}</p>
+          <p className="eyebrow text-current/90">{eyebrow}</p>
           <h1 className="mt-6 max-w-5xl text-[length:var(--text-page-title)]">
             {title}
           </h1>
@@ -85,12 +85,15 @@ export function PageHeader({
             dem sie gehört. Man las die Überschrift und übersah den Absatz –
             genau die Reihenfolge, die er umdrehen soll.
 
-            Jetzt trennt eine Haarlinie den Kopf von der Einordnung, und der
-            Absatz beginnt an derselben Kante wie die Überschrift. Sechs
-            Spalten geben ihm 60 bis 70 Zeichen Lesebreite. Rechts daneben
-            steht, was zu tun ist – oder nichts, dann leuchtet dort der
-            Grund. */}
-        <div className="mt-10 grid gap-x-16 gap-y-8 border-t border-current/12 pt-8 lg:grid-cols-12 lg:pt-10">
+            Jetzt beginnt der Absatz an derselben Kante wie die Überschrift.
+            Sechs Spalten geben ihm 60 bis 70 Zeichen Lesebreite. Rechts
+            daneben steht, was zu tun ist – oder nichts, dann leuchtet dort
+            der Grund.
+
+            Die Haarlinie, die vorher zwischen Überschrift und Einordnung lag,
+            ist weg: Sie hat den Kopf quer durchgeschnitten, statt ihn zu
+            gliedern. Der Abstand allein trägt die Zäsur. */}
+        <div className="mt-12 grid gap-x-16 gap-y-8 lg:grid-cols-12 lg:mt-14">
           <Reveal immediate className="lg:col-span-6">
             <p className="text-[length:var(--text-lead)] leading-relaxed text-current/70">
               {lead}

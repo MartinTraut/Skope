@@ -44,7 +44,7 @@ export default function PlansPage() {
         <Container>
           {/* Einspaltig: eine 5/7-Teilung mit zwei Zeilen links erzeugt nur Leerraum */}
           <Reveal className="max-w-3xl">
-            <p className="eyebrow text-current/65">Entscheidungshilfe</p>
+            <p className="eyebrow text-current/90">Entscheidungshilfe</p>
             <h2 className="mt-4 text-[length:var(--text-title)]">
               Wofür Sie bei Premium bezahlen
             </h2>
@@ -75,7 +75,7 @@ export default function PlansPage() {
       <Section tone="silver" className="py-16 md:py-20">
         <Container>
           <Reveal className="grid gap-8 border-t border-current/12 pt-10 lg:grid-cols-12 lg:gap-16">
-            <h2 className="eyebrow-plain text-current/70 lg:col-span-4">
+            <h2 className="eyebrow-plain text-current/90 lg:col-span-4">
               Was nicht abgedeckt ist
             </h2>
             <p className="leading-relaxed text-current/65 lg:col-span-8">
@@ -107,7 +107,7 @@ export default function PlansPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/65">Vertrag anfragen</p>
+                <p className="eyebrow text-current/90">Vertrag anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Welcher passt, klären wir vorher.
                 </h2>

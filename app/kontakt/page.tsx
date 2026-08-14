@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
-import { buttonVariants } from "@/components/ui/button";
 import { LocationMap } from "@/components/ui/expand-map";
 import { PageHeader } from "@/components/ui/page-header";
 import { PhoneButton } from "@/components/ui/phone-button";
@@ -11,8 +10,7 @@ import { Container, Section } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph } from "@/lib/schema";
 import { CONTACT_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
-import { cn } from "@/lib/utils";
-import { fullAddress, nearbyPlaces, serviceArea, site } from "@/lib/site";
+import { fullAddress, nearbyPlaceNames, serviceArea, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
@@ -45,7 +43,25 @@ export default function ContactPage() {
                 erst an Adresse und Anfahrtsliste vorbeiscrollen. */}
             <div className="order-2 lg:order-1 lg:col-span-5">
               <Reveal>
-                <h2 className="eyebrow-plain text-current/70">
+                {/* Die Karte steht oben in dieser Spalte, nicht in einem
+                    eigenen Band am Seitenende. Wer Kontakt aufnimmt, will
+                    Ort, Erreichbarkeit und Formular in einem Blick haben –
+                    vorher lag zwischen Adresse und Karte die ganze
+                    Anfahrtsliste plus das Formular. */}
+                <LocationMap
+                  location={fullAddress}
+                  coordinates={`${site.geo.lat.toFixed(4).replace(".", ",")}° N · ${site.geo.lng.toFixed(4).replace(".", ",")}° O`}
+                  href={site.mapsUrl}
+                />
+                {/* Der Satz stand im gestrichenen Anfahrtsband am Seitenende.
+                    Er nennt die Nachbarorte im Fliesstext und gehört damit
+                    zur Karte, nicht in eine eigene Sektion. */}
+                <p className="mt-4 leading-relaxed text-current/70">
+                  Zentral zwischen Heilbronn, Öhringen und Mosbach. Aus Bad
+                  Friedrichshall sind es acht Kilometer, aus Heilbronn fünfzehn.
+                </p>
+
+                <h2 className="eyebrow-plain mt-10 text-current/90">
                   Direkt erreichbar
                 </h2>
                 <address className="mt-7 flex flex-col gap-6 not-italic">
@@ -99,26 +115,49 @@ export default function ContactPage() {
                       <span className="block text-sm text-current/70">
                         Werkstatt
                       </span>
-                      <span className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight transition-colors group-hover:text-accent">
+                      {/* `block leading-tight`: Die Zeile stand als
+                          Inline-Element im Fliesstext und erbte dessen
+                          Zeilenabstand. Bei Displaygrösse riss das die
+                          zweizeilige Adresse rund 20 px auseinander – sie las
+                          sich als zwei Angaben statt als eine. */}
+                      <span className="block font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight transition-colors group-hover:text-accent">
                         {fullAddress}
                       </span>
-                      <span className="mt-1 block text-sm text-current/70">
+                      {/* Unterstrichen und mit Pfeil: Vorher stand hier grauer
+                          Text in derselben Grösse wie die Beschriftung
+                          darüber – niemand sieht darin eine Handlung. */}
+                      <span className="mt-2 inline-flex items-center gap-1.5 text-sm text-current/70 underline underline-offset-4 transition-colors group-hover:text-current">
                         Route in Google Maps öffnen
+                        <ArrowUpRight aria-hidden="true" className="size-4" />
                       </span>
                     </span>
                   </a>
+
+                  {/* Vierter Eintrag statt eigener Kasten.
+                      Die Erreichbarkeit stand vorher in einer umrandeten
+                      Box darunter – gleiche Art Angabe, andere Bauform, und
+                      der Rahmen machte aus einer Zeile Text ein leer
+                      wirkendes Feld. Jetzt trägt sie dieselbe Zeilenform wie
+                      Telefon, E-Mail und Werkstatt, nur ohne Verweis.
+                      TODO Betreiber: verbindliche Öffnungszeiten in lib/site.ts */}
+                  <div className="flex items-start gap-4">
+                    <Clock
+                      aria-hidden="true"
+                      className="mt-1.5 size-5 shrink-0 text-current/40"
+                    />
+                    <span>
+                      <span className="block text-sm text-current/70">
+                        Erreichbarkeit
+                      </span>
+                      <span className="block font-display text-lg leading-snug font-bold tracking-tight">
+                        {site.openingHours}
+                      </span>
+                    </span>
+                  </div>
                 </address>
 
-                {/* TODO Betreiber: verbindliche Öffnungszeiten in lib/site.ts */}
-                <div className="mt-9 rounded-md border border-current/12 p-6">
-                  <h3 className="font-display text-sm font-semibold tracking-tight">
-                    Erreichbarkeit
-                  </h3>
-                  <p className="mt-2 text-current/60">{site.openingHours}</p>
-                </div>
-
                 <div className="mt-9">
-                  <h3 className="eyebrow-plain text-current/70">
+                  <h3 className="eyebrow-plain text-current/90">
                     Anfahrt aus der Region
                   </h3>
                   <ul className="mt-5 grid grid-cols-2 gap-x-6">
@@ -135,7 +174,7 @@ export default function ContactPage() {
                     ))}
                   </ul>
                   <p className="mt-4 text-sm text-current/60">
-                    Ebenso: {nearbyPlaces.join(", ")}.
+                    Ebenso: {nearbyPlaceNames.join(", ")}.
                   </p>
                 </div>
               </Reveal>
@@ -165,63 +204,6 @@ export default function ContactPage() {
           </div>
         </Container>
       </Section>
-
-      {/*
-        Anfahrt-Band statt Karten-Embed: kein Drittanbieter-Request beim
-        Seitenaufruf, keine Einwilligung nötig – und der Weg zur Navigation
-        ist genauso kurz.
-      */}
-      {/* `text-ink on-light` gehört zwingend dazu und ist nicht optional:
-          Die Grundfläche der Seite ist Schwarz, die Schriftfarbe kommt vom
-          <body>. Eine Sektion, die nur ihre Fläche auf Silber stellt, erbt
-          weiterhin silberne Schrift – hier stand die komplette Anfahrt in
-          #eef1f4 auf #dee2e8, also bei 1,15:1. Wer eine Fläche umdreht, muss
-          die Schrift mitdrehen; genau dafür nimmt `Section` einem das sonst
-          ab. */}
-      <section
-        aria-label="Anfahrt"
-        className="bg-silver-200 py-16 text-ink on-light md:py-20"
-      >
-        <Container>
-          <Reveal className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-6">
-              <p className="eyebrow text-current/65">Anfahrt</p>
-              <p className="mt-4 font-display text-[length:var(--text-title)] font-bold tracking-tight">
-                {fullAddress}
-              </p>
-              <p className="mt-3 max-w-xl leading-relaxed text-current/70">
-                Zentral zwischen Heilbronn, Öhringen und Mosbach. Aus Bad
-                Friedrichshall sind es acht Kilometer, aus Heilbronn fünfzehn.
-              </p>
-              <a
-                href={site.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "mt-7",
-                )}
-              >
-                <MapPin className="size-4" aria-hidden="true" />
-                Route in Google Maps öffnen
-              </a>
-            </div>
-
-            {/* Die Kachel ist der einzige dunkle Block auf der Silberfläche
-                und trägt deshalb den Blick. Der pulsierende Rand ist ein
-                Shader und liegt in derselben schwarzen Fläche wie die Skizze,
-                nicht als zweiter Kasten darum herum. */}
-            <div className="lg:col-span-6">
-              <LocationMap
-                frame
-                location={fullAddress}
-                coordinates={`${site.geo.lat.toFixed(4).replace(".", ",")}° N · ${site.geo.lng.toFixed(4).replace(".", ",")}° O`}
-                href={site.mapsUrl}
-              />
-            </div>
-          </Reveal>
-        </Container>
-      </section>
 
       <JsonLd
         nodes={pageGraph([breadcrumb([{ name: "Kontakt", path: "/kontakt" }])])}

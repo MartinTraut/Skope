@@ -48,23 +48,60 @@ export function Process() {
               Sie wissen, was es kostet, <Mark>bevor</Mark> wir anfangen.
             </>
           }
-          lead="Die häufigste Sorge vor einem Werkstattbesuch ist nicht die Reparatur, sondern die Rechnung danach. Deshalb steht der Preis fest, bevor ein Gehäuse aufgeht. Was Sie nicht freigeben, passiert nicht."
+          /* Der letzte Satz stand wortgleich noch einmal in Schritt 03.
+             Zweimal dieselbe Zusage im selben Bildausschnitt liest sich nicht
+             als Nachdruck, sondern als Versehen – hier gestrichen, weil der
+             Satz an der Stelle steht, an der er passiert. */
+          lead="Die häufigste Sorge vor einem Werkstattbesuch ist nicht die Reparatur, sondern die Rechnung danach. Deshalb steht der Preis fest, bevor ein Gehäuse aufgeht."
         />
 
-        <ol className="mt-16 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+        {/* Eine Zeitschiene, kein Textraster.
+            Vorher standen hier vier gleich aussehende Spalten mit einer
+            Haarlinie obendrauf und einer kleinen grünen Ziffer – vier
+            Textblöcke nebeneinander, denen man die Reihenfolge nur am Wort
+            „01" ansieht. Ein Ablauf ist aber genau das: eine Reihenfolge.
+
+            Deshalb läuft jetzt eine durchgehende Linie durch alle vier
+            Schritte, und auf ihr sitzt je eine Marke mit der Nummer. Die
+            Marke ist eine Neonfläche mit schwarzer Ziffer, keine grüne
+            Schrift: Auf Silber misst Neon als Schrift 1,18:1, als Fläche
+            trägt es dieselbe Farbe lesbar (siehe Farbregel in globals.css).
+
+            Kein zweiter Bauplan fürs Telefon: Gestapelt wird aus derselben
+            Zeile eine Trennlinie über jedem Schritt. Die Marke bleibt an
+            derselben Stelle, die Bedienung ist überall dieselbe. */}
+        <ol className="mt-16 grid gap-y-10 lg:grid-cols-4 lg:gap-x-0">
           {steps.map((step, i) => (
-            <Reveal key={step.n} delay={i * 80} as="li">
-              <div className="flex h-full flex-col border-t border-current/15 pt-6">
-                <span
-                  aria-hidden="true"
-                  className="tabular font-display text-sm font-bold tracking-[0.14em] text-accent"
-                >
-                  {step.n}
-                </span>
-                <h3 className="mt-4 text-[length:var(--text-subtitle)]">
+            <Reveal key={step.n} delay={i * 90} as="li">
+              <div className="flex h-full flex-col">
+                <div className="flex items-center gap-4">
+                  <span
+                    aria-hidden="true"
+                    /* `bg-neon text-ink` und nicht `bg-accent`: Das
+                       Akzent-Token kippt auf hellen Flächen absichtlich auf
+                       Tinte, weil es dort meist Schriftfarbe ist. Die Marke
+                       ist aber eine Fläche – und als Fläche darf Neon auf
+                       Silber stehen, mit schwarzer Ziffer bei 14,8:1. */
+                    className="tabular grid size-11 shrink-0 place-items-center rounded-full bg-neon font-display text-sm font-bold tracking-[0.08em] text-ink"
+                  >
+                    {step.n}
+                  </span>
+                  {/* Am letzten Schritt läuft die Linie aus, statt an einer
+                      Kante abzubrechen – der Ablauf endet, er reißt nicht ab. */}
+                  <span
+                    aria-hidden="true"
+                    className={
+                      i === steps.length - 1
+                        ? "h-px flex-1 bg-gradient-to-r from-current/20 to-transparent"
+                        : "h-px flex-1 bg-current/20"
+                    }
+                  />
+                </div>
+
+                <h3 className="mt-6 text-[length:var(--text-subtitle)] lg:pr-10">
                   {step.title}
                 </h3>
-                <p className="mt-3 leading-relaxed text-current/70">
+                <p className="mt-3 leading-relaxed text-current/70 lg:pr-10">
                   {step.text}
                 </p>
               </div>

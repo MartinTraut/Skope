@@ -1,7 +1,20 @@
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 
-/** Einheitliche Seitenbreite – ein Container, keine Sonderfälle. */
+/**
+ * Einheitliche Seitenbreite – ein Container, keine Sonderfälle.
+ *
+ * 96rem statt 82rem, und ab `lg` ein größerer Innenrand: Auf einem
+ * 1512-px-Display standen vorher 1232 px Satzspiegel zwischen 140 px breiten
+ * Rändern – gemessen. Das kostete die Überschrift im Kopfbereich eine ganze
+ * Zeile: „E-Scooter reparieren" braucht bei 76 px Schriftgrad 723 px, die
+ * sieben Spalten gaben aber nur 702. Jetzt sind es 1400 px Satzspiegel und
+ * 800 px in derselben Spalte, also zwei Zeilen statt drei.
+ *
+ * Lesestrecken werden davon nicht breiter: Fließtext ist überall über
+ * `max-w-[…ch]` oder eine eigene Spalte begrenzt. Die zusätzliche Breite geht
+ * an Raster, Bilder und Displaygrößen – genau dort fehlte sie.
+ */
 export function Container({
   className,
   children,
@@ -11,7 +24,10 @@ export function Container({
 }) {
   return (
     <div
-      className={cn("mx-auto w-full max-w-[82rem] px-6 md:px-10", className)}
+      className={cn(
+        "mx-auto w-full max-w-[96rem] px-6 md:px-10 lg:px-14",
+        className,
+      )}
     >
       {children}
     </div>
@@ -96,25 +112,44 @@ export function SectionHead({
      mehr, sondern die Grundeinstellung. */
   if (align === "split") {
     return (
-      <div
-        className={cn(
-          "grid items-end gap-8 border-b border-current/12 pb-10 lg:grid-cols-12 lg:gap-16",
-          className,
-        )}
-      >
-        <div className="lg:col-span-7">
-          {eyebrow ? (
-            <Reveal>
-              <p className="eyebrow mb-5 text-current/65">{eyebrow}</p>
-            </Reveal>
-          ) : null}
-          <Reveal mask delay={60}>
-            <h2 className="text-[length:var(--text-display)]">{title}</h2>
+      /* Die Einordnung steht unter der Überschrift, nicht neben ihr.
+         Dieselbe Korrektur wie im Seitenkopf der Unterseiten – dort war sie
+         schon gemacht, hier nicht, und genau diese Hälfte ist aufgefallen.
+         Ein Bauteil, das an einer Stelle etwas kann und an der anderen
+         nicht, ist kein zweiter Entwurf, sondern ein halber.
+
+         Vorher lag der Absatz in fünf von zwölf Spalten rechts, auf die
+         Unterkante der Überschrift gesetzt: rund sieben Wörter pro Zeile,
+         70 % Deckkraft, und optisch ohne Bezug zu dem Satz, zu dem er
+         gehört. Man las die Überschrift und übersah ihn – genau die
+         Reihenfolge, die er umdrehen soll.
+
+         Jetzt beginnt er an derselben Kante wie die Überschrift, mit einer
+         Zeile Abstand und bei 80 % Deckkraft. `max-w-2xl` hält ihn bei 60
+         bis 70 Zeichen; die Überschrift darf mit `max-w-4xl` breiter laufen,
+         damit der Größenunterschied die Hierarchie trägt und nicht die
+         Spaltenteilung.
+
+         Kein Trennstrich unter dem Kopf. Die Haarlinie war der Versuch, den
+         Abschnitt zu klammern, und hat das Gegenteil bewirkt: Auf jeder
+         Sektion lag dieselbe blasse Linie quer über die volle Breite und hat
+         den Kopf vom Inhalt abgeschnitten, zu dem er gehört. Was die Zäsur
+         wirklich trägt, ist der Weißraum darunter und der Größensprung von
+         der Überschrift zum Fließtext. */
+      <div className={cn("pb-4", className)}>
+        {eyebrow ? (
+          <Reveal>
+            <p className="eyebrow mb-5 text-current/90">{eyebrow}</p>
           </Reveal>
-        </div>
+        ) : null}
+        <Reveal mask delay={60}>
+          <h2 className="max-w-4xl text-[length:var(--text-display)]">
+            {title}
+          </h2>
+        </Reveal>
         {lead ? (
-          <Reveal delay={140} className="lg:col-span-5">
-            <p className="text-[length:var(--text-lead)] leading-relaxed opacity-70">
+          <Reveal delay={140}>
+            <p className="mt-7 max-w-2xl text-[length:var(--text-lead)] leading-relaxed opacity-80">
               {lead}
             </p>
           </Reveal>
@@ -135,7 +170,7 @@ export function SectionHead({
         <Reveal>
           <p
             className={cn(
-              "eyebrow mb-5 text-current/65",
+              "eyebrow mb-5 text-current/90",
               align === "center" && "justify-center",
             )}
           >

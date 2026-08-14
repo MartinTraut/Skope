@@ -27,13 +27,17 @@ export function Related({
     <Section tone={tone} className="py-14 md:py-16">
       <Container>
         <Reveal>
-          <h2 className="eyebrow-plain text-current/70">Passt dazu</h2>
-          <ul className="mt-7 grid gap-x-16 md:grid-cols-2">
+          <h2 className="eyebrow text-current/90">Passt dazu</h2>
+          {/* Zwei Flächen statt zweier Haarlinien: Die Oberkante lag bei 12 %
+              Deckkraft über einem Ziel, das man anklicken soll – sie hat den
+              Verweis eher abgeschnitten als markiert. Die Fläche zeigt
+              dagegen, wie weit der Klickbereich reicht. */}
+          <ul className="mt-7 grid gap-4 md:grid-cols-2">
             {items.map((item) => (
-              <li key={item.href} className="border-t border-current/12">
+              <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="group flex items-start justify-between gap-6 py-5"
+                  className="group flex items-start justify-between gap-6 rounded-xl bg-current/5 p-6 transition-colors duration-200 hover:bg-current/10 md:p-7"
                 >
                   <span>
                     <span className="block font-display text-[length:var(--text-subtitle)] font-bold tracking-tight transition-colors duration-200 group-hover:text-accent">

@@ -4,17 +4,23 @@ import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { Marquee } from "@/components/ui/marquee";
 import { Container, Section } from "@/components/ui/section";
-import { fullAddress, nearbyPlaces, serviceArea, site } from "@/lib/site";
+import {
+  fullAddress,
+  nearbyPlaceNames,
+  nearbyPlaces,
+  serviceArea,
+  site,
+} from "@/lib/site";
 
 /**
- * Für das Laufband: die vermessenen Orte zuerst, danach die übrigen aus dem
- * Einzugsgebiet. Beide Listen stehen bereits in `lib/site` – hier wird nichts
- * ergänzt, nur zusammengeführt, damit im Band nicht zwei Datenquellen mit
- * unterschiedlicher Form nebeneinanderlaufen.
+ * Für das Laufband: die weiter entfernten Orte zuerst, danach die nahen.
+ * Beide Listen führen jetzt eine Entfernung – vorher lief die zweite Hälfte
+ * des Bandes ohne Kilometerangabe durch, also ohne den Wert, wegen dem die
+ * Zeile überhaupt gelesen wird.
  */
-const allPlaces: { name: string; distance?: string }[] = [
+const allPlaces: { name: string; distance: string }[] = [
   ...serviceArea,
-  ...nearbyPlaces.map((name) => ({ name })),
+  ...nearbyPlaces,
 ];
 
 /**
@@ -35,9 +41,17 @@ export function Region() {
   return (
     <Section id="region" tone="silver-200" className="pb-0">
       <Container>
-        <Reveal className="flex flex-col gap-10 border-b border-current/15 pb-12 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+        {/* Beide Spalten beginnen an derselben Oberkante.
+
+            Vorher stand hier `items-end`: Die Blöcke waren unten bündig, und
+            weil der rechte höher ist, rutschte die Überschrift auf halbe Höhe
+            des Absatzes daneben. Man las oben rechts Fliesstext, während die
+            Überschrift, die zuerst kommen soll, tiefer und links stand – zwei
+            Anfänge auf zwei Höhen. Oben bündig hat die Sektion genau einen
+            Einstiegspunkt. */}
+        <Reveal className="flex flex-col gap-10 pb-2 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
           <div>
-            <p className="eyebrow text-current/65">Einzugsgebiet</p>
+            <p className="eyebrow text-current/90">Einzugsgebiet</p>
             <h2 className="mt-5 max-w-[16ch] text-[length:var(--text-display)]">
               Aus Heilbronn sind es 15&nbsp;Kilometer.
             </h2>
@@ -94,7 +108,7 @@ export function Region() {
             ))}
           </ul>
           <p className="mt-8 leading-relaxed text-current/75">
-            Ebenfalls im Einzugsgebiet: {nearbyPlaces.join(", ")}. Für
+            Ebenfalls im Einzugsgebiet: {nearbyPlaceNames.join(", ")}. Für
             Reparatur, Wartung und den Kauf geprüfter Gebrauchtgeräte sind wir
             aus dem gesamten Umkreis bis 25 km schnell erreichbar.
           </p>

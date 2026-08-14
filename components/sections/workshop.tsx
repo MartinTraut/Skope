@@ -19,7 +19,7 @@ export function Workshop() {
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700">
               <Image
                 src="/img/werkstatt-service.jpg"
-                alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
+                alt="Mechaniker zieht die Lenkerklemmung eines eingespannten E-Scooters mit dem Drehmomentschlüssel nach"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="parallax object-cover"
@@ -32,9 +32,14 @@ export function Workshop() {
 
           <div className="lg:col-span-7">
             <Reveal>
-              <p className="eyebrow text-current/65">Der Sicherheits-Checkup</p>
+              <p className="eyebrow text-current/90">Der Sicherheits-Checkup</p>
               <h2 className="mt-5 text-[length:var(--text-display)]">
-                Was für 59,99 € tatsächlich passiert.
+                {/* Der Preis trägt die Aussage der Zeile, also bekommt er den
+                    Akzent – die harte Zahl ist einer der drei Fälle, für die
+                    Neon reserviert ist. Die Sektion ist dunkel, dort ist Neon
+                    Schrift (14,8:1 auf Tinte). */}
+                Was für <span className="text-accent">59,99 €</span> tatsächlich
+                passiert.
               </h2>
               <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
                 Der Checkup ist kein Blick über den Lenker. Er ist eine
@@ -61,7 +66,7 @@ export function Workshop() {
 
             <Reveal delay={140}>
               <div className="mt-12">
-                <h3 className="eyebrow-plain text-current/70">
+                <h3 className="eyebrow-plain text-current/90">
                   Wie lange es dauert
                 </h3>
                 <dl className="mt-5 flex flex-col gap-3">

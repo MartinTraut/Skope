@@ -39,7 +39,7 @@ export function CtaBand({
 
       <Container className="relative">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow justify-center text-current/65">{eyebrow}</p>
+          <p className="eyebrow justify-center text-current/90">{eyebrow}</p>
           <h2 className="mt-6 text-[length:var(--text-display)]">{title}</h2>
           <p className="mx-auto mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
             {text}

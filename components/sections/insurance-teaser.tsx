@@ -26,7 +26,7 @@ export function InsuranceTeaser() {
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-16">
           <Reveal className="order-2 lg:order-1 lg:col-span-6">
-            <p className="eyebrow text-current/65">
+            <p className="eyebrow text-current/90">
               Pflichtversicherung · ERGO
             </p>
             <h2 className="mt-5 text-[length:var(--text-display)]">
@@ -79,7 +79,7 @@ export function InsuranceTeaser() {
               gekürzt auf die vier Zeiträume, nach denen tatsächlich gefragt wird. */}
           <Reveal delay={90} className="order-1 lg:order-2 lg:col-span-6">
             <div className="rounded-lg border border-current/12 bg-steel-900/60 p-7 md:p-9">
-              <p className="eyebrow-plain text-current/70">Saison 2026/2027</p>
+              <p className="eyebrow-plain text-current/90">Saison 2026/2027</p>
               <dl className="mt-7">
                 {tariffs.slice(0, 4).map((row) => (
                   <div
@@ -105,14 +105,14 @@ export function InsuranceTeaser() {
             <figure className="mt-6 flex items-center gap-4">
               <Image
                 src="/img/ergo-tarife.jpg"
-                alt="Preisaushang der ERGO E-Scooter Tarife in der Werkstatt"
-                width={1024}
-                height={1536}
+                alt="Inhaber und Kunde gehen am Tresen der Werkstatt die Versicherungsunterlagen durch"
+                width={1341}
+                height={2000}
                 sizes="72px"
                 className="h-24 w-18 shrink-0 rounded-md border border-current/12 object-cover"
               />
               <figcaption className="text-xs leading-relaxed text-current/65">
-                Der Aushang hängt in der Werkstatt. {tariffDisclaimer}
+                Wir vermitteln die Tarife hier im Laden. {tariffDisclaimer}
               </figcaption>
             </figure>
           </Reveal>

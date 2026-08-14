@@ -38,27 +38,44 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                   /* Der empfohlene Vertrag ist die dunkle Karte, nicht die
                      helle. Vorher war es umgekehrt: der Standardvertrag stand
                      schwarz und massiv, der empfohlene blass daneben – die
-                     Fläche widersprach der Empfehlung. Und nur auf Schwarz
-                     kann das Kennzeichen „Für Pendler" in vollem Neon stehen;
-                     auf der Silberkarte läge es bei 1,2:1. */
+                     Fläche widersprach der Empfehlung. Sie ist zugleich das
+                     eigentliche Kennzeichen: Von zwei Karten trägt eine die
+                     satte Fläche, und das sieht man vor jeder Beschriftung. */
                   plan.popular
                     ? "lift-lg border-transparent bg-ink text-silver on-dark"
                     : "border-current/12 bg-silver-200",
                 )}
               >
-                {plan.popular ? (
-                  <span className="absolute -top-3 left-8 rounded-md bg-accent px-3 py-1 font-display text-[0.6875rem] font-bold tracking-[0.12em] uppercase">
-                    Für Pendler
-                  </span>
-                ) : null}
+                {/* Die Zahlungsweise als Kopfzeile beider Karten – dadurch
+                    beginnen Basis und Premium auf derselben Linie. */}
+                <p className="eyebrow text-[0.6875rem] text-current/70">
+                  {plan.paymentType}
+                </p>
 
-                <div className="flex items-baseline justify-between gap-4">
+                {/* Die Empfehlung gehört an den Namen, nicht an den Rand.
+                    Sie hing zweimal falsch: erst als neongrünes Schildchen
+                    halb über der oberen Kante, dann als Zeile schräg
+                    gegenüber der Zahlungsweise – beide Male ohne Bezug zu
+                    dem, was sie empfiehlt. „Empfohlen" ist eine Aussage über
+                    genau diesen Vertrag, also steht sie neben seinem Namen.
+
+                    Fläche statt Vollneon: Neon markiert auf dieser Seite die
+                    Handlung und die harte Zahl, hier stehen Knopf und Preis
+                    schon darin. Der Punkt reicht als Signal, es ist derselbe
+                    wie im Kopfbereich der Startseite. */}
+                <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
                   <h3 className="font-display text-2xl font-bold tracking-tight">
                     {plan.name}
                   </h3>
-                  <span className="text-xs tracking-wide text-current/70 uppercase">
-                    {plan.paymentType}
-                  </span>
+                  {plan.popular ? (
+                    <p className="inline-flex items-center gap-2 rounded-full bg-current/10 py-1.5 pr-4 pl-3 font-display text-xs font-semibold tracking-tight">
+                      <span
+                        aria-hidden="true"
+                        className="size-2 shrink-0 rounded-full bg-neon"
+                      />
+                      Empfohlen für Vielfahrer
+                    </p>
+                  ) : null}
                 </div>
 
                 <p className="mt-3 text-[length:var(--text-lead)] text-current/70">
@@ -101,7 +118,12 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                   ))}
                 </ul>
 
-                <div className="mt-10 pt-2 lg:mt-auto">
+                {/* `mt-auto` allein reichte nicht: Auf der höheren Karte
+                    bleibt nichts zu verteilen, dort stand der Knopf direkt
+                    unter dem letzten Häkchen und las sich als sechster
+                    Listenpunkt. `pt-12` ist der Mindestabstand, den
+                    `mt-auto` nicht wegkürzen kann. */}
+                <div className="mt-12 pt-2 lg:mt-auto lg:pt-12">
                   <ButtonLink
                     // Anker mit: Ohne ihn landet der Nutzer oben auf der
                     // Kontaktseite und sieht von seiner Vorauswahl nichts.

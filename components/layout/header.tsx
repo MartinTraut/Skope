@@ -3,13 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, Phone, Star, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
-import { nav, site } from "@/lib/site";
+import { googleRating, nav, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -138,10 +138,14 @@ export function Header() {
         {/* `flex items-center` am Link selbst: Sonst sitzt die Wortmarke als
             inline-Element auf der Grundlinie und schleppt den Unterlängen-
             Durchschuss mit – gemessen weitere 4 px Versatz nach oben. */}
+        {/* Nur die Marke. Die Bewertung stand hier eine Runde lang als Zeile
+            darunter – sie machte aus dem Logo einen zweizeiligen Block und
+            drückte die Marke aus der Mittelachse der Leiste. Die Rezensionen
+            stehen im Kopfbereich der Startseite und in der eigenen Sektion. */}
         <Link
           href="/"
           aria-label={`${site.name}, Startseite`}
-          className="flex min-h-11 items-center"
+          className="flex items-center"
         >
           <Logo showSub={false} />
         </Link>
@@ -156,15 +160,23 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative inline-flex min-h-11 items-center rounded-md px-2.5 text-[0.9375rem] whitespace-nowrap transition-colors duration-200",
-                      // 70 %, nicht 65. Auf der Glasscheibe über einer
-                      // Silbersektion misst der Grund rgb(70,72,74); bei 65 %
-                      // liegt der Link dort bei 4,51:1 und damit einen
-                      // Hundertstel über AA. 70 % geben 4,95:1 – Luft für den
-                      // Fall, dass die Scheibe irgendwann heller wird.
+                      "relative inline-flex min-h-11 items-center rounded-md px-2.5 text-[0.9375rem] font-medium whitespace-nowrap transition-colors duration-200",
+                      // 88 % und Halbfett statt 70 % und Buchschnitt.
+                      //
+                      // Gemessen war die Navigation 15 px in Regular mit 70 %
+                      // Deckkraft – rechnerisch über AA, auf dem Schirm aber
+                      // dünn: Der Weichzeichner der Scheibe arbeitet gegen die
+                      // Haarlinien der Buchstaben, und 30 % fehlende Deckkraft
+                      // nehmen dem Schnitt genau die Kanten, an denen man
+                      // Wörter beim Überfliegen erkennt.
+                      //
+                      // Halbfett bringt Strichstärke zurück, ohne die Zeile
+                      // breiter zu machen; 88 % hält den Abstand zur aktiven
+                      // Seite sichtbar. Ungünstigster Grund ist weiterhin die
+                      // Scheibe über einer Silbersektion, gemessen rgb(63).
                       active
                         ? "text-current"
-                        : "text-current/70 hover:text-current",
+                        : "text-current/[0.88] hover:text-current",
                     )}
                   >
                     {item.label}
@@ -182,9 +194,39 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Die Bewertung als Verweis, nicht als Block. Sie stand eine Runde
+              lang unter der Wortmarke und machte aus dem Logo einen
+              zweizeiligen Klotz; hier steht sie in der Aktionsgruppe, wo
+              ohnehin die Gründe stehen, weiterzuklicken.
+
+              Ein Stern statt fünf: Die volle Reihe mit Note maß gemessen
+              123 px und drückte den Anfrage-Knopf bei 1280 und 1400 px aus
+              der Leiste. Ein Stern mit der Zahl ist dieselbe Aussage in
+              55 px – es ist die Schreibweise, die auch Google Maps
+              benutzt. Der vollständige Satz steht im `aria-label`. */}
+          <Link
+            href="/#kundenstimmen"
+            aria-label={`${googleRating.value} von 5 Sternen bei Google, ${googleRating.count} Rezensionen lesen`}
+            className="hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-colors duration-200 hover:bg-current/8 min-[1024px]:inline-flex"
+          >
+            <Star
+              aria-hidden="true"
+              className="size-3.5 fill-[#fbbc04] text-[#fbbc04]"
+              strokeWidth={1.5}
+            />
+            <span className="tabular font-display text-sm font-bold tracking-tight">
+              {googleRating.value}
+            </span>
+          </Link>
+
           <a
             href={site.phone.href}
-            className="hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-colors duration-200 hover:border-current/50 lg:inline-flex"
+            /* Zwischen 1280 und 1400 px ist die Leiste voll: Ab 1280 klappt die
+               Navigation auf (687 px gemessen), zusammen mit Marke, Telefon und
+               Anfrage sind das 1241 px plus 112 px Innenrand – 73 px mehr, als
+               die Seite hergibt, der Anfrage-Knopf stand außerhalb. In diesem
+               Band trägt die Nummer die Aktionsleiste unten und das Menü. */
+            className="hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-colors duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1440px]:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>

@@ -62,7 +62,7 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-ink text-silver on-dark">
                 <Image
                   src="/img/werkstatt-service.jpg"
-                  alt="Arbeit an einem eingespannten E-Scooter über einer Werkbank mit sortiertem Werkzeug"
+                  alt="Thomas Zielke bei der Arbeit an einem eingespannten E-Scooter in der Werkstatt"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="parallax object-cover"
@@ -101,7 +101,7 @@ export default function AboutPage() {
 
             <div className="lg:col-span-7">
               <Reveal delay={70}>
-                <p className="eyebrow text-current/65">
+                <p className="eyebrow text-current/90">
                   Wie hier gearbeitet wird
                 </p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
@@ -126,7 +126,7 @@ export default function AboutPage() {
 
               <Reveal delay={120}>
                 <div className="mt-12 border-t border-current/12 pt-8">
-                  <h3 className="eyebrow-plain text-current/70">
+                  <h3 className="eyebrow-plain text-current/90">
                     Marken im Werkstattalltag
                   </h3>
                   <p className="mt-4 leading-relaxed text-current/65">

@@ -52,24 +52,39 @@ export function Pillars() {
         {/* `gap-px` erzeugte ohne Zellenhintergrund keine Trennlinie, sondern
             nur einen toten Pixel: Auf Mobile klebte die Meta-Zeile der einen
             Kachel direkt an der Oberkante der nächsten. */}
-        <div className="mt-16 grid gap-y-14 lg:grid-cols-3 lg:gap-y-0">
+        {/* `lg:-mx-5` plus `lg:px-5` an jeder Kachel: gleiche Innenbreite in
+            allen drei Spalten, und die Reihe schließt trotzdem bündig mit
+            dem Abschnittskopf darüber ab. */}
+        <div className="mt-16 grid gap-y-14 lg:-mx-5 lg:grid-cols-3 lg:gap-y-0">
           {pillars.map((pillar, i) => (
             /* Trennlinien und Innenabstände liegen auf dem Rasterkind, nicht
                auf dem Link. Vorher standen sie am Link mit `lg:first:…` –
                und der ist immer einziges Kind seines Reveal, `:first-child`
                traf also bei allen drei Kacheln. Die senkrechten Trennlinien
                sind deshalb nie erschienen. */
+            /* Kein Versatz mehr zwischen den drei Kacheln, und zwar aus zwei
+               Gründen. Der sichtbare: Die Innenabstände waren unsymmetrisch –
+               die erste Spalte hatte nur rechts Luft, die mittlere links und
+               rechts, die letzte nur links. Bei festem Seitenverhältnis ist
+               ein schmaleres Bild ein niedrigeres Bild, die mittlere Kachel
+               stand also dauerhaft tiefer als ihre Nachbarn. Jetzt tragen
+               alle drei denselben Innenabstand.
+
+               Der zweite: Die gestaffelte Einblendung liess die Reihe auch
+               beim Hereinscrollen schief laufen. Drei gleichwertige Wege
+               brauchen keine Reihenfolge – sie kommen als ein Band. */
             <Reveal
               key={pillar.href}
-              delay={i * 90}
               className={cn(
-                "border-t border-current/10 pt-8 lg:border-t-0 lg:pt-0",
-                i > 0 && "lg:border-l lg:border-current/10 lg:pl-10",
-                i < pillars.length - 1 && "lg:pr-10",
+                "border-t border-current/10 pt-8 lg:border-t-0 lg:px-5 lg:pt-0",
+                i > 0 && "lg:border-l lg:border-current/10",
               )}
             >
               <Link href={pillar.href} className="group flex h-full flex-col">
-                <div className="lift relative aspect-[16/10] w-full overflow-hidden rounded-lg bg-ink-700">
+                {/* 4:3 statt 16:10 – rund 130 px mehr Bildhöhe pro Kachel.
+                    Bei 16:10 war der Roller in einer Drittelspalte kaum
+                    grösser als die Überschrift darunter. */}
+                <div className="lift relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-ink-700">
                   <Image
                     src={pillar.image}
                     alt=""
@@ -94,7 +109,10 @@ export function Pillars() {
                   {pillar.text}
                 </p>
 
-                <p className="mt-6 border-t border-current/8 pt-4 font-display text-sm font-semibold tracking-tight text-current/85">
+                {/* `mt-auto` zieht die Kennzahl auf die Unterkante. Die drei
+                    Texte sind unterschiedlich lang; ohne das stehen die drei
+                    Zeilen auf drei Höhen und die Reihe franst unten aus. */}
+                <p className="mt-auto border-t border-current/8 pt-4 font-display text-sm font-semibold tracking-tight text-current/85">
                   {pillar.meta}
                 </p>
               </Link>

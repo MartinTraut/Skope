@@ -10,11 +10,11 @@
  */
 
 import type { FaqItem } from "@/lib/data/faq";
-import { inventory } from "@/lib/inventory";
+import { inventory, type InventoryItem } from "@/lib/inventory";
 import { testimonials } from "@/lib/data/testimonials";
 import {
   fullAddress,
-  nearbyPlaces,
+  nearbyPlaceNames,
   proof,
   serviceArea,
   site,
@@ -36,7 +36,7 @@ type Node = Record<string, unknown>;
 const cities: Node[] = [
   { "@type": "City", name: site.address.city },
   ...serviceArea.map((place) => ({ "@type": "City", name: place.name })),
-  ...nearbyPlaces.map((name) => ({ "@type": "City", name })),
+  ...nearbyPlaceNames.map((name) => ({ "@type": "City", name })),
   { "@type": "AdministrativeArea", name: "Landkreis Heilbronn" },
   { "@type": "AdministrativeArea", name: "Hohenlohekreis" },
   { "@type": "AdministrativeArea", name: "Neckar-Odenwald-Kreis" },
@@ -258,25 +258,34 @@ export function refurbishedService(): Node {
 }
 
 /**
- * Bestandsgeräte als Product mit Offer.
+ * Ein Bestandsgerät als Product mit Offer.
  *
  * Der Kommentar über `refurbishedService()` nennt den Grund, warum der
  * Verkauf dort als Service steht: ein Product ohne `offers` ist ein Fehler in
- * der Search Console. Sobald ein Gerät mit Preis und Bildern sichtbar auf der
- * Seite steht, kehrt sich das um – dann sind alle Pflichtfelder da, und genau
- * dieser Knoten ist es, der in der Suche Preis und Verfügbarkeit trägt.
- * Deshalb hängt die Ausgabe an `inventory`: leerer Bestand, kein Product.
+ * der Search Console. Bei einem einzelnen Gerät kehrt sich das um – Preis,
+ * Bilder und Zustand liegen vor, und genau dieser Knoten trägt in der Suche
+ * Preis und Verfügbarkeit.
+ *
+ * Der Knoten gehört ausschließlich auf `/e-scooter/<id>` und steht deshalb
+ * auch mit dieser Adresse in `@id` und `offers.url`. Vorher lag er dreizehnmal
+ * auf der Übersicht mit einem Sprungziel als Angebotsadresse: Google kann
+ * daraus kein einzelnes Gerät als Ergebnis ausspielen, weil dreizehn Produkte
+ * auf dieselbe URL zeigen. Die Übersicht führt sie jetzt nur noch als
+ * `inventoryList()` – eine Liste mit Verweisen, keine dreizehn Datenblätter.
  *
  * `itemCondition` steht auf RefurbishedCondition und nicht auf UsedCondition,
  * weil jedes Gerät die Werkstattprüfung durchlaufen hat. Das ist der Zustand,
  * den das Siegel beschreibt.
  */
-export function inventoryProducts(): Node[] {
-  return inventory.map((item) => ({
+export function inventoryProduct(item: InventoryItem): Node {
+  const url = `${site.url}/e-scooter/${item.id}`;
+
+  return {
     "@type": "Product",
-    "@id": `${site.url}/e-scooter#${item.id}`,
+    "@id": `${url}#product`,
     name: item.model,
     description: item.summary,
+    url,
     image: item.images.map((image) => `${site.url}${image.src}`),
     itemCondition: "https://schema.org/RefurbishedCondition",
     additionalProperty: item.specs.map((spec) => ({
@@ -290,7 +299,7 @@ export function inventoryProducts(): Node[] {
       priceCurrency: "EUR",
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/RefurbishedCondition",
-      url: `${site.url}/e-scooter#bestand`,
+      url,
       seller: { "@id": ORG_ID },
       warranty: {
         "@type": "WarrantyPromise",
@@ -301,7 +310,35 @@ export function inventoryProducts(): Node[] {
         },
       },
     },
-  }));
+  };
+}
+
+/**
+ * Der Bestand auf der Übersicht: eine geordnete Liste mit Verweisen auf die
+ * Geräteseiten. Kein Product-Knoten – der steht dort, wo das Gerät vollständig
+ * beschrieben ist. Die Liste sagt einer Suchmaschine, dass es sich um dreizehn
+ * einzelne Angebote handelt und wo sie stehen.
+ *
+ * Leerer Bestand, keine Liste: `itemListElement: []` ist kein gültiger Knoten.
+ */
+export function inventoryList(): Node[] {
+  if (inventory.length === 0) return [];
+
+  return [
+    {
+      "@type": "ItemList",
+      "@id": `${site.url}/e-scooter#bestand`,
+      name: "Verfügbare generalüberholte E-Scooter",
+      numberOfItems: inventory.length,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      itemListElement: inventory.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.model,
+        url: `${site.url}/e-scooter/${item.id}`,
+      })),
+    },
+  ];
 }
 
 /**

@@ -26,7 +26,8 @@ export const metadata: Metadata = pageMeta({
     "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO, deutschlandweit. Versicherungskennzeichen in 5 bis 10 Werktagen per Post. Antrag online starten.",
   path: "/versicherung",
   image: "/img/ergo-tarife.jpg",
-  imageAlt: "Preisaushang der ERGO E-Scooter Tarife für die Saison 2026/2027",
+  imageAlt:
+    "Beratung zu den Versicherungsunterlagen am Tresen der Werkstatt in Neuenstadt am Kocher",
 });
 
 export default function InsurancePage() {
@@ -195,7 +196,7 @@ export default function InsurancePage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/65">Versicherung anfragen</p>
+                <p className="eyebrow text-current/90">Versicherung anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Antrag anstoßen.
                 </h2>

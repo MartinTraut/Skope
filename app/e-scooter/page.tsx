@@ -8,11 +8,10 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/ui/faq";
-import { Gallery } from "@/components/ui/gallery";
+import { InventoryCard } from "@/components/ui/inventory-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
-import { cn } from "@/lib/utils";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
 import { checkupIncludes } from "@/lib/data/services";
@@ -21,7 +20,7 @@ import {
   JsonLd,
   breadcrumb,
   faqPage,
-  inventoryProducts,
+  inventoryList,
   pageGraph,
   refurbishedService,
   reviews,
@@ -37,7 +36,7 @@ export const metadata: Metadata = pageMeta({
   path: "/e-scooter",
   image: "/img/scooter-studio.jpg",
   imageAlt:
-    "Generalüberholter E-Scooter in Studioaufnahme, geprüft mit Skope-Qualitätssiegel",
+    "Geprüfter E-Scooter mit Prüfanhänger in der Werkstatt, unter dem Skope-Schild",
 });
 
 export default function ScooterPage() {
@@ -88,7 +87,7 @@ export default function ScooterPage() {
 
             <div className="lg:col-span-7">
               <Reveal delay={70}>
-                <p className="eyebrow text-current/65">Das Siegel</p>
+                <p className="eyebrow text-current/90">Das Siegel</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Kein Gerät ohne vollständige Prüfung.
                 </h2>
@@ -134,75 +133,32 @@ export default function ScooterPage() {
                 Welche <Mark>Geräte</Mark> gerade da sind.
               </>
             }
-            lead="Der Bestand wechselt laufend, jedes Gerät ist ein Einzelstück. Sagen Sie uns, was Sie suchen: Reichweite, Budget, Einsatzzweck. Wir melden uns, sobald ein passender Scooter durch die Werkstatt gegangen ist."
+            /* Die Aufzählung steht bewusst im Fließtext und nicht nur in den
+               Karten: Marken, Preisspanne und Stückzahl sind die Angaben,
+               nach denen gesucht wird, und ein Raster aus Bildern liefert
+               sie weder einer Suchmaschine noch einem Antwortsystem. */
+            lead="Dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € stehen gerade in Neuenstadt am Kocher: Xiaomi, Segway-Ninebot, NIU, Sharp, Odys, Zamelux und der Audi Egret Pro. Jedes ist ein Einzelstück, aufbereitet in der eigenen Werkstatt und mit einem Jahr Gewährleistung. Der Bestand wechselt laufend — sagen Sie uns, was Sie suchen: Reichweite, Budget, Einsatzzweck."
           />
 
           {inventory.length > 0 ? (
             /* Raster statt gestapelter Vollbreite-Karten: Bei einem einzelnen
                Gerät hätte eine breite Karte Sinn, bei dreizehn wären das rund
                achttausend Pixel Scrollstrecke, und vergleichen liesse sich
-               nichts. Zwei Spalten ab 640 px, drei ab 1280 – die Galerie
-               bleibt dabei über 300 px breit und damit gross genug, um etwas
-               zu erkennen.
+               nichts. Zwei Spalten ab 640 px, drei ab 1280.
 
-               Jede Karte trägt trotzdem alle Daten. Ein Gebrauchtkauf
-               entscheidet sich an Akku, Zulassung und Bremsen; eine Karte,
-               die nur Modell und Preis zeigt, verschiebt genau die Fragen auf
-               das Telefonat, das sie ersparen soll. */
-            <div className="mt-14 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+               Die Karte zeigt nur, wonach ausgewählt wird: Bild,
+               Modell, Preis, Tempo und Reichweite. Alles Weitere steht auf
+               der eigenen Seite des Geräts. Eine frühere Fassung klappte das
+               Datenblatt in der Karte auf und riss dabei das Raster auf; die
+               vollständige Begründung steht in inventory-card.tsx.
+
+               Ein Gebrauchtkauf entscheidet sich an Akku, Zulassung und
+               Bremsen – aber diese Fragen stellt man an einem Gerät, nicht an
+               dreizehn gleichzeitig. */
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {inventory.map((item, i) => (
-                <Reveal key={item.id} delay={(i % 3) * 70} as="article">
-                  <div className="flex h-full flex-col rounded-lg border border-silver/15 lift bg-ink p-5 text-silver on-dark">
-                    <Gallery images={item.images} />
-
-                    <h3 className="mt-6 text-[length:var(--text-subtitle)]">
-                      {item.model}
-                    </h3>
-                    <p className="mt-3 leading-relaxed text-current/70">
-                      {item.summary}
-                    </p>
-
-                    <p className="tabular mt-5 font-display text-3xl leading-none font-bold tracking-tight text-accent">
-                      {item.price}
-                    </p>
-
-                    <dl className="mt-6">
-                      {item.specs.map((spec) => (
-                        <div
-                          key={spec.label}
-                          className="flex items-baseline justify-between gap-5 border-b border-silver/12 py-2.5 text-sm"
-                        >
-                          <dt className="shrink-0 text-current/65">
-                            {spec.label}
-                          </dt>
-                          <dd className="text-right font-medium">
-                            {spec.value}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-
-                    {item.note ? (
-                      <p className="mt-5 text-sm text-current/55">
-                        {item.note}
-                      </p>
-                    ) : null}
-
-                    {/* `mt-auto` zieht den Knopf auf die Unterkante: In einer
-                        Rasterreihe sind die Karten unterschiedlich hoch, und
-                        Knöpfe auf verschiedenen Höhen lesen sich als Fehler. */}
-                    <div className="mt-auto pt-7">
-                      <a
-                        href="#suchauftrag"
-                        className={cn(
-                          buttonVariants({ variant: "outline", size: "lg" }),
-                          "w-full",
-                        )}
-                      >
-                        Gerät anfragen
-                      </a>
-                    </div>
-                  </div>
+                <Reveal key={item.id} delay={(i % 3) * 70}>
+                  <InventoryCard item={item} />
                 </Reveal>
               ))}
             </div>
@@ -250,7 +206,7 @@ export default function ScooterPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/65">Suchauftrag</p>
+                <p className="eyebrow text-current/90">Suchauftrag</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Sagen Sie uns, was Sie suchen.
                 </h2>
@@ -316,7 +272,7 @@ export default function ScooterPage() {
         nodes={pageGraph([
           breadcrumb([{ name: "E-Scooter kaufen", path: "/e-scooter" }]),
           refurbishedService(),
-          ...inventoryProducts(),
+          ...inventoryList(),
           faqPage(faqBuy, "/e-scooter"),
           ...reviews("/e-scooter"),
         ])}

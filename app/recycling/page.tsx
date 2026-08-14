@@ -126,7 +126,7 @@ export default function RecyclingPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/65">Altgerät anmelden</p>
+                <p className="eyebrow text-current/90">Altgerät anmelden</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Sagen Sie kurz, worum es geht.
                 </h2>

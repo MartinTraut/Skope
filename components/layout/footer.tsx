@@ -7,7 +7,7 @@ import {
   fullAddress,
   legalNav,
   nav,
-  nearbyPlaces,
+  nearbyPlaceNames,
   priceNote,
   serviceArea,
   site,
@@ -70,7 +70,7 @@ export function Footer() {
 
           {/* Leistungen */}
           <nav aria-label="Leistungen" className="lg:col-span-3">
-            <p className="eyebrow-plain text-current/70">Leistungen</p>
+            <p className="eyebrow-plain text-current/90">Leistungen</p>
             {/* Wie die Rechtslinks unten: mindestens 44 px Zielfläche.
                 Bei `gap-3` und Zeilenhöhe blieben davon rund 24 px übrig. */}
             <ul className="mt-4 -mb-2 flex flex-col">
@@ -91,7 +91,7 @@ export function Footer() {
 
           {/* Einzugsgebiet – echter GEO-Nutzen, nicht Keyword-Stapelung */}
           <div className="lg:col-span-4">
-            <p className="eyebrow-plain text-current/70">Einzugsgebiet</p>
+            <p className="eyebrow-plain text-current/90">Einzugsgebiet</p>
             <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2.5">
               {serviceArea.map((place) => (
                 <li
@@ -106,7 +106,7 @@ export function Footer() {
               ))}
             </ul>
             <p className="mt-5 text-sm leading-relaxed text-current/60">
-              Ebenso im Einzugsgebiet: {nearbyPlaces.join(", ")}.
+              Ebenso im Einzugsgebiet: {nearbyPlaceNames.join(", ")}.
             </p>
           </div>
         </div>

@@ -25,7 +25,7 @@ export function RecyclingTeaser() {
       <Container>
         <Reveal className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <div>
-            <p className="eyebrow text-current/65">Kreislauf statt Sperrmüll</p>
+            <p className="eyebrow text-current/90">Kreislauf statt Sperrmüll</p>
             <h2 className="mt-5 max-w-[18ch] text-[length:var(--text-display)]">
               Ihr alter Scooter ist unser Ersatzteillager.
             </h2>
@@ -67,7 +67,7 @@ export function RecyclingTeaser() {
             <div className="lift-lg rounded-lg border border-current/12 bg-ink-700 p-8 md:p-10">
               <Recycle
                 aria-hidden="true"
-                className="size-8 text-current/45"
+                className="size-8 text-accent"
                 strokeWidth={1.5}
               />
               <h3 className="mt-6 text-[length:var(--text-subtitle)]">

@@ -60,15 +60,19 @@ float snoise(vec2 v) {
   return 130.0 * dot(m, g);
 }
 
-/* Vier Oktaven reichen. Bei fünf ist der Zugewinn auf einer weichen Fläche
-   nicht mehr sichtbar, die Füllrate steigt aber weiter. */
+/* Zwei Oktaven, nicht vier.
+   Vier Oktaven waren der Grund, warum die Flaeche wie Rauch aussah: Die
+   dritte und vierte Lage bringen feine, gedrehte Schlieren, und genau die
+   liest das Auge als Qualm. Milchiges Licht hat keine Feinstruktur, es hat
+   grosse weiche Zonen. Die zweite Lage bleibt, damit die Flaeche nicht zu
+   einem gleichfoermigen Verlauf einschlaeft. */
 float fbm(vec2 p) {
   float v = 0.0;
   float a = 0.5;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 2; i++) {
     v += a * snoise(p);
-    p *= 2.02;
-    a *= 0.5;
+    p *= 1.85;
+    a *= 0.45;
   }
   return v;
 }
@@ -77,50 +81,72 @@ void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
   vec2 p = vec2(uv.x * (uRes.x / uRes.y), uv.y);
 
-  float t = uTime * 0.055;
+  /* Zwei Zeiten, nicht eine.
+     Das Rauschfeld darf langsam bleiben – es ist der Grund, kein Ereignis.
+     Die Lichter darueber laufen dreimal so schnell, und erst daran sieht man
+     ueberhaupt, dass sich etwas bewegt. Vorher hing alles an einer Zeit: Bei
+     einer Geschwindigkeit, die als Licht noch ruhig aussah, stand das Bild
+     praktisch still. */
+  float t = uTime * 0.038;
+  float tl = uTime * 0.115;
 
-  float n1 = fbm(p * 1.15 + vec2(t, t * 0.60));
-  float n2 = fbm(p * 2.30 - vec2(t * 0.80, t * 0.45) + 3.1);
-  float n3 = snoise(p * 0.55 + vec2(-t * 0.40, t * 0.22));
+  /* Zwei grosse Felder statt drei gestapelter Rauschlagen. Die Frequenzen
+     liegen dicht beieinander und beide tief: Was entsteht, sind breite
+     Zonen, die ineinanderlaufen, keine Faeden. */
+  float n1 = fbm(p * 0.70 + vec2(t, t * 0.55));
+  float n2 = fbm(p * 1.15 - vec2(t * 0.62, t * 0.28) + 4.3);
 
-  float mask = n1 * 0.55 + n2 * 0.30 + n3 * 0.45;
-  mask = smoothstep(-0.15, 0.95, mask);
+  float mask = n1 * 0.62 + n2 * 0.38;
+  mask = clamp(mask * 0.75 + 0.5, 0.0, 1.0);
+  /* Zweimal glaetten: einmal die Flanken breit ziehen, einmal die Kurve
+     selbst weichzeichnen. Harte Uebergaenge sind das zweite Rauchmerkmal. */
+  mask = smoothstep(0.16, 0.94, mask);
+  mask = mask * mask * (3.0 - 2.0 * mask);
 
-  /* Vier Stufen statt zwei. Der Kern ist das, was die Fläche „saftig" macht:
-     eine kleine, sehr helle Zone in der Spitze des Rauschens, die als
-     leuchtende Fahne über dem satteren Grün steht. Ohne sie bleibt es ein
-     dunkler Verlauf, egal wie hoch man die mittlere Stufe zieht. */
   /* Die Rampe ist die Markenfarbe, abgedunkelt – nicht irgendein Gruen.
-     Vorher lief sie ueber einen blaettrigen Ton (0.43, 0.82, 0.24), der neben
-     dem Neon der Zahlen und des Siegels als zweites, schmutzigeres Gruen las.
-     Jetzt teilen sich Grund und Akzent denselben Farbton: die Spitze ist
-     exakt #9ef605, die beiden Stufen darunter sind derselbe Ton mit weniger
-     Helligkeit. */
+     Die Spitze ist exakt #9ef605, die Stufen darunter sind derselbe Ton mit
+     weniger Helligkeit.
+
+     Die Stufen ueberlappen jetzt stark: Jede Mischung beginnt, bevor die
+     vorherige zu Ende ist. Dadurch gibt es keine sichtbare Kante zwischen
+     zwei Farbzonen mehr – das Gruen wird heller, statt umzuspringen. */
   vec3 base = vec3(0.031, 0.035, 0.043);
-  vec3 deep = vec3(0.098, 0.160, 0.012);
-  vec3 lit  = vec3(0.330, 0.530, 0.016);
+  vec3 deep = vec3(0.140, 0.245, 0.014);
+  vec3 lit  = vec3(0.430, 0.680, 0.020);
   vec3 core = vec3(0.620, 0.965, 0.020);
 
-  vec3 col = mix(base, deep, smoothstep(0.08, 0.55, mask));
-  col = mix(col, lit, smoothstep(0.52, 0.90, mask));
-  col = mix(col, core, smoothstep(0.86, 1.00, mask) * 0.75);
+  vec3 col = mix(base, deep, smoothstep(0.00, 0.62, mask));
+  col = mix(col, lit, smoothstep(0.34, 0.96, mask));
+  col = mix(col, core, smoothstep(0.70, 1.00, mask) * 0.55);
 
-  /* Der Schein sitzt rechts oben, also hinter der Bildseite. Er ersetzt den
-     vorherigen radialen Verlauf im Markup. */
-  float glow = smoothstep(1.05, 0.15, distance(uv, vec2(0.86, 0.92)));
-  col += lit * glow * 0.30;
+  /* Zwei wandernde Lichter auf weiten, unterschiedlich langen Bahnen.
+     Beide laufen mit eigener Frequenz, damit sich das Muster nicht nach ein
+     paar Sekunden wiederholt – ein sichtbarer Takt waere schlimmer als
+     Stillstand.
+
+     Das helle Licht haelt sich in der rechten Haelfte auf, also hinter der
+     Bildseite. Das zweite ist deutlich schwaecher und laeuft gegenlaeufig
+     durch die linke Haelfte: Es traegt die Bewegung dorthin, wo der
+     Schleier ueber der Textspalte ohnehin fast alles abdeckt, ohne die
+     Lesbarkeit anzutasten. */
+  vec2 lp = vec2(0.78 + 0.20 * sin(tl), 0.80 + 0.17 * cos(tl * 0.73));
+  float glow = smoothstep(1.05, 0.02, distance(uv, lp));
+  col += lit * glow * 0.55;
+
+  vec2 lp2 = vec2(0.24 - 0.20 * cos(tl * 0.61), 0.34 + 0.19 * sin(tl * 0.87));
+  col += deep * smoothstep(0.85, 0.05, distance(uv, lp2)) * 1.10;
 
   float vig = smoothstep(1.30, 0.30, distance(uv, vec2(0.5)));
-  col *= mix(0.42, 1.0, vig);
+  col *= mix(0.52, 1.0, vig);
 
-  /* Der Deckel verhindert nur das Ausbrennen ins Weiße. Die Lesbarkeit haengt
-     nicht mehr an ihm, sondern am Schleier ueber der Textspalte: Klasse
-     hero_scrim in globals.css, dort geschrieben mit Bindestrich. Das ist die
-     richtige Arbeitsteilung, der Grund darf leuchten, wo nichts steht. */
   col = min(col, core);
 
+  /* Nur noch halb so viel Korn, und es ist kein Stilmittel mehr, sondern
+     Dither: Ohne die Stoerung zeigen so weiche Verlaeufe in 8 Bit sichtbare
+     Streifen. Als Filmkorn gelesen hat es die Flaeche zusaetzlich schmutzig
+     wirken lassen. */
   float grain = fract(sin(dot(gl_FragCoord.xy + uTime, vec2(12.9898, 78.233))) * 43758.5453);
-  col += (grain - 0.5) * 0.022;
+  col += (grain - 0.5) * 0.010;
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -144,6 +170,15 @@ export function Velaris({ className }: { className?: string }) {
     const canvas = ref.current;
     if (!canvas) return;
 
+    /* Scheitert irgendetwas an der Grafikkarte, verschwindet die Fläche und
+       das Standbild darunter übernimmt. Das ist wichtiger, als es klingt:
+       Mit `alpha: false` ist die Fläche deckend, auch wenn nie ein Bild
+       gezeichnet wurde. Ein gescheiterter Shader liefert dann keinen leeren
+       Bereich, sondern einen deckenden Kader vor dem Ersatz. */
+    const giveUp = () => {
+      canvas.style.visibility = "hidden";
+    };
+
     const gl =
       canvas.getContext("webgl", {
         alpha: false,
@@ -153,20 +188,29 @@ export function Velaris({ className }: { className?: string }) {
         powerPreference: "low-power",
       }) ?? null;
 
-    // Kein WebGL, kein Drama: Darunter liegt der Verlauf aus dem Markup, und
-    // die Sektion sieht ohne Bewegung immer noch so aus, wie sie soll.
-    if (!gl) return;
+    // Kein WebGL, kein Drama: Darunter liegt `velaris-still`, und die Sektion
+    // sieht ohne Bewegung immer noch so aus, wie sie soll.
+    if (!gl) return giveUp();
+
+    /* Die Leerfarbe ist der Grundton des Shaders, nicht Schwarz.
+       Ein frisch angelegter Kontext wird mit (0,0,0,0) geleert; bei
+       `alpha: false` setzt der Compositor das als deckendes Schwarz. Zwischen
+       Kontext und erstem Bild liegt damit ein Kader, der weder zum Shader
+       noch zum Standbild darunter passt. Verliert der Kontext später den
+       Speicher, ist es derselbe Kader – nur dauerhaft. */
+    gl.clearColor(0.031, 0.035, 0.043, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     const vert = compile(gl, gl.VERTEX_SHADER, VERT);
     const frag = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-    if (!vert || !frag) return;
+    if (!vert || !frag) return giveUp();
 
     const program = gl.createProgram();
-    if (!program) return;
+    if (!program) return giveUp();
     gl.attachShader(program, vert);
     gl.attachShader(program, frag);
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return giveUp();
     gl.useProgram(program);
 
     const buffer = gl.createBuffer();
@@ -256,21 +300,43 @@ export function Velaris({ className }: { className?: string }) {
     );
     io.observe(canvas);
 
+    /* Der Browser darf den Kontext jederzeit einziehen – beim Aufwachen aus
+       dem Ruhezustand, beim Wechsel der Grafikeinheit, wenn zu viele Flächen
+       gleichzeitig offen sind. Ohne diesen Zuhörer bleibt danach genau das
+       stehen, was der Compositor zuletzt hatte: eine tote, oft graue Fläche,
+       die aussieht wie ein Fehler im Entwurf. Mit ihm fällt die Sektion auf
+       das Standbild zurück, und der Unterschied ist, dass es nicht mehr
+       wabert. */
+    const onLost = (event: Event) => {
+      event.preventDefault();
+      cancelAnimationFrame(raf);
+      giveUp();
+    };
+    canvas.addEventListener("webglcontextlost", onLost);
+
     raf = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(raf);
+      canvas.removeEventListener("webglcontextlost", onLost);
       io.disconnect();
       ro.disconnect();
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, []);
 
+  /* Das Standbild liegt hinter der Fläche, nicht daneben, und gehört zu
+     dieser Komponente statt zu jeder Sektion, die sie einsetzt. Sonst hätte
+     der Hero eine Absicherung und der Kopf einer Unterseite keine – und
+     genau das fällt erst auf dem Rechner auf, auf dem WebGL streikt. */
   return (
-    <canvas
-      ref={ref}
-      aria-hidden="true"
-      className={cn("block size-full", className)}
-    />
+    <div className={cn("relative block size-full", className)}>
+      <div aria-hidden="true" className="velaris-still absolute inset-0" />
+      <canvas
+        ref={ref}
+        aria-hidden="true"
+        className="absolute inset-0 size-full"
+      />
+    </div>
   );
 }

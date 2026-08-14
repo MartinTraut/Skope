@@ -1,15 +1,29 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-import { Seal } from "@/components/brand/seal";
+import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
 import { Velaris } from "@/components/motion/velaris";
 import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
-import { proof } from "@/lib/site";
+import { initials, Stars } from "@/components/ui/stars";
+import { testimonials } from "@/lib/data/testimonials";
+import { googleRating, proof } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
+
+/**
+ * Die Stimme, die im Kopfbereich im Wortlaut steht.
+ *
+ * Die kürzeste der drei: Der Kopfbereich trägt bereits Überschrift, Lead und
+ * zwei Aktionen – ein Zitat, das dort über drei Zeilen läuft, wird zur
+ * zweiten Lesestrecke und nicht mehr überflogen. Ausgewählt wird nach Länge
+ * und nicht von Hand, damit eine neue Rezension die Auswahl mitmacht.
+ */
+const leadReview = testimonials.reduce((shortest, item) =>
+  item.quote.length < shortest.quote.length ? item : shortest,
+);
 
 /**
  * Kennzahlen in der Akzentfarbe – aber alle vier, nicht eine.
@@ -31,7 +45,13 @@ const stats = [
   // bricht der Wert auf 390 px in zwei Zeilen um und schiebt seine Bildunter-
   // zeile 32 px unter die des Nachbarn in derselben Rasterreihe – gemessen.
   // Die Untergrenze trägt ohnehin keine Aussage; die Reichweite tut es.
-  { value: "bis 25 km", label: "Einzugsgebiet um Neuenstadt" },
+  //
+  // Die Bildunterzeile nennt die Städte. „Einzugsgebiet um Neuenstadt" war
+  // ein Fachwort über einem Ort, den außerhalb der Region niemand einordnen
+  // kann – zusammen sagten Zahl und Zeile nicht, was sie bedeuten. Drei
+  // bekannte Städte beantworten die Frage „bin ich da drin?" sofort und sind
+  // zugleich das, wonach gesucht wird.
+  { value: "bis 25 km", label: "Umkreis mit Heilbronn, Öhringen, Mosbach" },
 ];
 
 export function Hero() {
@@ -61,15 +81,16 @@ export function Hero() {
             Kopfbereichs leer, rund 290 px hoch über die halbe Seitenbreite.
             Auf Schwarz fällt so ein Loch doppelt auf, weil nichts es füllt.
 
-            8/4 statt 7/5: Die erste Zeile „E-Scooter reparieren" belegt im
-            Browser gemessen 654 px. Sieben Spalten geben 702, acht geben 808 –
-            sieben würden also gerade eben reichen, aber ohne Reserve für einen
-            längeren Satz. Die Aufteilung ist damit nicht gesetzt, sondern
-            ausgerechnet; derselbe Wert deckelt `--text-hero` bei 5 rem. */}
+            7/5 statt 8/4: Die erste Zeile „E-Scooter reparieren" belegt im
+            Browser gemessen 654 px, sieben Spalten geben 702 – es passt, mit
+            knapper Reserve. Die fünfte Spalte geht an das Bild, weil es der
+            einzige Gegenstand in dieser Sektion ist und in vier Spalten
+            (rund 390 px) neben einer 5-rem-Überschrift zu klein blieb, um als
+            Hauptmotiv zu wirken. Derselbe Wert deckelt `--text-hero`. */}
         <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-7">
             <Reveal immediate>
-              <p className="eyebrow text-current/60">
+              <p className="eyebrow text-current/90">
                 E-Scooter Fachwerkstatt · Neuenstadt am Kocher
               </p>
             </Reveal>
@@ -90,7 +111,7 @@ export function Hero() {
             */}
             <h1 className="rise-line mt-6 text-[length:var(--text-hero)]">
               <span>
-                E-Scooter <Mark>reparieren</Mark> statt ersetzen
+                E-Scooter <Mark>reparieren</Mark> statt neu kaufen
               </span>
             </h1>
 
@@ -126,13 +147,75 @@ export function Hero() {
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </ButtonLink>
               </div>
-              <p className="mt-5 text-sm text-current/65">
+              {/* Die Zusage neben den Aktionen, nicht als Fußnote darunter.
+                  Vorher stand sie in 14 px bei 65 % Deckkraft unter zwei
+                  Buttons – die einzige Stelle im Kopfbereich, an der etwas
+                  Konkretes über die Wartezeit steht, und optisch die
+                  schwächste. Jetzt trägt sie eine eigene Fläche und den
+                  Neonpunkt, der auf der ganzen Seite „verfügbar" meint. */}
+              <p className="mt-7 inline-flex items-center gap-3 rounded-full bg-current/8 py-2.5 pr-6 pl-4.5 font-display text-[0.9375rem] font-semibold tracking-tight">
+                <span
+                  aria-hidden="true"
+                  className="size-2.5 shrink-0 rounded-full bg-neon"
+                />
                 Bremsen und Reifen meist am selben Tag
               </p>
             </Reveal>
+
+            {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
+                Die Rezensionen standen bisher unterhalb von Ablauf und
+                Werkstatt – wer nach dem Kopfbereich weiterklickt, hatte bis
+                dahin nur unsere eigenen Aussagen gelesen. Der Beleg gehört
+                dorthin, wo die Entscheidung fällt.
+
+                Es ist derselbe Bestand wie im Band weiter unten, nur der
+                Auszug: die Gesichter aller Stimmen, die Note, und eine
+                Rezension im Wortlaut. Gold statt Neon, weil das hier ein
+                Zitat von Google ist und kein Handlungsangebot – die Regel
+                steht an `components/ui/stars.tsx`. */}
+            <Reveal immediate delay={60}>
+              <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4">
+                <div aria-hidden="true" className="flex items-center -space-x-3">
+                  {testimonials.map((item) => (
+                    <span
+                      key={item.author}
+                      className="grid size-10 place-items-center rounded-full border-2 border-ink bg-silver/12 font-display text-xs font-bold tracking-wide backdrop-blur-sm"
+                    >
+                      {initials(item.author)}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="min-w-0">
+                  <p className="flex items-center gap-2.5">
+                    <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
+                      {googleRating.value}
+                    </span>
+                    <Stars
+                      rating={5}
+                      className="size-4"
+                      label={`${googleRating.value} von 5 Sternen bei Google`}
+                    />
+                  </p>
+                  <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
+                    <GoogleMark className="size-3.5 shrink-0" />
+                    {googleRating.count} Rezensionen bei Google
+                  </p>
+                </div>
+              </div>
+
+              <figure className="mt-6 max-w-[46ch] border-l-2 border-current/20 pl-5">
+                <blockquote className="font-display leading-snug font-semibold tracking-tight text-current/90">
+                  &bdquo;{leadReview.quote}&ldquo;
+                </blockquote>
+                <figcaption className="mt-2 text-sm text-current/60">
+                  {leadReview.author} · {leadReview.context}
+                </figcaption>
+              </figure>
+            </Reveal>
           </div>
 
-          <Reveal immediate className="relative lg:col-span-4 lg:col-start-9">
+          <Reveal immediate className="relative lg:col-span-5 lg:col-start-8">
             {/* Das Studiofoto ist Hochformat, 1409 x 1750, also 4:5 – und der
                 Roller füllt 81 % der Bildhöhe. In einem 16:10-Rahmen schnitt
                 `object-cover` oben den Lenker und unten das Vorderrad ab. Der
@@ -152,30 +235,14 @@ export function Hero() {
             >
               <Image
                 src="/img/scooter-studio.jpg"
-                alt="Generalüberholter E-Scooter mit Skope-Qualitätssiegel in Studioaufnahme"
+                alt="Geprüfter E-Scooter mit Prüfanhänger vor der Werkstattwand mit dem Skope-Schild"
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 32vw"
+                sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"
               />
             </BorderBeamPanel>
 
-            {/* Das Siegel sitzt auf der Kante des Bildes und ist die einzige
-                helle Fläche im Hero. Genau deshalb funktioniert es: Auf einer
-                durchgehend schwarzen Sektion zieht ein Silberblock den Blick
-                stärker als jede Farbe – und er trägt eine Aussage, keine
-                Dekoration. `on-light` dreht den Akzent im Kasten mit. */}
-            <div className="lift mt-4 flex items-center gap-4 rounded-lg bg-silver py-4 pr-7 pl-4 text-ink on-light lg:absolute lg:-bottom-8 lg:-left-8 lg:mt-0">
-              <Seal decorative compact className="size-14 shrink-0" />
-              <div>
-                <p className="font-display text-sm font-bold">
-                  {proof.sealName}
-                </p>
-                <p className="text-xs text-current/70">
-                  Jedes Gerät geprüft, bevor es verkauft wird
-                </p>
-              </div>
-            </div>
           </Reveal>
         </div>
 

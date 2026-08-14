@@ -67,17 +67,21 @@ export default function RepairPage() {
         }
         lead="Ein defekter E-Scooter ist selten ein Totalschaden. In den meisten Fällen sind es Bremsen, Reifen, ein einzelner Sensor oder eine schwache Zelle im Akku. Alles reparierbar, zu einem Bruchteil des Neupreises."
         aside={
-          <dl className="grid grid-cols-2 gap-6 border-t border-current/12 pt-6">
+          <dl className="grid grid-cols-2 gap-x-10 gap-y-6">
             <div>
-              <dt className="text-sm text-current/70">Reparierte Scooter</dt>
-              <dd className="tabular font-display text-3xl font-bold tracking-tight">
+              <dt className="eyebrow-plain text-current/60">
+                Reparierte Scooter
+              </dt>
+              <dd className="tabular mt-2 font-display text-4xl font-bold tracking-tight">
                 500+
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-current/70">Diagnose im Checkup</dt>
-              {/* Orange nur auf dem Geldbetrag – siehe Akzentregel in globals.css */}
-              <dd className="tabular font-display text-3xl font-bold tracking-tight text-accent">
+              <dt className="eyebrow-plain text-current/60">
+                Diagnose im Checkup
+              </dt>
+              {/* Neon nur auf dem Geldbetrag – siehe Akzentregel in globals.css */}
+              <dd className="tabular mt-2 font-display text-4xl font-bold tracking-tight text-accent">
                 59,99 €
               </dd>
             </div>
@@ -98,24 +102,37 @@ export default function RepairPage() {
             lead="Vom ausgelesenen Fehlercode bis zum überholten Nabenmotor: Wir arbeiten am Bauteil, nicht am Austauschgerät."
           />
 
-          <div className="mt-16 grid gap-10 md:grid-cols-2 md:gap-x-16 md:gap-y-14">
+          {/* Vier Felder auf einer eigenen Fläche statt vier Haarlinien.
+
+              Vorher trug jedes Feld nur eine blasse Oberkante. Untereinander
+              gestellt ergab das acht Striche quer durch eine helle Sektion –
+              ein Liniengitter, in dem der Blick keine Kante mehr findet, und
+              die Zwischenüberschrift „01" verschwand als graue Kleinzahl
+              darüber. Jetzt hebt eine leichte Fläche jedes Feld heraus, und
+              die Nummer steht als grosser Schattenwert in der Ecke: sichtbar
+              als Ordnung, ohne mit der Überschrift um Aufmerksamkeit zu
+              streiten. */}
+          <div className="mt-14 grid gap-5 md:grid-cols-2 md:gap-6">
             {repairAreas.map((area, i) => (
               <Reveal key={area.slug} delay={(i % 2) * 80} as="article">
-                <div className="flex h-full flex-col border-t border-current/12 pt-7">
-                  <p className="tabular font-display text-sm font-semibold text-current/65">
+                <div className="relative flex h-full flex-col overflow-hidden rounded-xl bg-current/5 p-7 md:p-9">
+                  <span
+                    aria-hidden="true"
+                    className="tabular pointer-events-none absolute top-4 right-6 font-display text-6xl leading-none font-bold tracking-tight text-current/10"
+                  >
                     {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-3 text-[length:var(--text-title)]">
+                  </span>
+                  <h3 className="relative text-[length:var(--text-title)]">
                     {area.title}
                   </h3>
-                  <p className="mt-4 leading-relaxed text-current/60">
+                  <p className="mt-4 leading-relaxed text-current/65">
                     {area.description}
                   </p>
-                  <ul className="mt-6 flex flex-wrap gap-2">
+                  <ul className="mt-7 flex flex-wrap gap-2">
                     {area.items.map((item) => (
                       <li
                         key={item}
-                        className="rounded-md border border-current/15 px-3 py-1.5 text-sm text-current/70"
+                        className="rounded-md bg-current/8 px-3 py-1.5 text-sm text-current/75"
                       >
                         {item}
                       </li>
@@ -134,17 +151,22 @@ export default function RepairPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <Reveal>
-                <p className="eyebrow text-current/65">So läuft es ab</p>
+                <p className="eyebrow text-current/90">So läuft es ab</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Vier Schritte, keine Überraschungen.
                 </h2>
               </Reveal>
 
-              <ol className="mt-12">
+              {/* Der Schrittzähler trägt die Ordnung, nicht mehr eine
+                  Trennlinie pro Zeile. Auf `silver-200` lag die alte Kante in
+                  `border-silver/12` – Weiss auf Hellgrau, also praktisch
+                  unsichtbar, und trotzdem genug Grauschleier, um die Liste
+                  unruhig zu machen. */}
+              <ol className="mt-12 flex flex-col gap-9">
                 {steps.map((step, i) => (
                   <Reveal key={step.n} delay={i * 70} as="li">
-                    <div className="flex gap-6 border-t border-silver/12 py-7 md:gap-10">
-                      <span className="tabular font-display text-lg font-bold text-current/65">
+                    <div className="flex gap-6 md:gap-10">
+                      <span className="tabular font-display text-2xl leading-none font-bold tracking-tight text-current/25">
                         {step.n}
                       </span>
                       <div>
@@ -222,23 +244,30 @@ export default function RepairPage() {
       {/* Marken */}
       <Section tone="ink" className="py-16 md:py-20">
         <Container>
-          <Reveal className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-            <h2 className="shrink-0 eyebrow-plain text-current/70">
+          {/* Die Markenliste war vorher eine graue Zeile neben einer noch
+              graueren Beschriftung – acht Namen bei 75 % Deckkraft, in
+              Fliesstextgrösse, ohne eigene Fläche. Sie beantwortet aber die
+              erste Frage jedes Anrufers: „Macht ihr meine Marke überhaupt?"
+              Deshalb steht sie jetzt als eigener Block, die Namen in
+              Überschriftengrösse und voller Deckkraft. */}
+          <Reveal className="flex flex-col gap-8">
+            <h2 className="eyebrow text-current/90">
               Marken, die wir betreuen
             </h2>
-            <ul className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <ul className="flex flex-wrap items-center gap-2.5">
               {brands.map((brand) => (
                 <li
                   key={brand}
-                  className="font-display text-lg font-semibold tracking-tight text-current/75"
+                  className="rounded-lg bg-current/8 px-4 py-2.5 font-display text-lg font-bold tracking-tight md:text-xl"
                 >
                   {brand}
                 </li>
               ))}
-              <li className="text-sm text-current/60">
-                … und weitere, auch exotische Modelle
-              </li>
             </ul>
+            <p className="text-current/65">
+              … und weitere, auch exotische Modelle. Wenn Ihre Marke nicht dabei
+              ist: anrufen, in den meisten Fällen passt es trotzdem.
+            </p>
           </Reveal>
         </Container>
       </Section>
@@ -249,7 +278,7 @@ export default function RepairPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <p className="eyebrow text-current/65">Reparatur anfragen</p>
+                <p className="eyebrow text-current/90">Reparatur anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
                   Beschreiben Sie, was der Scooter macht.
                 </h2>

@@ -33,6 +33,14 @@ export type InventoryItem = {
   price: string;
   /** Bruttopreis als Zahl, ohne Währung – nur für das Product-Schema. */
   priceValue: string;
+  /**
+   * Deutsche Betriebserlaubnis vorhanden.
+   *
+   * Eigenes Feld und nicht aus dem Text der Zulassungszeile gelesen: Die
+   * Warnung auf der Karte hängt daran, und eine Warnung, die an einer
+   * Formulierung hängt, verschwindet beim nächsten Umschreiben still.
+   */
+  streetLegal: boolean;
   specs: { label: string; value: string }[];
   /** Rechtlicher oder werkstattseitiger Hinweis unter den Daten. */
   note?: string;
@@ -47,6 +55,7 @@ export const inventory: InventoryItem[] = [
       "Kompakter Klapproller für kurze Wege und den Weg zum Bahnhof, in neuwertigem Zustand und mit deutscher Straßenzulassung.",
     price: "169,99 €",
     priceValue: "169.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Neuwertig, werkstattgeprüft" },
       { label: "Zulassung", value: "StVZO-konform, mit Betriebserlaubnis" },
@@ -95,6 +104,7 @@ export const inventory: InventoryItem[] = [
       "Kompakter Klapproller mit Vollgummireifen, neuwertig und mit ABE.",
     price: "179,99 €",
     priceValue: "179.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Neuwertig, geprüft und gewartet" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
@@ -138,6 +148,7 @@ export const inventory: InventoryItem[] = [
       "Generalüberholter Pendlerroller in Weiß, mit pannensicheren Vollgummireifen und USB-Anschluss am Lenker.",
     price: "199,99 €",
     priceValue: "199.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Generalüberholt, geprüft und gereinigt" },
       { label: "Zulassung", value: "StVZO-konform, mit Straßenzulassung" },
@@ -186,6 +197,7 @@ export const inventory: InventoryItem[] = [
       "Fabrikneu und original verpackt, mit deutscher Zulassung. Leicht, wendig und mit breitem Trittbrett.",
     price: "199,99 €",
     priceValue: "199.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Neuware, originalverpackt" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden, deutsche Version" },
@@ -228,6 +240,7 @@ export const inventory: InventoryItem[] = [
       "Neuwertiger Roller der F-Serie mit klappbarem Lenker und Federung vorn.",
     price: "199,99 €",
     priceValue: "199.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Neuwertig, geprüft und gewartet" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
@@ -272,6 +285,7 @@ export const inventory: InventoryItem[] = [
       "Der schlanke Einstieg von Xiaomi, vollständig geprüft und gewartet, mit Straßenzulassung.",
     price: "199,99 €",
     priceValue: "199.99",
+    streetLegal: true,
     specs: [
       {
         label: "Zustand",
@@ -320,6 +334,7 @@ export const inventory: InventoryItem[] = [
       "Generalüberholtes Modelljahr 2023 mit ausgelesenem Akkutest und justiertem Doppelbremssystem.",
     price: "209,99 €",
     priceValue: "209.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Generalüberholt, Akku ausgelesen" },
       { label: "Modelljahr", value: "2023" },
@@ -361,6 +376,7 @@ export const inventory: InventoryItem[] = [
       "Geprüfte Gebrauchtware im Top-Zustand, mit Straßenzulassung und 35 km Reichweite.",
     price: "249,99 €",
     priceValue: "249.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Gebraucht, Top-Zustand, voll geprüft" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
@@ -406,6 +422,7 @@ export const inventory: InventoryItem[] = [
       "Internationale 25-km/h-Version mit Heckantrieb und Traktionskontrolle. Generalüberholt, minimale Gebrauchsspuren.",
     price: "289,99 €",
     priceValue: "289.99",
+    streetLegal: false,
     specs: [
       {
         label: "Zustand",
@@ -454,6 +471,7 @@ export const inventory: InventoryItem[] = [
       "Generalüberholt und meistergeprüft, mit Blinkern, Traktionskontrolle und 55 km Reichweite.",
     price: "299,99 €",
     priceValue: "299.99",
+    streetLegal: true,
     specs: [
       { label: "Zustand", value: "Generalüberholt und meistergeprüft" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
@@ -502,6 +520,7 @@ export const inventory: InventoryItem[] = [
       "Geprüfte Gebrauchtware mit doppelter Elastomerfederung, Blinkern und 55 km Reichweite.",
     price: "309,99 €",
     priceValue: "309.99",
+    streetLegal: true,
     specs: [
       {
         label: "Zustand",
@@ -550,6 +569,7 @@ export const inventory: InventoryItem[] = [
       "Internationale EU-Variante mit 25 km/h. Ohne deutsche Zulassung, also für Privatgelände, Export oder die Nutzung im Ausland.",
     price: "359,99 €",
     priceValue: "359.99",
+    streetLegal: false,
     specs: [
       { label: "Zustand", value: "Gebraucht, geprüft und gewartet" },
       {
@@ -595,6 +615,7 @@ export const inventory: InventoryItem[] = [
       "Das stärkste Gerät im Bestand: 705-Wh-Akku mit Samsung-Zellen, hydraulische Scheibenbremsen vorn und hinten, rund 400 km gelaufen.",
     price: "599,99 €",
     priceValue: "599.99",
+    streetLegal: true,
     specs: [
       {
         label: "Zustand",
@@ -641,3 +662,36 @@ export const inventory: InventoryItem[] = [
     ],
   },
 ];
+
+/**
+ * Ein Gerät über seinen Bezeichner.
+ *
+ * Der Bezeichner ist zugleich das Adressteil der Geräteseite
+ * (`/e-scooter/<id>`). Deshalb hier eine Funktion und keine Map: Die Liste hat
+ * dreizehn Einträge, und eine zweite Datenstruktur, die mit der ersten
+ * synchron gehalten werden muss, wäre bei dieser Größe nur eine weitere
+ * Stelle, an der etwas auseinanderläuft.
+ */
+export function inventoryItem(id: string): InventoryItem | undefined {
+  return inventory.find((item) => item.id === id);
+}
+
+/**
+ * Zwei weitere Geräte in der Nähe des Preises.
+ *
+ * Nicht zufällig und nicht „die nächsten beiden in der Liste": Die Liste ist
+ * nach Preis sortiert, also sind die direkten Nachbarn die Geräte, zwischen
+ * denen tatsächlich abgewogen wird. Am Rand der Liste rückt das Fenster nach
+ * innen, sonst stünde beim günstigsten Gerät nur eine einzige Empfehlung.
+ */
+export function relatedInventory(id: string, count = 3): InventoryItem[] {
+  const index = inventory.findIndex((item) => item.id === id);
+  if (index < 0) return inventory.slice(0, count);
+
+  const others = inventory.filter((_, i) => i !== index);
+  const start = Math.min(
+    Math.max(0, index - Math.floor(count / 2)),
+    Math.max(0, others.length - count),
+  );
+  return others.slice(start, start + count);
+}

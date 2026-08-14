@@ -10,7 +10,7 @@ export function pageMeta({
   description,
   path,
   image = "/img/scooter-studio.jpg",
-  imageAlt = "Generalüberholter E-Scooter mit Skope-Qualitätssiegel",
+  imageAlt = "Geprüfter E-Scooter in der Skope-Werkstatt in Neuenstadt am Kocher",
 }: {
   /** Ohne Marken-Suffix – das Template hängt „| SKOPE" an. Ziel: ≤ 52 Zeichen. */
   title: string;

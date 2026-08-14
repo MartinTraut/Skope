@@ -26,15 +26,25 @@ function subscribeToUrl(onChange: () => void) {
 }
 
 /**
- * Kein `focus:outline-none`: Der Rahmenwechsel allein bleibt unter dem für
- * Fokusindikatoren geforderten Kontrast (WCAG 2.4.11). Die globale
- * `:focus-visible`-Outline aus globals.css muss hier greifen dürfen.
+ * Gefüllte Felder statt umrandeter.
+ *
+ * Vorher stand jedes Feld als leerer Kasten mit 45-prozentiger Kontur auf der
+ * Sektionsfläche: neun Rahmen untereinander, die zusammen mehr Zeichnung
+ * hatten als alles, was in ihnen steht, und keiner davon zeigte, wo man
+ * hineinschreibt. Eine leichte Füllung macht das Gegenteil – sie zeigt die
+ * Schreibfläche und verschwindet als Kontur.
+ *
+ * Der transparente Rahmen bleibt stehen, damit der Wechsel auf `border-accent`
+ * im Fokus die Höhe nicht verschiebt. Kein `focus:outline-none`: Der
+ * Rahmenwechsel allein bleibt unter dem für Fokusindikatoren geforderten
+ * Kontrast (WCAG 2.4.11), die globale `:focus-visible`-Outline aus globals.css
+ * muss hier greifen dürfen.
  */
 const fieldClass =
-  "w-full rounded-md border border-current/45 bg-transparent px-4 py-3.5 text-current placeholder:text-current/55 transition-colors duration-200 focus:border-accent";
+  "w-full rounded-lg border border-transparent bg-current/8 px-4 py-3.5 text-current placeholder:text-current/50 transition-colors duration-200 focus:border-accent focus:bg-current/12";
 
 const labelClass =
-  "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-70";
+  "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-75";
 
 export function InquiryForm({
   topics,
@@ -64,9 +74,19 @@ export function InquiryForm({
     () => window.location.search,
     () => "",
   );
-  const slug = topicFromQuery
-    ? new URLSearchParams(search).get("anliegen")
-    : null;
+  const params = topicFromQuery ? new URLSearchParams(search) : null;
+  const slug = params?.get("anliegen") ?? null;
+
+  /**
+   * `?geraet=` trägt das Modell aus der Geräteseite ins Formular.
+   *
+   * Ohne das kommt jede Anfrage von einer Geräteseite als „Frage zu einem
+   * Gerät" ohne Gerät an – und die Werkstatt muss zurückfragen, welches der
+   * dreizehn gemeint war. Der Wert steht in einem Feld, das ohnehin für Marke
+   * und Modell da ist, und bleibt überschreibbar: Wer über den Weg kommt, aber
+   * nach etwas anderem fragt, korrigiert eine Zeile statt eine leere zu füllen.
+   */
+  const device = params?.get("geraet")?.slice(0, 80) || undefined;
 
   /**
    * Ohne Vorauswahl nur dort, wo die volle Liste angeboten wird: Bei vierzehn
@@ -148,7 +168,17 @@ export function InquiryForm({
   const errorCount = state.errors ? Object.keys(state.errors).length : 0;
 
   return (
-    <form action={action} className={cn("flex flex-col gap-6", className)}>
+    /* Das Formular steht auf einer eigenen Fläche und nicht frei in der
+       Sektion. Frei gestellt war es eine Reihe schwebender Kästen ohne
+       erkennbaren Anfang und ohne Ende; als Block ist es ein Gegenstand auf
+       der Seite – dieselbe Figur wie die Preiskarte auf der Reparaturseite. */
+    <form
+      action={action}
+      className={cn(
+        "flex flex-col gap-6 rounded-2xl bg-current/5 p-6 md:p-9",
+        className,
+      )}
+    >
       {/* Honeypot – für Menschen unsichtbar. Neutraler Feldname, damit
           Passwortmanager und Autofill ihn nicht befüllen. */}
       <div aria-hidden="true" className="absolute -left-[9999px]">
@@ -263,11 +293,16 @@ export function InquiryForm({
           defaultValue={state.values?.phone}
           error={state.errors?.phone}
         />
+        {/* `key` erzwingt das Neusetzen des Feldes, sobald die Adresszeile
+            gelesen ist: `defaultValue` wirkt nur beim ersten Rendern, und beim
+            ersten Rendern auf dem Server ist die Suchanfrage leer. Dieselbe
+            Mechanik wie beim Anliegen-Feld darüber. */}
         <Field
+          key={device}
           id="scooter"
           label="Marke & Modell (optional)"
           placeholder="z. B. Xiaomi Pro 2"
-          defaultValue={state.values?.scooter}
+          defaultValue={state.values?.scooter ?? device}
           error={state.errors?.scooter}
         />
       </div>

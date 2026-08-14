@@ -70,5 +70,6 @@ export const TOPIC_BY_SLUG: Record<string, ContactTopic> = {
   checkup: "Sicherheits-Checkup (59,99 €)",
   versicherung: "Versicherung: Haftpflicht",
   kauf: "Suchauftrag refurbished E-Scooter",
+  geraet: "Frage zu einem Gerät",
   recycling: "Altgerät abgeben / Recycling",
 };

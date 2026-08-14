@@ -15,11 +15,12 @@ import { cn } from "@/lib/utils";
  * funktioniert: Wer auf einer Seite nach dem nächsten Schritt sucht, sucht
  * nach Grün.
  *
- * Der dunkle Rand ist kein Zierrat, sondern Pflicht. Neon liegt auf Silber bei
- * 1,18:1 – ohne Rand hätte der Knopf auf einer Silbersektion überhaupt keine
- * erkennbare Kante und verfehlte WCAG 1.4.11 (3:1 für Bedienelement-Grenzen).
- * Mit `border-ink` trägt die Kante 17,6:1 auf Silber und stört auf Schwarz
- * nicht, weil dort die Neonfläche selbst die Grenze zieht.
+ * Die Kante des Neon-Knopfes kommt aus der Fläche (`--btn-edge`, globals.css)
+ * und ist nicht fest schwarz. Auf Silber muss sie dunkel sein: Neon liegt dort
+ * bei 1,18:1, ohne Kante hätte der Knopf keine erkennbare Grenze und
+ * verfehlte WCAG 1.4.11 (3:1 für Bedienelement-Grenzen). Auf Schwarz zieht die
+ * Neonfläche die Grenze selbst – dort war dieselbe schwarze Kante ein
+ * sichtbarer schwarzer Ring um den Knopf, besonders im Seitenkopf.
  */
 const button = cva(
   [
@@ -35,7 +36,7 @@ const button = cva(
         /* Neon als Vollton, Schrift in Ink: 14,8:1. Kein Verlauf und kein
            farbiger Schlagschatten – ein Vollton hat mehr Gewicht als jeder
            Verlauf und sieht nicht nach Baukasten aus. */
-        neon: "border-ink bg-neon text-ink hover:bg-neon-300",
+        neon: "border-[var(--btn-edge)] bg-neon text-ink hover:bg-neon-300 hover:border-[var(--btn-edge)]",
         solid:
           "border-ink bg-ink text-silver hover:bg-ink-700 hover:border-ink-700 on-dark",
         invert:
