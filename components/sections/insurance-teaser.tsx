@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ShieldCheck } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
@@ -48,14 +47,20 @@ export function InsuranceTeaser() {
                   volles Versicherungsjahr, kein Abo
                 </dd>
               </div>
+              {/* „Sofort" statt „5 bis 10 Werktage". Die Frist gilt für den
+                  Postweg der ERGO und damit für die Online-Anfrage; wer in die
+                  Werkstatt kommt, nimmt die Plakette mit. Von beiden Angaben
+                  ist die kürzere das Argument, und sie steht hier neben dem
+                  Preis, weil genau diese zwei Zahlen die Entscheidung
+                  tragen. Die Frist steht darunter im Fließtext. */}
               <div>
-                <dt className="text-sm text-current/65">
-                  Kennzeichen per Post
-                </dt>
+                <dt className="text-sm text-current/65">Plakette vor Ort</dt>
                 <dd className="tabular mt-1 font-display text-3xl font-bold tracking-tight">
-                  5 bis 10
+                  sofort
                 </dd>
-                <dd className="mt-1 text-xs text-current/65">Werktage</dd>
+                <dd className="mt-1 text-xs text-current/65">
+                  zum Mitnehmen, bar oder EC
+                </dd>
               </div>
             </dl>
 
@@ -102,19 +107,17 @@ export function InsuranceTeaser() {
               </p>
             </div>
 
-            <figure className="mt-6 flex items-center gap-4">
-              <Image
-                src="/img/ergo-tarife.jpg"
-                alt="Inhaber und Kunde gehen am Tresen der Werkstatt die Versicherungsunterlagen durch"
-                width={1341}
-                height={2000}
-                sizes="72px"
-                className="h-24 w-18 shrink-0 rounded-md border border-current/12 object-cover"
-              />
-              <figcaption className="text-xs leading-relaxed text-current/65">
-                Wir vermitteln die Tarife hier im Laden. {tariffDisclaimer}
-              </figcaption>
-            </figure>
+            {/* Nur der Rechtshinweis, ohne Bild.
+                Hier stand ein 72 × 96 px großes Foto neben dem Kleingedruckten
+                – zu klein, um irgendetwas zu zeigen, und an der einzigen
+                Stelle des Abschnitts, an der niemand ein Bild sucht. Ein
+                Briefmarkenbild neben einer Haftungsklausel wertet weder das
+                Bild noch die Klausel auf. Der Aushang steht jetzt in voller
+                Größe auf der Versicherungsseite, dort, wo die Tabelle ihn
+                belegt. */}
+            <p className="mt-6 text-xs leading-relaxed text-current/60">
+              {tariffDisclaimer}
+            </p>
           </Reveal>
         </div>
       </Container>

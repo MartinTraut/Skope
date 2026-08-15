@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
-import { Velaris } from "@/components/motion/velaris";
 import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
@@ -56,37 +55,75 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-ink pt-28 pb-0 text-silver md:pt-32 on-dark">
-      {/* Der bewegte Grund ersetzt den vorherigen radialen Neonschein – der
-          Schein steckt jetzt im Shader, an derselben Stelle rechts oben.
+    <section className="relative isolate overflow-hidden bg-ink pb-0 text-silver on-dark">
+      {/* Zwei Zonen, nicht eine: Oben die Bildzone mit Text darauf, darunter
+          das Beweisband auf reiner Tinte.
 
-          Er hat hier eine zweite Aufgabe außer Tiefe: Die Glasleiste des
-          Seitenkopfs liegt darüber und hatte bis eben nichts zu brechen. Über
-          einer glatten schwarzen Fläche kann auch das beste Glas nur grau
-          aussehen. */}
+          Grund ist Geometrie, keine Gestaltungslaune. Die Aufnahme ist
+          16:10; über die ganze Sektion gelegt (rund 1400 px hoch bei 1512 px
+          Breite) müsste `object-cover` sie auf 224 % hochziehen, und vom
+          Roller bliebe ein Ausschnitt der Lenkstange. Auf die Textzone
+          begrenzt liegt das Verhältnis bei etwa 1,6 – dem der Aufnahme. */}
+      <div className="relative">
+      {/* Die Werkstatt selbst als Grund, über die volle Breite.
+          Vorher stand hier der Shader und rechts daneben ein Hochformat im
+          Rahmen – zwei Gegenstände, die um dieselbe Fläche konkurrierten.
+          Jetzt trägt eine Aufnahme beides: Tiefe für die Glasleiste des
+          Seitenkopfs und das Motiv, das die Sektion braucht.
+
+          Der Shader bleibt auf den Unterseiten und im Abschlussband; hier
+          hätte er unter dem Foto nichts zu leuchten. Das Grün kommt aus dem
+          Bild – die Leuchtstoffröhre über der Werkzeugwand – und aus dem
+          Licht, das die Verfügbarkeitszeile umläuft.
+
+          `object-position` hält den Roller rechts neben der Textspalte: Der
+          Bildausschnitt wandert mit der Breite, das Motiv nicht. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        <Velaris />
+        {/* `object-contain` statt `object-cover` – die Aufnahme wird
+            vollständig gezeigt, nicht beschnitten.
+
+            Mit `cover` bestimmt die längere Seite den Maßstab: Die Bildzone
+            ist bei 1512 px gemessen 1512 × 978 px (1,55), die Aufnahme hat
+            2400 × 1507 (1,59). Das kostet zwar nur drei Prozent Breite – der
+            Roller wirkt trotzdem nah, weil die Sektion 986 px hoch ist und in
+            einem üblichen Fenster von 790 px der untere Teil samt Vorderrad
+            unter der Falz liegt. `contain` bindet den Maßstab an die Breite
+            (1512 / 2400 = 0,63 statt 0,65) und zeigt Lenker wie Vorderrad
+            immer vollständig; was oben fehlt, ist Tinte – der Grund der
+            Sektion, kein Loch. Unten und rechts verankert, damit der Roller
+            neben der Textspalte steht und auf der Standfläche aufsitzt. */}
+        <Image
+          src="/img/hero-werkstatt.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
+        />
         {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
         <div className="hero-scrim absolute inset-0" />
+        {/* Der Werkstattboden ist die hellste Stelle der Aufnahme und lag
+            genau auf der Unterkante der Bildzone – eine waagerechte Kante
+            quer durch die Sektion. Der zweite Verlauf zieht die letzten
+            10 rem in die Tinte, in der das Beweisband darunter steht. */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
       </div>
 
-      <Container className="relative">
-        {/* Bild und Text beginnen auf derselben Linie.
+      <Container className="relative pt-28 pb-14 md:pt-32 md:pb-16">
+        {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
+            als Grund über die volle Breite läuft. Die fünf freien Spalten
+            sind kein leerer Platz, sondern der Teil des Bildes, den der
+            seitliche Schleier durchlässt; dort steht der Roller.
 
-            Vorher lief die Überschrift über die volle Breite und alles
-            Weitere darunter – dadurch stand das obere rechte Viertel des
-            Kopfbereichs leer, rund 290 px hoch über die halbe Seitenbreite.
-            Auf Schwarz fällt so ein Loch doppelt auf, weil nichts es füllt.
-
-            7/5 statt 8/4: Die erste Zeile „E-Scooter reparieren" belegt im
-            Browser gemessen 654 px, sieben Spalten geben 702 – es passt, mit
-            knapper Reserve. Die fünfte Spalte geht an das Bild, weil es der
-            einzige Gegenstand in dieser Sektion ist und in vier Spalten
-            (rund 390 px) neben einer 5-rem-Überschrift zu klein blieb, um als
-            Hauptmotiv zu wirken. Derselbe Wert deckelt `--text-hero`. */}
+            Sechs Spalten waren es eine Runde lang und zu wenig: Bei 1512 px
+            braucht die erste Zeile „E-Scooter reparieren" gemessen 680 px,
+            sechs Spalten geben 680, sieben geben 800. Sie brach damit
+            zwischen „E-Scooter" und „reparieren" um, und aus zwei Zeilen
+            wurden drei. Der Grad in `--text-hero` ist auf diese sieben
+            Spalten gerechnet. */}
         <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
           <div className="lg:col-span-7">
             <Reveal immediate>
@@ -102,16 +139,29 @@ export function Hero() {
               die H1 die Leistung und den Ort, das ist zugleich das, wonach
               gesucht wird.
 
-              Ein Block, keine zwei. Vorher stand jede Zeile in einer eigenen
-              Maske und stieg mit 110 ms Versatz auf; die Zäsur nach
-              „reparieren" war damit fest verdrahtet. Der Satz bricht jetzt
-              dort, wo die Breite es verlangt, und `text-wrap: balance` aus
-              den Basisregeln verteilt die Zeilen gleichmäßig. Die Maske
-              bleibt, sie umschließt nun die ganze Überschrift.
+              Der Umbruch steht wieder fest. Frei umbrochen verteilte
+              `text-wrap: balance` den Satz in der halbbreiten Spalte auf drei
+              ungleiche Zeilen und trennte „reparieren" von „E-Scooter" – die
+              Leistung stand damit nicht mehr in einer Zeile mit dem, woran
+              sie geschieht. Zwei Blöcke setzen die Zäsur dorthin, wo der Satz
+              sie im Sinn hat.
+
+              Eine Maske für beide Zeilen: Sie steigen gemeinsam auf, weil
+              zwei getrennte Masken denselben Satz in zwei Ereignisse
+              zerlegen.
             */}
-            <h1 className="rise-line mt-6 text-[length:var(--text-hero)]">
+            {/* Acht Spalten für die Überschrift, sieben für alles darunter.
+                Die Textspalte fällt bei 1024 px von 820 auf 515 px, und dieser
+                eine Punkt deckelte den Grad auf jeder größeren Breite mit.
+                115 % sind gemessen genau die achte Spalte samt Rasterabstand
+                (800 → 920 px bei 1512 px); der Fließtext bleibt bei sieben,
+                weil eine Lesestrecke nicht breiter werden soll. */}
+            <h1 className="rise-line mt-6 text-[length:var(--text-hero)] lg:w-[115%]">
               <span>
-                E-Scooter <Mark>reparieren</Mark> statt neu kaufen
+                <span className="block">
+                  E-Scooter <Mark>reparieren</Mark>
+                </span>
+                <span className="block">statt neu kaufen</span>
               </span>
             </h1>
 
@@ -153,13 +203,43 @@ export function Hero() {
                   Konkretes über die Wartezeit steht, und optisch die
                   schwächste. Jetzt trägt sie eine eigene Fläche und den
                   Neonpunkt, der auf der ganzen Seite „verfügbar" meint. */}
-              <p className="mt-7 inline-flex items-center gap-3 rounded-full bg-current/8 py-2.5 pr-6 pl-4.5 font-display text-[0.9375rem] font-semibold tracking-tight">
+              {/* Dasselbe umlaufende Licht wie an den Prüfpositionen der
+                  Geräteseite: Es meint an beiden Stellen dasselbe – hier
+                  wird geprüft, hier ist etwas verfügbar. Der Kern der Spur
+                  läuft in `currentColor`, deshalb ist er auf Tinte hell und
+                  auf Silber dunkel, ohne zweite Regel. */}
+              <p className="trace mt-7 inline-flex items-center gap-3 rounded-full bg-current/8 py-2.5 pr-6 pl-4.5 font-display text-[0.9375rem] font-semibold tracking-tight">
                 <span
                   aria-hidden="true"
                   className="size-2.5 shrink-0 rounded-full bg-neon"
                 />
                 Bremsen und Reifen meist am selben Tag
               </p>
+            </Reveal>
+
+            {/* Auf dem Telefon steht die Aufnahme im Text, nicht dahinter.
+                Gemessen bleibt bei 390 px von einem 16:10-Bild hinter einer
+                Sektion von rund 1100 px Höhe ein Streifen von 22 % der
+                Bildbreite übrig – dort ist der Roller entweder ganz oder gar
+                nicht zu sehen, und der Schleier, der die Schrift trägt,
+                verdunkelt ihn zusätzlich. Als eigene Fläche zeigt sie das
+                Motiv vollständig; der Lichtring gibt ihr auf Schwarz die
+                Kante, die ein Schatten dort nicht geben kann. */}
+            <Reveal immediate delay={40} className="mt-10 lg:hidden">
+              <BorderBeamPanel
+                radius={20}
+                thickness={2}
+                beams={2}
+                className="aspect-[16/10] w-full overflow-hidden bg-ink-700"
+              >
+                <Image
+                  src="/img/hero-werkstatt.jpg"
+                  alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </BorderBeamPanel>
             </Reveal>
 
             {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
@@ -215,37 +295,12 @@ export function Hero() {
             </Reveal>
           </div>
 
-          <Reveal immediate className="relative lg:col-span-5 lg:col-start-8">
-            {/* Das Studiofoto ist Hochformat, 1409 x 1750, also 4:5 – und der
-                Roller füllt 81 % der Bildhöhe. In einem 16:10-Rahmen schnitt
-                `object-cover` oben den Lenker und unten das Vorderrad ab. Der
-                Rahmen trägt deshalb jetzt das native Seitenverhältnis: kein
-                Beschnitt, und die schmalere Spalte hält die Höhe im Rahmen. */}
-            {/* Der Lichtring ersetzt hier den Schlagschatten. Auf der
-                schwarzen Sektion hat das Studiofoto einen fast schwarzen
-                Hintergrund – ohne eine leuchtende Kante schwimmt es
-                randlos in der Fläche und liest sich nicht als Objekt.
-                `radius` muss dem `rounded-lg` der Fläche darunter
-                entsprechen, sonst schneidet der Ring die Ecken. */}
-            <BorderBeamPanel
-              radius={28}
-              thickness={2}
-              beams={2}
-              className="lift-lg aspect-[4/5] w-full overflow-hidden bg-ink-700"
-            >
-              <Image
-                src="/img/scooter-studio.jpg"
-                alt="Geprüfter E-Scooter mit Prüfanhänger vor der Werkstattwand mit dem Skope-Schild"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover"
-              />
-            </BorderBeamPanel>
-
-          </Reveal>
         </div>
 
+      </Container>
+      </div>
+
+      <Container className="relative">
         {/* Beweisband schließt den Hero ab und leitet in die Seite über.
 
             Ohne Linien. Vorher stand um die vier Werte ein Raster aus Ober-,
@@ -253,10 +308,16 @@ export function Hero() {
             ein Kasten ist genau die Baukasten-Anmutung, die der Rest der Seite
             vermeidet. Die Trennung leisten jetzt der Abstand und der
             Neon-Grad; das reicht, weil die vier Blöcke ohnehin je aus einer
-            großen Zahl und einer kleinen Zeile bestehen. */}
+            großen Zahl und einer kleinen Zeile bestehen.
+
+            Der obere Abstand ist halbiert (16 → 8, auf großen Schirmen
+            20 → 10). Über dem Band steht der letzte Verlauf der Bildzone, der
+            ohnehin schon 10 rem reine Tinte erzeugt; zusammen mit vier
+            Leerzeilen Abstand riss das Band von der Aufnahme ab, statt sie
+            abzuschließen. */}
         <Reveal
           delay={80}
-          className="mt-20 grid grid-cols-2 gap-x-8 gap-y-10 pb-20 lg:mt-24 lg:grid-cols-4 lg:gap-x-10 lg:pb-24"
+          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-8 pb-20 lg:grid-cols-4 lg:gap-x-10 lg:pt-10 lg:pb-24"
         >
           {stats.map((stat) => (
             <div key={stat.label} className="min-w-0">

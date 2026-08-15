@@ -28,3 +28,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# Angebot und Kalkulation bleiben lokal – das Repository ist öffentlich.
+angebot-skope-website.md
+kalkulation-skope-gesamtpaket.md
+
+# Streuschüsse aus Screenshot-Werkzeugen
+/[0-9a-f][0-9a-f]*-*-*-*-*.png

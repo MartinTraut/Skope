@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import type { LucideIcon } from "lucide-react";
+import { BatteryCharging, CircuitBoard, Cog, Timer, Wrench } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -30,6 +32,21 @@ export const metadata: Metadata = pageMeta({
   imageAlt:
     "Kapazitätsmessung an einem geöffneten E-Scooter-Akku auf der Werkbank",
 });
+
+/**
+ * Ein Zeichen je Kompetenzfeld.
+ *
+ * Steht hier und nicht in `lib/data/services.ts`: Die Datendatei trägt
+ * Fakten der Werkstatt, ein Icon ist Darstellung. Wer ein Feld ergänzt,
+ * bekommt über den Rückfall auf `Wrench` trotzdem eine vollständige Karte
+ * statt einer Lücke.
+ */
+const areaIcons: Record<string, LucideIcon> = {
+  elektronik: CircuitBoard,
+  akku: BatteryCharging,
+  mechanik: Wrench,
+  motor: Cog,
+};
 
 const steps = [
   {
@@ -113,34 +130,67 @@ export default function RepairPage() {
               als Ordnung, ohne mit der Überschrift um Aufmerksamkeit zu
               streiten. */}
           <div className="mt-14 grid gap-5 md:grid-cols-2 md:gap-6">
-            {repairAreas.map((area, i) => (
-              <Reveal key={area.slug} delay={(i % 2) * 80} as="article">
-                <div className="relative flex h-full flex-col overflow-hidden rounded-xl bg-current/5 p-7 md:p-9">
-                  <span
-                    aria-hidden="true"
-                    className="tabular pointer-events-none absolute top-4 right-6 font-display text-6xl leading-none font-bold tracking-tight text-current/10"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="relative text-[length:var(--text-title)]">
-                    {area.title}
-                  </h3>
-                  <p className="mt-4 leading-relaxed text-current/65">
-                    {area.description}
-                  </p>
-                  <ul className="mt-7 flex flex-wrap gap-2">
-                    {area.items.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-md bg-current/8 px-3 py-1.5 text-sm text-current/75"
+            {repairAreas.map((area, i) => {
+              const Icon = areaIcons[area.slug] ?? Wrench;
+              return (
+                <Reveal key={area.slug} delay={(i % 2) * 80} as="article">
+                  <div className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-silver p-7 lift transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:p-9">
+                    <span
+                      aria-hidden="true"
+                      className="tint-neon pointer-events-none absolute inset-0"
+                    />
+
+                    {/* Zeichen und Ziffer in einer Zeile.
+                        Die Ziffer stand vorher als 60 px großer Schattenwert
+                        bei 10 % Deckkraft in der Ecke – sie war weder Ordnung
+                        noch Gestaltung, sondern ein grauer Fleck hinter der
+                        Überschrift. Als Neonfläche mit dunkler Ziffer ist sie
+                        zugleich das einzige Farbsignal der Karte und die
+                        Zählung, die der Abschnitt behauptet. */}
+                    <div className="relative flex items-center justify-between gap-4">
+                      <span
+                        aria-hidden="true"
+                        className="grid size-12 shrink-0 place-items-center rounded-lg bg-ink text-silver"
                       >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
+                        <Icon className="size-5.5" strokeWidth={1.5} />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="tabular rounded-md bg-neon px-2.5 py-1 font-display text-sm font-bold tracking-tight text-ink"
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+
+                    <h3 className="relative mt-6 text-[length:var(--text-title)]">
+                      {area.title}
+                    </h3>
+                    <p className="relative mt-4 leading-relaxed text-current/65">
+                      {area.description}
+                    </p>
+
+                    {/* Die Schlagworte tragen jetzt einen Punkt.
+                        Ohne ihn waren es graue Kapseln auf grauer Karte in
+                        grauer Sektion – lesbar, aber ohne jeden Hinweis
+                        darauf, dass es eine Aufzählung von Leistungen ist. */}
+                    <ul className="relative mt-7 flex flex-wrap gap-2">
+                      {area.items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-center gap-2 rounded-md bg-ink/6 py-1.5 pr-3 pl-2.5 text-sm text-current/80"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="size-1.5 shrink-0 rounded-full bg-neon"
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </Container>
       </Section>
@@ -157,26 +207,43 @@ export default function RepairPage() {
                 </h2>
               </Reveal>
 
-              {/* Der Schrittzähler trägt die Ordnung, nicht mehr eine
-                  Trennlinie pro Zeile. Auf `silver-200` lag die alte Kante in
-                  `border-silver/12` – Weiss auf Hellgrau, also praktisch
-                  unsichtbar, und trotzdem genug Grauschleier, um die Liste
-                  unruhig zu machen. */}
-              <ol className="mt-12 flex flex-col gap-9">
+              {/* Dieselbe Kette wie auf der Versicherungsseite.
+                  Vorher stand die Nummer als graue Ziffer bei 25 % Deckkraft
+                  neben dem Text – auf `silver-200` war sie damit blasser als
+                  der Fliesstext, den sie ordnen soll, und zwischen den vier
+                  Schritten gab es kein Band, das sie als Ablauf ausweist.
+                  Jetzt trägt eine Neonscheibe die dunkle Ziffer, und eine
+                  Linie verbindet die Scheiben; sie endet mit dem letzten
+                  Schritt statt ins Leere zu zeigen. Zwei Abläufe auf einer
+                  Website müssen gleich aussehen, sonst sind es zwei
+                  Bausteine. */}
+              <ol className="mt-12">
                 {steps.map((step, i) => (
-                  <Reveal key={step.n} delay={i * 70} as="li">
-                    <div className="flex gap-6 md:gap-10">
-                      <span className="tabular font-display text-2xl leading-none font-bold tracking-tight text-current/25">
-                        {step.n}
-                      </span>
-                      <div>
-                        <h3 className="text-[length:var(--text-subtitle)]">
-                          {step.title}
-                        </h3>
-                        <p className="mt-2.5 max-w-xl leading-relaxed text-current/65">
-                          {step.text}
-                        </p>
-                      </div>
+                  <Reveal
+                    key={step.n}
+                    delay={i * 70}
+                    as="li"
+                    className="relative grid grid-cols-[3rem_1fr] gap-x-5 pb-10 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:gap-x-8"
+                  >
+                    {i < steps.length - 1 && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-14 bottom-0 left-6 w-px bg-ink/15 sm:top-16 sm:left-7"
+                      />
+                    )}
+                    <span
+                      aria-hidden="true"
+                      className="tabular grid size-12 place-items-center rounded-full bg-neon font-display text-lg font-bold tracking-tight text-ink sm:size-14 sm:text-xl"
+                    >
+                      {step.n}
+                    </span>
+                    <div className="min-w-0 pt-1.5 sm:pt-2.5">
+                      <h3 className="text-[length:var(--text-subtitle)]">
+                        {step.title}
+                      </h3>
+                      <p className="mt-2.5 max-w-xl leading-relaxed text-current/65">
+                        {step.text}
+                      </p>
                     </div>
                   </Reveal>
                 ))}
@@ -217,18 +284,39 @@ export default function RepairPage() {
                   </p>
                 </div>
 
-                <div className="mt-8 rounded-lg border border-silver/15 p-8">
-                  <h3 className="text-[length:var(--text-subtitle)]">
-                    Bearbeitungszeit
-                  </h3>
-                  <dl className="mt-6">
-                    {turnaround.map((row) => (
+                {/* Die Bearbeitungszeit hatte als einzige Karte der Seite nur
+                    einen Rahmen: `border-silver/15` auf `silver-200` ist Weiss
+                    auf Hellgrau und verschwindet, und die drei Zeilen standen
+                    dahinter als graue Beschriftung neben grauem Wert. Jetzt
+                    dieselbe erhabene Fläche wie der Preisanker darüber – und
+                    die schnellste Zeile trägt Neon, weil genau sie im
+                    Kopfbereich der Startseite als Zusage steht. */}
+                <div className="mt-8 rounded-lg bg-silver p-8 lift">
+                  <div className="flex items-center gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="grid size-10 shrink-0 place-items-center rounded-lg bg-ink text-silver"
+                    >
+                      <Timer className="size-5" strokeWidth={1.5} />
+                    </span>
+                    <h3 className="text-[length:var(--text-subtitle)]">
+                      Bearbeitungszeit
+                    </h3>
+                  </div>
+                  <dl className="mt-7">
+                    {turnaround.map((row, i) => (
                       <div
                         key={row.label}
-                        className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-silver/12 py-3.5"
+                        className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-ink/10 py-4"
                       >
-                        <dt className="text-current/75">{row.label}</dt>
-                        <dd className="font-display font-semibold tracking-tight">
+                        <dt className="text-current/70">{row.label}</dt>
+                        <dd
+                          className={
+                            i === 0
+                              ? "rounded-full bg-neon px-3 py-1 font-display text-sm font-bold tracking-tight text-ink"
+                              : "font-display font-semibold tracking-tight"
+                          }
+                        >
                           {row.value}
                         </dd>
                       </div>

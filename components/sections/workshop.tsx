@@ -19,7 +19,7 @@ export function Workshop() {
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700">
               <Image
                 src="/img/werkstatt-service.jpg"
-                alt="Mechaniker zieht die Lenkerklemmung eines eingespannten E-Scooters mit dem Drehmomentschlüssel nach"
+                alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="parallax object-cover"

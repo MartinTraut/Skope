@@ -1,7 +1,15 @@
 /**
  * ERGO-Tarife für E-Scooter.
- * Werte aus dem Preisaushang „Saison 2026/2027" der Altseite.
+ * Werte aus dem Preisaushang „Saison 2026/2027" der Altseite; mit dem
+ * Werkstattaushang vom 14.08.2026 abgeglichen, die sechs Zeiträume und die
+ * Startpreise sind identisch.
  * TODO Betreiber: jährlich mit dem aktuellen ERGO-Aushang abgleichen.
+ *
+ * TODO Betreiber: Der Aushang führt in fünf Zeilen einen zweiten
+ * Haftpflichtwert (ab 122 €, 186 €, 180 €, 115 €, 130 €). Wofür er gilt –
+ * andere Fahrzeugklasse, höhere Risikoklasse – ist ungeklärt und steht
+ * deshalb nicht auf der Seite. Ein Preis, dessen Bedeutung wir nicht
+ * benennen können, ist keine Preisangabe, sondern eine Falle.
  */
 
 export type Tariff = {
@@ -53,12 +61,21 @@ export const tariffs: Tariff[] = [
 export const tariffDisclaimer =
   "Die dargestellten Tarife sind unverbindliche Preisbeispiele und beziehen sich auf die günstigste Risikoklasse bei optimalen Voraussetzungen. Der tatsächliche Beitrag hängt von individuellen Faktoren ab (z. B. Alter, Standort, Risikoart). Ein rechtlich bindendes Angebot erfolgt erst nach Prüfung Ihres Antrags durch die ERGO.";
 
-/** Ablauf vom Antrag bis zum Kennzeichen – Fristen von der Altseite. */
+/**
+ * Ablauf vom Antrag bis zum Kennzeichen.
+ *
+ * Schritt 03 ist die Weiche, und sie ist der Grund, warum dieser Ablauf
+ * überarbeitet wurde: Die Altseite kannte nur den Postweg und schrieb
+ * ausdrücklich, eine Abholung sei „aus versicherungstechnischen Gründen
+ * leider nicht möglich". Der Werkstattaushang sagt das Gegenteil – wer
+ * vorbeikommt, nimmt die Plakette mit. Beides steht jetzt nebeneinander,
+ * getrennt nach dem Weg, den der Kunde wählt.
+ */
 export const insuranceSteps = [
   {
     step: "01",
-    title: "Anfrage stellen",
-    text: "Persönliche Daten, Fahrzeugdaten (Marke, Modell, Rahmennummer, Baujahr) und IBAN. Online oder direkt bei uns in der Werkstatt.",
+    title: "Antrag stellen",
+    text: "Persönliche Daten, Fahrzeugdaten (Marke, Modell, Rahmennummer, Baujahr) und IBAN. Online über das Formular oder direkt bei uns in der Werkstatt.",
   },
   {
     step: "02",
@@ -67,8 +84,21 @@ export const insuranceSteps = [
   },
   {
     step: "03",
-    title: "Kennzeichen kommt per Post",
-    text: "Die ERGO versendet Ihr Versicherungskennzeichen innerhalb von 5 bis 10 Werktagen direkt zu Ihnen nach Hause.",
+    title: "Kennzeichen bekommen",
+    text: "Hier trennen sich die beiden Wege. Wo Sie den Antrag stellen, entscheidet, wann Sie fahren dürfen.",
+    branches: [
+      {
+        label: "In der Werkstatt",
+        value: "sofort",
+        text: "Wir haben die Versicherungskennzeichen vorrätig. Beitrag bar oder mit EC-Karte zahlen, Plakette ans Heck, fertig.",
+        instant: true,
+      },
+      {
+        label: "Online angefragt",
+        value: "5 bis 10 Werktage",
+        text: "Die ERGO versendet das Kennzeichen direkt zu Ihnen nach Hause, deutschlandweit.",
+      },
+    ],
   },
   {
     step: "04",

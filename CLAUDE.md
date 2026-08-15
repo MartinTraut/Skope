@@ -72,6 +72,18 @@ als Tokens in `@theme`.
 
 ## Offene Punkte für den Betreiber
 
+**Vor dem Livegang abzuarbeiten — Stand 14.08.2026.** Die drei Punkte mit
+Rechtsbezug (KI-Bilder, Google-Bewertung, zweite Preisspalte) sind bewusst
+zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
+
+- **KI-Kennzeichnung: später, aber vor dem Livegang.** Entscheidung vom
+  14.08.2026. Der Weg ist festgelegt: entweder echte Fotos aus Im Kampfrad 3,
+  oder die erzeugten Bilder werden zu Symbolbildern — `image` in
+  `lib/schema.tsx` und das Standard-og:image in `lib/seo.ts` auf das Logo
+  oder eine echte Aufnahme umstellen, sichtbarer Bildhinweis, IPTC-Kennzeichen
+  in den Dateien, Logo aus den Motiven raus. Ein Hinweis in AGB oder
+  Datenschutz erfüllt weder Art. 50 EU-KI-VO (Hinweis dort, wo der Inhalt
+  wahrgenommen wird) noch § 5 UWG (die Bilder behaupten den eigenen Betrieb).
 - **`lib/inventory.ts`** — 13 Geräte, Stand 13.08.2026, aus dem alten Shop
   übernommen. Kein Warenwirtschaftssystem dahinter: Verfügbarkeit und Preis
   vor jedem Deploy prüfen, verkaufte Geräte löschen.
@@ -82,6 +94,14 @@ als Tokens in `@theme`.
   daneben (Mühlweg statt Im Kampfrad). Jetzt die geokodierte Lage der Straße;
   die Hausnummer 3 ist in OSM nicht erfasst. Exakten Punkt der Einfahrt
   bestätigen lassen, dann `public/img/karte-neuenstadt.png` neu erzeugen.
+- **Zweite Preisspalte im ERGO-Aushang** — der Werkstattaushang führt in fünf
+  Zeilen einen zweiten Haftpflichtwert (ab 122, 186, 180, 115, 130 €). Wofür
+  er gilt, ist ungeklärt; er steht deshalb nicht auf der Seite. Steht als TODO
+  in `lib/data/insurance.ts`.
+- **Google-Bewertung** — „5,0" und „3 Rezensionen" stehen im Seitenkopf, im
+  Hero und als `AggregateRating` im Schema, sind aber aus drei übernommenen
+  Rezensionen abgeleitet und nicht vom Profil abgelesen; die Profil-URL ist in
+  `lib/site.ts` weiterhin ein TODO. Entweder abgleichen oder rausnehmen.
 - **Öffnungszeiten** in `lib/site.ts` sind „nach Vereinbarung" — verbindliche
   Zeiten fehlen.
 - **Alt-Texte** der zwölf importierten Geräte sind positionsbeschreibend

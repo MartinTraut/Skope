@@ -179,6 +179,12 @@ export function Velaris({ className }: { className?: string }) {
       canvas.style.visibility = "hidden";
     };
 
+    /* Ein früherer Durchlauf kann die Fläche ausgeblendet haben – React
+       verwendet dasselbe <canvas> beim Seitenwechsel weiter, und ein von Hand
+       gesetzter Inline-Stil überlebt das Wiedereinhängen. Ohne dieses
+       Zurücksetzen bleibt die Fläche für den Rest der Sitzung verborgen. */
+    canvas.style.visibility = "";
+
     const gl =
       canvas.getContext("webgl", {
         alpha: false,
@@ -230,6 +236,32 @@ export function Velaris({ className }: { className?: string }) {
     const uRes = gl.getUniformLocation(program, "uRes");
     const uTime = gl.getUniformLocation(program, "uTime");
 
+    /* Aufräumen heißt hier: die eigenen Objekte löschen, nicht den Kontext
+       wegwerfen.
+
+       Vorher stand in beiden Abräumern `WEBGL_lose_context.loseContext()`.
+       Das war als Rückgabe von Grafikspeicher gedacht und hat den bewegten
+       Grund beim Seitenwechsel zuverlässig abgeschaltet: Beim Wechsel über
+       einen Link im Seitenkopf hängt React dieselbe <canvas> weiter – gleicher
+       Typ, gleiche Stelle im Baum –, führt aber den Abräumer der alten Seite
+       aus. Der Kontext war danach verloren; `getContext` auf demselben Element
+       liefert dann kein neues Objekt, sondern das verlorene zurück, und der
+       nachgereichte `webglcontextlost` blendet die Fläche über `giveUp` aus.
+       Gemessen: nach Reload `isContextLost() === false`, nach einem Klick auf
+       einen Menüpunkt `true` und `visibility: hidden` – bis zum nächsten
+       Neuladen.
+
+       Wird die Fläche wirklich aus dem Baum genommen, räumt der Browser den
+       Kontext mit dem Element ab. Wird sie weiterverwendet, ist es genau
+       richtig, ihn zu behalten: Der nächste Durchlauf baut Programm und Puffer
+       darauf neu auf, statt einen zweiten Kontext zu eröffnen. */
+    const release = () => {
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(program);
+      gl.deleteShader(vert);
+      gl.deleteShader(frag);
+    };
+
     const draw = (seconds: number) => {
       gl.uniform1f(uTime, seconds);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -239,13 +271,26 @@ export function Velaris({ className }: { className?: string }) {
        oberhalb von 1,5 sieht man keinen Unterschied mehr, die Füllrate
        vervierfacht sich aber gegenüber 1,0. Auf einem Retina-Telefon ist das
        der Unterschied zwischen flüssig und warm. */
+    /* Der Puffer wird nur bei echter Änderung neu angelegt, Sichtfeld und
+       Auflösungs-Uniform werden aber jedes Mal gesetzt.
+
+       Das ist der zweite Teil des Seitenwechsel-Fehlers. Uniforms hängen am
+       Programm, nicht am Kontext, und beim Wechsel über einen Menüpunkt baut
+       dieser Effekt ein neues Programm auf derselben weiterverwendeten
+       <canvas> auf. Hatte die Fläche danach exakt dieselben Maße – bei zwei
+       Unterseiten mit gleich hohem Seitenkopf die Regel –, sprang der frühere
+       vorzeitige Ausstieg heraus, bevor `uRes` gesetzt war. `uRes` blieb also
+       (0, 0), im Shader wurde durch null geteilt, und übrig blieb eine
+       Fläche ohne Wanderlichter. Erst ein Neuladen änderte die Puffergröße
+       und setzte das Uniform wieder. */
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
       const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
-      if (canvas.width === w && canvas.height === h) return;
-      canvas.width = w;
-      canvas.height = h;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
       gl.viewport(0, 0, w, h);
       gl.uniform2f(uRes, w, h);
     };
@@ -273,12 +318,25 @@ export function Velaris({ className }: { className?: string }) {
       draw(frozenAt);
       return () => {
         ro.disconnect();
-        gl.getExtension("WEBGL_lose_context")?.loseContext();
+        release();
       };
     }
 
     let raf = 0;
-    const started = performance.now();
+    /* Zwölf Sekunden Vorlauf, damit jedes Neuladen mitten im Bild einsteigt
+       und nicht am Anfang.
+
+       Bei `uTime = 0` stehen beide Wanderlichter am Scheitel ihrer Bahnen –
+       `sin(0) = 0`, `cos(0) = 1` –, und das Rauschfeld liegt in seiner
+       ungewanderten Ausgangslage. Das ist der hellste und flächigste Zustand,
+       den der Shader kennt, und genau der stand bisher bei jedem Neuladen
+       einen Moment lang da, bevor die Bewegung ihn auseinanderzog.
+
+       Zwölf Sekunden sind keine runde Zahl aus dem Nichts: Es ist derselbe
+       Zeitpunkt, den die Fläche bei `prefers-reduced-motion` als Standbild
+       zeigt (`frozenAt = 12` weiter oben). Bewegter und stehender Grund
+       starten damit im selben Bild. */
+    const started = performance.now() - 12_000;
 
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
@@ -321,7 +379,7 @@ export function Velaris({ className }: { className?: string }) {
       canvas.removeEventListener("webglcontextlost", onLost);
       io.disconnect();
       ro.disconnect();
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      release();
     };
   }, []);
 

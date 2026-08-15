@@ -68,12 +68,19 @@ export function PageHeader({
         {/* Die Überschrift läuft über die volle Breite, nicht in acht von zwölf
             Spalten. Direkt darunter folgt auf jeder Unterseite ein SectionHead
             in 7/5; die H1 hebt sich jetzt über die Breite von ihm ab, nicht
-            über eine andere Spaltenteilung. `max-w-5xl` deckelt die
-            Lesebreite, damit auf grossen Bildschirmen keine Zeile über 20
-            Wörter läuft. */}
+            über eine andere Spaltenteilung. Der Deckel hält die Lesebreite in
+            Grenzen, damit auf großen Bildschirmen keine Zeile über 20 Wörter
+            läuft.
+
+            `max-w-6xl` statt `5xl`: Der Grad wächst bis 5,5 rem, die Fläche
+            stand aber fest bei 1024 px. Gemessen brach die längste Überschrift
+            (Versicherung) dadurch ab 1600 px Fensterbreite auf drei Zeilen –
+            bei 78 px lief ihre breiteste Zeile 910 px, bei 88 px sind es
+            1027 px und damit drei Pixel über dem Deckel. 1152 px fangen das
+            ab. Wer eine längere Überschrift einträgt, misst nach. */}
         <Reveal immediate className="mt-10">
           <p className="eyebrow text-current/90">{eyebrow}</p>
-          <h1 className="mt-6 max-w-5xl text-[length:var(--text-page-title)]">
+          <h1 className="mt-6 max-w-6xl text-[length:var(--text-page-title)]">
             {title}
           </h1>
         </Reveal>

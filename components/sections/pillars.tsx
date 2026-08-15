@@ -29,7 +29,7 @@ const pillars = [
     image: "/img/scooter-allee.jpg",
     kicker: "Absichern",
     title: "Versicherungskennzeichen über ERGO",
-    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. Kennzeichen in 5 bis 10 Werktagen per Post nach Hause.",
+    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. In der Werkstatt gibt es die Plakette sofort zum Mitnehmen.",
     meta: "ERGO Partner",
   },
 ];

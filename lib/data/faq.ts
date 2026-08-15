@@ -60,7 +60,11 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Wie lange dauert es, bis ich mein Versicherungskennzeichen bekomme?",
-    a: "Fünf bis zehn Werktage. Nach Eingang Ihres Antrags bearbeiten wir ihn umgehend und übermitteln die Daten verschlüsselt an die ERGO. Das Kennzeichen wird Ihnen anschließend per Post direkt nach Hause geschickt. Eine Abholung bei uns in Neuenstadt ist aus versicherungstechnischen Gründen leider nicht möglich. Der Versand erfolgt immer direkt durch die ERGO.",
+    a: "Das hängt davon ab, wo Sie den Antrag stellen. In unserer Werkstatt in Neuenstadt am Kocher bekommen Sie die Plakette direkt mit: Antrag ausfüllen, Beitrag bar oder mit EC-Karte zahlen, Kennzeichen ans Heck kleben, losfahren. Wenn Sie online anfragen, übermitteln wir Ihre Daten verschlüsselt an die ERGO, und die versendet das Versicherungskennzeichen innerhalb von fünf bis zehn Werktagen direkt zu Ihnen nach Hause.",
+  },
+  {
+    q: "Kann ich die Plakette bei euch im Laden direkt mitnehmen, oder muss ich auf die Post warten?",
+    a: "Sie können sie direkt mitnehmen. Wir haben die Versicherungskennzeichen in der Werkstatt vorrätig, der Antrag ist in wenigen Minuten ausgefüllt und der Beitrag ist sofort zahlbar, bar oder mit EC-Karte. Bringen Sie den Scooter oder die Rahmennummer mit, dann verlassen Sie den Laden versichert und mit angebrachter Plakette. Nur bei der Online-Anfrage läuft der Versand über die ERGO.",
   },
   {
     q: "Welche Unterlagen brauche ich für den Versicherungsantrag?",
@@ -68,7 +72,7 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Kann ich die Versicherung auch abschließen, wenn ich nicht in der Region Heilbronn wohne?",
-    a: "Ja, die Versicherung vermitteln wir deutschlandweit. Reparatur, Wartung und Verkauf sind an unseren Standort in Neuenstadt am Kocher gebunden, der Versicherungsabschluss über die ERGO ist es nicht. Sie stellen den Antrag online, das Kennzeichen kommt per Post zu Ihnen nach Hause, egal wo in Deutschland Sie wohnen.",
+    a: "Ja, die Versicherung vermitteln wir deutschlandweit. Reparatur, Wartung und Verkauf sind an unseren Standort in Neuenstadt am Kocher gebunden, der Versicherungsabschluss über die ERGO ist es nicht. Sie stellen den Antrag online, das Kennzeichen kommt in fünf bis zehn Werktagen per Post zu Ihnen nach Hause, egal wo in Deutschland Sie wohnen. Die sofortige Mitnahme der Plakette gibt es nur bei uns in der Werkstatt.",
   },
 ];
 

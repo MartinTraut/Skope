@@ -116,12 +116,41 @@
   --text-sm: 0.9375rem;
   --text-sm--line-height: 1.6;
 
-  /* Der Deckel ist an die Spaltenbreite gerechnet, nicht frei gewählt: Die
-     Hero-Überschrift steht in 8 von 12 Spalten, das sind bei ausgereiztem
-     Satzspiegel 808 px. Im Browser gemessen läuft „E-Scooter reparieren" mit
-     0,50 em je Zeichen, bei 5 rem also 760 px — 48 px Luft. Wer die
-     Aufteilung im Hero ändert, muss diesen Deckel nachmessen. */
-  --text-hero: clamp(2.6rem, 4.4vw + 0.6rem, 5rem);
+  /* Der Grad ist an die Spaltenbreite gerechnet, nicht frei gewählt: Die
+     Hero-Überschrift bricht fest nach „reparieren", und diese erste Zeile
+     darf auf keiner Breite umbrechen, sonst stehen drei Zeilen da statt
+     zwei. Im Browser gemessen läuft „E-Scooter reparieren" mit 9,636 px je
+     Pixel Schriftgrad.
+
+     Die enge Stelle ist nicht der große Schirm, sondern 1024 px: Dort
+     springt das Raster auf sieben von zwölf Spalten, und die Spalte fällt
+     von 820 px (900 px Fenster, volle Breite) auf 515 px. Genau dort
+     deckelte der frühere Anstieg von 4,3vw den Grad auf allen größeren
+     Schirmen mit — bei 1512 px blieben 71 px in einer Spalte, die 83
+     zugelassen hätte.
+
+     Deshalb läuft die Überschrift auf großen Schirmen über acht statt
+     sieben Spalten (`lg:w-[115%]` am H1, siehe hero.tsx). Gemessen: 593 px
+     bei 1024, 920 px bei 1512, 936 px ab 1680. Daraus der Anstieg 5,2vw
+     und der Deckel 5,6 rem. Nachgemessen bleibt die erste Zeile auf jeder
+     Breite zweizeilig; die knappste Stelle ist wieder 1024 px mit 567 px
+     Zeile in 593 px Fläche, also 25 px Reserve. Bei 1512 px sind es 85 px
+     Grad, 809 px Zeile, 111 px Reserve.
+
+     Das Minimum war eine Runde lang 2,2 rem und auf genau ein Gerät
+     gerechnet: 342 px Satzspiegel bei 390 px Fenster. Nachgemessen läuft
+     die Zeile mit 9,636 px je Pixel Grad, bei 35,2 px also 339 px — es
+     passte mit drei Pixeln Reserve, und die reichen nicht. Bei 320 px
+     stehen 272 px zur Verfügung, bei 360 px 312, und bei 390 px im
+     Desktop-Fenster nur 327, weil dort ein klassischer Rollbalken 15 px
+     wegnimmt. In allen drei Fällen wurden drei Zeilen daraus.
+
+     Jetzt ist das Minimum auf den kleinsten Fall gerechnet: 272 / 9,636 =
+     28,2 px, gesetzt sind 28 px = 1,75 rem. Der Boden gilt bis 502 px
+     Fensterbreite, darüber übernimmt der Anstieg. Wer die Aufteilung im
+     Hero ändert oder den Text austauscht, muss die Laufweite neu messen —
+     der Faktor hängt an der Schrift, nicht an der Zeichenzahl. */
+  --text-hero: clamp(1.75rem, 5.2vw + 0.4rem, 5.6rem);
   --text-page-title: clamp(2.6rem, 4.6vw + 0.5rem, 5.5rem);
   --text-display: clamp(2.15rem, 3.4vw + 0.7rem, 4.25rem);
   --text-title: clamp(1.5rem, 1.4vw + 0.85rem, 2.1rem);
@@ -554,6 +583,38 @@
   }
 
   /**
+   * Farbschein in der Ecke einer Karte.
+   *
+   * Der Grund, warum es diese Regel gibt: Vier gleich große Karten auf einer
+   * hellen Sektion, jede mit grauer Fläche, grauer Schrift und grauen
+   * Schlagworten, ergeben ein Feld ohne einen einzigen Anhaltspunkt für das
+   * Auge — gemessen lagen dort fünf Grautöne zwischen 88 % und 96 %
+   * Helligkeit. Fläche ist auf Silber der einzige zulässige Weg, Neon
+   * einzusetzen (als Schrift sind es 1,18:1), aber eine volle Neonfläche je
+   * Karte wären vier Hauptaktionen. Ein sehr weicher Verlauf aus der oberen
+   * Ecke ist beides nicht: kein Text, keine Handlung, nur Temperatur.
+   *
+   * Zwei Prozentwerte, kein Dekorschimmer: 16 % in der Ecke, bei 62 % der
+   * Diagonale nichts mehr. Beim Überfahren steigt es auf 26 %.
+   */
+  .tint-neon {
+    background-image: radial-gradient(
+      120% 90% at 100% 0%,
+      color-mix(in oklab, var(--color-neon) 16%, transparent) 0%,
+      transparent 62%
+    );
+    transition: background-image 220ms var(--ease-out-expo);
+  }
+
+  .group:hover .tint-neon {
+    background-image: radial-gradient(
+      120% 90% at 100% 0%,
+      color-mix(in oklab, var(--color-neon) 26%, transparent) 0%,
+      transparent 68%
+    );
+  }
+
+  /**
    * Neonschein. Kein Dekorschimmer, sondern der Ersatz für den Schlagschatten:
    * Auf Schwarz kann ein Objekt nicht durch Abdunkeln hervortreten, nur durch
    * Licht. Nur dort einsetzen, wo etwas tatsächlich die Hauptaktion ist.
@@ -645,9 +706,15 @@
        * Wahrnehmungsschwelle bei dieser Größe. Die Leiste steht damit über
        * jeder Sektion bei rund rgb(8) bis rgb(16).
        *
-       * Was dabei verloren geht, ist ehrlich benannt: Die Scheibe zeigt den
-       * Untergrund nur noch als Ahnung. Eine ruhige Leiste ist das wert.
-       * Kontrast steigt dadurch überall – silberner Text steht bei 15:1.
+       * Eine Runde mit 70 % Tinte und `contrast(0.45)` lag dazwischen –
+       * sichtbares Glas bei 15 Stufen Schwankung, gemessen rgb(33) bis
+       * rgb(48). Verworfen: Die Leiste war damit dauerhaft heller als die
+       * Sektionen darunter und las sich als eigener grauer Balken.
+       *
+       * Was mit der schwarzen Fassung verloren geht, ist ehrlich benannt: Die
+       * Scheibe zeigt den Untergrund nur noch als Ahnung. Eine ruhige Leiste
+       * ist das wert. Kontrast steigt dadurch überall – silberner Text steht
+       * bei 15:1.
        */
       background-color: color-mix(in oklab, var(--color-ink) 90%, transparent);
       -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(0.35);
@@ -741,13 +808,20 @@
         color-mix(in oklab, var(--color-ink) 78%, transparent) 88%,
         var(--color-ink)
       ),
+      /* Der seitliche Verlauf deckt die Textspalte und gibt das Motiv frei.
+         Er lief bis 45 Prozent auf voller Stärke und war erst bei 78 Prozent
+         fast weg – die Textspalte endet aber schon bei 50 Prozent, und der
+         Roller steht mittig rechts davon. Gemessen lag er dadurch unter rund
+         50 Prozent Tinte und wirkte matt. Die Rampe beginnt jetzt am Ende
+         der Spalte und ist bei 68 Prozent durch; die Schrift verliert nichts,
+         weil über ihr weiterhin 86 Prozent liegen. */
       linear-gradient(
         to right,
-        color-mix(in oklab, var(--color-ink) 88%, transparent) 0%,
-        color-mix(in oklab, var(--color-ink) 82%, transparent) 45%,
-        color-mix(in oklab, var(--color-ink) 62%, transparent) 62%,
-        color-mix(in oklab, var(--color-ink) 15%, transparent) 78%,
-        transparent 95%
+        color-mix(in oklab, var(--color-ink) 86%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 78%, transparent) 36%,
+        color-mix(in oklab, var(--color-ink) 46%, transparent) 52%,
+        color-mix(in oklab, var(--color-ink) 12%, transparent) 68%,
+        transparent 84%
       );
   }
 
@@ -919,8 +993,9 @@
    *
    * Der Lichtkopf ist nicht reines Neon. Auf Silber steht Neon bei 1,18:1
    * zur Fläche – als Schrift verboten, als Linie kaum zu sehen. Vor und
-   * hinter dem grünen Kopf läuft deshalb ein dunkler Kern mit; die
-   * Bewegung liest man an der Verdunklung, die Farbe gibt ihr die Marke.
+   * hinter dem grünen Kopf läuft deshalb ein Schweif in `currentColor`:
+   * auf Silber dunkel, auf Tinte hell, ohne zweite Regel. Die Bewegung
+   * liest man am Schweif, die Farbe gibt ihr die Marke.
    *
    * Ohne registrierte Eigenschaft (`@property`) ist ein Winkel eine
    * Zeichenkette und lässt sich nicht animieren. Browser ohne Registrierung
@@ -950,10 +1025,10 @@
     background: conic-gradient(
       from var(--trace-angle, 0deg),
       transparent 0 55%,
-      color-mix(in oklab, var(--color-ink) 55%, transparent) 70%,
+      color-mix(in oklab, currentColor 55%, transparent) 70%,
       var(--color-neon) 78%,
       var(--color-neon) 82%,
-      color-mix(in oklab, var(--color-ink) 55%, transparent) 90%,
+      color-mix(in oklab, currentColor 55%, transparent) 90%,
       transparent 98%
     );
     /* Der Schein liegt im Filter, nicht in einem zweiten Element: Eine
