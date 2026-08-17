@@ -68,7 +68,7 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
   return (
     <Link
       href={`/e-scooter/${item.id}`}
-      aria-label={`${item.model}, ${item.price} – alle Daten und Bilder`}
+      aria-label={`${item.model}, ${item.price}, alle Daten und Bilder`}
       className="group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-4 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-1 active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       {/* Quadrat statt 3:4: Die Aufnahmen sind hochkant (720 x 960), der

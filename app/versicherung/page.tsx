@@ -156,7 +156,7 @@ export default function InsurancePage() {
               <p className="mt-4 leading-relaxed text-current/70">
                 Wir haben die Versicherungskennzeichen in der Werkstatt
                 vorrätig. Antrag ausfüllen, Beitrag bar oder mit EC-Karte
-                zahlen, Plakette ans Heck – wer mit dem Scooter oder der
+                zahlen, Plakette ans Heck. Wer mit dem Scooter oder der
                 Rahmennummer vorbeikommt, fährt versichert wieder weg. Der
                 Postweg der ERGO betrifft nur die Online-Anfrage.
               </p>
@@ -355,7 +355,7 @@ export default function InsurancePage() {
             Kennzeichen <Mark>rechtzeitig</Mark> bestellen.
           </>
         }
-        text="In der Werkstatt gibt es die Plakette sofort. Wer online anfragt, sollte fünf bis zehn Werktage Postweg einplanen – zum Saisonstart wird es sonst knapp."
+        text="In der Werkstatt gibt es die Plakette sofort. Wer online anfragt, sollte fünf bis zehn Werktage Postweg einplanen. Zum Saisonstart wird es sonst knapp."
       />
 
       <JsonLd

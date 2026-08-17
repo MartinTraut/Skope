@@ -626,41 +626,39 @@
   }
 
   /**
-   * Liquid Glass — die Fläche des Seitenkopfs.
+   * Die Fläche des Seitenkopfs — deckend, und das ist die Entscheidung.
    *
-   * Nicht einfach „durchsichtig plus Weichzeichner". Was echtes Glas von
-   * abgeblendetem Hintergrund unterscheidet, sind drei Dinge, und alle drei
-   * stehen hier:
+   * Hier stand über mehrere Runden eine Glasscheibe: durchsichtige Tinte über
+   * `backdrop-filter: blur() saturate() brightness()`. Sie hat jedes Mal
+   * geflackert, und jedes Mal war die Ursache dieselbe – nicht ein Zustand,
+   * der umspringt, sondern die Farbe der Leiste, die sich mit dem ändert, was
+   * gerade dahinter durchläuft. Diese Seite besteht aus schwarzen und
+   * silbernen Sektionen im Wechsel; jede Kante dazwischen ist ein Sprung.
    *
-   * 1. `saturate(180%)`. Ein reiner Blur wäscht die Farben aus, die durch die
-   *    Scheibe kommen. Ohne die Sättigungsanhebung wirkt die Leiste wie
-   *    Milchglas – der Neonpunkt darunter käme als schmutziges Grau an.
-   * 2. Eine Lichtkante oben, eine Schattenkante unten. Glas hat eine Dicke;
-   *    sichtbar wird sie nur an der Kante, an der das Licht bricht. Der
-   *    `inset`-Schatten oben ist diese Brechung.
-   * 3. Ein Lichtsaum oben statt gleichmäßiger Deckkraft. Eine Scheibe
-   *    reflektiert dort, wo sie den Rahmen berührt.
+   * Drei Fassungen, alle im Browser gemessen (mittlere Helligkeit eines
+   * Ausschnitts der Leiste selbst, über die volle Seitenlänge):
    *
-   * Die Dichte steht in `background-color`, der Saum in `background-image` —
-   * bewusst getrennt und nicht als `background`-Kurzform. Die Kurzform setzt
-   * `background-color` auf transparent zurück, und dann meldet jedes
-   * Prüfwerkzeug (auch das eigene) die Navigation gegen die Sektion darunter
-   * statt gegen die Scheibe. Eine Fläche, deren Deckkraft nur in einem
-   * Verlauf steckt, ist maschinell nicht prüfbar.
+   *   32 % Tinte, brightness 0,40           → rgb(22)–rgb(80), 62 Stufen
+   *   70 % Tinte, brightness 0,50 + contrast → rgb(33)–rgb(48), 15 Stufen
+   *   90 % Tinte, brightness 0,35           → rgb(14)–rgb(22),  8 Stufen
    *
-   * `-webkit-backdrop-filter` steht mit, weil Safari es bis heute braucht.
-   * Kennt ein Browser `backdrop-filter` gar nicht, greift der @supports-Block
-   * nicht und es bleibt die dichtere Fläche darunter – der richtige Rückfall,
-   * denn eine halbdurchsichtige Leiste ohne Weichzeichner wäre unlesbar.
-   */
-  /**
-   * Glasscheibe des Seitenkopfs.
+   * Auch die letzte Fassung war sichtbar: Acht Stufen sind wenig, sie fallen
+   * aber trotzdem auf, weil der Wechsel nicht gleitet, sondern innerhalb von
+   * rund fünfzig Pixeln Scrollweg umspringt. Ein abrupter kleiner Sprung liest
+   * sich schlechter als ein großer, der gleitet.
    *
-   * Ohne `backdrop-filter` bleibt es eine fast deckende Fläche – das ist die
-   * ehrliche Notlösung, nicht der Entwurf.
+   * Deckend ist die Schwankung null. Was verloren geht, ist ehrlich benannt:
+   * Es ist kein Glas mehr. Was bleibt, ist die Form der Leiste – der Lichtsaum
+   * oben, die Lichtkante, die Schattenkante und der weiche Schlagschatten
+   * darunter. Die geben ihr die Dicke, für die vorher die Durchsicht zuständig
+   * war. Silberner Text steht darauf bei 16:1.
+   *
+   * Wer wieder Glas will, muss vorher das Sektionsmuster ändern – nicht die
+   * Deckkraft. Solange schwarz und silber im Wechsel darunterlaufen, ist jede
+   * durchsichtige Leiste eine Leiste, die springt.
    */
   .liquid-glass {
-    background-color: color-mix(in oklab, var(--color-ink) 92%, transparent);
+    background-color: var(--color-ink);
     background-image: linear-gradient(
       to bottom,
       color-mix(in oklab, var(--color-silver) 9%, transparent),
@@ -680,46 +678,6 @@
       inset 0 -1px 0 color-mix(in oklab, var(--color-silver) 8%, transparent),
       0 1px 0 color-mix(in oklab, #000 45%, transparent),
       0 16px 40px -20px rgb(0 0 0 / 0.75);
-  }
-
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    .liquid-glass {
-      /**
-       * Das Flackern des Seitenkopfs – gemessen und abgestellt.
-       *
-       * Hier standen 32 % Tinte über `brightness(0.4)`. Das war als Glas
-       * gedacht: Was hinter der Scheibe liegt, kommt gedämpft, aber sichtbar
-       * durch. Genau das ist der Fehler, sobald die Seite im Wechsel aus
-       * schwarzen und silbernen Sektionen besteht.
-       *
-       * Gemessen auf der Startseite, mittlerer Helligkeitswert eines
-       * 300 × 68 px großen Ausschnitts der Leiste, alle 250 px Scrollweg:
-       * Die Leiste selbst schwankt zwischen rgb(22) und rgb(80) und springt
-       * über die Seitenlänge neunmal hin und her. Nicht der Zustand wechselt
-       * – der wurde mehrfach vergeblich gesucht –, sondern die Farbe der
-       * Leiste, an jeder Sektionskante. Aus der Nähe sieht das aus wie ein
-       * Kopf, der beim Scrollen pulsiert.
-       *
-       * Rechnung dahinter: Die Schwankung ist (1 − Deckkraft) × Helligkeit ×
-       * (238 − 9), also der Abstand zwischen Silber und Tinte. Mit 32 % und
-       * 0,4 sind das 62 Stufen. Mit 90 % und 0,35 sind es 8 – unterhalb der
-       * Wahrnehmungsschwelle bei dieser Größe. Die Leiste steht damit über
-       * jeder Sektion bei rund rgb(8) bis rgb(16).
-       *
-       * Eine Runde mit 70 % Tinte und `contrast(0.45)` lag dazwischen –
-       * sichtbares Glas bei 15 Stufen Schwankung, gemessen rgb(33) bis
-       * rgb(48). Verworfen: Die Leiste war damit dauerhaft heller als die
-       * Sektionen darunter und las sich als eigener grauer Balken.
-       *
-       * Was mit der schwarzen Fassung verloren geht, ist ehrlich benannt: Die
-       * Scheibe zeigt den Untergrund nur noch als Ahnung. Eine ruhige Leiste
-       * ist das wert. Kontrast steigt dadurch überall – silberner Text steht
-       * bei 15:1.
-       */
-      background-color: color-mix(in oklab, var(--color-ink) 90%, transparent);
-      -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(0.35);
-      backdrop-filter: blur(24px) saturate(160%) brightness(0.35);
-    }
   }
 
   /* Ziffernblock für Preise/Kennzahlen */

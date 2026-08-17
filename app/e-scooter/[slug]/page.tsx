@@ -269,8 +269,8 @@ export default async function ScooterDetailPage({
 
               <p className="mt-6 text-sm leading-relaxed text-current/55">
                 Die Angaben stammen aus der Werkstattprüfung und den Unterlagen
-                des Geräts. Was nicht geprüft vorliegt, steht hier auch nicht –
-                bei einem Einzelstück ist eine fehlende Zeile ehrlicher als ein
+                des Geräts. Was nicht geprüft vorliegt, steht hier auch nicht.
+                Bei einem Einzelstück ist eine fehlende Zeile ehrlicher als ein
                 Herstellerwert aus dem Datenblatt eines Neugeräts.
               </p>
             </div>

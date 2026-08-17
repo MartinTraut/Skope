@@ -137,7 +137,7 @@ export default function ScooterPage() {
                Karten: Marken, Preisspanne und Stückzahl sind die Angaben,
                nach denen gesucht wird, und ein Raster aus Bildern liefert
                sie weder einer Suchmaschine noch einem Antwortsystem. */
-            lead="Dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € stehen gerade in Neuenstadt am Kocher: Xiaomi, Segway-Ninebot, NIU, Sharp, Odys, Zamelux und der Audi Egret Pro. Jedes ist ein Einzelstück, aufbereitet in der eigenen Werkstatt und mit einem Jahr Gewährleistung. Der Bestand wechselt laufend — sagen Sie uns, was Sie suchen: Reichweite, Budget, Einsatzzweck."
+            lead="Dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € stehen gerade in Neuenstadt am Kocher: Xiaomi, Segway-Ninebot, NIU, Sharp, Odys, Zamelux und der Audi Egret Pro. Jedes ist ein Einzelstück, aufbereitet in der eigenen Werkstatt und mit einem Jahr Gewährleistung. Der Bestand wechselt laufend. Sagen Sie uns, was Sie suchen: Reichweite, Budget, Einsatzzweck."
           />
 
           {inventory.length > 0 ? (
