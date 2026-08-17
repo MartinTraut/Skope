@@ -14,6 +14,13 @@ import { Reveal } from "@/components/motion/reveal";
  * Lesestrecken werden davon nicht breiter: Fließtext ist überall über
  * `max-w-[…ch]` oder eine eigene Spalte begrenzt. Die zusätzliche Breite geht
  * an Raster, Bilder und Displaygrößen – genau dort fehlte sie.
+ *
+ * Zweite Runde, dieselbe Richtung: 104rem statt 96rem und ab `lg` 48 statt
+ * 56 px Innenrand. Auf 1512 px sind das 1416 px Satzspiegel statt 1400 – die
+ * Breite ist dort vom Fenster gedeckelt, nicht von dieser Zahl. Der Gewinn
+ * liegt auf den Schirmen darüber: bei 1728 px waren es 1536, jetzt 1664 px.
+ * Weniger als 48 px Rand ist die Untergrenze; darunter klebt der Satzspiegel
+ * am Fensterrand und die Seite wirkt nicht weit, sondern billig.
  */
 export function Container({
   className,
@@ -25,7 +32,7 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[96rem] px-6 md:px-10 lg:px-14",
+        "mx-auto w-full max-w-[104rem] px-6 md:px-10 lg:px-12",
         className,
       )}
     >

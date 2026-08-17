@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
 import { Testimonials } from "@/components/sections/testimonials";
-import { Faq } from "@/components/ui/faq";
+import { FaqSection } from "@/components/ui/faq";
 import { InventoryCard } from "@/components/ui/inventory-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { buttonVariants } from "@/components/ui/button";
@@ -229,18 +229,16 @@ export default function ScooterPage() {
       <Testimonials />
 
       <Section tone="silver-200">
-        <Container>
-          <SectionHead
-            eyebrow="Häufige Fragen zum Kauf"
-            title={
-              <>
-                Siegel, <Mark>Gewährleistung</Mark>, Service danach.
-              </>
-            }
-            lead="Was ein geprüfter Gebrauchtkauf konkret bedeutet, und was passiert, wenn nach dem Kauf doch etwas ist."
-          />
-          <Faq items={faqBuy} className="mt-14" />
-        </Container>
+        <FaqSection
+          eyebrow="Häufige Fragen zum Kauf"
+          title={
+            <>
+              Siegel, <Mark>Gewährleistung</Mark>, Service danach.
+            </>
+          }
+          lead="Was ein geprüfter Gebrauchtkauf konkret bedeutet, und was passiert, wenn nach dem Kauf doch etwas ist."
+          items={faqBuy}
+        />
       </Section>
 
       <Related

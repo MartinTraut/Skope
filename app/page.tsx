@@ -10,8 +10,8 @@ import { RecyclingTeaser } from "@/components/sections/recycling-teaser";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Workshop } from "@/components/sections/workshop";
-import { Faq } from "@/components/ui/faq";
-import { Container, Section, SectionHead } from "@/components/ui/section";
+import { FaqSection } from "@/components/ui/faq";
+import { Section } from "@/components/ui/section";
 import { faqHome } from "@/lib/data/faq";
 import { JsonLd, pageGraph, reviews, serviceRef } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
@@ -59,18 +59,16 @@ export default function HomePage() {
       <RecyclingTeaser />
 
       <Section id="faq" tone="silver">
-        <Container>
-          <SectionHead
-            eyebrow="Häufige Fragen"
-            title={
-              <>
-                Was Kunden vor dem ersten <Mark>Termin</Mark> wissen wollen.
-              </>
-            }
-            lead="Vier Fragen, die uns am häufigsten gestellt werden. Ausführlichere Antworten zu Reparatur, Wartung, Versicherung und Kauf finden Sie auf den jeweiligen Leistungsseiten."
-          />
-          <Faq items={faqHome} className="mt-14" />
-        </Container>
+        <FaqSection
+          eyebrow="Häufige Fragen"
+          title={
+            <>
+              Was Kunden vor dem ersten <Mark>Termin</Mark> wissen wollen.
+            </>
+          }
+          lead="Vier Fragen, die uns am häufigsten gestellt werden. Ausführlichere Antworten zu Reparatur, Wartung, Versicherung und Kauf finden Sie auf den jeweiligen Leistungsseiten."
+          items={faqHome}
+        />
       </Section>
 
       <CtaBand />

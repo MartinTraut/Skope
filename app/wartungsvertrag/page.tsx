@@ -5,9 +5,9 @@ import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Plans } from "@/components/sections/plans";
 import { Related } from "@/components/sections/related";
-import { Faq } from "@/components/ui/faq";
+import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
-import { Container, Section, SectionHead } from "@/components/ui/section";
+import { Container, Section } from "@/components/ui/section";
 import { faqPlans } from "@/lib/data/faq";
 import { planExclusions, plans } from "@/lib/data/plans";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
@@ -86,18 +86,16 @@ export default function PlansPage() {
       </Section>
 
       <Section tone="ink">
-        <Container>
-          <SectionHead
-            eyebrow="Häufige Fragen zum Wartungsvertrag"
-            title={
-              <>
-                Was im Vertrag steht und was <Mark>nicht</Mark>.
-              </>
-            }
-            lead="Umfang, Ersatzteile, Ort der Wartung und die Frage, welcher der beiden Verträge zu welchem Fahrprofil passt."
-          />
-          <Faq items={faqPlans} className="mt-14" />
-        </Container>
+        <FaqSection
+          eyebrow="Häufige Fragen zum Wartungsvertrag"
+          title={
+            <>
+              Was im Vertrag steht und was <Mark>nicht</Mark>.
+            </>
+          }
+          lead="Umfang, Ersatzteile, Ort der Wartung und die Frage, welcher der beiden Verträge zu welchem Fahrprofil passt."
+          items={faqPlans}
+        />
       </Section>
 
       {/* Anfrage – bisher zwang diese Seite als einzige Vertragsseite zum

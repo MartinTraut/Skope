@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
 import { Related } from "@/components/sections/related";
-import { Faq } from "@/components/ui/faq";
+import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqRepair } from "@/lib/data/faq";
@@ -388,18 +388,16 @@ export default function RepairPage() {
 
       {/* FAQ */}
       <Section tone="ink">
-        <Container>
-          <SectionHead
-            eyebrow="Häufige Fragen zur Reparatur"
-            title={
-              <>
-                Was Kunden vor dem Werkstatttermin <Mark>fragen</Mark>.
-              </>
-            }
-            lead="Marken, Kosten, Dauer und die Frage, die am häufigsten kommt: Lohnt sich das überhaupt noch?"
-          />
-          <Faq items={faqRepair} className="mt-14" />
-        </Container>
+        <FaqSection
+          eyebrow="Häufige Fragen zur Reparatur"
+          title={
+            <>
+              Was Kunden vor dem Werkstatttermin <Mark>fragen</Mark>.
+            </>
+          }
+          lead="Marken, Kosten, Dauer und die Frage, die am häufigsten kommt: Lohnt sich das überhaupt noch?"
+          items={faqRepair}
+        />
       </Section>
 
       <Related

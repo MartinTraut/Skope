@@ -1,8 +1,56 @@
 import { Plus } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
+import { Container, SectionHead } from "@/components/ui/section";
 import type { FaqItem } from "@/lib/data/faq";
 import { cn } from "@/lib/utils";
+
+/**
+ * Kopf und Fragen nebeneinander, nicht untereinander.
+ *
+ * Gestapelt blieb die rechte Hälfte der Sektion leer und die Fragenzeilen
+ * liefen über die volle Breite: gemessen 1400 px Zeile für eine Überschrift
+ * von höchstens 42 Zeichen, das Pluszeichen 500 px vom letzten Wort entfernt.
+ * Zwei Löcher aus einem Fehler – zu viel Breite für die Zeile, zu wenig
+ * Inhalt für die Fläche.
+ *
+ * Fünf Spalten für den Kopf, sieben für die Fragen. Der Kopf bleibt beim
+ * Scrollen stehen, solange die Liste läuft; die Fragenzeile ist damit rund
+ * 780 px breit, also so lang wie ihr längster Satz.
+ *
+ * Alle fünf FAQ-Blöcke der Seite hatten dieselbe zehn Zeilen Markup. Deshalb
+ * steht hier der ganze Abschnitt und nicht nur die Liste: Ein Bauteil, das
+ * fünfmal kopiert wird, wird beim sechsten Mal an einer Stelle anders.
+ */
+export function FaqSection({
+  eyebrow,
+  title,
+  lead,
+  items,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  lead: string;
+  items: FaqItem[];
+}) {
+  return (
+    <Container>
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <SectionHead
+            eyebrow={eyebrow}
+            title={title}
+            lead={lead}
+            className="pb-0 lg:sticky lg:top-28"
+          />
+        </div>
+        <div className="lg:col-span-7">
+          <Faq items={items} />
+        </div>
+      </div>
+    </Container>
+  );
+}
 
 /**
  * FAQ auf Basis von <details>/<summary>.
@@ -28,10 +76,13 @@ export function Faq({
         <Reveal key={item.q} delay={Math.min(i * 55, 220)}>
           <details className="group">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">
-              {/* Breite in Zeichen statt in rem: `max-w-3xl` ergab bei diesem
-                  Schriftgrad rund 90 Zeichen pro Zeile, deutlich über der
-                  angenehmen Lesebreite. */}
-              <h3 className="max-w-[42ch] text-[length:var(--text-subtitle)] transition-colors duration-200 group-hover:text-accent">
+              {/* Keine eigene Breitengrenze mehr. Sie stammt aus der Zeit, in
+                  der die Liste über die volle Sektionsbreite lief: 42 Zeichen
+                  hielten die Zeile lesbar, ließen aber 500 px Luft bis zum
+                  Pluszeichen. In der siebenspaltigen Spalte ist die Spalte
+                  selbst das Maß – rund 48 Zeichen, und die Frage endet dort,
+                  wo ihr Schalter beginnt. */}
+              <h3 className="text-[length:var(--text-subtitle)] transition-colors duration-200 group-hover:text-accent">
                 {item.q}
               </h3>
               <span

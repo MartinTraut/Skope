@@ -6,7 +6,7 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
-import { Faq } from "@/components/ui/faq";
+import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqInsurance } from "@/lib/data/faq";
@@ -319,18 +319,16 @@ export default function InsurancePage() {
       </Section>
 
       <Section tone="silver">
-        <Container>
-          <SectionHead
-            eyebrow="Häufige Fragen zur Versicherung"
-            title={
-              <>
-                <Mark>Pflicht</Mark>, Preis, Kennzeichen.
-              </>
-            }
-            lead="Die Fragen, die vor jedem Saisonstart kommen, inklusive der wichtigsten: Was passiert, wenn ich ohne Plakette fahre?"
-          />
-          <Faq items={faqInsurance} className="mt-14" />
-        </Container>
+        <FaqSection
+          eyebrow="Häufige Fragen zur Versicherung"
+          title={
+            <>
+              <Mark>Pflicht</Mark>, Preis, Kennzeichen.
+            </>
+          }
+          lead="Die Fragen, die vor jedem Saisonstart kommen, inklusive der wichtigsten: Was passiert, wenn ich ohne Plakette fahre?"
+          items={faqInsurance}
+        />
       </Section>
 
       <Related
