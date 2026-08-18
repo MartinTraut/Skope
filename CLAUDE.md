@@ -90,6 +90,28 @@ Was dabei entschieden wurde und nicht wieder aufgeweicht werden darf:
   Etikettenreihen auf 11 px. Untergrenze ist jetzt 11 px, und die gilt nur für
   die eine Zeile unter der Marke.
 
+## Datumssignal und Alt-Texte
+
+Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
+
+- **Jede Seite trägt jetzt einen eigenen `WebPage`-Knoten** mit `dateModified`.
+  Der Graph beschrieb vorher Betrieb, Person, Website und Leistungen — nur nicht
+  das Dokument, auf dem er steht, und damit gab es nirgends ein Datum. Adresse
+  und Name zieht `pageGraph()` aus dem Breadcrumb, den die Seiten ohnehin
+  mitgeben; deshalb musste kein einziger der zwölf Aufrufe geändert werden.
+  Der Wert ist die Bauzeit, einmal je Build ausgewertet.
+- **Die Sitemap trägt `lastmod`, aber nur für `site.url`.** Wer die Seite unter
+  einer Vorschau-Adresse prüft (`*.vercel.app`), findet dort keinen passenden
+  Eintrag — genau das war der Befund „no date signals". Das Datum am Dokument
+  ist hostunabhängig und deshalb der stabilere Weg.
+- **Alt-Texte der Startseite:** vier von sieben Bildern hatten `alt=""`. Die drei
+  Kachelbilder sind der Inhalt der Kacheln, nicht ihr Schmuck, und haben jetzt
+  Beschreibungen. Die Aufnahme im Kopfbereich wird an der Fläche beschrieben,
+  die auf jeder Breite da ist — die Tafel darunter ist `lg:hidden` und trug die
+  einzige Beschreibung, auf dem Schreibtisch war das Motiv also unbeschrieben.
+  Offen bleiben die positionsbeschreibenden Alt-Texte der importierten Geräte
+  (siehe unten).
+
 ## Designsystem
 
 Die vollständige Begründung steht als Kommentar oben in `app/globals.css` —

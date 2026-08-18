@@ -95,9 +95,15 @@ export function Hero() {
             immer vollständig; was oben fehlt, ist Tinte – der Grund der
             Sektion, kein Loch. Unten und rechts verankert, damit der Roller
             neben der Textspalte steht und auf der Standfläche aufsitzt. */}
+        {/* Die Beschreibung sitzt an dieser Fläche, nicht an der Tafel weiter
+            unten: Die Tafel ist `lg:hidden`, auf dem Schreibtisch war das
+            Motiv des Kopfbereichs damit gar nicht beschrieben. Hier steht es
+            auf jeder Breite. Die Tafel trägt dafür jetzt ein leeres Attribut –
+            sie zeigt dieselbe Aufnahme, und zweimal derselbe Text hintereinander
+            ist am Vorleser eine Wiederholung ohne Gewinn. */}
         <Image
           src="/img/hero-werkstatt.jpg"
-          alt=""
+          alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
           fill
           priority
           sizes="100vw"
@@ -249,7 +255,7 @@ export function Hero() {
               >
                 <Image
                   src="/img/hero-werkstatt.jpg"
-                  alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+                  alt=""
                   fill
                   sizes="100vw"
                   className="object-cover"

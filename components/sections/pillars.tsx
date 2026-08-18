@@ -11,6 +11,8 @@ const pillars = [
   {
     href: "/e-scooter",
     image: "/img/scooter-stadt.jpg",
+    imageAlt:
+      "Aufgeklappter E-Scooter auf dem Kopfsteinpflaster eines Marktplatzes, dahinter Fachwerkhäuser im Abendlicht",
     kicker: "Kaufen",
     title: "Geprüfte E-Scooter statt Glücksspiel",
     text: "Jedes Gerät läuft vor dem Verkauf durch unsere Werkstatt: Bremsen, Akkukapazität, Elektronik, Verschleißteile. Erst dann bekommt es das Skope-Qualitätssiegel, plus ein Jahr Gewährleistung.",
@@ -19,6 +21,8 @@ const pillars = [
   {
     href: "/reparatur",
     image: "/img/akku-diagnose.jpg",
+    imageAlt:
+      "Kapazitätsmessung an einem geöffneten E-Scooter-Akku: Prüfspitzen an den Zellverbindern, daneben das Messgerät mit dem abgelesenen Wert",
     kicker: "Reparieren",
     title: "Erst messen, dann tauschen",
     text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert, und legen vor jeder Arbeit einen Kostenvoranschlag vor.",
@@ -27,6 +31,8 @@ const pillars = [
   {
     href: "/versicherung",
     image: "/img/scooter-allee.jpg",
+    imageAlt:
+      "Hinterrad eines E-Scooters mit Rücklicht und noch leerem Halter für das Versicherungskennzeichen, auf einem Weg zwischen Bäumen",
     kicker: "Absichern",
     title: "Versicherungskennzeichen über ERGO",
     text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. In der Werkstatt gibt es die Plakette sofort zum Mitnehmen.",
@@ -88,9 +94,21 @@ export function Pillars() {
                     Bei 16:10 war der Roller in einer Drittelspalte kaum
                     grösser als die Überschrift darunter. */}
                 <div className="lift relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-ink-700">
+                  {/* Beschreibender Alt-Text, nicht `alt=""`.
+                      Die drei Aufnahmen sind der sichtbare Inhalt der Kacheln
+                      und nicht ihr Schmuck – die dritte zeigt sogar genau das,
+                      worum es geht: den leeren Halter für das
+                      Versicherungskennzeichen. Als leeres Attribut waren sie
+                      für Bildsuche und Antwortsysteme nicht vorhanden, und auf
+                      der Startseite trugen damit vier von sieben Bildern keine
+                      Beschreibung.
+
+                      Die Texte beschreiben, was zu sehen ist, und wiederholen
+                      nicht die Überschrift darunter – sonst hört man am
+                      Vorleser dieselbe Zeile zweimal. */}
                   <Image
                     src={pillar.image}
-                    alt=""
+                    alt={pillar.imageAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 30vw"
                     className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"

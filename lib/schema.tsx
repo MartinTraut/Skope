@@ -126,9 +126,62 @@ function baseNodes(): Node[] {
   ];
 }
 
-/** Setzt Basis- und Seitenknoten zu einem Graph zusammen. */
+/**
+ * Der Zeitpunkt, zu dem diese Seiten zuletzt erzeugt wurden.
+ *
+ * Einmal je Build ausgewertet, nicht je Aufruf: Alle Seiten sind statisch
+ * vorgerendert, der Wert wird also in das HTML eingebacken und ändert sich erst
+ * beim nächsten Deploy. Genau das soll er auch aussagen — nicht „dieser Text
+ * wurde umgeschrieben", sondern „dieser Stand ist geprüft und veröffentlicht".
+ * Für diese Seite ist das keine Behauptung ins Blaue: Vor jedem Deploy werden
+ * Bestand, Verfügbarkeit und Preise durchgesehen (siehe CLAUDE.md).
+ *
+ * Warum es das überhaupt braucht: Ohne Datum irgendwo im Dokument stufen
+ * Suchmaschinen und Antwortsysteme den Inhalt als undatiert und damit als
+ * möglicherweise veraltet ein. Die Sitemap trägt zwar `lastmod`, aber nur für
+ * die kanonische Adresse — wer die Seite unter einer anderen Domain abruft
+ * (Vorschau-Deployment), findet dort keinen Eintrag und damit kein Datum.
+ * Am Dokument selbst hängt das Signal unabhängig vom Host.
+ */
+const BUILD_DATE = new Date().toISOString();
+
+type CrumbItem = { name?: string; item?: string };
+
+/**
+ * Setzt Basis- und Seitenknoten zu einem Graph zusammen und ergänzt den Knoten
+ * für die Seite selbst.
+ *
+ * Der fehlte bisher komplett: Der Graph beschrieb den Betrieb, die Person, die
+ * Website und die Leistungen — nur nicht das Dokument, auf dem er steht. Damit
+ * gab es keinen Ort für Adresse, Sprache und Datum dieser einen Seite.
+ *
+ * Adresse und Name kommen aus dem Breadcrumb, den die Seite ohnehin mitgibt.
+ * Das ist der Grund, warum hier keine zwölf Aufrufe geändert werden mussten:
+ * Die Angabe steht schon da, sie wurde nur nicht weiterverwendet. Seiten ohne
+ * Breadcrumb sind die Startseite und die Fehlerseite; dort greift die
+ * Grundadresse.
+ */
 export function pageGraph(nodes: Node[] = []): Node[] {
-  return [...baseNodes(), ...nodes];
+  const crumb = nodes.find((node) => node["@type"] === "BreadcrumbList");
+  const trail = (crumb?.itemListElement ?? []) as CrumbItem[];
+  const last = trail.at(-1);
+
+  const page: Node = {
+    "@type": "WebPage",
+    // `breadcrumb()` baut `item` ohne Schrägstrich am Ende, `site.url` ebenso –
+    // die @id ist damit auf jeder Seite genau einmal vergeben.
+    "@id": `${last?.item ?? site.url}#webpage`,
+    url: last?.item ?? site.url,
+    name: last?.name ?? `${site.name}: ${site.tagline}`,
+    inLanguage: "de-DE",
+    isPartOf: { "@id": SITE_ID },
+    about: { "@id": ORG_ID },
+    publisher: { "@id": ORG_ID },
+    dateModified: BUILD_DATE,
+    ...(crumb ? { breadcrumb: { "@id": crumb["@id"] } } : {}),
+  };
+
+  return [...baseNodes(), page, ...nodes];
 }
 
 /** Breadcrumb ab Ebene 2. Auf der Startseite weggelassen. */
@@ -234,6 +287,7 @@ export function faqPage(items: FaqItem[], path: string): Node {
     "@id": `${site.url}${path}#faq`,
     inLanguage: "de-DE",
     isPartOf: { "@id": SITE_ID },
+    dateModified: BUILD_DATE,
     mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.q,
