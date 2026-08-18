@@ -64,9 +64,32 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Die Angaben, die auf dem Telefon über den Rand der Seite hinaus wirken.
+ *
+ * `themeColor` war `#f4f2ed` und `colorScheme` „light" – beides aus einer
+ * Fassung, in der die Seite hell war. Seit Schwarz die Grundfläche ist, hat
+ * Safari damit die Bedienleisten oben und unten in einem Beige eingefärbt, das
+ * auf der Seite nirgends vorkommt: ein heller Rahmen um eine schwarze Seite,
+ * genau der Bruch, den man an einer App nie sieht. Jetzt liegt dort die
+ * Grundfläche selbst, und der Übergang von der Seite zum Gerät verschwindet.
+ *
+ * `colorScheme: "dark"` deckt sich mit `color-scheme: dark` im Stylesheet und
+ * betrifft die Teile, die der Browser selbst zeichnet – Rollbalken,
+ * Auswahllisten, die Tastatur über einem Feld.
+ *
+ * `viewportFit: "cover"` lässt die Fläche bis an die Gehäusekante laufen.
+ * Ohne die Angabe setzt Safari die Seite im Querformat neben die Aussparung
+ * und füllt den Streifen selbst – bei dieser Seite mit grauen Balken links und
+ * rechts. Die Sperrzone der Kamera trägt dafür `.gutter` in globals.css; ohne
+ * diesen Rand wäre „cover" ein Fehler, nicht eine Verbesserung.
+ */
 export const viewport: Viewport = {
-  themeColor: "#f4f2ed",
-  colorScheme: "light",
+  themeColor: "#08090b",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

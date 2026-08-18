@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Medal } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
 
         <div
           className={cn(
-            "grid gap-6 lg:grid-cols-2 lg:gap-8",
+            "grid gap-x-6 gap-y-10 lg:grid-cols-2 lg:gap-8",
             withHead && "mt-16",
           )}
         >
@@ -40,51 +40,74 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                      schwarz und massiv, der empfohlene blass daneben – die
                      Fläche widersprach der Empfehlung. Sie ist zugleich das
                      eigentliche Kennzeichen: Von zwei Karten trägt eine die
-                     satte Fläche, und das sieht man vor jeder Beschriftung. */
+                     satte Fläche, und das sieht man vor jeder Beschriftung.
+
+                     Die helle Karte trägt dafür eine eigene Kante und einen
+                     Schatten. Silber-200 auf einer Silber-Sektion sind
+                     16 Helligkeitsstufen Unterschied – mit einer Kante bei
+                     12 % stand die Karte nicht auf der Fläche, sondern lag
+                     als etwas hellerer Fleck darin. */
                   plan.popular
                     ? "lift-lg border-transparent bg-ink text-silver on-dark"
-                    : "border-current/12 bg-silver-200",
+                    : "lift border-ink/15 bg-silver-200",
                 )}
               >
+                {/* Die Empfehlung als Plakette mittig auf der Oberkante.
+                    Neben dem Namen war sie zu leise: eine graue Kapsel in
+                    12 px, die in der Zeile mit dem Vertragsnamen unterging.
+                    Eine Empfehlung ist eine Auszeichnung – sie gehört an die
+                    Kante der Karte, die sie auszeichnet, und sie darf man
+                    sehen.
+
+                    Genau auf der Linie, nicht darüber: `top-0` mit
+                    `-translate-y-1/2` legt die Mitte der Plakette auf die
+                    Kante, halb auf der Karte, halb auf der Sektionsfläche.
+                    Deshalb Neon als Fläche – es ist die einzige Farbe, die
+                    gegen beide Untergründe steht, gegen die Tinte der Karte
+                    wie gegen das Silber dahinter. Auf Neon steht die Schrift
+                    in Tinte (Farbregel in globals.css).
+
+                    Auf dem Telefon stehen die Karten übereinander; der
+                    senkrechte Rasterabstand ist deshalb auf 2,5 rem gesetzt,
+                    sonst sitzt die Plakette auf der Unterkante der Karte
+                    darüber. */}
+                {plan.popular ? (
+                  <p className="absolute top-0 left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-full bg-neon py-2 pr-5 pl-4 font-display text-sm font-bold tracking-tight whitespace-nowrap text-ink shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)] md:text-[0.9375rem]">
+                    <Medal
+                      aria-hidden="true"
+                      className="size-4.5 shrink-0"
+                      strokeWidth={2.25}
+                    />
+                    Empfohlen für Vielfahrer
+                  </p>
+                ) : null}
+
                 {/* Die Zahlungsweise als Kopfzeile beider Karten – dadurch
                     beginnen Basis und Premium auf derselben Linie. */}
-                <p className="eyebrow text-[0.6875rem] text-current/70">
+                <p className="eyebrow text-current/70">
                   {plan.paymentType}
                 </p>
 
-                {/* Die Empfehlung gehört an den Namen, nicht an den Rand.
-                    Sie hing zweimal falsch: erst als neongrünes Schildchen
-                    halb über der oberen Kante, dann als Zeile schräg
-                    gegenüber der Zahlungsweise – beide Male ohne Bezug zu
-                    dem, was sie empfiehlt. „Empfohlen" ist eine Aussage über
-                    genau diesen Vertrag, also steht sie neben seinem Namen.
-
-                    Fläche statt Vollneon: Neon markiert auf dieser Seite die
-                    Handlung und die harte Zahl, hier stehen Knopf und Preis
-                    schon darin. Der Punkt reicht als Signal, es ist derselbe
-                    wie im Kopfbereich der Startseite. */}
-                <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-                  <h3 className="font-display text-2xl font-bold tracking-tight">
-                    {plan.name}
-                  </h3>
-                  {plan.popular ? (
-                    <p className="inline-flex items-center gap-2 rounded-full bg-current/10 py-1.5 pr-4 pl-3 font-display text-xs font-semibold tracking-tight">
-                      <span
-                        aria-hidden="true"
-                        className="size-2 shrink-0 rounded-full bg-neon"
-                      />
-                      Empfohlen für Vielfahrer
-                    </p>
-                  ) : null}
-                </div>
+                <h3 className="mt-6 font-display text-2xl font-bold tracking-tight">
+                  {plan.name}
+                </h3>
 
                 <p className="mt-3 text-[length:var(--text-lead)] text-current/70">
                   {plan.claim}
                 </p>
 
+                {/* Der Preis über `Mark` statt über `text-accent`.
+                    `text-accent` kippt auf der hellen Karte auf Tinte – aus
+                    gutem Grund, Neon als Schrift liegt dort bei 1,18:1. Das
+                    Ergebnis war aber, dass die harte Zahl auf der einen Karte
+                    farbig war und auf der anderen grau: dieselbe Rolle, zwei
+                    Erscheinungen. `.mark-accent` löst genau das – auf Tinte
+                    Neon als Schrift, auf Silber Neon als Fläche mit Tinte
+                    darauf. Beide Karten zeigen ihre Zahl jetzt in derselben
+                    Farbe, nur in der Rolle, die die Fläche zulässt. */}
                 <div className="mt-8 flex items-end gap-3 border-b border-current/10 pb-8">
-                  <span className="tabular font-display text-[length:var(--text-stat)] leading-[0.9] font-bold tracking-tight text-accent">
-                    {plan.price}
+                  <span className="tabular font-display text-[length:var(--text-stat)] leading-[0.9] font-bold tracking-tight">
+                    <Mark>{plan.price}</Mark>
                   </span>
                   <span className="pb-1.5 font-display text-lg font-semibold text-current/75">
                     € {plan.period}
@@ -103,16 +126,21 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                   {plan.description}
                 </p>
 
+                {/* Das Häkchen sitzt in einer Neonscheibe, auf beiden Karten
+                    gleich. Vorher war es auf der dunklen Karte neon und auf
+                    der hellen grau bei 75 % – die eingeschlossene Leistung sah
+                    auf der Basiskarte aus wie eine Fußnote. Die Scheibe
+                    funktioniert auf beiden Flächen, weil Neon dort Fläche ist
+                    und das Häkchen in Tinte darauf steht. */}
                 <ul className="mt-8 flex flex-col gap-3.5">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3.5">
-                      <Check
+                      <span
                         aria-hidden="true"
-                        className={cn(
-                          "mt-1 size-4 shrink-0",
-                          plan.popular ? "text-accent" : "text-current/75",
-                        )}
-                      />
+                        className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-neon text-ink"
+                      >
+                        <Check className="size-3.5" strokeWidth={3} />
+                      </span>
                       <span className="text-current/80">{feature}</span>
                     </li>
                   ))}

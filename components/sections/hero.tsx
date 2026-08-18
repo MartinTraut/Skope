@@ -112,7 +112,22 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
       </div>
 
-      <Container className="relative pt-28 pb-14 md:pt-32 md:pb-16">
+      {/* Der Kopfabstand hängt an der Höhe des Fensters, nicht an seiner
+          Breite.
+
+          Gemessen im Querformat eines iPhone (844 × 390): 112 px fester
+          Kopfabstand sind dort 29 % der Bildhöhe. Zusammen mit dem 72 px hohen
+          Seitenkopf stand die Auszeichnungszeile bei 290 von 390 px – man sah
+          die Überschrift und sonst nichts, beide Knöpfe lagen zwei
+          Fingerbreiten unter der Kante. Am Schreibtisch fällt das nie auf, weil
+          dort dieselben 112 px nur 12 % der Höhe sind.
+
+          `clamp(5.5rem, 3rem + 8vh, 8rem)` macht daraus einen Wert, der mit der
+          Bildhöhe wandert: 88 px im Querformat (16 px unter dem Seitenkopf),
+          115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
+          dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
+          ändert sich also nichts. */}
+      <Container className="relative pt-[clamp(5.5rem,3rem+8vh,8rem)] pb-14 md:pb-16">
         {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der

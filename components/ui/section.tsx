@@ -21,6 +21,10 @@ import { Reveal } from "@/components/motion/reveal";
  * liegt auf den Schirmen darüber: bei 1728 px waren es 1536, jetzt 1664 px.
  * Weniger als 48 px Rand ist die Untergrenze; darunter klebt der Satzspiegel
  * am Fensterrand und die Seite wirkt nicht weit, sondern billig.
+ *
+ * Der Rand liegt seit dem Querformat-Durchgang in `.gutter` (globals.css) statt
+ * in `px-6 md:px-10 lg:px-12`. Dieselben drei Werte, aber gegen die Aussparung
+ * der Frontkamera abgesichert – die Begründung steht an der Klasse.
  */
 export function Container({
   className,
@@ -32,7 +36,7 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[104rem] px-6 md:px-10 lg:px-12",
+        "gutter mx-auto w-full max-w-[104rem]",
         className,
       )}
     >

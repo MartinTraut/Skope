@@ -250,7 +250,7 @@ export default async function ScooterDetailPage({
                 <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 rounded-xl bg-current/6 p-6 md:p-7">
                   {specs.map((spec) => (
                     <div key={spec.label}>
-                      <dt className="eyebrow-plain text-[0.6875rem] text-current/55">
+                      <dt className="eyebrow-plain text-current/55">
                         {SHORT_LABEL[spec.label] ?? spec.label}
                       </dt>
                       <dd className="mt-1.5 font-display leading-snug font-semibold tracking-tight hyphens-auto">

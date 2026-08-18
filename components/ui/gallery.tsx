@@ -17,15 +17,21 @@ import { cn } from "@/lib/utils";
  * nach dem ersten Durchklicken im Cache, und der Wechsel ist ein reiner
  * Compositor-Schritt.
  *
- * Vor- und Zurück-Knöpfe liegen auf dem Bild: Sie kosten keine Höhe und sind
- * mit 44 Pixeln fingergerecht. Pfeiltasten bedienen dieselbe Auswahl, damit
- * die Galerie ohne Maus vollständig ist.
+ * Drei Wege zum nächsten Bild, einer pro Eingabeart: Wischen für den Finger,
+ * Pfeiltasten für die Tastatur, die beiden Knöpfe auf dem Bild für den Zeiger.
+ * Die Knöpfe liegen auf dem Bild, kosten also keine Höhe, und sind mit 44 px
+ * fingergerecht – auf dem Telefon sind sie aber der Ersatzweg und nicht der
+ * Hauptweg (siehe die Geste weiter unten).
  *
  * Die Vorschaureihe ist abschaltbar und im Bestandsraster abgeschaltet. Das
  * ist kein halber Ausbau, sondern gemessen: Sechs 45-Pixel-Kacheln desselben
  * Rollers unterscheiden sich für das Auge nicht, kosten aber gut sechzig
  * Pixel unter jeder der dreizehn Karten. Auf der Geräteseite steht die Reihe
  * in voller Breite und zeigt tatsächlich unterschiedliche Ansichten.
+ *
+ * Dort läuft sie unter `sm` über vier Spalten und nicht über sechs. Gemessen
+ * bei 320 px Fenster: sechs Spalten ergeben 39 px Kantenlänge, vier ergeben
+ * 62 px. 39 px sind kleiner als die Fingerkuppe – man trifft das Nachbarbild.
  */
 export function Gallery({
   images,
@@ -76,6 +82,45 @@ export function Gallery({
   };
 
   /**
+   * Wischen. Auf dem Telefon ist das die erwartete Bedienung einer Bildreihe –
+   * die beiden Pfeile sind dort der Ersatzweg, nicht der Hauptweg. Wer sechs
+   * Aufnahmen ansehen will, wischt sechsmal; sechsmal auf einen 44-px-Pfeil zu
+   * treffen, der auf dem Bild liegt, ist die schlechtere Hälfte derselben
+   * Aufgabe.
+   *
+   * Über Pointer-Events und nicht über `touch*`: Damit gilt dieselbe Geste
+   * auch für den Stift und für Touchscreens am Rechner, und es braucht keine
+   * zweite Behandlung.
+   *
+   * Zwei Schwellen entscheiden, ob es eine Geste war:
+   *
+   * 44 px Weg – darunter ist es ein Tipp mit unruhigem Finger, und der soll
+   * nichts umschalten.
+   *
+   * Waagerecht deutlich mehr als senkrecht (Faktor 1,5). Ohne diesen Vergleich
+   * wechselt das Bild, während man eigentlich die Seite scrollt: Der Daumen
+   * fährt beim Scrollen nie exakt senkrecht. `touch-action: pan-y` am Rahmen
+   * gehört dazu – es überlässt die senkrechte Richtung dem Browser und hält
+   * die waagerechte für diese Geste frei.
+   */
+  const swipe = React.useRef<{ x: number; y: number; id: number } | null>(null);
+
+  const onPointerDown = (event: React.PointerEvent) => {
+    if (event.pointerType === "mouse") return;
+    swipe.current = { x: event.clientX, y: event.clientY, id: event.pointerId };
+  };
+
+  const onPointerUp = (event: React.PointerEvent) => {
+    const start = swipe.current;
+    swipe.current = null;
+    if (!start || start.id !== event.pointerId || images.length < 2) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < 44 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    step(dx < 0 ? 1 : -1);
+  };
+
+  /**
    * Vollbild über das native `<dialog>`: Es bringt Fokusfalle, Escape und die
    * Sperre für den Hintergrund mit. Eine nachgebaute Überlagerung müsste all
    * das von Hand haben – und hat es in der Praxis nie vollständig.
@@ -98,8 +143,11 @@ export function Gallery({
           aria-label="Bilder des Geräts"
           tabIndex={0}
           onKeyDown={onKeyDown}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => (swipe.current = null)}
           className={cn(
-            "group/gal relative overflow-hidden rounded-md bg-ink-700",
+            "group/gal relative touch-pan-y overflow-hidden rounded-md bg-ink-700",
             ratio === "portrait" ? "aspect-[3/4]" : "aspect-square",
           )}
         >
@@ -127,7 +175,7 @@ export function Gallery({
             type="button"
             onClick={openZoom}
             aria-label={`Bild ${active + 1} von ${images.length} vergrößern`}
-            className="absolute top-2 right-2 grid size-11 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-colors duration-200 hover:bg-ink/90"
+            className="press absolute top-2 right-2 grid size-11 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-[background-color,transform] duration-200 hover:bg-ink/90"
           >
             <Expand className="size-4" aria-hidden="true" />
           </button>
@@ -138,7 +186,7 @@ export function Gallery({
                 type="button"
                 onClick={() => step(-1)}
                 aria-label="Vorheriges Bild"
-                className="absolute top-1/2 left-2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-colors duration-200 hover:bg-ink/90"
+                className="press absolute top-1/2 left-2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-[background-color,transform] duration-200 hover:bg-ink/90 active:scale-90"
               >
                 <ChevronLeft className="size-5" aria-hidden="true" />
               </button>
@@ -146,7 +194,7 @@ export function Gallery({
                 type="button"
                 onClick={() => step(1)}
                 aria-label="Nächstes Bild"
-                className="absolute top-1/2 right-2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-colors duration-200 hover:bg-ink/90"
+                className="press absolute top-1/2 right-2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-ink/70 text-silver on-dark transition-[background-color,transform] duration-200 hover:bg-ink/90 active:scale-90"
               >
                 <ChevronRight className="size-5" aria-hidden="true" />
               </button>
@@ -162,7 +210,7 @@ export function Gallery({
         </div>
 
         {thumbnails && images.length > 1 ? (
-          <ul className="grid grid-cols-6 gap-2">
+          <ul className="grid grid-cols-4 gap-2 sm:grid-cols-6">
             {images.map((image, i) => (
               <li key={image.src}>
                 <button
@@ -171,7 +219,7 @@ export function Gallery({
                   aria-label={`Ansicht ${i + 1} zeigen`}
                   aria-current={i === active || undefined}
                   className={cn(
-                    "relative block aspect-square w-full overflow-hidden rounded-sm bg-ink-700 transition-[opacity,outline-color] duration-200",
+                    "press relative block aspect-square w-full overflow-hidden rounded-sm bg-ink-700 transition-[opacity,outline-color,transform] duration-200",
                     i === active
                       ? "outline-2 outline-offset-2 outline-neon"
                       : "opacity-55 outline-2 outline-offset-2 outline-transparent hover:opacity-100",

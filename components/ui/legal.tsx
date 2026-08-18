@@ -20,7 +20,16 @@ export function LegalPage({
       <PageHeader crumb={crumb} eyebrow={eyebrow} title={title} lead={lead} />
       <section className="bg-ink-800 py-20 md:py-28 text-silver on-dark">
         <Container>
-          <div className="max-w-3xl [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-14 [&_h2]:mb-4 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2:first-child]:mt-0 [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:font-display [&_h3]:text-lg [&_h3]:font-semibold [&_li]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-current/70 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-current/70">
+          {/* `overflow-wrap: anywhere` an den Verweisen.
+              Gemessen bei 320 px Fenster: Die Mailadresse
+              „skopegebrauchtwarenhandel@…" ist 334 px breit und stand damit
+              38 px ausserhalb des Bildes – auf drei Rechtsseiten, also genau
+              dort, wo eine Kontaktmöglichkeit Pflicht ist. `break-words`
+              genügt hier nicht: Die Regel greift nur an Wortgrenzen, und eine
+              Mailadresse hat keine. `anywhere` bricht notfalls mitten im Wort
+              und rechnet den Umbruch zusätzlich in die Mindestbreite der
+              Spalte ein. */}
+          <div className="max-w-3xl [&_a]:[overflow-wrap:anywhere] [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-14 [&_h2]:mb-4 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2:first-child]:mt-0 [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:font-display [&_h3]:text-lg [&_h3]:font-semibold [&_li]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-current/70 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-current/70">
             {children}
           </div>
         </Container>

@@ -95,6 +95,10 @@ export function LocationMap({
   const frame =
     "group lift relative block aspect-[16/9] w-full overflow-hidden rounded-lg bg-ink-700";
 
+  // Der Rahmen ist als Karte die größte Schaltfläche der Kontaktseite; der
+  // Druckpunkt bleibt entsprechend flach.
+  const tappableFrame = `press ${frame} [--press-scale:0.99] transition-transform duration-200`;
+
   return (
     <div className={className}>
       {href ? (
@@ -103,7 +107,7 @@ export function LocationMap({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Route nach ${location} in Google Maps öffnen`}
-          className={frame}
+          className={tappableFrame}
         >
           {map}
         </a>

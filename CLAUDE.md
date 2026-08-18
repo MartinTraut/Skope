@@ -47,6 +47,48 @@ vorher ausblenden — sonst misst man die Buchstaben statt den Untergrund.
   `bg-neon text-ink` (siehe Farbregel oben in `globals.css`).
 - **Inline-Elemente in Displaygröße** erben den Zeilenabstand des Fließtextes
   und reißen mehrzeilige Adressen auseinander. `block leading-tight` setzen.
+- **Ein JSX-Kommentar direkt hinter `return (`** ist kein Kommentar, sondern ein
+  zweites Wurzelelement. Erklärungen vor dem `return` als `/* … */` setzen.
+- **`.press` liegt im `components`-Layer, Tailwind-Utilities im `utilities`-Layer
+  darüber.** Cascade Layers gewinnen *vor* Spezifität: Wer auf demselben Element
+  eine Transform-Utility im `active`-Zustand hat (`active:translate-y-0`),
+  überschreibt den Druckpunkt komplett. Entweder die Utility entfernen oder den
+  Druckpunkt über Tailwinds eigenes `active:scale-*` setzen, das sich mit
+  anderen Transforms verrechnet statt sie zu ersetzen. Dasselbe gilt für die
+  Übergangsdauer: Eine `transition-*`-Utility muss `transform` mitführen, sonst
+  springt der Druckpunkt statt zu laufen.
+
+## Telefon, Tablet, Querformat
+
+Durchgang vom 17.08.2026, gemessen über zwölf Routen × neun Breiten
+(320 – 1512 px) plus Querformat 844 × 390. Danach: kein waagerechter Überlauf,
+keine Konsolenfehler, keine Schrift unter 11 px, keine Schaltfläche unter 44 px
+außer den Verweisen *im* Fließtext (dort greift die Ausnahme aus WCAG 2.5.8).
+
+Was dabei entschieden wurde und nicht wieder aufgeweicht werden darf:
+
+- **`viewport-fit=cover` und `.gutter` gehören zusammen.** Die Fläche läuft bis
+  an die Gehäusekante, damit im Querformat keine grauen Balken neben der
+  schwarzen Seite stehen. Dafür muss *jeder* Rand über `.gutter` laufen
+  (`max(Wert, env(safe-area-inset-*))`) — sonst liegt Text unter der
+  Kameraaussparung. `Container` und die untere Aktionsleiste tun das.
+- **`themeColor` ist `#08090b`.** Er stand auf `#f4f2ed` aus einer hellen
+  Fassung und hat Safari die Bedienleisten beige eingefärbt.
+- **Hover-Regeln in `globals.css` stehen hinter `(hover: hover)`.** Ohne die
+  Abfrage bleibt auf dem Telefon der Zustand des letzten Tipps stehen.
+  Tailwinds `hover:` bringt die Abfrage seit v4 selbst mit, handgeschriebene
+  Regeln nicht.
+- **Die Scrollsperre des Menüs läuft über `position: fixed` am `<body>`**, nicht
+  über `overflow: hidden` — und setzt die Position beim Schließen mit
+  `behavior: "instant"` zurück. Gemessen: 1800 px vorher, 1800 px nachher.
+- **Kopfabstände von Hero und Unterseitenkopf hängen an `vh`**, nicht an fixen
+  Werten. Im Querformat waren 128 px oben plus 80 px unten 53 % der Bildhöhe.
+- **Die Tarif-Tabelle hat keine Mindestbreite mehr.** Sie passt bei 320 px in
+  272 px, weil die Kopfzellen trennen dürfen (`[hyphens:auto]`, „HAFT-PFLICHT").
+  Wer die Sperrung dort erhöht, bricht das.
+- **Kleinstgrade sind weg.** Die Firmenzeile im Fußbereich stand auf 8 px, vier
+  Etikettenreihen auf 11 px. Untergrenze ist jetzt 11 px, und die gilt nur für
+  die eine Zeile unter der Marke.
 
 ## Designsystem
 
@@ -65,11 +107,12 @@ als Tokens in `@theme`.
 | `components/motion/velaris.tsx` | Bewegter Hintergrund, rohes WebGL. Zwei Rauschoktaven (nicht vier — vier sehen aus wie Rauch), zwei wandernde Lichter mit eigener Zeit. Fällt bei jedem Fehler auf `.velaris-still` zurück und blendet die Fläche aus. DPR-Deckel 1,5, Pause beim Ausscrollen, `prefers-reduced-motion` = ein Standbild. |
 | `components/motion/reveal.tsx` | Ein einziger IntersectionObserver für die ganze Seite. |
 | `components/ui/section.tsx` | `Section`, `Container`, `SectionHead`. Der Lead steht **unter** der Überschrift, nicht in einer Spalte rechts. |
-| `components/ui/gallery.tsx` | Bildergalerie der Bestandsgeräte. Alle Bilder gleichzeitig im DOM, Pfeile auf dem Bild, quadratischer Ausschnitt. |
+| `components/ui/gallery.tsx` | Bildergalerie der Bestandsgeräte. Alle Bilder gleichzeitig im DOM, quadratischer Ausschnitt. Drei Wege zum nächsten Bild, einer pro Eingabeart: Wischen (Pointer-Events, 44 px Schwelle, `touch-action: pan-y`), Pfeiltasten, Knöpfe auf dem Bild. Vorschaureihe vier Spalten unter `sm`, sechs darüber. |
 | `components/ui/inventory-card.tsx` | Bestandskarte. Geschlossen nur Bild, Modell, Preis, zwei Kennwerte — plus die ABE-Warnung, die nie eingeklappt wird. |
 | `components/ui/expand-map.tsx` | Lagekarte als eingefärbtes PNG aus OpenStreetMap-Kacheln. Kein Embed: kein Drittanbieter-Request, keine Einwilligung nötig. Namensnennung ist Lizenzpflicht. |
 | `components/ui/faq.tsx` | `FaqSection` trägt Kopf **und** Liste: fünf Spalten Überschrift, sieben Spalten Fragen. Alle fünf FAQ-Blöcke der Seite laufen darüber – gestapelt blieb die rechte Hälfte leer und das Pluszeichen stand 500 px hinter der Frage. |
 | `components/brand/seal.tsx` | Qualitätssiegel als Rasterbild (`public/img/siegel-skope.png`, kreisrund freigestellt, 1000 px). Der frühere SVG-Nachbau ist ersetzt; die Metallanmutung ist hier die Aussage. |
+| `app/globals.css` → `.press` / `.gutter` / `.scroll-x` | Die drei Klassen der Telefonbedienung: Druckpunkt samt `touch-action: manipulation` (Faktor über `--press-scale`), Seitenrand mit Aussparungsschutz, waagerechte Rollfläche mit `overscroll-behavior-x: contain`. Begründungen stehen an den Klassen. |
 | `lib/schema.tsx` | Ein `@graph` mit `@id`-Verweisen. `inventoryProducts()` erzeugt Product + Offer je Gerät. |
 
 ## Offene Punkte für den Betreiber

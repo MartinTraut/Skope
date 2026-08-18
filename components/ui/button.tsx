@@ -27,7 +27,13 @@ const button = cva(
     "group relative inline-flex shrink-0 items-center justify-center gap-2.5",
     "font-display font-semibold whitespace-nowrap",
     "rounded-full border transition-[background-color,border-color,color,transform] duration-200",
-    "ease-[cubic-bezier(.22,1,.36,1)] active:translate-y-px",
+    "ease-[cubic-bezier(.22,1,.36,1)]",
+    /* Der Druckpunkt kommt aus `.press` (globals.css) und nicht mehr aus
+       `active:translate-y-px`. Ein Pixel Versatz ist am Zeiger eine Nuance und
+       auf dem Telefon nichts: Dort hat der Finger den Knopf verdeckt, bevor
+       sich etwas bewegt hat. Das kurze Eindrücken sieht man auch unter dem
+       Daumen, weil sich die Kante mitbewegt. */
+    "press",
     "disabled:pointer-events-none disabled:opacity-55",
   ],
   {

@@ -247,6 +247,30 @@
     /* Letzte Verteidigungslinie gegen horizontales Scrollen auf Mobile.
        Kein Ersatz für sauberes Layout — nur ein Sicherheitsnetz. */
     overflow-x: clip;
+
+    /**
+     * Safari auf dem iPhone vergrößert Fließtext eigenmächtig, sobald ein
+     * Block breiter ist als die Spalte, in der er liegt – im Querformat
+     * regelmäßig, im Hochformat bei jeder Tabelle mit Mindestbreite. Aus
+     * 17 px werden dann gemessen 20 bis 22, und zwar nur in dem einen
+     * Absatz. Die Seite hat dann zwei Grundschriftgrade.
+     *
+     * `100%` schaltet nicht die Zoom-Bedienung ab (das wäre `maximum-scale`
+     * und ein Accessibility-Fehler), sondern nur diese automatische
+     * Aufblähung.
+     */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+
+    /**
+     * Ankersprünge landen unter dem festen Seitenkopf, nicht dahinter.
+     *
+     * Bisher trug jedes Sprungziel sein eigenes `scroll-mt-24`. Das deckt die
+     * Ziele ab, die jemand daran gedacht hat – nicht aber den Sprung, den der
+     * Browser selbst auslöst: Tastaturfokus, `:target`, die Fehlerliste des
+     * Formulars. 5,5 rem sind die Kopfzeile (4,5 rem) plus Luft.
+     */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
@@ -515,6 +539,27 @@
     }
   }
 
+  /**
+   * Eine dunkle Insel in einer hellen Sektion nimmt die Fläche zurück.
+   *
+   * `.on-light .mark-accent` greift auf jeden Nachkommen, also auch auf eine
+   * Karte, die selbst `.on-dark` setzt. Aufgefallen an der Premium-Karte der
+   * Wartungsverträge: Die Sektion ist Silber, die Karte Tinte – und der Preis
+   * bekam trotzdem die Neonfläche, obwohl Neon auf Tinte als Schrift steht.
+   *
+   * Die Regel steht bewusst NACH der hellen: Beide sind gleich spezifisch,
+   * also entscheidet die Reihenfolge. Das ist richtig, solange dunkle Inseln
+   * in hellen Sektionen liegen und nicht umgekehrt – helle Karten in dunklen
+   * Sektionen tragen ihre Auszeichnung bislang nirgends.
+   */
+  .on-dark .mark-accent {
+    color: var(--color-neon);
+    background-color: transparent;
+    background-image: none;
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+
   /* Fläche und Schrift kommen zusammen: Wer den Akzent als Hintergrund setzt,
      bekommt die dazu passende Schriftfarbe mit. Vorher musste jede Stelle das
      selbst wissen – das Kennzeichen „Für Pendler" stand deshalb in Ink auf
@@ -540,9 +585,12 @@
     background-color: color-mix(in oklab, var(--accent) 10%, transparent);
   }
 
-  .hover\:text-accent:hover,
-  .group:hover .group-hover\:text-accent {
-    color: var(--accent);
+  /* Siehe die Begründung an `.tint-neon`: Hover nur, wo es einen Zeiger gibt. */
+  @media (hover: hover) and (pointer: fine) {
+    .hover\:text-accent:hover,
+    .group:hover .group-hover\:text-accent {
+      color: var(--accent);
+    }
   }
 
   .group-open\:text-accent,
@@ -606,12 +654,27 @@
     transition: background-image 220ms var(--ease-out-expo);
   }
 
-  .group:hover .tint-neon {
-    background-image: radial-gradient(
-      120% 90% at 100% 0%,
-      color-mix(in oklab, var(--color-neon) 26%, transparent) 0%,
-      transparent 68%
-    );
+  /**
+   * Alle Hover-Zustände dieses Stylesheets liegen hinter `(hover: hover)`.
+   *
+   * Ohne die Abfrage bleibt auf dem Telefon der Zustand des letzten Tipps
+   * stehen: iOS wertet einen Tap als Hover und nimmt ihn erst zurück, wenn
+   * woanders getippt wird. Auf einer Bestandskarte heißt das, dass nach dem
+   * Zurückgehen aus der Geräteansicht genau eine Karte hell leuchtet – ohne
+   * dass der Finger sie berührt. Man liest das als Auswahl, es ist aber nur
+   * ein Rest.
+   *
+   * Die Tailwind-Variante `hover:` bringt diese Abfrage seit v4 selbst mit;
+   * die handgeschriebenen Regeln hier taten es nicht.
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .tint-neon {
+      background-image: radial-gradient(
+        120% 90% at 100% 0%,
+        color-mix(in oklab, var(--color-neon) 26%, transparent) 0%,
+        transparent 68%
+      );
+    }
   }
 
   /**
@@ -678,6 +741,108 @@
       inset 0 -1px 0 color-mix(in oklab, var(--color-silver) 8%, transparent),
       0 1px 0 color-mix(in oklab, #000 45%, transparent),
       0 16px 40px -20px rgb(0 0 0 / 0.75);
+  }
+
+  /**
+   * Seitenrand — und zugleich die Grenze zum Gerät.
+   *
+   * Ersetzt `px-6 md:px-10 lg:px-12` im Container durch dieselben drei Werte
+   * (24 / 40 / 48 px), aber gegen die Aussparungen des Geräts abgesichert.
+   *
+   * Grund: Die Seite läuft mit `viewport-fit=cover` bis an die Gehäusekante,
+   * damit im Querformat keine grauen Balken neben der schwarzen Fläche stehen.
+   * Das ist die Anmutung, die man von einer App erwartet – aber sie verschiebt
+   * die Verantwortung für die Sperrzone der Kamera auf das Layout. Im
+   * Querformat eines iPhone sind das 47 px links oder rechts; ohne `max()`
+   * läge die erste Zeile jeder Sektion darunter.
+   *
+   * `max()` und nicht `calc(24px + env())`: Der Rand soll nicht wachsen,
+   * sondern nur nicht kleiner werden als die Aussparung. Auf jedem Gerät ohne
+   * Aussparung ist `env()` gleich null und es bleibt beim gesetzten Wert.
+   */
+  .gutter {
+    padding-inline:
+      max(1.5rem, env(safe-area-inset-left)) max(1.5rem, env(safe-area-inset-right));
+  }
+
+  @media (width >= 48rem) {
+    .gutter {
+      padding-inline:
+        max(2.5rem, env(safe-area-inset-left)) max(2.5rem, env(safe-area-inset-right));
+    }
+  }
+
+  @media (width >= 64rem) {
+    .gutter {
+      padding-inline:
+        max(3rem, env(safe-area-inset-left)) max(3rem, env(safe-area-inset-right));
+    }
+  }
+
+  /**
+   * Die Rückmeldung auf den Finger.
+   *
+   * Auf dem Telefon fehlt alles, was am Zeiger die Bedienbarkeit anzeigt: kein
+   * Cursor, kein Hover, und der Zustandswechsel kommt erst mit der neuen Seite.
+   * Zwischen Tippen und Reaktion liegen im Mobilfunknetz leicht 300 ms, in
+   * denen das Gerät nichts sagt. Genau dieses Loch füllt das kurze Eindrücken:
+   * Es ist die Bestätigung, dass der Tap angekommen ist, und der Grund, warum
+   * sich eine App „direkt" anfühlt und eine Website nicht.
+   *
+   * Drei Teile, alle drei nötig:
+   *
+   * `touch-action: manipulation` streicht die Wartezeit auf einen möglichen
+   * Doppeltipp – historisch 300 ms, in Safari weiterhin messbar. Ohne das
+   * kommt jede Reaktion zu spät, egal wie schnell die Animation ist.
+   *
+   * `user-select: none` verhindert, dass ein etwas längerer Tipp die
+   * Textauswahl mit blauer Markierung und Lupe auslöst, statt zu betätigen.
+   * Gilt nur für Bedienelemente – Lesetext bleibt auswählbar.
+   *
+   * Die Skalierung ist mit 0,972 bewusst klein. Sichtbar wird sie über die
+   * Dauer, nicht über den Weg: 120 ms hinein, 260 ms zurück. Ein Druckpunkt
+   * darf sofort da sein und muss langsam loslassen, sonst schnappt er.
+   * Kartenflächen setzen `--press-scale` höher, weil derselbe Faktor auf
+   * 600 px Breite als Verrutschen liest, nicht als Druck.
+   */
+  .press {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .press {
+      transition: transform 260ms var(--ease-out-expo);
+    }
+
+    .press:active {
+      transform: scale(var(--press-scale, 0.972));
+      transition-duration: 120ms;
+    }
+  }
+
+  /**
+   * Waagerechte Rollfläche für Inhalte, die auf einem Telefon nicht in die
+   * Spalte passen – heute die Tarifzeilen der Versicherungsseite.
+   *
+   * `overscroll-behavior-x: contain` ist hier die eigentliche Arbeit: Ohne die
+   * Angabe gibt Safari das Weiterziehen am Ende der Tabelle an die Seite
+   * darunter weiter, und aus dem Wischen über eine Tabelle wird ein
+   * Zurück-Blättern im Verlauf. Man verliert die Seite beim Lesen einer Zeile.
+   *
+   * Der Rollbalken ist ausgeblendet, weil die Kantenverläufe der Aufrufer die
+   * Information sauberer tragen: Wo es weitergeht, läuft der Inhalt aus.
+   */
+  .scroll-x {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .scroll-x::-webkit-scrollbar {
+    display: none;
   }
 
   /* Ziffernblock für Preise/Kennzahlen */

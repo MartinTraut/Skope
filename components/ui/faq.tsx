@@ -75,7 +75,7 @@ export function Faq({
       {items.map((item, i) => (
         <Reveal key={item.q} delay={Math.min(i * 55, 220)}>
           <details className="group">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">
+            <summary className="press flex cursor-pointer list-none items-start justify-between gap-6 py-6 [--press-scale:0.99] [&::-webkit-details-marker]:hidden">
               {/* Keine eigene Breitengrenze mehr. Sie stammt aus der Zeit, in
                   der die Liste über die volle Sektionsbreite lief: 42 Zeichen
                   hielten die Zeile lesbar, ließen aber 500 px Luft bis zum

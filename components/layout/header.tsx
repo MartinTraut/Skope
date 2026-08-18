@@ -69,6 +69,18 @@ export function Header() {
    * Menüpunkt in die verdeckten Links von <main> und <footer> und verliert den
    * sichtbaren Fokus komplett. Das Attribut wird per DOM gesetzt, weil beide
    * Elemente im Server-Layout liegen und nicht Kinder dieser Komponente sind.
+   *
+   * Der Halt selbst läuft über `position: fixed` am <body> und nicht über
+   * `overflow: hidden`. Auf dem iPhone hält `overflow: hidden` den Körper nicht
+   * an, sobald schon Schwung im Fluss ist: Das Menü steht, die Seite darunter
+   * läuft weiter, und wenn das Menü zugeht, ist man an einer anderen Stelle als
+   * vorher. Der Körper wird deshalb an seiner Stelle festgenagelt – die
+   * Scrollhöhe wandert in `top`, damit dabei nichts nach oben springt – und
+   * beim Schließen wieder freigegeben.
+   *
+   * `behavior: "instant"` beim Zurücksetzen ist Pflicht: `scroll-behavior:
+   * smooth` steht global am <html>, und ohne die Angabe scrollt die Seite nach
+   * dem Schließen des Menüs sichtbar an ihre alte Stelle zurück.
    */
   React.useEffect(() => {
     const outside = [
@@ -78,10 +90,27 @@ export function Header() {
       // gleichzeitig sicht- und bedienbar – siehe #mobile-cta in globals.css.
       document.getElementById("mobile-cta"),
     ];
-    document.body.style.overflow = open ? "hidden" : "";
     for (const el of outside) el?.toggleAttribute("inert", open);
+
+    if (!open) {
+      return () => {
+        for (const el of outside) el?.removeAttribute("inert");
+      };
+    }
+
+    const body = document.body;
+    const y = window.scrollY;
+    body.style.position = "fixed";
+    body.style.top = `-${y}px`;
+    body.style.insetInline = "0";
+    body.style.width = "100%";
+
     return () => {
-      document.body.style.overflow = "";
+      body.style.position = "";
+      body.style.top = "";
+      body.style.insetInline = "";
+      body.style.width = "";
+      window.scrollTo({ top: y, behavior: "instant" });
       for (const el of outside) el?.removeAttribute("inert");
     };
   }, [open]);
@@ -108,7 +137,12 @@ export function Header() {
   return (
     <header
       data-scrolled={scrolled || open ? "true" : "false"}
-      className="fixed inset-x-0 top-0 z-50"
+      /* Der obere Sicherheitsabstand ist im Browser null – dort beginnt die
+         Seite unter der Adressleiste. Er greift, wenn die Seite vom Startbild-
+         schirm aus als eigenes Fenster läuft: Dann liegt die Statusleiste des
+         Geräts über dem Seitenkopf, und ohne den Abstand steht die Wortmarke
+         in der Uhrzeit. */
+      className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]"
     >
       {/* Die Glasscheibe liegt als eigene Fläche hinter dem Inhalt, nicht auf
           dem <header> selbst. Grund: `backdrop-filter` lässt sich nicht sauber
@@ -145,7 +179,7 @@ export function Header() {
         <Link
           href="/"
           aria-label={`${site.name}, Startseite`}
-          className="flex items-center"
+          className="press flex min-h-11 items-center"
         >
           <Logo showSub={false} />
         </Link>
@@ -160,7 +194,7 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative inline-flex min-h-11 items-center rounded-md px-2.5 text-[0.9375rem] font-medium whitespace-nowrap transition-colors duration-200",
+                      "press relative inline-flex min-h-11 items-center rounded-md px-2.5 text-[0.9375rem] font-medium whitespace-nowrap transition-[color,transform] duration-200",
                       // 88 % und Halbfett statt 70 % und Buchschnitt.
                       //
                       // Gemessen war die Navigation 15 px in Regular mit 70 %
@@ -207,7 +241,7 @@ export function Header() {
           <Link
             href="/#kundenstimmen"
             aria-label={`${googleRating.value} von 5 Sternen bei Google, ${googleRating.count} Rezensionen lesen`}
-            className="hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-colors duration-200 hover:bg-current/8 min-[1024px]:inline-flex"
+            className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex"
           >
             <Star
               aria-hidden="true"
@@ -226,7 +260,7 @@ export function Header() {
                Anfrage sind das 1241 px plus 112 px Innenrand – 73 px mehr, als
                die Seite hergibt, der Anfrage-Knopf stand außerhalb. In diesem
                Band trägt die Nummer die Aktionsleiste unten und das Menü. */
-            className="hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-colors duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1440px]:inline-flex"
+            className="press hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-[color,border-color,transform] duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1440px]:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
@@ -244,7 +278,7 @@ export function Header() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
-            className="inline-flex size-11 items-center justify-center rounded-md border border-current/20 xl:hidden"
+            className="press inline-flex size-11 items-center justify-center rounded-md border border-current/20 xl:hidden"
           >
             {open ? (
               <X className="size-5" aria-hidden="true" />
@@ -255,23 +289,77 @@ export function Header() {
         </div>
       </Container>
 
-      {/* Mobile / Tablet Navigation */}
+      {/* Mobile / Tablet Navigation
+       *
+       * Das Menü lag vorher hinter `hidden` und war damit im selben Bild da,
+       * in dem man den Schalter berührt hat – eine volle Bildschirmfläche, die
+       * ohne Bewegung erscheint. Genau daran erkennt man eine Website: Auf dem
+       * Telefon kommt jede Fläche irgendwo her, und der kurze Weg ist die
+       * Auskunft darüber, woher.
+       *
+       * Statt `hidden` jetzt `inert` plus `visibility`. Beides ist nötig:
+       *
+       * `inert` nimmt das geschlossene Menü aus Tabreihenfolge und
+       * Vorleseansicht – das, was `hidden` vorher geleistet hat und was ein
+       * bloßes `opacity: 0` nicht leistet.
+       *
+       * `visibility: hidden` nimmt es aus der Trefferprüfung und lässt sich
+       * trotzdem weich schalten (der Wechsel findet am Ende des Übergangs
+       * statt). Ohne die Angabe fängt die unsichtbare Fläche jeden Tipp auf
+       * die Seite darunter ab.
+       *
+       * `absolute top-full` statt im Fluss: Läge das Menü weiterhin im Kasten
+       * des Seitenkopfs, wäre dieser dauerhaft bildschirmhoch – und der Kopf
+       * ist `fixed`, also läge diese Höhe über der ganzen Seite.
+       */}
       <div
         ref={panelRef}
         id="mobile-nav"
-        hidden={!open}
-        className="max-h-[calc(100svh-4.5rem)] min-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark"
+        inert={!open}
+        /* `overscroll-contain`: Ohne das gibt Safari das Weiterziehen am Ende
+           der Menüliste an die Seite darunter weiter. Man wischt im Menü und
+           bewegt die Seite dahinter – sichtbar, sobald das Menü wieder zugeht. */
+        className={cn(
+          "absolute inset-x-0 top-full max-h-[calc(100svh-4.5rem)] min-h-[calc(100svh-4.5rem)] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
+          "transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none",
+          open
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-4 opacity-0",
+        )}
       >
-        <Container className="py-6">
+        {/* Der untere Abstand hält die beiden Knöpfe über der Streiflinie zum
+            Wechseln der App. Ohne ihn liegt „Anrufen" auf dem Balken und der
+            erste Wisch nach oben schließt die Seite statt zu wählen. */}
+        <Container className="pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           <ul className="flex flex-col">
             {nav.map((item, i) => (
-              <li key={item.href} className="border-b border-current/8">
+              /* Die Zeilen laufen nacheinander ein, 40 ms auseinander.
+               *
+               * Das ist kein Zierrat, sondern die Leserichtung: Sechs Zeilen,
+               * die gleichzeitig erscheinen, sind eine Fläche, die man als
+               * Ganzes sieht und dann von oben absucht. Nacheinander eingesetzt
+               * führen sie das Auge dorthin, wo die Liste beginnt – und die
+               * Verzögerung ist mit 40 ms so kurz, dass die letzte Zeile nach
+               * 300 ms steht. Länger wäre Warten statt Führung.
+               *
+               * Beim Schließen keine Verzögerung: Die Fläche geht als Ganzes
+               * weg, weil das Ziel dann nicht mehr die Liste ist.
+               */
+              <li
+                key={item.href}
+                style={{ transitionDelay: open ? `${90 + i * 40}ms` : "0ms" }}
+                className={cn(
+                  "border-b border-current/8 transition-[opacity,transform] duration-400 ease-[cubic-bezier(.22,1,.36,1)]",
+                  "motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
+                  open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+                )}
+              >
                 <Link
                   href={item.href}
                   // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist –
                   // dann ändert sich `pathname` nicht und das Menü bliebe offen.
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline gap-4 py-4 font-display text-2xl font-bold"
+                  className="press flex items-baseline gap-4 py-4 font-display text-2xl font-bold"
                 >
                   <span className="tabular font-sans text-xs font-medium text-accent">
                     {String(i + 1).padStart(2, "0")}
@@ -281,7 +369,16 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <div className="mt-7 flex flex-col gap-3">
+          {/* Die beiden Aktionen kommen nach der letzten Zeile der Liste –
+              90 + 6 × 40 = 330 ms. */}
+          <div
+            style={{ transitionDelay: open ? "330ms" : "0ms" }}
+            className={cn(
+              "mt-7 flex flex-col gap-3 transition-[opacity,transform] duration-400 ease-[cubic-bezier(.22,1,.36,1)]",
+              "motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
+              open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+            )}
+          >
             <ButtonLink
               href="/kontakt#anfrage"
               size="lg"
@@ -292,7 +389,7 @@ export function Header() {
             </ButtonLink>
             <a
               href={site.phone.href}
-              className="inline-flex h-[3.25rem] w-full items-center justify-center gap-2.5 rounded-md border border-current/25 font-display font-semibold"
+              className="press inline-flex h-[3.25rem] w-full items-center justify-center gap-2.5 rounded-full border border-current/25 font-display font-semibold"
             >
               <Phone className="size-4" aria-hidden="true" />
               <span className="tabular">{site.phone.display}</span>

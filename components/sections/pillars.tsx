@@ -80,7 +80,10 @@ export function Pillars() {
                 i > 0 && "lg:border-l lg:border-current/10",
               )}
             >
-              <Link href={pillar.href} className="group flex h-full flex-col">
+              <Link
+                href={pillar.href}
+                className="press group flex h-full flex-col [--press-scale:0.985]"
+              >
                 {/* 4:3 statt 16:10 – rund 130 px mehr Bildhöhe pro Kachel.
                     Bei 16:10 war der Roller in einer Drittelspalte kaum
                     grösser als die Überschrift darunter. */}
@@ -92,7 +95,7 @@ export function Pillars() {
                     sizes="(max-width: 1024px) 100vw, 30vw"
                     className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
                   />
-                  <span className="absolute top-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 font-display text-[0.6875rem] font-semibold tracking-[0.14em] uppercase backdrop-blur-sm text-silver on-dark">
+                  <span className="absolute top-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 font-display text-xs font-semibold tracking-[0.14em] uppercase backdrop-blur-sm text-silver on-dark">
                     {pillar.kicker}
                   </span>
                 </div>

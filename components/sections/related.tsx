@@ -37,7 +37,7 @@ export function Related({
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="group flex items-start justify-between gap-6 rounded-xl bg-current/5 p-6 transition-colors duration-200 hover:bg-current/10 md:p-7"
+                  className="press group flex items-start justify-between gap-6 rounded-xl bg-current/5 p-6 transition-[background-color,transform] duration-200 [--press-scale:0.985] hover:bg-current/10 md:p-7"
                 >
                   <span>
                     <span className="block font-display text-[length:var(--text-subtitle)] font-bold tracking-tight transition-colors duration-200 group-hover:text-accent">

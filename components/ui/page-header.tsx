@@ -28,8 +28,12 @@ export function PageHeader({
   crumb: string;
   aside?: React.ReactNode;
 }) {
+  /* Kopf- und Fußabstand hängen an der Bildhöhe, nicht an der Breite – dieselbe
+     Rechnung wie im Hero der Startseite, wo sie ausführlich steht. Hier war es
+     noch deutlicher: 128 px oben plus 80 px unten sind im Querformat eines
+     Telefons 53 % der Bildhöhe für zwei Ränder. */
   return (
-    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-32 pb-20 md:pt-40 md:pb-24 text-silver on-dark">
+    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(6rem,3.5rem+9vh,10rem)] pb-[clamp(3.5rem,2rem+5vh,6rem)] text-silver on-dark">
       {/* Derselbe bewegte Grund wie im Hero der Startseite, nicht ein zweiter.
           Vorher lag hier ein statischer radialer Neonfleck – zwei Verfahren
           für dieselbe Aufgabe, und der Unterschied fiel beim Wechsel von der

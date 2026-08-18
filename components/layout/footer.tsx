@@ -29,7 +29,17 @@ export function Footer() {
                 Versalhöhe fielen. Hier ist der Platz da, also gibt es keinen
                 Grund für den Kompromiss. */}
             <LogoLockup className="h-20 w-auto text-silver" />
-            <p className="mt-4 text-[0.5rem] leading-none font-semibold tracking-[0.24em] uppercase opacity-55">
+            {/* 11 px, nicht 8. Gemessen war die Zeile die kleinste Schrift der ganzen
+                Seite – acht Pixel mit 0,24 em Sperrung in Versalien, bei 55 %
+                Deckkraft auf Tinte. Das ist keine Auszeichnung mehr, sondern
+                ein Muster: Man erkennt, dass dort etwas steht, und liest es
+                nicht. Auf einem Telefon mit 320 px trifft es zusätzlich die
+                Gruppe, für die der Firmenzusatz überhaupt dasteht.
+
+                Mit dem Grad geht die Sperrung zurück (0,2 em) und die
+                Deckkraft hoch (70 %): Ein größerer Grad trägt weniger
+                Sperrung, sonst zerfällt das Wort in Buchstaben. */}
+            <p className="mt-4 text-[0.6875rem] leading-none font-semibold tracking-[0.2em] uppercase opacity-70">
               Gebrauchtwarenhandel
             </p>
             <p className="mt-6 max-w-sm leading-relaxed text-current/60">
@@ -43,21 +53,21 @@ export function Footer() {
                 href={site.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-start gap-3 py-1.5 text-current/80 transition-colors hover:text-accent"
+                className="press inline-flex min-h-11 items-start gap-3 py-1.5 text-current/80 transition-[color,transform] hover:text-accent"
               >
                 <MapPin className="mt-1 size-4 shrink-0" aria-hidden="true" />
                 {fullAddress}
               </a>
               <a
                 href={site.phone.href}
-                className="inline-flex min-h-11 items-center gap-3 py-1.5 text-current/80 transition-colors hover:text-accent"
+                className="press inline-flex min-h-11 items-center gap-3 py-1.5 text-current/80 transition-[color,transform] hover:text-accent"
               >
                 <Phone className="size-4 shrink-0" aria-hidden="true" />
                 <span className="tabular">{site.phone.display}</span>
               </a>
               <a
                 href={`mailto:${site.email}`}
-                className="inline-flex min-h-11 items-center gap-3 py-1.5 break-all text-current/80 transition-colors hover:text-accent"
+                className="press inline-flex min-h-11 items-center gap-3 py-1.5 break-all text-current/80 transition-[color,transform] hover:text-accent"
               >
                 <Mail className="size-4 shrink-0" aria-hidden="true" />
                 {site.email}
@@ -79,7 +89,7 @@ export function Footer() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="-mx-2 inline-flex min-h-11 items-center px-2 text-current/70 transition-colors hover:text-accent"
+                      className="press -mx-2 inline-flex min-h-11 items-center px-2 text-current/70 transition-[color,transform] hover:text-accent"
                     >
                       {item.label}
                     </Link>
@@ -123,7 +133,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="-mx-2 inline-flex min-h-11 items-center px-2 text-xs text-current/70 transition-colors hover:text-accent"
+                    className="press -mx-2 inline-flex min-h-11 items-center px-2 text-xs text-current/70 transition-[color,transform] hover:text-accent"
                   >
                     {item.label}
                   </Link>

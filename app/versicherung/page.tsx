@@ -58,17 +58,27 @@ export default function InsurancePage() {
             lead="Der Beitrag hängt vom Versicherungszeitraum ab: Wer mitten in der Saison einsteigt, zahlt für weniger Monate. Die Werte sind Startpreise der günstigsten Risikoklasse."
           />
 
-          {/* Fokussierbare Scroll-Region: Die Tabelle ist auf schmalen Screens
-              breiter als der Viewport, und ohne tabIndex kommt man per Tastatur
-              nicht an die rechten Spalten (WCAG 2.1.1). */}
+          {/* Die Tabelle passt jetzt auch auf ein 320-px-Telefon.
+              Vorher stand hier `min-w-[36rem]`, also 576 px erzwungene Breite in
+              einer 272 px breiten Spalte: Zwei Drittel der Preise lagen
+              ausserhalb des Bildes, und man musste in einer Tabelle waagerecht
+              wischen, um die zweite Zahl zu sehen. Gemessen braucht die Tabelle
+              ohne Mindestbreite 235 px – die Zeitspanne bricht auf zwei Zeilen,
+              und beide Preisspalten stehen daneben.
+
+              `.scroll-x` bleibt als Netz für die Zwischenbreiten und für
+              größere Schriftgrade; die Klasse hält zusätzlich das Weiterziehen
+              in der Tabelle davon ab, die Seite zurückzublättern. `tabIndex`
+              bleibt ebenfalls: Solange die Fläche überhaupt rollen kann, muss
+              sie per Tastatur erreichbar sein (WCAG 2.1.1). */}
           <Reveal
             delay={60}
-            className="mt-14 overflow-x-auto"
+            className="scroll-x mt-14"
             role="region"
             aria-label="ERGO Tarife für die Saison 2026/2027"
             tabIndex={0}
           >
-            <table className="w-full min-w-[36rem] border-collapse text-left">
+            <table className="w-full border-collapse text-left">
               <caption className="sr-only">
                 ERGO Tarife für E-Scooter, Saison 2026/2027, nach
                 Versicherungszeitraum
@@ -77,19 +87,19 @@ export default function InsurancePage() {
                 <tr className="border-b border-current/20">
                   <th
                     scope="col"
-                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-current/70 uppercase"
+                    className="py-4 pr-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
                   >
                     Zeitraum
                   </th>
                   <th
                     scope="col"
-                    className="py-4 pr-6 font-display text-xs font-semibold tracking-[0.14em] text-current/70 uppercase"
+                    className="py-4 pr-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
                   >
                     Haftpflicht
                   </th>
                   <th
                     scope="col"
-                    className="py-4 font-display text-xs font-semibold tracking-[0.14em] text-current/70 uppercase"
+                    className="py-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em]"
                   >
                     Teilkasko inkl. Diebstahl
                   </th>
@@ -100,14 +110,14 @@ export default function InsurancePage() {
                   <tr key={row.period} className="border-b border-current/10">
                     <th
                       scope="row"
-                      className="tabular py-5 pr-6 font-sans font-normal text-current/75"
+                      className="tabular py-5 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
                     >
                       {row.period}
                     </th>
-                    <td className="tabular py-5 pr-6 font-display text-lg font-bold tracking-tight text-ink">
+                    <td className="tabular py-5 pr-4 font-display text-base font-bold tracking-tight text-ink sm:pr-6 sm:text-lg">
                       {row.liability}
                     </td>
-                    <td className="tabular py-5 font-display text-lg font-bold tracking-tight">
+                    <td className="tabular py-5 font-display text-base font-bold tracking-tight sm:text-lg">
                       {row.comprehensive}
                     </td>
                   </tr>

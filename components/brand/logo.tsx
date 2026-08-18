@@ -162,7 +162,7 @@ export function Logo({
       <span className="inline-flex flex-col gap-1">
         <Wordmark className="h-[1.05rem] w-auto md:h-[1.2rem]" />
         {showSub ? (
-          <span className="text-[0.5rem] leading-none font-semibold tracking-[0.24em] uppercase opacity-55">
+          <span className="text-[0.6875rem] leading-none font-semibold tracking-[0.2em] uppercase opacity-70">
             Gebrauchtwarenhandel
           </span>
         ) : null}
