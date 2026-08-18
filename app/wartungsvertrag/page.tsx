@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Check, X } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -16,9 +17,9 @@ import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
-  title: "E-Scooter Wartungsvertrag ab 17,99 € im Monat",
+  title: "E-Scooter Wartungsvertrag ab 17,99 € im Monat",
   description:
-    "Wartungsvertrag für E-Scooter: Basis 130 € im Jahr, Premium 17,99 € im Monat mit Akku-Deep-Check, Express-Reparatur und Hol- und Bringservice bis 15 km.",
+    "Wartungsvertrag für E-Scooter: Basis 130 € im Jahr, Premium 17,99 € im Monat mit Akku-Deep-Check, Express-Reparatur und Hol- und Bringservice bis 15 km.",
   path: "/wartungsvertrag",
   image: "/img/werkstatt-service.jpg",
   imageAlt: "Wartung an einem E-Scooter in der Werkstatt Neuenstadt am Kocher",
@@ -39,31 +40,80 @@ export default function PlansPage() {
       />
 
       {/* Die Entscheidungshilfe zuerst – und zwar die ehrliche: Premium
-          amortisiert sich rechnerisch nicht, es kauft Reaktionszeit. */}
+          amortisiert sich rechnerisch nicht, es kauft Reaktionszeit.
+
+          Das stand hier als ein Absatz über neun Zeilen, und darin lagen vier
+          Preise, vier Zusatzleistungen und zwei Empfehlungen. Wer die Seite
+          überfliegt – und das tut hier jeder, die Tarifkarten kommen direkt
+          darunter –, liest davon den ersten Halbsatz. Jetzt trägt jede der
+          drei Aussagen ihre eigene Form: der Kernsatz als Lead, die vier
+          Zusatzleistungen als Liste, die Empfehlung als abgesetzter Block.
+          Kein Wort und keine Zahl ist dabei weggefallen. */}
       <Section tone="silver-200" className="py-14 md:py-16">
         <Container>
-          {/* Einspaltig: eine 5/7-Teilung mit zwei Zeilen links erzeugt nur Leerraum */}
-          <Reveal className="max-w-3xl">
+          <Reveal className="max-w-4xl">
             <p className="eyebrow text-current/90">Entscheidungshilfe</p>
             <h2 className="mt-4 text-[length:var(--text-title)]">
-              Wofür Sie bei Premium bezahlen
+              Wofür Sie bei <Mark>Premium</Mark> bezahlen
             </h2>
-            <div className="mt-5">
-              <p className="text-[length:var(--text-lead)] leading-relaxed text-current/70">
-                Nicht für die Stückzahl, sondern für die Ausfallzeit. Der
-                jährliche Sicherheits-Checkup kostet einzeln{" "}
-                <strong className="font-semibold text-ink">59,99 €</strong> und
-                ist in beiden Verträgen enthalten. Premium für{" "}
-                <strong className="font-semibold text-ink">
-                  17,99 € im Monat
-                </strong>{" "}
-                ergänzt Akku-Deep-Check, 20 % Ersatzteil-Rabatt, Vorrang bei der
-                Terminvergabe mit Express-Reparatur innerhalb von 24 Stunden und
-                den Hol- und Bringservice im Umkreis von 15 km. Wer den Scooter
-                täglich für den Arbeitsweg braucht, zahlt damit für Planbarkeit.
-                Wer gelegentlich fährt, fährt mit Basis für 130 € im Jahr
-                günstiger.
-              </p>
+
+            <p className="mt-5 max-w-2xl text-[length:var(--text-lead)] leading-relaxed">
+              Nicht für die Stückzahl, sondern für die Ausfallzeit.
+            </p>
+
+            <p className="mt-4 max-w-2xl leading-relaxed text-current/70">
+              Der jährliche Sicherheits-Checkup kostet einzeln 59,99&nbsp;€ und
+              ist in beiden Verträgen enthalten. Premium für 17,99&nbsp;€ im
+              Monat ergänzt vier Dinge:
+            </p>
+
+            <ul className="mt-6 grid max-w-3xl gap-x-10 gap-y-4 sm:grid-cols-2">
+              {[
+                "Akku-Deep-Check",
+                "20\u00a0% Rabatt auf Ersatzteile",
+                "Express-Reparatur innerhalb von 24 Stunden",
+                "Hol- und Bringservice im Umkreis von 15\u00a0km",
+              ].map((entry) => (
+                <li key={entry} className="flex items-start gap-3">
+                  <Check
+                    aria-hidden="true"
+                    className="mt-1 size-4 shrink-0 text-ink"
+                    strokeWidth={2.5}
+                  />
+                  <span className="leading-relaxed">{entry}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* Die Empfehlung steht auf eigener Fläche, weil sie die einzige
+                Stelle ist, an der wir von einem der beiden Verträge abraten.
+                Im Fließtext war das der letzte Nebensatz. */}
+            <div className="lift mt-8 max-w-3xl rounded-xl bg-silver p-6 md:p-7">
+              <dl className="grid gap-6 sm:grid-cols-2 sm:gap-10">
+                <div>
+                  <dt className="eyebrow-plain text-current/60">
+                    Täglich zur Arbeit
+                  </dt>
+                  <dd className="mt-2 leading-relaxed">
+                    <strong className="font-display font-bold tracking-tight">
+                      Premium, 17,99&nbsp;€ im Monat.
+                    </strong>{" "}
+                    Sie zahlen für Planbarkeit, nicht für die Stückzahl der
+                    Termine.
+                  </dd>
+                </div>
+                <div>
+                  <dt className="eyebrow-plain text-current/60">
+                    Gelegentlich unterwegs
+                  </dt>
+                  <dd className="mt-2 leading-relaxed">
+                    <strong className="font-display font-bold tracking-tight">
+                      Basis, 130&nbsp;€ im Jahr.
+                    </strong>{" "}
+                    Günstiger, und der Sicherheits-Checkup ist auch hier drin.
+                  </dd>
+                </div>
+              </dl>
             </div>
           </Reveal>
         </Container>
@@ -74,13 +124,50 @@ export default function PlansPage() {
       {/* Ausschlüsse – Ehrlichkeit ist hier das Verkaufsargument */}
       <Section tone="silver" className="py-16 md:py-20">
         <Container>
+          {/* Vorher: eine Etikettenzeile in vier Spalten links, ein blasser
+              Absatz in acht Spalten rechts – dazwischen eine halbe
+              Bildschirmbreite Leere, und die vier Ausschlüsse als Komma-Kette
+              mitten im Satz. Das ist der Block, auf den wir uns im Streitfall
+              berufen; er darf nicht der unauffälligste der Seite sein.
+
+              Jetzt eine echte Überschrift, die Ausschlüsse als Reihe mit
+              eigenem Zeichen und der Ersatzteil-Hinweis abgesetzt darunter.
+              Der Wortlaut ist unverändert, nur zerlegt (`planExclusions` in
+              `lib/data/plans.ts`). */}
           <Reveal className="grid gap-8 border-t border-current/12 pt-10 lg:grid-cols-12 lg:gap-16">
-            <h2 className="eyebrow-plain text-current/90 lg:col-span-4">
-              Was nicht abgedeckt ist
-            </h2>
-            <p className="leading-relaxed text-current/65 lg:col-span-8">
-              {planExclusions}
-            </p>
+            <div className="lg:col-span-4">
+              <p className="eyebrow text-current/90">Grenzen</p>
+              <h2 className="mt-4 text-[length:var(--text-title)]">
+                Was nicht abgedeckt ist
+              </h2>
+            </div>
+
+            <div className="lg:col-span-8">
+              <p className="text-[length:var(--text-lead)] leading-relaxed">
+                {planExclusions.scope}
+              </p>
+              <p className="mt-5 leading-relaxed text-current/70">
+                {planExclusions.intro}
+              </p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {planExclusions.items.map((entry) => (
+                  <li
+                    key={entry}
+                    className="flex items-center gap-2 rounded-full bg-current/6 px-4 py-2 text-sm font-semibold"
+                  >
+                    <X
+                      aria-hidden="true"
+                      className="size-3.5 shrink-0"
+                      strokeWidth={3}
+                    />
+                    {entry}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 leading-relaxed text-current/70">
+                {planExclusions.note}
+              </p>
+            </div>
           </Reveal>
         </Container>
       </Section>
@@ -107,7 +194,7 @@ export default function PlansPage() {
               <Reveal>
                 <p className="eyebrow text-current/90">Vertrag anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Welcher passt, klären wir vorher.
+                  Welcher passt, klären wir <Mark>vorher</Mark>.
                 </h2>
                 <p className="mt-6 leading-relaxed text-current/65">
                   Schreiben Sie uns, wie oft Sie fahren und welches Gerät Sie

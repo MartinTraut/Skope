@@ -21,7 +21,7 @@ import { Mark } from "@/components/ui/mark";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Werkstatt Neuenstadt am Kocher",
   description:
-    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Checkup 59,99 €, Wartung ab 17,99 €, geprüfte Gebrauchtgeräte. Fachwerkstatt in Neuenstadt am Kocher.",
+    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Checkup 59,99 €, Wartung ab 17,99 €, geprüfte Gebrauchtgeräte. Fachwerkstatt in Neuenstadt am Kocher.",
   path: "/",
 });
 

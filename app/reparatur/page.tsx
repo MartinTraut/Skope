@@ -99,7 +99,7 @@ export default function RepairPage() {
               </dt>
               {/* Neon nur auf dem Geldbetrag – siehe Akzentregel in globals.css */}
               <dd className="tabular mt-2 font-display text-4xl font-bold tracking-tight text-accent">
-                59,99 €
+                59,99&nbsp;€
               </dd>
             </div>
           </dl>
@@ -203,7 +203,7 @@ export default function RepairPage() {
               <Reveal>
                 <p className="eyebrow text-current/90">So läuft es ab</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Vier Schritte, keine Überraschungen.
+                  <Mark>Vier</Mark> Schritte, keine Überraschungen.
                 </h2>
               </Reveal>
 
@@ -368,7 +368,7 @@ export default function RepairPage() {
               <Reveal>
                 <p className="eyebrow text-current/90">Reparatur anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Beschreiben Sie, was der Scooter macht.
+                  <Mark>Beschreiben</Mark> Sie, was der Scooter macht.
                 </h2>
                 <p className="mt-6 leading-relaxed text-current/65">
                   Wir melden uns schnellstmöglich mit einer ersten Einschätzung

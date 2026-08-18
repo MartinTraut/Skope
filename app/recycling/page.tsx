@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Recycle } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -103,11 +104,25 @@ export default function RecyclingPage() {
                   className="parallax object-cover"
                 />
               </div>
-              <div className="mt-8 rounded-lg border border-current/12 p-7">
-                <h3 className="font-display text-lg font-bold tracking-tight">
+              {/* Der Kasten hatte nur einen Rand bei 12 % Deckkraft und
+                  darin zwei Grautöne – auf der silbernen Fläche war das ein
+                  Umriss, kein Block. Dabei steht hier das eigentliche
+                  Argument der Seite: Die Rücknahme ist kostenlos, weil die
+                  Teile in der Werkstatt weiterlaufen. Jetzt trägt er eine
+                  eigene Fläche, das Zeichen dafür in Neon – auf Silber als
+                  Fläche mit Tinte darauf, nie als Schrift – und die
+                  Kernaussage in der Größe, in der sie gelesen wird. */}
+              <div className="lift mt-8 rounded-xl bg-silver-200 p-7 md:p-8">
+                <span
+                  aria-hidden="true"
+                  className="grid size-11 place-items-center rounded-full bg-neon text-ink"
+                >
+                  <Recycle className="size-5" strokeWidth={2} />
+                </span>
+                <h3 className="mt-5 text-[length:var(--text-subtitle)]">
                   Warum wir das machen
                 </h3>
-                <p className="mt-3 leading-relaxed text-current/65">
+                <p className="mt-3 leading-relaxed text-current/70">
                   Brauchbare Nabenmotoren, Bremsen und Elektronikbauteile werden
                   geprüft, eingelagert und in anderen Reparaturen wieder
                   verbaut. Das hält die Ersatzteilkosten für unsere Kunden
@@ -128,7 +143,7 @@ export default function RecyclingPage() {
               <Reveal>
                 <p className="eyebrow text-current/90">Altgerät anmelden</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Sagen Sie kurz, worum es geht.
+                  Sagen Sie <Mark>kurz</Mark>, worum es geht.
                 </h2>
                 <p className="mt-6 leading-relaxed text-current/70">
                   Marke, Modell und was defekt ist. Wir sagen Ihnen vorab, ob

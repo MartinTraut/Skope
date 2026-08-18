@@ -29,7 +29,7 @@ export const plans: Plan[] = [
     features: [
       "1× großer Jahres-Sicherheitscheck",
       "Komplette Funktionsprüfung (Bremsen, Lager, Elektronik)",
-      "10 % Rabatt auf alle Ersatzteile",
+      "10 % Rabatt auf alle Ersatzteile",
       "Bevorzugte Terminvergabe in der Werkstatt",
     ],
   },
@@ -40,7 +40,7 @@ export const plans: Plan[] = [
     priceValue: "17.99",
     period: "pro Monat",
     paymentType: "Monatlich",
-    yearlyTotal: "215,88 € im Jahr",
+    yearlyTotal: "215,88 € im Jahr",
     minDuration: "Mindestlaufzeit 12 Monate",
     claim: "Der Scooter fällt nicht aus.",
     description:
@@ -49,7 +49,7 @@ export const plans: Plan[] = [
       "Jährlicher Sicherheits-Check inklusive",
       "Akku-Deep-Check inklusive",
       "Vorrang bei der Terminvergabe für Reparaturen",
-      "20 % Rabatt auf alle Ersatzteile",
+      "20 % Rabatt auf alle Ersatzteile",
       "Express-Reparatur, bevorzugt innerhalb 24 h",
       "Hol- und Bringservice im Umkreis von 15 km",
     ],
@@ -58,5 +58,23 @@ export const plans: Plan[] = [
 ];
 
 /** Was ein Vertrag nicht abdeckt – steht so auf der Altseite. */
-export const planExclusions =
-  "Die Service-Verträge decken die reguläre Wartung ab. Schäden durch unsachgemäßen Umgang sind ausgeschlossen: Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle. Benötigte Ersatzteile berechnen wir separat und weisen sie einzeln auf der Rechnung aus.";
+/**
+ * Was die Verträge nicht abdecken.
+ *
+ * Aufgeteilt statt als ein Satz: Die vier Ausschlüsse standen als Aufzählung
+ * mitten in einem Fließtextabsatz, und genau sie sind der Grund, warum dieser
+ * Block überhaupt auf der Seite steht. Wer später mit einem Wasserschaden
+ * kommt, muss die Zeile vorher gelesen haben können – ein Nebensatz in
+ * 65 % Deckkraft trägt das nicht.
+ */
+export const planExclusions = {
+  scope: "Die Service-Verträge decken die reguläre Wartung ab.",
+  intro: "Schäden durch unsachgemäßen Umgang sind ausgeschlossen:",
+  items: [
+    "Tuning",
+    "Sprünge",
+    "Wasserschäden durch Hochdruckreiniger",
+    "Unfälle",
+  ],
+  note: "Benötigte Ersatzteile berechnen wir separat und weisen sie einzeln auf der Rechnung aus.",
+} as const;

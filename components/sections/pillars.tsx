@@ -26,7 +26,7 @@ const pillars = [
     kicker: "Reparieren",
     title: "Erst messen, dann tauschen",
     text: "Fehlercode auslesen, Restkapazität messen, Ursache finden. Wir ersetzen kein Bauteil, das noch funktioniert, und legen vor jeder Arbeit einen Kostenvoranschlag vor.",
-    meta: "Checkup 59,99 €",
+    meta: "Checkup 59,99 €",
   },
   {
     href: "/versicherung",

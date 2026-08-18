@@ -120,7 +120,7 @@ export default async function ScooterDetailPage({
           für eine Leistungsseite, falsch hier: Auf einer Geräteseite ist das
           Bild die Hauptsache und muss neben dem Preis stehen, nicht unter
           einer Einleitung. */}
-      <section className="relative border-b border-current/10 bg-ink pt-32 pb-16 text-silver on-dark md:pt-40 md:pb-20">
+      <section className="relative border-b border-current/10 bg-ink pt-28 pb-16 text-silver on-dark md:pt-32 md:pb-20">
         <Container>
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-1.5 text-sm text-current/60">
@@ -152,10 +152,19 @@ export default async function ScooterDetailPage({
             </ol>
           </nav>
 
-          {/* 6/6 statt 7/5. Die rechte Spalte trägt jetzt nicht mehr nur die
-              Entscheidung, sondern das vollständige Datenblatt – bei fünf von
-              zwölf Spalten stünden dort zwei Wörter pro Zeile. */}
-          <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-14">
+          {/* Die Bildspalte ist gedeckelt, nicht halbiert.
+              Gemessen bei 1512 × 830: Bei zwei gleichen Spalten war die
+              Galerie 680 px breit und im Hochformat 3:4 damit 907 px hoch –
+              die Vorschaureihe begann 325 px unterhalb der Falz. Wer auf ein
+              Gerät tippt, sieht dann ein einziges Bild und weiß nicht, dass
+              es sechs sind.
+
+              Statt die Bildform zu ändern (das verschiebt den Beschnitt jeder
+              Aufnahme) ist die Spalte auf 25 rem begrenzt: 400 px breit,
+              533 px hoch, Vorschaureihe bei 809 px – über der Falz, ohne dass
+              ein Bild anders angeschnitten wird. Der frei werdende Platz geht
+              an die rechte Spalte, wo das vollständige Datenblatt steht. */}
+          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,25rem)_minmax(0,50rem)] lg:gap-14">
             {/* Die Galerie hebt sich beim Seitenaufbau an ihren Platz: aus
                 einer Spur kleiner und leicht tiefer, in einem Zug. Das ist
                 die Bewegung, die den Sprung von der Karte trägt – dieselbe
@@ -173,7 +182,7 @@ export default async function ScooterDetailPage({
                 thumbnails
                 priority
                 ratio="portrait"
-                sizes="(max-width: 1024px) 92vw, 44vw"
+                sizes="(max-width: 1024px) 92vw, 400px"
               />
             </div>
 
@@ -192,7 +201,9 @@ export default async function ScooterDetailPage({
                 {item.price}
               </p>
 
-              <p className="mt-6 text-[length:var(--text-lead)] leading-relaxed text-current/75">
+              {/* Die Einordnung ist eine Lesestrecke, das Datenblatt darunter
+                  nicht – deshalb greift die Zeichenbegrenzung nur hier. */}
+              <p className="mt-6 max-w-[56ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
                 {item.summary}
               </p>
 

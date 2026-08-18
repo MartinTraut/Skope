@@ -157,20 +157,26 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
 - **Zwei Geräte ohne deutsche Betriebserlaubnis** (Ninebot F2 E, Xiaomi 5
   Max). Steht in `streetLegal`, in den Daten, im Hinweis und als Warnung auf
   der Karte. Das ist Absicht und darf nicht zusammengestrichen werden.
-- **`lib/site.ts` → `geo`** — die alten Koordinaten lagen einen Kilometer
-  daneben (Mühlweg statt Im Kampfrad). Jetzt die geokodierte Lage der Straße;
-  die Hausnummer 3 ist in OSM nicht erfasst. Exakten Punkt der Einfahrt
-  bestätigen lassen, dann `public/img/karte-neuenstadt.png` neu erzeugen.
+- **`lib/site.ts` → `geo`** — steht seit dem 18.08.2026 auf dem Punkt aus dem
+  Google-Unternehmensprofil (49,2373006 / 9,3436176), rund 35 m neben der
+  vorherigen Straßengeokodierung. `public/img/karte-neuenstadt.png` bleibt
+  gültig; auf dem Ausschnitt sind 35 m nicht sichtbar.
 - **Zweite Preisspalte im ERGO-Aushang** — der Werkstattaushang führt in fünf
   Zeilen einen zweiten Haftpflichtwert (ab 122, 186, 180, 115, 130 €). Wofür
   er gilt, ist ungeklärt; er steht deshalb nicht auf der Seite. Steht als TODO
   in `lib/data/insurance.ts`.
-- **Google-Bewertung** — „5,0" und „3 Rezensionen" stehen im Seitenkopf, im
-  Hero und als `AggregateRating` im Schema, sind aber aus drei übernommenen
-  Rezensionen abgeleitet und nicht vom Profil abgelesen; die Profil-URL ist in
-  `lib/site.ts` weiterhin ein TODO. Entweder abgleichen oder rausnehmen.
-- **Öffnungszeiten** in `lib/site.ts` sind „nach Vereinbarung" — verbindliche
-  Zeiten fehlen.
+- **Google-Bewertung — abgeglichen am 18.08.2026.** Im Profil stehen 5,0 aus
+  **37** Rezensionen; hier stand 3, weil die Zahl aus der Länge unserer
+  eigenen Zitatliste kam statt aus dem Profil. `googleRating` in
+  `lib/site.ts` trägt jetzt beide Werte, `site.googleProfile` die Profil-URL
+  (auch in `sameAs`), und die Kundenstimmen-Sektion verweist sichtbar darauf.
+  Kein `AggregateRating` im Schema: Eine Bewertung über die eigene
+  Organisation wertet Google als self-serving. Vor jedem Deploy abgleichen —
+  die Zahl wächst.
+- **Öffnungszeiten** — das Google-Profil führt inzwischen echte Zeiten
+  („Öffnet Mi um 10:00"). `lib/site.ts` sagt weiterhin „nach Vereinbarung".
+  Die vollständige Woche aus dem Profil übernehmen, dann kann auch
+  `openingHours` ins Schema.
 - **Alt-Texte** der zwölf importierten Geräte sind positionsbeschreibend
   („Aufnahme 3 von 6"). Nur beim Zamelux Green E9 sind sie geschrieben, nachdem
   jemand die Fotos angesehen hat.

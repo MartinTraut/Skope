@@ -38,7 +38,7 @@ const leadReview = testimonials.reduce((shortest, item) =>
  */
 const stats = [
   { value: `${proof.repairs}+`, label: "reparierte E-Scooter" },
-  { value: "59,99 €", label: "kompletter Sicherheits-Checkup" },
+  { value: "59,99 €", label: "kompletter Sicherheits-Checkup" },
   { value: `${proof.warrantyYears} Jahr`, label: "Gewährleistung gebraucht" },
   // „bis 25 km" statt der früheren Spanne: Ausgeschrieben („8 bis 25 km")
   // bricht der Wert auf 390 px in zwei Zeilen um und schiebt seine Bildunter-

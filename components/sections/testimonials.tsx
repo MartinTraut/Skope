@@ -1,9 +1,12 @@
+import { ArrowUpRight } from "lucide-react";
+
 import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
 import { Marquee } from "@/components/ui/marquee";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials, type Testimonial } from "@/lib/data/testimonials";
+import { googleRating, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
 /**
@@ -98,6 +101,26 @@ export function Testimonials() {
           }
           lead="Rezensionen aus dem Google-Profil der Werkstatt, unverändert im Wortlaut übernommen."
         />
+
+        {/* Der Verweis auf das Profil steht hier, weil die Note und die Zahl
+            der Rezensionen sonst nur eine Behauptung dieser Seite wären. Drei
+            Stimmen stehen im Band, 37 stehen bei Google – der Link ist der
+            Unterschied zwischen „wir sagen" und „sehen Sie selbst". */}
+        <Reveal delay={180}>
+          <a
+            href={site.googleProfile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="press group -mx-2 inline-flex min-h-11 items-center gap-2.5 rounded-md px-2 text-sm font-semibold transition-[color,background-color,transform] duration-200 hover:bg-current/6"
+          >
+            <GoogleMark className="size-4 shrink-0" />
+            Alle {googleRating.count} Rezensionen im Google-Profil
+            <ArrowUpRight
+              aria-hidden="true"
+              className="size-4 shrink-0 text-current/50 transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
+            />
+          </a>
+        </Reveal>
       </Container>
 
       {/* Volle Fensterbreite, außerhalb des Satzspiegels: Ein Band, das am

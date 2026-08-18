@@ -4,6 +4,7 @@ import { Recycle } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/section";
+import { Mark } from "@/components/ui/mark";
 
 const parts = [
   { part: "Nabenmotoren", use: "geprüft und als Ersatzteil wiederverwendet" },
@@ -27,7 +28,7 @@ export function RecyclingTeaser() {
           <div>
             <p className="eyebrow text-current/90">Kreislauf statt Sperrmüll</p>
             <h2 className="mt-5 max-w-[18ch] text-[length:var(--text-display)]">
-              Ihr alter Scooter ist unser Ersatzteillager.
+              Ihr alter Scooter ist unser <Mark>Ersatzteillager</Mark>.
             </h2>
           </div>
           <div className="lg:max-w-sm lg:shrink-0">

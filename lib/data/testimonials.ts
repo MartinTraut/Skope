@@ -3,17 +3,19 @@
  * Rezensionen aus dem Google-Unternehmensprofil.
  *
  * Bewusst ohne Sterne und ohne AggregateRating-Schema: Zu diesen drei
- * Rezensionen liegt weder die einzelne Sternzahl noch eine belegbare
- * Gesamtnote vor. Sterne, die niemand vergeben hat, sind auf einer Seite mit
+ * Rezensionen liegt die einzelne Sternzahl nicht vor, und eine Bewertung,
+ * die ein Betrieb über sich selbst auszeichnet, wertet Google ohnehin als
+ * self-serving. Sterne, die niemand vergeben hat, sind auf einer Seite mit
  * Review-Auszeichnung kein Schönheitsfehler, sondern ein Verstoß gegen die
  * Richtlinien für strukturierte Daten – und der kostet die Auszeichnung für
  * die ganze Domain, nicht nur für diesen Block.
  *
  * TODO Betreiber: Das sind die drei Rezensionen, die auf der Altseite standen.
- * Für den vollständigen Satz fehlt die URL des Google-Unternehmensprofils
- * (siehe `lib/site.ts`). Mit ihr kommen die restlichen Rezensionen hierher,
- * die Quellenangabe unter jeder Karte wird zum Link, und – sobald die
- * Sternzahl je Rezension vorliegt – kann die Bewertung ausgewiesen werden.
+ * Im Profil stehen 37 (Stand 18.08.2026, siehe `googleRating` in
+ * `lib/site.ts`). Der Auszug ist deshalb nicht falsch, aber dünn: Wer die
+ * restlichen Stimmen hierher holt, sollte die aussagekräftigsten nehmen und
+ * jeweils Wortlaut, Name und Anlass übernehmen. Sobald die Sternzahl je
+ * Rezension mitkommt, kann auch die Bewertung je Karte ausgewiesen werden.
  */
 
 export type Testimonial = {

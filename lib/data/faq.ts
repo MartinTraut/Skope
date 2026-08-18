@@ -14,7 +14,7 @@ export const faqRepair: FaqItem[] = [
   },
   {
     q: "Was kostet eine E-Scooter Reparatur bei euch ungefähr?",
-    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag. Es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
+    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag. Es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
   },
   {
     q: "Wie lange dauert es, bis ich meinen E-Scooter wieder abholen kann?",
@@ -33,11 +33,11 @@ export const faqRepair: FaqItem[] = [
 export const faqPlans: FaqItem[] = [
   {
     q: "Lohnt sich ein E-Scooter Wartungsvertrag für mich wirklich?",
-    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur innerhalb von 24 Stunden. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
+    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur innerhalb von 24 Stunden. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
   },
   {
     q: "Welcher Wartungsvertrag passt zu mir, Basis oder Premium?",
-    a: "Basis für Gelegenheitsfahrer, Premium für Pendler. Der Basis-Vertrag (130 € pro Jahr) bringt einmal jährlich den großen Sicherheitscheck mit kompletter Funktionsprüfung und 10 % Ersatzteil-Rabatt. Premium (17,99 € pro Monat, 215,88 € im Jahr, Mindestlaufzeit 12 Monate) ist auf Leute zugeschnitten, die den Scooter aus Heilbronn oder Neckarsulm täglich zur Arbeit nutzen: Akku-Deep-Check, 20 % Rabatt, Express-Reparatur innerhalb von 24 Stunden und Hol- und Bringservice im Umkreis von 15 km.",
+    a: "Basis für Gelegenheitsfahrer, Premium für Pendler. Der Basis-Vertrag (130 € pro Jahr) bringt einmal jährlich den großen Sicherheitscheck mit kompletter Funktionsprüfung und 10 % Ersatzteil-Rabatt. Premium (17,99 € pro Monat, 215,88 € im Jahr, Mindestlaufzeit 12 Monate) ist auf Leute zugeschnitten, die den Scooter aus Heilbronn oder Neckarsulm täglich zur Arbeit nutzen: Akku-Deep-Check, 20 % Rabatt, Express-Reparatur innerhalb von 24 Stunden und Hol- und Bringservice im Umkreis von 15 km.",
   },
   {
     q: "Wo findet die Wartung statt, und holt ihr den Scooter auch ab?",
@@ -45,7 +45,7 @@ export const faqPlans: FaqItem[] = [
   },
   {
     q: "Sind Ersatzteile im Wartungsvertrag enthalten?",
-    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir separat und weisen sie einzeln auf der Rechnung aus, mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
+    a: "Nein, die Verträge decken die Arbeitszeit für die Wartung ab. Benötigte Ersatzteile wie Reifen oder Bremsbeläge berechnen wir separat und weisen sie einzeln auf der Rechnung aus, mit 10 % Rabatt im Basis- und 20 % im Premium-Vertrag, und ohne Umsatzsteuer gemäß § 19 UStG. Ebenfalls nicht abgedeckt sind Schäden durch unsachgemäßen Umgang, etwa Tuning, Sprünge, Wasserschäden durch Hochdruckreiniger oder Unfälle.",
   },
 ];
 
@@ -56,7 +56,7 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Was kostet eine E-Scooter Versicherung über euch als ERGO-Partner?",
-    a: "Die Haftpflicht startet je nach Saison und Risikoklasse ab 42 € für ein volles Versicherungsjahr, Teilkasko mit Diebstahlschutz ab 49 €. Kürzere Zeiträume sind entsprechend günstiger. Der genaue Beitrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO auf Basis Ihrer Angaben ermittelt. Es ist kein Abo: Sie zahlen einmal und fahren die ganze Saison abgesichert.",
+    a: "Die Haftpflicht startet je nach Saison und Risikoklasse ab 42 € für ein volles Versicherungsjahr, Teilkasko mit Diebstahlschutz ab 49 €. Kürzere Zeiträume sind entsprechend günstiger. Der genaue Beitrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO auf Basis Ihrer Angaben ermittelt. Es ist kein Abo: Sie zahlen einmal und fahren die ganze Saison abgesichert.",
   },
   {
     q: "Wie lange dauert es, bis ich mein Versicherungskennzeichen bekomme?",
@@ -87,7 +87,7 @@ export const faqBuy: FaqItem[] = [
   },
   {
     q: "Welche gebrauchten E-Scooter habt ihr gerade da, und was kosten sie?",
-    a: "Aktuell stehen dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € in Neuenstadt am Kocher. Vertreten sind Xiaomi (4, 4 Lite, 5 Max), Segway-Ninebot (F2 E, F2 Pro, E3 Pro), NIU (KQi1 Pro, KQi 100F), Sharp EM-KS1DE, Odys Pax, Zamelux Green E9 und der Audi Egret Pro. Jedes Gerät ist ein Einzelstück mit eigenen Fotos, eigenen Messwerten und einem Jahr Gewährleistung. Der Bestand wechselt laufend: Was auf der Seite steht, war beim letzten Abgleich da, ist aber nicht reserviert, bis Sie anfragen.",
+    a: "Aktuell stehen dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € in Neuenstadt am Kocher. Vertreten sind Xiaomi (4, 4 Lite, 5 Max), Segway-Ninebot (F2 E, F2 Pro, E3 Pro), NIU (KQi1 Pro, KQi 100F), Sharp EM-KS1DE, Odys Pax, Zamelux Green E9 und der Audi Egret Pro. Jedes Gerät ist ein Einzelstück mit eigenen Fotos, eigenen Messwerten und einem Jahr Gewährleistung. Der Bestand wechselt laufend: Was auf der Seite steht, war beim letzten Abgleich da, ist aber nicht reserviert, bis Sie anfragen.",
   },
   {
     q: "Sind eure gebrauchten E-Scooter für die Straße in Deutschland zugelassen?",

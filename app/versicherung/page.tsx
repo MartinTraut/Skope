@@ -24,7 +24,7 @@ import { Mark } from "@/components/ui/mark";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Versicherung ERGO: Tarife 2026/2027",
   description:
-    "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO. Plakette in Neuenstadt am Kocher direkt mitnehmen, online deutschlandweit in 5 bis 10 Werktagen per Post.",
+    "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO. Plakette in Neuenstadt am Kocher direkt mitnehmen, online deutschlandweit in 5 bis 10 Werktagen per Post.",
   path: "/versicherung",
   image: "/img/ergo-tarife.jpg",
   imageAlt:
@@ -308,7 +308,7 @@ export default function InsurancePage() {
               <Reveal>
                 <p className="eyebrow text-current/90">Versicherung anfragen</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Antrag anstoßen.
+                  <Mark>Antrag</Mark> anstoßen.
                 </h2>
                 <p className="mt-6 leading-relaxed text-current/65">
                   Schreiben Sie uns Marke, Modell und den gewünschten

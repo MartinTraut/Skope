@@ -105,7 +105,7 @@ export default function AboutPage() {
                   Wie hier gearbeitet wird
                 </p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Vier Grundsätze, an denen sich alles misst.
+                  <Mark>Vier</Mark> Grundsätze, an denen sich alles misst.
                 </h2>
               </Reveal>
 

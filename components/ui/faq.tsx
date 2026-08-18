@@ -92,11 +92,18 @@ export function Faq({
                 <Plus className="size-4" />
               </span>
             </summary>
-            {/* Keine eigene Breite mehr: Die Lesebreite steht als Grundregel im
-                  Stylesheet. 68ch wirken wie 82 Zeichen – `1ch` ist die Breite
-                  der Null und liegt rund 20 % über der mittleren
-                  Kleinbuchstabenbreite. */}
-            <p className="pb-7 leading-relaxed opacity-70">{item.a}</p>
+            {/* Die Spalte ist das Maß, nicht die 68ch-Grundregel aus dem
+                Stylesheet. Gemessen bei 1512 px: Die Antwort lief auf 622 px
+                aus, die Frage darüber auf 799 – also endete jede Antwort
+                177 px vor dem Pluszeichen, das zu ihr gehört. Zwei
+                verschiedene Satzkanten in einem Block lesen sich als Fehler,
+                und der Text wirkt in die linke Hälfte gedrängt. Die
+                Sieben-Spalten-Spalte hält die Zeile ohnehin bei rund 86
+                Zeichen; darüber hinaus wächst sie nicht, weil die Spalte
+                selbst nicht wächst. */}
+            <p className="max-w-none pb-7 leading-relaxed opacity-70">
+              {item.a}
+            </p>
           </details>
         </Reveal>
       ))}

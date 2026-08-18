@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/section";
+import { Mark } from "@/components/ui/mark";
 import { tariffDisclaimer, tariffs } from "@/lib/data/insurance";
 
 /**
@@ -29,7 +30,7 @@ export function InsuranceTeaser() {
               Pflichtversicherung · ERGO
             </p>
             <h2 className="mt-5 text-[length:var(--text-display)]">
-              Ohne Kennzeichen kein Straßenverkehr.
+              Ohne <Mark>Kennzeichen</Mark> kein Straßenverkehr.
             </h2>
             <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/70">
               Für jeden E-Scooter mit mehr als 6 km/h Höchstgeschwindigkeit ist

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
+import { Mark } from "@/components/ui/mark";
 import { JsonLd, pageGraph } from "@/lib/schema";
 import { nav } from "@/lib/site";
 
@@ -16,7 +17,7 @@ export default function NotFound() {
       <Container className="relative">
         <p className="eyebrow text-current/90">Fehler 404</p>
         <h1 className="mt-6 max-w-2xl text-[length:var(--text-display)]">
-          Diese Seite gibt es nicht mehr.
+          Diese Seite gibt es <Mark>nicht</Mark> mehr.
         </h1>
         <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
           Vielleicht hat sich die Adresse geändert. Diese Wege führen weiter,

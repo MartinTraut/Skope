@@ -187,7 +187,7 @@ export default function ContactPage() {
             >
               <Reveal delay={80}>
                 <h2 className="text-[length:var(--text-title)]">
-                  Anfrage schreiben
+                  <Mark>Anfrage</Mark> schreiben
                 </h2>
                 <p className="mt-4 max-w-xl leading-relaxed text-current/65">
                   Je konkreter Sie das Problem beschreiben, desto genauer die

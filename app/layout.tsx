@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     template: "%s | SKOPE",
   },
   description:
-    "E-Scooter Fachwerkstatt in Neuenstadt am Kocher für Heilbronn und Neckarsulm: Reparatur aller Marken, Checkup 59,99 €, geprüfte Gebrauchtgeräte.",
+    "E-Scooter Fachwerkstatt in Neuenstadt am Kocher für Heilbronn und Neckarsulm: Reparatur aller Marken, Checkup 59,99 €, geprüfte Gebrauchtgeräte.",
   applicationName: site.name,
   authors: [{ name: site.owner }],
   creator: site.legalName,

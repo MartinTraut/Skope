@@ -6,7 +6,7 @@
  * TODO Betreiber: jährlich mit dem aktuellen ERGO-Aushang abgleichen.
  *
  * TODO Betreiber: Der Aushang führt in fünf Zeilen einen zweiten
- * Haftpflichtwert (ab 122 €, 186 €, 180 €, 115 €, 130 €). Wofür er gilt –
+ * Haftpflichtwert (ab 122 €, 186 €, 180 €, 115 €, 130 €). Wofür er gilt –
  * andere Fahrzeugklasse, höhere Risikoklasse – ist ungeklärt und steht
  * deshalb nicht auf der Seite. Ein Preis, dessen Bedeutung wir nicht
  * benennen können, ist keine Preisangabe, sondern eine Falle.
@@ -27,34 +27,34 @@ export type Tariff = {
 export const tariffs: Tariff[] = [
   {
     period: "01.04.2026 bis 31.03.2027",
-    liability: "ab 42 €",
-    comprehensive: "ab 69 €",
+    liability: "ab 42 €",
+    comprehensive: "ab 69 €",
     full: true,
   },
   {
     period: "01.05.2026 bis 31.05.2026",
-    liability: "ab 35 €",
-    comprehensive: "ab 69 €",
+    liability: "ab 35 €",
+    comprehensive: "ab 69 €",
   },
   {
     period: "01.07.2026 bis 30.09.2026",
-    liability: "ab 57 €",
-    comprehensive: "ab 70 €",
+    liability: "ab 57 €",
+    comprehensive: "ab 70 €",
   },
   {
     period: "01.10.2026 bis 31.12.2026",
-    liability: "ab 57 €",
-    comprehensive: "ab 59 €",
+    liability: "ab 57 €",
+    comprehensive: "ab 59 €",
   },
   {
     period: "01.01.2027 bis 31.01.2027",
-    liability: "ab 75 €",
-    comprehensive: "ab 49 €",
+    liability: "ab 75 €",
+    comprehensive: "ab 49 €",
   },
   {
     period: "01.02.2027 bis 28.02.2027",
-    liability: "ab 36 €",
-    comprehensive: "ab 69 €",
+    liability: "ab 36 €",
+    comprehensive: "ab 69 €",
   },
 ];
 

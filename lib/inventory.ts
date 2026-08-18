@@ -53,7 +53,7 @@ export const inventory: InventoryItem[] = [
     model: "Zamelux Green S.L. E9",
     summary:
       "Kompakter Klapproller für kurze Wege und den Weg zum Bahnhof, in neuwertigem Zustand und mit deutscher Straßenzulassung.",
-    price: "169,99 €",
+    price: "169,99 €",
     priceValue: "169.99",
     streetLegal: true,
     specs: [
@@ -102,7 +102,7 @@ export const inventory: InventoryItem[] = [
     model: "Zamelux E9",
     summary:
       "Kompakter Klapproller mit Vollgummireifen, neuwertig und mit ABE.",
-    price: "179,99 €",
+    price: "179,99 €",
     priceValue: "179.99",
     streetLegal: true,
     specs: [
@@ -146,7 +146,7 @@ export const inventory: InventoryItem[] = [
     model: "Sharp EM-KS1DE",
     summary:
       "Generalüberholter Pendlerroller in Weiß, mit pannensicheren Vollgummireifen und USB-Anschluss am Lenker.",
-    price: "199,99 €",
+    price: "199,99 €",
     priceValue: "199.99",
     streetLegal: true,
     specs: [
@@ -195,7 +195,7 @@ export const inventory: InventoryItem[] = [
     model: "NIU KQi1 Pro",
     summary:
       "Fabrikneu und original verpackt, mit deutscher Zulassung. Leicht, wendig und mit breitem Trittbrett.",
-    price: "199,99 €",
+    price: "199,99 €",
     priceValue: "199.99",
     streetLegal: true,
     specs: [
@@ -238,7 +238,7 @@ export const inventory: InventoryItem[] = [
     model: "NIU KQi 100F",
     summary:
       "Neuwertiger Roller der F-Serie mit klappbarem Lenker und Federung vorn.",
-    price: "199,99 €",
+    price: "199,99 €",
     priceValue: "199.99",
     streetLegal: true,
     specs: [
@@ -283,7 +283,7 @@ export const inventory: InventoryItem[] = [
     model: "Xiaomi Electric Scooter 4 Lite",
     summary:
       "Der schlanke Einstieg von Xiaomi, vollständig geprüft und gewartet, mit Straßenzulassung.",
-    price: "199,99 €",
+    price: "199,99 €",
     priceValue: "199.99",
     streetLegal: true,
     specs: [
@@ -332,7 +332,7 @@ export const inventory: InventoryItem[] = [
     model: "Odys Pax (2023)",
     summary:
       "Generalüberholtes Modelljahr 2023 mit ausgelesenem Akkutest und justiertem Doppelbremssystem.",
-    price: "209,99 €",
+    price: "209,99 €",
     priceValue: "209.99",
     streetLegal: true,
     specs: [
@@ -374,7 +374,7 @@ export const inventory: InventoryItem[] = [
     model: "Xiaomi Electric Scooter 4",
     summary:
       "Geprüfte Gebrauchtware im Top-Zustand, mit Straßenzulassung und 35 km Reichweite.",
-    price: "249,99 €",
+    price: "249,99 €",
     priceValue: "249.99",
     streetLegal: true,
     specs: [
@@ -420,7 +420,7 @@ export const inventory: InventoryItem[] = [
     model: "Segway-Ninebot F2 E",
     summary:
       "Internationale 25-km/h-Version mit Heckantrieb und Traktionskontrolle. Generalüberholt, minimale Gebrauchsspuren.",
-    price: "289,99 €",
+    price: "289,99 €",
     priceValue: "289.99",
     streetLegal: false,
     specs: [
@@ -469,7 +469,7 @@ export const inventory: InventoryItem[] = [
     model: "Segway Ninebot F2 Pro",
     summary:
       "Generalüberholt und meistergeprüft, mit Blinkern, Traktionskontrolle und 55 km Reichweite.",
-    price: "299,99 €",
+    price: "299,99 €",
     priceValue: "299.99",
     streetLegal: true,
     specs: [
@@ -518,7 +518,7 @@ export const inventory: InventoryItem[] = [
     model: "Segway Ninebot E3 Pro",
     summary:
       "Geprüfte Gebrauchtware mit doppelter Elastomerfederung, Blinkern und 55 km Reichweite.",
-    price: "309,99 €",
+    price: "309,99 €",
     priceValue: "309.99",
     streetLegal: true,
     specs: [
@@ -567,7 +567,7 @@ export const inventory: InventoryItem[] = [
     model: "Xiaomi Electric Scooter 5 Max",
     summary:
       "Internationale EU-Variante mit 25 km/h. Ohne deutsche Zulassung, also für Privatgelände, Export oder die Nutzung im Ausland.",
-    price: "359,99 €",
+    price: "359,99 €",
     priceValue: "359.99",
     streetLegal: false,
     specs: [
@@ -613,7 +613,7 @@ export const inventory: InventoryItem[] = [
     model: "Audi Electric Kick Scooter powered by Egret Pro",
     summary:
       "Das stärkste Gerät im Bestand: 705-Wh-Akku mit Samsung-Zellen, hydraulische Scheibenbremsen vorn und hinten, rund 400 km gelaufen.",
-    price: "599,99 €",
+    price: "599,99 €",
     priceValue: "599.99",
     streetLegal: true,
     specs: [
@@ -694,4 +694,58 @@ export function relatedInventory(id: string, count = 3): InventoryItem[] {
     Math.max(0, others.length - count),
   );
   return others.slice(start, start + count);
+}
+
+/**
+ * Marke je Modell, über Muster statt über ein Datenfeld.
+ *
+ * Ein Feld `brand` wäre die sauberere Modellierung – und die dreizehnte
+ * Stelle, an der beim Eintragen eines Geräts etwas vergessen werden kann.
+ * Die Modellnamen stehen so auf den Typenschildern, und aus ihnen ist die
+ * Marke eindeutig ablesbar; nur die Schreibweisen schwanken („Segway-Ninebot"
+ * und „Segway Ninebot" stehen beide in der Liste) und der Audi läuft unter
+ * „Audi Electric Kick Scooter powered by Egret Pro". Genau diese beiden Fälle
+ * fängt die Tabelle ab. Fällt ein Modell durch alle Muster, taucht seine
+ * Marke schlicht nicht auf – das ist eine Lücke in der Aufzählung, kein
+ * falscher Name.
+ */
+const BRAND_PATTERNS: readonly [RegExp, string][] = [
+  [/^Xiaomi/i, "Xiaomi"],
+  [/^Segway[- ]Ninebot/i, "Segway-Ninebot"],
+  [/^NIU/i, "NIU"],
+  [/^Sharp/i, "Sharp"],
+  [/^Odys/i, "Odys"],
+  [/^Zamelux/i, "Zamelux"],
+  [/Egret/i, "Audi Egret"],
+];
+
+/**
+ * Die harten Angaben über den Bestand: Stückzahl, Preisspanne, Marken.
+ *
+ * Berechnet und nicht von Hand geschrieben. Vorher standen Stückzahl,
+ * Spanne und Markenliste als Fließtext in der Sektion – bei einem Bestand,
+ * der laut eigener Ansage laufend wechselt, wäre das der erste Satz, der
+ * unbemerkt falsch wird. Wer ein Gerät aus `inventory` löscht, korrigiert
+ * damit auch diese Zeile.
+ */
+export function inventoryFacts() {
+  const values = inventory.map((item) => Number(item.priceValue));
+  const format = (value: number) =>
+    value.toLocaleString("de-DE", {
+      style: "currency",
+      currency: "EUR",
+    });
+
+  const brands: string[] = [];
+  for (const item of inventory) {
+    const match = BRAND_PATTERNS.find(([pattern]) => pattern.test(item.model));
+    if (match && !brands.includes(match[1])) brands.push(match[1]);
+  }
+
+  return {
+    count: inventory.length,
+    priceFrom: format(Math.min(...values)),
+    priceTo: format(Math.max(...values)),
+    brands,
+  };
 }

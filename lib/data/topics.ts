@@ -7,7 +7,7 @@
 
 export const CONTACT_TOPICS = [
   "Reparatur",
-  "Sicherheits-Checkup (59,99 €)",
+  "Sicherheits-Checkup (59,99 €)",
   "Akku-Diagnose",
   "Kostenvoranschlag",
   "Wartungsvertrag Basis",
@@ -33,7 +33,7 @@ export function isKnownTopic(value: string): value is ContactTopic {
 /** Vorauswahl je Leistungsseite – Teilmengen der Whitelist. */
 export const REPAIR_TOPICS = [
   "Reparatur",
-  "Sicherheits-Checkup (59,99 €)",
+  "Sicherheits-Checkup (59,99 €)",
   "Akku-Diagnose",
   "Kostenvoranschlag",
 ] as const satisfies readonly ContactTopic[];
@@ -47,7 +47,7 @@ export const INSURANCE_TOPICS = [
 export const PLAN_TOPICS = [
   "Wartungsvertrag Basis",
   "Wartungsvertrag Premium",
-  "Sicherheits-Checkup (59,99 €)",
+  "Sicherheits-Checkup (59,99 €)",
 ] as const satisfies readonly ContactTopic[];
 
 export const RECYCLING_TOPICS = [
@@ -67,7 +67,7 @@ export const TOPIC_BY_SLUG: Record<string, ContactTopic> = {
   "wartungsvertrag-basis": "Wartungsvertrag Basis",
   "wartungsvertrag-premium": "Wartungsvertrag Premium",
   reparatur: "Reparatur",
-  checkup: "Sicherheits-Checkup (59,99 €)",
+  checkup: "Sicherheits-Checkup (59,99 €)",
   versicherung: "Versicherung: Haftpflicht",
   kauf: "Suchauftrag refurbished E-Scooter",
   geraet: "Frage zu einem Gerät",

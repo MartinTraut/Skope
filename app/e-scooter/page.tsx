@@ -15,7 +15,7 @@ import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
 import { checkupIncludes } from "@/lib/data/services";
-import { inventory } from "@/lib/inventory";
+import { inventory, inventoryFacts } from "@/lib/inventory";
 import {
   JsonLd,
   breadcrumb,
@@ -40,6 +40,10 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default function ScooterPage() {
+  /* Stückzahl, Preisspanne und Marken einmal aus dem Bestand ableiten – die
+     Begründung steht an `inventoryFacts()` in `lib/inventory.ts`. */
+  const facts = inventoryFacts();
+
   return (
     <>
       <PageHeader
@@ -89,7 +93,7 @@ export default function ScooterPage() {
               <Reveal delay={70}>
                 <p className="eyebrow text-current/90">Das Siegel</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Kein Gerät ohne vollständige Prüfung.
+                  Kein Gerät ohne vollständige <Mark>Prüfung</Mark>.
                 </h2>
                 <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/70">
                   Das Skope-Qualitätssiegel steht für das Prüfprotokoll unseres
@@ -133,12 +137,63 @@ export default function ScooterPage() {
                 Welche <Mark>Geräte</Mark> gerade da sind.
               </>
             }
-            /* Die Aufzählung steht bewusst im Fließtext und nicht nur in den
-               Karten: Marken, Preisspanne und Stückzahl sind die Angaben,
-               nach denen gesucht wird, und ein Raster aus Bildern liefert
-               sie weder einer Suchmaschine noch einem Antwortsystem. */
-            lead="Dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € stehen gerade in Neuenstadt am Kocher: Xiaomi, Segway-Ninebot, NIU, Sharp, Odys, Zamelux und der Audi Egret Pro. Jedes ist ein Einzelstück, aufbereitet in der eigenen Werkstatt und mit einem Jahr Gewährleistung. Der Bestand wechselt laufend. Sagen Sie uns, was Sie suchen: Reichweite, Budget, Einsatzzweck."
+            lead="Jedes Gerät ein Einzelstück, aufbereitet in der eigenen Werkstatt in Neuenstadt am Kocher. Der Bestand wechselt laufend."
           />
+
+          {/* Stückzahl, Preisspanne und Marken standen bis hierher in einem
+              sieben Zeilen langen Absatz unter der Überschrift. Inhaltlich
+              richtig, gelesen hat ihn niemand: Die drei Angaben, nach denen
+              tatsächlich gesucht wird, lagen zwischen Nebensätzen, in
+              derselben Größe und Farbe wie alles andere auf der Fläche.
+
+              Jetzt tragen sie die Form, die zu ihnen gehört. Die Kennwerte
+              als Beschreibungsliste im Zahlengrad – dieselbe Optik wie die
+              Kennwerte auf der Reparaturseite –, die Marken als Etikettenreihe
+              darunter. Beides bleibt Text im Markup: Der Grund, warum die
+              Angaben überhaupt hier stehen und nicht nur in den Bildkarten,
+              war die Auffindbarkeit, und ein `<dl>` ist dafür stärker als ein
+              Fließtextsatz, nicht schwächer.
+
+              Die Werte kommen aus `inventoryFacts()` und damit aus dem
+              Bestand selbst. Ein Satz, der „dreizehn Geräte" behauptet, ist
+              beim nächsten Verkauf falsch. */}
+          <Reveal delay={100}>
+            <dl className="mt-10 flex flex-wrap gap-x-14 gap-y-8">
+              {[
+                { label: "Geräte vorrätig", value: String(facts.count) },
+                {
+                  label: "Preisspanne",
+                  value: `${facts.priceFrom} – ${facts.priceTo}`,
+                },
+                { label: "Gewährleistung", value: "1 Jahr" },
+              ].map((fact) => (
+                <div key={fact.label}>
+                  <dt className="eyebrow-plain text-current/60">
+                    {fact.label}
+                  </dt>
+                  <dd className="tabular mt-2 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <p className="eyebrow-plain mt-10 text-current/60">
+              Marken im Bestand
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {facts.brands.map((brand) => (
+                <li
+                  key={brand}
+                  className="rounded-full border border-current/15 bg-silver px-4 py-2 font-display text-sm font-semibold tracking-tight"
+                >
+                  {brand}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
 
           {inventory.length > 0 ? (
             /* Raster statt gestapelter Vollbreite-Karten: Bei einem einzelnen
@@ -208,7 +263,7 @@ export default function ScooterPage() {
               <Reveal>
                 <p className="eyebrow text-current/90">Suchauftrag</p>
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Sagen Sie uns, was Sie suchen.
+                  Sagen Sie uns, was Sie <Mark>suchen</Mark>.
                 </h2>
                 <p className="mt-6 leading-relaxed text-current/65">
                   Budget, gewünschte Reichweite, Einsatzzweck: Arbeitsweg,

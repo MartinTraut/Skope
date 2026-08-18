@@ -38,7 +38,7 @@ export function Workshop() {
                     Akzent – die harte Zahl ist einer der drei Fälle, für die
                     Neon reserviert ist. Die Sektion ist dunkel, dort ist Neon
                     Schrift (14,8:1 auf Tinte). */}
-                Was für <span className="text-accent">59,99 €</span> tatsächlich
+                Was für <span className="text-accent">59,99&nbsp;€</span> tatsächlich
                 passiert.
               </h2>
               <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
@@ -97,7 +97,7 @@ export function Workshop() {
                   size="lg"
                   className="text-silver"
                 >
-                  Checkup im Vertrag ab 17,99 €
+                  Checkup im Vertrag ab 17,99&nbsp;€
                 </ButtonLink>
               </div>
             </Reveal>

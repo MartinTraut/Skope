@@ -62,10 +62,10 @@ export const repairAreas: RepairArea[] = [
 
 /** Preisanker aus der Altseite – Richtwerte, kein verbindliches Angebot. */
 export const priceAnchors = [
-  { label: "Sicherheits-Checkup (komplett)", price: "59,99 €", lead: true },
-  { label: "Bremsbeläge", price: "ab 15 €" },
-  { label: "Reifenwechsel", price: "ab 25 €" },
-  { label: "Elektronik-Reparatur", price: "ab 40 €" },
+  { label: "Sicherheits-Checkup (komplett)", price: "59,99 €", lead: true },
+  { label: "Bremsbeläge", price: "ab 15 €" },
+  { label: "Reifenwechsel", price: "ab 25 €" },
+  { label: "Elektronik-Reparatur", price: "ab 40 €" },
 ];
 
 /** Bearbeitungszeiten aus der Altseite. */

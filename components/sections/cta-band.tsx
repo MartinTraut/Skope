@@ -3,6 +3,7 @@ import * as React from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { Velaris } from "@/components/motion/velaris";
 import { ButtonLink } from "@/components/ui/button";
+import { Mark } from "@/components/ui/mark";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
 import { site } from "@/lib/site";
@@ -14,7 +15,11 @@ import { site } from "@/lib/site";
  */
 export function CtaBand({
   eyebrow = "Nächster Schritt",
-  title = "Sagen Sie uns, was der Scooter macht.",
+  title = (
+    <>
+      Sagen Sie uns, was der Scooter <Mark>macht</Mark>.
+    </>
+  ),
   text = "Ein kurzer Anruf reicht meistens, um einzuschätzen, ob es ein Fall für den Checkup, eine Reparatur oder direkt für ein anderes Gerät ist. Kostenvoranschlag gibt es vor jeder Arbeit.",
 }: {
   eyebrow?: string;

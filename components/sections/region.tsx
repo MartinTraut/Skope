@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { Marquee } from "@/components/ui/marquee";
 import { Container, Section } from "@/components/ui/section";
+import { Mark } from "@/components/ui/mark";
 import {
   fullAddress,
   nearbyPlaceNames,
@@ -53,7 +54,7 @@ export function Region() {
           <div>
             <p className="eyebrow text-current/90">Einzugsgebiet</p>
             <h2 className="mt-5 max-w-[16ch] text-[length:var(--text-display)]">
-              Aus Heilbronn sind es 15&nbsp;Kilometer.
+              Aus Heilbronn sind es <Mark>15&nbsp;Kilometer</Mark>.
             </h2>
           </div>
 
