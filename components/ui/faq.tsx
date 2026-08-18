@@ -37,11 +37,18 @@ export function FaqSection({
     <Container>
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-5">
+          {/* Ab `lg` steht der Kopf in fünf von zwölf Spalten – gemessen
+              553 px bei 1512 px Fenster. Der Displaygrad ist für Köpfe über
+              die volle Breite gerechnet und läuft dort bis 68 px; in dieser
+              Spalte zerlegt er jede längere Überschrift in drei bis vier
+              Stummel („Was im Vertrag / steht und was / nicht."). Deshalb
+              hier ein eigener, kleinerer Grad – nur ab `lg`, darunter ist der
+              Kopf volle Breite und der Grundgrad richtig. */}
           <SectionHead
             eyebrow={eyebrow}
             title={title}
             lead={lead}
-            className="pb-0 lg:sticky lg:top-28"
+            className="pb-0 lg:sticky lg:top-28 lg:[--text-display:clamp(2.15rem,2.2vw+0.9rem,3.05rem)]"
           />
         </div>
         <div className="lg:col-span-7">

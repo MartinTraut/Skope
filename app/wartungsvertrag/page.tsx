@@ -12,7 +12,6 @@ import { Container, Section } from "@/components/ui/section";
 import { faqPlans } from "@/lib/data/faq";
 import { planExclusions, plans } from "@/lib/data/plans";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
-import { PLAN_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
 
@@ -205,7 +204,7 @@ export default function PlansPage() {
             </div>
             <div className="lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm topics={PLAN_TOPICS} />
+                <InquiryForm defaultTopic="Wartungsvertrag Basis" />
               </Reveal>
             </div>
           </div>

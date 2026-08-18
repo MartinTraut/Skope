@@ -17,7 +17,6 @@ import {
   tariffs,
 } from "@/lib/data/insurance";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
-import { INSURANCE_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
 import { Plate } from "@/components/brand/plate";
@@ -332,7 +331,7 @@ export default function InsurancePage() {
             </div>
             <div className="lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm topics={INSURANCE_TOPICS} />
+                <InquiryForm defaultTopic="Versicherung: Haftpflicht" />
               </Reveal>
             </div>
           </div>

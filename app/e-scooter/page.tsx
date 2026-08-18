@@ -25,7 +25,6 @@ import {
   refurbishedService,
   reviews,
 } from "@/lib/schema";
-import { BUY_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
 
@@ -274,7 +273,7 @@ export default function ScooterPage() {
             </div>
             <div className="lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm topics={BUY_TOPICS} />
+                <InquiryForm defaultTopic="Suchauftrag refurbished E-Scooter" />
               </Reveal>
             </div>
           </div>

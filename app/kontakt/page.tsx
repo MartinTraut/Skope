@@ -8,7 +8,6 @@ import { PageHeader } from "@/components/ui/page-header";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph } from "@/lib/schema";
-import { CONTACT_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress, nearbyPlaceNames, serviceArea, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -194,11 +193,7 @@ export default function ContactPage() {
                   erste Einschätzung. Bei Reparaturen melden wir uns mit einem
                   Kostenvoranschlag zurück.
                 </p>
-                <InquiryForm
-                  className="mt-10"
-                  topics={CONTACT_TOPICS}
-                  topicFromQuery
-                />
+                <InquiryForm className="mt-10" topicFromQuery />
               </Reveal>
             </div>
           </div>

@@ -9,7 +9,6 @@ import { Related } from "@/components/sections/related";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph, service } from "@/lib/schema";
-import { RECYCLING_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -154,7 +153,7 @@ export default function RecyclingPage() {
             </div>
             <div className="lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm topics={RECYCLING_TOPICS} />
+                <InquiryForm defaultTopic="Altgerät abgeben / Recycling" />
               </Reveal>
             </div>
           </div>

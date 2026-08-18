@@ -14,7 +14,11 @@ import {
 
 import { submitInquiry, type FormState } from "@/app/actions";
 import { Button } from "@/components/ui/button";
-import { TOPIC_BY_SLUG, type ContactTopic } from "@/lib/data/topics";
+import {
+  TOPIC_BY_SLUG,
+  TOPIC_GROUPS,
+  type ContactTopic,
+} from "@/lib/data/topics";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -47,12 +51,14 @@ const labelClass =
   "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-75";
 
 export function InquiryForm({
-  topics,
   defaultTopic,
   topicFromQuery = false,
   className,
 }: {
-  topics: readonly ContactTopic[];
+  /**
+   * Vorauswahl der Seite, auf der das Formular steht. Ohne Angabe steht das
+   * Feld auf „Bitte wählen" und ist Pflichtfeld – so ist es auf /kontakt.
+   */
   defaultTopic?: ContactTopic;
   /**
    * Wertet `?anliegen=` aus – die Tarifkarten verlinken so auf das Formular.
@@ -89,16 +95,18 @@ export function InquiryForm({
   const device = params?.get("geraet")?.slice(0, 80) || undefined;
 
   /**
-   * Ohne Vorauswahl nur dort, wo die volle Liste angeboten wird: Bei vierzehn
-   * Optionen und dem Anliegen als erstem Feld würde eine stille Vorbelegung
-   * regelmäßig überlesen – und eine Kaufanfrage käme als Reparatur an. Auf den
-   * Leistungsseiten ist die Teilmenge dagegen eindeutig, dort ist die
-   * Vorauswahl die schnellere Bedienung.
+   * Reihenfolge der Vorauswahl: Deeplink schlägt Seite, Seite schlägt leer.
+   *
+   * Das Formular zeigt überall dieselben vierzehn Anliegen; unterschieden
+   * wird nur, was vorbelegt ist. Vorher trug jede Leistungsseite eine eigene
+   * Teilmenge – wer unter der Reparaturseite ein Altgerät abgeben wollte,
+   * fand das Anliegen dort nicht.
+   *
+   * Auf /kontakt bleibt es leer und damit Pflichtfeld: Dort ist keine Absicht
+   * bekannt, und eine stille Vorbelegung würde als Antwort gewertet.
    */
   const preselected =
-    (slug ? TOPIC_BY_SLUG[slug] : undefined) ??
-    defaultTopic ??
-    (topics.length > 6 ? "" : topics[0]);
+    (slug ? TOPIC_BY_SLUG[slug] : undefined) ?? defaultTopic ?? "";
 
   const successRef = React.useRef<HTMLDivElement>(null);
   const errorRef = React.useRef<HTMLDivElement>(null);
@@ -245,14 +253,22 @@ export function InquiryForm({
                 Bitte wählen
               </option>
             ) : null}
-            {topics.map((topic) => (
-              <option
-                key={topic}
-                value={topic}
+            {TOPIC_GROUPS.map((group) => (
+              <optgroup
+                key={group.label}
+                label={group.label}
                 className="bg-ink-800 text-silver on-dark"
               >
-                {topic}
-              </option>
+                {group.topics.map((topic) => (
+                  <option
+                    key={topic}
+                    value={topic}
+                    className="bg-ink-800 text-silver on-dark"
+                  >
+                    {topic}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
           <ChevronDown

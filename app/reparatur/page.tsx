@@ -18,7 +18,6 @@ import {
   turnaround,
 } from "@/lib/data/services";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
-import { REPAIR_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { priceNote } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -379,7 +378,7 @@ export default function RepairPage() {
             </div>
             <div className="lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm topics={REPAIR_TOPICS} />
+                <InquiryForm defaultTopic="Reparatur" />
               </Reveal>
             </div>
           </div>
