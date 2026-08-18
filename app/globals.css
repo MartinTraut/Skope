@@ -1293,6 +1293,31 @@
           opacity: 1;
         }
       }
+
+      /* Die Kette des Ablaufs zeichnet sich beim Scrollen mit.
+         Vier Schritte mit einer fertig gezeichneten Linie sind eine Grafik;
+         eine Linie, die dem Blick vorausläuft, ist der Ablauf selbst. Sie
+         wächst von der Ziffer aus nach unten – deshalb `transform-origin`
+         oben – und ist mit dem Schritt fertig, bevor der nächste im Bild
+         steht (`cover 55%`).
+
+         Ohne `animation-timeline` bleibt die Linie stehen, wie sie ist: der
+         richtige Ausgangszustand, kein Sonderfall. */
+      .chain-draw {
+        animation: chain-draw linear both;
+        animation-timeline: view();
+        animation-range: entry 45% cover 55%;
+        transform-origin: top center;
+      }
+
+      @keyframes chain-draw {
+        from {
+          transform: scaleY(0);
+        }
+        to {
+          transform: scaleY(1);
+        }
+      }
     }
   }
 

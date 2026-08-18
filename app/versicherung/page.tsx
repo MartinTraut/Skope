@@ -20,6 +20,7 @@ import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
 import { INSURANCE_TOPICS } from "@/lib/data/topics";
 import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
+import { Plate } from "@/components/brand/plate";
 
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Versicherung ERGO: Tarife 2026/2027",
@@ -107,7 +108,13 @@ export default function InsurancePage() {
               </thead>
               <tbody>
                 {tariffs.map((row) => (
-                  <tr key={row.period} className="border-b border-current/10">
+                  /* Die Zeile hebt sich beim Zeigen an: In einer Tabelle mit
+                     sechs Zeitspannen und zwei Preisspalten verrutscht sonst
+                     genau die Zeile, die man vergleicht. */
+                  <tr
+                    key={row.period}
+                    className="border-b border-current/10 transition-colors duration-150 hover:bg-current/5"
+                  >
                     <th
                       scope="row"
                       className="tabular py-5 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
@@ -160,6 +167,10 @@ export default function InsurancePage() {
             </figure>
 
             <div className="lg:col-span-7 lg:col-start-6">
+              {/* Die Plakette steht über dem Absatz, der sie beschreibt –
+                  das Ergebnis zuerst, die Erklärung darunter. Begründung
+                  zur Zeichnung selbst in `components/brand/plate.tsx`. */}
+              <Plate className="mb-7" />
               <h3 className="text-[length:var(--text-subtitle)]">
                 Abschluss direkt vor Ort
               </h3>
@@ -214,7 +225,7 @@ export default function InsurancePage() {
                 {i < insuranceSteps.length - 1 && (
                   <span
                     aria-hidden="true"
-                    className="absolute top-14 bottom-0 left-6 w-px bg-ink/15 sm:top-16 sm:left-7"
+                    className="chain-draw absolute top-14 bottom-0 left-6 w-px bg-ink/25 sm:top-16 sm:left-7"
                   />
                 )}
                 <span
