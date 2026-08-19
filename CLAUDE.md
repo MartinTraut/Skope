@@ -190,6 +190,27 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
   Kampfrad 3 ersetzen oder als erzeugt kennzeichnen (EU-KI-VO Art. 50,
   § 5 UWG). Echte Fotos sind hier ohnehin das stärkere Vertrauenssignal.
 
+## Sehr breite Schirme
+
+Gemessen am 19.08.2026 auf 5120 × 1440 (49-Zoll-Curved), gegengeprüft bei 3440
+und 2560.
+
+Der Inhalt läuft überall über `Container` und ist bei **104 rem (1664 px)**
+gedeckelt — ab dieser Breite ändert sich am Satz nichts mehr, das ist Absicht.
+Kaputt war nur, was **am Fenster** hing statt am Raster: Die Aufnahme im
+Kopfbereich liegt `contain` und rechts verankert, skalierte also über die Höhe
+(1975 px breit) und klebte am rechten Fensterrand. Zwischen Textspalte
+(endet bei 3392 px) und Roller (beginnt bei 3145 px … am Rand) lagen 1400 px
+schwarze Fläche, links vom Text noch einmal 1728 px.
+
+Die Bildfläche trägt jetzt dieselbe Grenze wie `Container` und ab `min-[104rem]`
+einen seitlichen Auslauf per `mask-image` — sonst steht dort, wo das Foto
+aufhört, eine harte senkrechte Kante. Unterhalb von 1664 px ist beides wirkungslos.
+
+**Regel daraus:** Was als Grund über die volle Breite läuft, darf eine
+Flächenfarbe oder ein Verlauf sein. Ein Motiv, das zur Komposition gehört, wird
+an `Container` gebunden, nicht ans Fenster.
+
 ## Das Flackern des Seitenkopfs — gefunden
 
 Lange als „nicht reproduzierbar" geführt, weil an der falschen Stelle gesucht

@@ -78,9 +78,30 @@ export function Hero() {
 
           `object-position` hält den Roller rechts neben der Textspalte: Der
           Bildausschnitt wandert mit der Breite, das Motiv nicht. */}
+      {/* Die Bildfläche endet an derselben Kante wie die Textspalte, nicht am
+          Fensterrand.
+
+          Gemessen auf einem 49-Zoll-Schirm (5120 px): Die Aufnahme liegt
+          `contain` und rechts verankert, also skaliert sie über die Höhe der
+          Zone – 1975 px breit – und klebte damit am rechten Fensterrand bei
+          3145 px. Die Textspalte steht im Raster und endet bei 3392 px.
+          Zwischen Text und Roller lagen 1400 px schwarze Fläche, links vom
+          Text noch einmal 1728 px: Aus der einen Komposition von 1512 px
+          waren drei Gegenstände geworden, die nichts mehr miteinander zu tun
+          hatten.
+
+          Dieselbe Breitengrenze wie `Container` (104rem) bindet das Motiv
+          wieder an die Spalte. Unter 1664 px ändert sich nichts – dort ist
+          das Fenster schmaler als die Grenze.
+
+          Ab der Grenze bekommt die Fläche seitlich denselben weichen Auslauf,
+          den sie unten schon hat: Sonst steht dort, wo das Foto aufhört, eine
+          harte senkrechte Kante mitten in der Sektion. Der Auslauf hängt an
+          `min-[104rem]`, damit er unterhalb der Grenze nicht den Roller
+          anschneidet – dort steht er am rechten Bildrand. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+        className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-full max-w-[104rem] -translate-x-1/2 overflow-hidden min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]"
       >
         {/* `object-contain` statt `object-cover` – die Aufnahme wird
             vollständig gezeigt, nicht beschnitten.
