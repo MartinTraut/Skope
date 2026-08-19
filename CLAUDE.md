@@ -190,6 +190,39 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
   Kampfrad 3 ersetzen oder als erzeugt kennzeichnen (EU-KI-VO Art. 50,
   § 5 UWG). Echte Fotos sind hier ohnehin das stärkere Vertrauenssignal.
 
+## Der Erklärfilm
+
+35 Sekunden, **ohne Tonspur**, Motion Design in der Markensprache. Liegt als
+`public/video/skope-erklaervideo.mp4` (1,3 MB) mit Standbild
+`public/img/erklaervideo-poster.jpg`. Die Rohdatei aus dem Schnitt wiegt
+10,5 MB und wird nicht ausgeliefert; `/*.mp4` im Projektstamm ist deshalb
+ignoriert. Neue Fassung:
+
+```
+ffmpeg -i ROH.mp4 -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p \
+  -movflags +faststart -an public/video/skope-erklaervideo.mp4
+```
+
+- **Er steht in der Ablauf-Sektion, nicht in einer eigenen.** Die Startseite
+  wechselt durchgehend hell/dunkel; jede zusätzliche Fläche bricht diesen
+  Wechsel an einer Kante auf, egal welchen Ton sie bekommt.
+- **Nativer `<video controls>`, kein eigener Abspieler**, dazu `preload="none"`
+  und Standbild. Ohne die Angabe lädt Safari beim Seitenaufruf Teile der Datei
+  mit. Gemessen: null Videoanfragen beim Aufruf der Startseite.
+- **Deckel 70 rem (1120 px).** Die Quelle ist 1280 px breit; darüber würden die
+  Schrifttafeln weich.
+- **Kein Autoplay.** Der Film erklärt mit Schrift und will gelesen werden.
+- **Textalternative sichtbar in der Bildunterschrift**, nicht in einem Attribut:
+  Ohne Tonspur braucht er keine Untertitel, wohl aber einen Text für alle, die
+  ihn nicht sehen.
+- **`VideoObject` im Graph** (`explainerVideo()` in `lib/schema.tsx`), nur auf
+  der Startseite, weil er nur dort abspielbar ist. `uploadDate` ist fest und
+  gehört dem Film, nicht dem Build.
+- **Die Zahlen im Film sind geprüft** (19.08.2026): 59,99 €, ab 15/25/40 €,
+  17,99 € im Monat, Express 24 h, 15 km Abholung, Adresse — alles deckungsgleich
+  mit `lib/data/services.ts` und `lib/data/plans.ts`. Ändern sich Preise, ändert
+  sich der Film mit, sonst stehen zwei Wahrheiten auf derselben Seite.
+
 ## Sehr breite Schirme
 
 Gemessen am 19.08.2026 auf 5120 × 1440 (49-Zoll-Curved), gegengeprüft bei 3440

@@ -35,3 +35,7 @@ kalkulation-skope-gesamtpaket.md
 
 # Streuschüsse aus Screenshot-Werkzeugen
 /[0-9a-f][0-9a-f]*-*-*-*-*.png
+
+# Rohmaterial im Projektstamm (Videoschnitt, Screenshots aus der Abstimmung).
+# Ausgeliefert wird nur, was optimiert unter public/ liegt.
+/*.mp4

@@ -13,7 +13,13 @@ import { Workshop } from "@/components/sections/workshop";
 import { FaqSection } from "@/components/ui/faq";
 import { Section } from "@/components/ui/section";
 import { faqHome } from "@/lib/data/faq";
-import { JsonLd, pageGraph, reviews, serviceRef } from "@/lib/schema";
+import {
+  explainerVideo,
+  JsonLd,
+  pageGraph,
+  reviews,
+  serviceRef,
+} from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -99,6 +105,7 @@ export default function HomePage() {
               item: serviceRef(path),
             })),
           },
+          explainerVideo(),
           ...reviews("/"),
         ])}
       />

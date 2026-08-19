@@ -297,6 +297,41 @@ export function faqPage(items: FaqItem[], path: string): Node {
 }
 
 /**
+ * Der Erklärfilm auf der Startseite als `VideoObject`.
+ *
+ * Nur dort ausgeben, wo der Film sichtbar eingebunden ist – ein
+ * VideoObject ohne abspielbaren Film auf der Seite ist genau der Fall, für
+ * den Google die Auszeichnung als irreführend wertet.
+ *
+ * `uploadDate` ist das Datum der Fertigstellung und bleibt fest: Es ist eine
+ * Eigenschaft des Films, nicht des Builds – anders als `dateModified` am
+ * Dokument. `duration` in ISO 8601, gemessen mit ffprobe: 35,0 s.
+ *
+ * Kein `embedUrl`: Der Film liegt als Datei auf der eigenen Domain, es gibt
+ * keinen Abspieler unter eigener Adresse. `contentUrl` ist hier das richtige
+ * und einzige Feld.
+ */
+export function explainerVideo(): Node {
+  return {
+    "@type": "VideoObject",
+    "@id": `${site.url}#erklaerfilm`,
+    name: "SKOPE: E-Scooter reparieren statt neu kaufen",
+    description:
+      "Erklärfilm der SKOPE E-Scooter Fachwerkstatt in Neuenstadt am Kocher: warum sich eine Reparatur meist lohnt, wie Fehlerspeicher und Akkukapazität gemessen werden, was der Kostenvoranschlag vor der Arbeit enthält, sowie geprüfte Gebrauchtgeräte, Wartungsverträge und Versicherungskennzeichen aus einer Hand.",
+    thumbnailUrl: `${site.url}/img/erklaervideo-poster.jpg`,
+    contentUrl: `${site.url}/video/skope-erklaervideo.mp4`,
+    encodingFormat: "video/mp4",
+    uploadDate: "2026-08-19",
+    duration: "PT35S",
+    inLanguage: "de-DE",
+    isFamilyFriendly: true,
+    publisher: { "@id": ORG_ID },
+    about: { "@id": ORG_ID },
+    isPartOf: { "@id": SITE_ID },
+  };
+}
+
+/**
  * Verkauf geprüfter Gebrauchtgeräte.
  * Bewusst als Service und nicht als Product: verkauft wird ein wechselnder
  * Bestand ohne veröffentlichte Preise, und ein Product ohne `offers`
