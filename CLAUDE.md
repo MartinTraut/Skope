@@ -203,9 +203,13 @@ ffmpeg -i ROH.mp4 -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p \
   -movflags +faststart -an public/video/skope-erklaervideo.mp4
 ```
 
-- **Er steht in der Ablauf-Sektion, nicht in einer eigenen.** Die Startseite
-  wechselt durchgehend hell/dunkel; jede zusätzliche Fläche bricht diesen
-  Wechsel an einer Kante auf, egal welchen Ton sie bekommt.
+- **Er steht auf `/ueber-uns`, nicht auf der Startseite.** Zuerst lag er im
+  Ablauf-Block der Startseite; dort war er ein zweiter Erzähler neben einer
+  Seite, die dasselbe schon sagt. Auf der Über-uns-Seite beantwortet er die
+  Frage, die dort gestellt wird — wer ist das und wie arbeiten die —, und
+  steht vor den Kundenstimmen: erst die eigene Darstellung, dann das Urteil
+  anderer. Eigene Sektion in Tinte, damit die Folge Silber → Tinte →
+  Silber-200 den Wechsel hält.
 - **Nativer `<video controls>`, kein eigener Abspieler**, dazu `preload="none"`
   und Standbild. Ohne die Angabe lädt Safari beim Seitenaufruf Teile der Datei
   mit. Gemessen: null Videoanfragen beim Aufruf der Startseite.
@@ -216,7 +220,8 @@ ffmpeg -i ROH.mp4 -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p \
   Ohne Tonspur braucht er keine Untertitel, wohl aber einen Text für alle, die
   ihn nicht sehen.
 - **`VideoObject` im Graph** (`explainerVideo()` in `lib/schema.tsx`), nur auf
-  der Startseite, weil er nur dort abspielbar ist. `uploadDate` ist fest und
+  `/ueber-uns`, weil er nur dort abspielbar ist — die `@id` hängt an derselben
+  Adresse. Wandert der Film, wandern beide mit. `uploadDate` ist fest und
   gehört dem Film, nicht dem Build.
 - **Die Zahlen im Film sind geprüft** (19.08.2026): 59,99 €, ab 15/25/40 €,
   17,99 € im Monat, Express 24 h, 15 km Abholung, Adresse — alles deckungsgleich

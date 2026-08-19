@@ -5,10 +5,17 @@ import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
+import { ExplainerVideo } from "@/components/ui/explainer-video";
 import { PageHeader } from "@/components/ui/page-header";
-import { Container, Section } from "@/components/ui/section";
+import { Container, Section, SectionHead } from "@/components/ui/section";
 import { brands } from "@/lib/data/services";
-import { JsonLd, breadcrumb, pageGraph, reviews } from "@/lib/schema";
+import {
+  breadcrumb,
+  explainerVideo,
+  JsonLd,
+  pageGraph,
+  reviews,
+} from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -141,6 +148,47 @@ export default function AboutPage() {
         </Container>
       </Section>
 
+      {/* Der Erklärfilm zwischen den Grundsätzen und den Kundenstimmen.
+
+          Auf der Startseite lag er zuerst im Ablauf-Block; hier ist er
+          richtiger aufgehoben. Diese Seite beantwortet „wer ist das und wie
+          arbeiten die" – und genau das zeigt der Film in 35 Sekunden, statt
+          es zu behaupten. Er steht vor den Kundenstimmen: erst die eigene
+          Darstellung, dann das Urteil anderer.
+
+          Ton Tinte, damit die Folge Silber → Tinte → Silber-200 den Wechsel
+          hält. Der Film ist selbst dunkel; auf Tinte ist er ein Fenster in
+          der Fläche statt eines Kastens darauf. */}
+      <Section tone="ink">
+        <Container>
+          <SectionHead
+            align="left"
+            eyebrow="Kurz angesehen"
+            title={
+              <>
+                Die Werkstatt in <Mark>35</Mark> Sekunden.
+              </>
+            }
+            lead="Was hier passiert, wenn ein Gerät hereinkommt: messen statt raten, Preis vor der Arbeit, und was es außer der Reparatur noch gibt."
+          />
+          <ExplainerVideo
+            className="mt-12"
+            caption={
+              <>
+                <span className="font-semibold text-current">
+                  35 Sekunden, ohne Ton:
+                </span>{" "}
+                Warum sich eine Reparatur meist lohnt, wie wir messen statt zu
+                raten, was ein Kostenvoranschlag enthält – und was es bei uns
+                sonst noch gibt: geprüfte Gebrauchtgeräte, Wartungsverträge ab
+                17,99 € im Monat und das Versicherungskennzeichen zum
+                Mitnehmen.
+              </>
+            }
+          />
+        </Container>
+      </Section>
+
       <Testimonials />
       <Region />
 
@@ -156,6 +204,7 @@ export default function AboutPage() {
 
       <JsonLd
         nodes={pageGraph([
+          explainerVideo(),
           breadcrumb([{ name: "Über uns", path: "/ueber-uns" }]),
           ...reviews("/ueber-uns"),
         ])}

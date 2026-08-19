@@ -301,7 +301,8 @@ export function faqPage(items: FaqItem[], path: string): Node {
  *
  * Nur dort ausgeben, wo der Film sichtbar eingebunden ist – ein
  * VideoObject ohne abspielbaren Film auf der Seite ist genau der Fall, für
- * den Google die Auszeichnung als irreführend wertet.
+ * den Google die Auszeichnung als irreführend wertet. Er steht auf
+ * /ueber-uns, deshalb hängt auch die @id dort.
  *
  * `uploadDate` ist das Datum der Fertigstellung und bleibt fest: Es ist eine
  * Eigenschaft des Films, nicht des Builds – anders als `dateModified` am
@@ -314,7 +315,7 @@ export function faqPage(items: FaqItem[], path: string): Node {
 export function explainerVideo(): Node {
   return {
     "@type": "VideoObject",
-    "@id": `${site.url}#erklaerfilm`,
+    "@id": `${site.url}/ueber-uns#erklaerfilm`,
     name: "SKOPE: E-Scooter reparieren statt neu kaufen",
     description:
       "Erklärfilm der SKOPE E-Scooter Fachwerkstatt in Neuenstadt am Kocher: warum sich eine Reparatur meist lohnt, wie Fehlerspeicher und Akkukapazität gemessen werden, was der Kostenvoranschlag vor der Arbeit enthält, sowie geprüfte Gebrauchtgeräte, Wartungsverträge und Versicherungskennzeichen aus einer Hand.",

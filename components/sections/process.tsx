@@ -1,4 +1,3 @@
-import { ExplainerVideo } from "@/components/ui/explainer-video";
 import { Reveal } from "@/components/motion/reveal";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { Mark } from "@/components/ui/mark";
@@ -56,35 +55,6 @@ export function Process() {
           lead="Die häufigste Sorge vor einem Werkstattbesuch ist nicht die Reparatur, sondern die Rechnung danach. Deshalb steht der Preis fest, bevor ein Gehäuse aufgeht."
         />
 
-        {/* Der Film steht vor den Schritten, nicht hinter ihnen.
-            Er ist die Kurzfassung derselben Aussage in 35 Sekunden; wer
-            lieber liest, scrollt an ihm vorbei und findet den Ablauf direkt
-            darunter. Umgekehrt hätte er die Rolle des Nachschlags — und
-            niemand sieht sich einen Film an, nachdem er den Inhalt gelesen
-            hat.
-
-            Er bleibt in dieser Sektion und bekommt keine eigene: Die
-            Startseite wechselt durchgehend hell/dunkel, und jede zusätzliche
-            Fläche bricht diesen Wechsel an einer Kante auf. Auf Silber ist
-            der dunkle Filmblock ohnehin der stärkere Auftritt. */}
-        <Reveal delay={60}>
-          <ExplainerVideo
-            className="mt-14"
-            caption={
-              <>
-                <span className="font-semibold text-current">
-                  35 Sekunden, ohne Ton:
-                </span>{" "}
-                Warum sich eine Reparatur meist lohnt, wie wir messen statt zu
-                raten, was ein Kostenvoranschlag enthält – und was es bei uns
-                sonst noch gibt: geprüfte Gebrauchtgeräte, Wartungsverträge ab
-                17,99 € im Monat und das Versicherungskennzeichen zum
-                Mitnehmen.
-              </>
-            }
-          />
-        </Reveal>
-
         {/* Eine Zeitschiene, kein Textraster.
             Vorher standen hier vier gleich aussehende Spalten mit einer
             Haarlinie obendrauf und einer kleinen grünen Ziffer – vier
@@ -100,7 +70,7 @@ export function Process() {
             Kein zweiter Bauplan fürs Telefon: Gestapelt wird aus derselben
             Zeile eine Trennlinie über jedem Schritt. Die Marke bleibt an
             derselben Stelle, die Bedienung ist überall dieselbe. */}
-        <ol className="mt-20 grid gap-y-10 lg:grid-cols-4 lg:gap-x-0">
+        <ol className="mt-16 grid gap-y-10 lg:grid-cols-4 lg:gap-x-0">
           {steps.map((step, i) => (
             <Reveal key={step.n} delay={i * 90} as="li">
               <div className="flex h-full flex-col">
