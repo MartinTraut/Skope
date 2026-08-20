@@ -45,24 +45,42 @@ export function InventoryTeaser() {
         {/* Die harten Angaben stehen über den Karten, nicht darunter: Sie
             beantworten „lohnt sich das Weiterlesen" – Anzahl, Spanne,
             Gewährleistung –, und diese Frage stellt sich vor der ersten
-            Kachel, nicht nach der letzten. */}
+            Kachel, nicht nach der letzten.
+
+            Als freie Beschreibungsliste auf Silber standen die drei Werte in
+            derselben Farbe und auf derselben Fläche wie der Fließtext darüber:
+            drei große Zahlen ohne Rahmen, deren Zusammengehörigkeit nur aus
+            dem Abstand kam – und die Spanne riss auf mittleren Breiten aus der
+            Reihe, weil sie doppelt so breit ist wie die anderen beiden.
+
+            Jetzt tragen sie eine eigene Fläche in Tinte, dieselbe wie die
+            Bestandskarten darunter, mit Haarlinien zwischen den Feldern. Auf
+            Tinte darf die harte Zahl Neon sein – auf Silber wäre sie mit
+            1,18:1 unlesbar –, und die Spanne bekommt zwei Zeilen statt einer:
+            der Einstiegspreis groß, die Obergrenze klein darunter. Damit sind
+            alle drei Felder gleich breit. */}
         <Reveal delay={60}>
-          <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-6">
-            <div>
-              <dt className="text-sm text-current/60">Geräte vorrätig</dt>
-              <dd className="tabular mt-1 font-display text-[length:var(--text-stat)] font-bold tracking-tight">
+          <dl className="mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lift-lg sm:grid-cols-3">
+            <div className="border-b border-silver/12 p-6 sm:border-r sm:border-b-0 md:p-8">
+              <dt className="eyebrow-plain text-silver/55">Geräte vorrätig</dt>
+              <dd className="tabular mt-3 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                 {facts.count}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm text-current/60">Preisspanne</dt>
-              <dd className="tabular mt-1 font-display text-[length:var(--text-stat)] font-bold tracking-tight">
-                {facts.priceFrom} – {facts.priceTo}
+            <div className="border-b border-silver/12 p-6 sm:border-r sm:border-b-0 md:p-8">
+              <dt className="eyebrow-plain text-silver/55">Preisspanne</dt>
+              <dd className="mt-3">
+                <span className="tabular block font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
+                  ab {facts.priceFrom}
+                </span>
+                <span className="tabular mt-2 block text-sm text-silver/60">
+                  bis {facts.priceTo}
+                </span>
               </dd>
             </div>
-            <div>
-              <dt className="text-sm text-current/60">Gewährleistung</dt>
-              <dd className="mt-1 font-display text-[length:var(--text-stat)] font-bold tracking-tight">
+            <div className="p-6 md:p-8">
+              <dt className="eyebrow-plain text-silver/55">Gewährleistung</dt>
+              <dd className="mt-3 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
                 {proof.warrantyYears} Jahr
               </dd>
             </div>

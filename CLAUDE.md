@@ -199,9 +199,15 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
   in den Dateien, Logo aus den Motiven raus. Ein Hinweis in AGB oder
   Datenschutz erfüllt weder Art. 50 EU-KI-VO (Hinweis dort, wo der Inhalt
   wahrgenommen wird) noch § 5 UWG (die Bilder behaupten den eigenen Betrieb).
-- **`lib/inventory.ts`** — 13 Geräte, Stand 13.08.2026, aus dem alten Shop
-  übernommen. Kein Warenwirtschaftssystem dahinter: Verfügbarkeit und Preis
-  vor jedem Deploy prüfen, verkaufte Geräte löschen.
+- **`lib/inventory.ts` ist Platzhalter, keine Ware.** Auskunft des Betreibers
+  vom 20.08.2026: Modelle, Preise und Stückzahl sind fiktiv. Der echte
+  Bestand kommt später über Shopify — der alte Shop hängt bereits an einer
+  Storefront-API (`qcdf0s-b5.myshopify.com`). Bis dahin ist jeder Abgleich
+  gegen den Altbestand sinnlos, und nichts aus dieser Datei darf als
+  Tatsache in Text, Meta oder Schema wandern, was nicht ohnehin aus
+  `inventoryFacts()` kommt. Ausnahme: `app/page.tsx` trägt die
+  Einstiegspreis-Angabe hart in der Meta-Description — beim Anschluss der
+  API mitziehen.
 - **Zwei Geräte ohne deutsche Betriebserlaubnis** (Ninebot F2 E, Xiaomi 5
   Max). Steht in `streetLegal`, in den Daten, im Hinweis und als Warnung auf
   der Karte. Das ist Absicht und darf nicht zusammengestrichen werden.
@@ -236,6 +242,94 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
   nicht gibt. Vor dem Livegang entweder durch echte Aufnahmen aus Im
   Kampfrad 3 ersetzen oder als erzeugt kennzeichnen (EU-KI-VO Art. 50,
   § 5 UWG). Echte Fotos sind hier ohnehin das stärkere Vertrauenssignal.
+
+## Faktenaudit vom 20.08.2026 — vor dem Livegang abarbeiten
+
+Vier Gutachter haben Zahlen, Preise, Fristen und Rechtsangaben gegen die alte
+Live-Seite geprüft. Die alte Seite ist eine React-SPA; die Inhalte stecken im
+Bundle `assets/index-CQw8GHEI.js`, der Shop hängt an der Shopify-Storefront-API.
+Alles zum Gerätebestand ist mit der Platzhalter-Auskunft (siehe oben) erledigt.
+Was bleibt, hängt an Leistungs- und Rechtsaussagen:
+
+**Belegt falsch — korrigierbar ohne Rückfrage:**
+
+- **Teilkasko „ab 49 €" ist ein Monatspreis.** Der Aushang führt 49 € für
+  01.01.–31.01.2027. Für ein volles Jahr gilt **69 €**. Steht dreifach als
+  Jahresbeitrag: `lib/data/faq.ts`, Meta-Description und als `minPrice 49.00`
+  mit `unitText: "ANN"` im Schema von `app/versicherung/page.tsx`. Der
+  Kommentar in `lib/data/insurance.ts` warnt selbst genau davor.
+- **Express ist „bevorzugt innerhalb 24 h", keine Frist.** `plans.ts` und
+  `services.ts` führen die Einschränkung mit, `app/wartungsvertrag/page.tsx`,
+  `app/reparatur/page.tsx` und eine FAQ-Antwort streichen sie.
+- **„meistergeprüft"** (Ninebot F2 Pro in `lib/inventory.ts`) ist nirgends
+  belegt; die Altseite sagt durchgängig „zertifizierte Fachkraft". Ein
+  Meistertitel ist nach § 5 UWG überprüfbar.
+- **Die Marke „Audi Egret" gibt es nicht.** `BRAND_PATTERNS` in
+  `lib/inventory.ts` erzeugt sie aus „Audi Electric Kick Scooter powered by
+  Egret Pro". Richtig ist Egret (Walberg), Lizenzkooperation mit Audi.
+- **`unitText` trägt UN/CEFACT-Codes** („ANN", gemischt mit „JAHR"/„MON").
+  Codes gehören in `unitCode`, `unitText` ist das lesbare Feld.
+
+**Braucht eine Auskunft des Betreibers:**
+
+- **Versicherungskennzeichen „sofort in der Werkstatt"** (`insurance.ts`)
+  widerspricht der Altseite direkt: dort ausdrücklich „Abholung vor Ort ist
+  leider nicht möglich … direkt von ERGO per Post". Die Repo-Aussage stammt
+  aus dem Werkstattaushang vom 14.08.2026. Gegenzeichnen lassen.
+- **Leih-Scooter fehlt komplett.** Alt: „Dauert die Reparatur länger als 48
+  Stunden, erhalten Sie kostenlos einen Leih-Scooter", Bestandteil des
+  Premium-Vertrags. Die einzige ersatzlos verlorene Leistung. Gibt es sie
+  noch, gehört sie in `lib/data/plans.ts`.
+- **Radius 25 statt 30 km.** Alt zweimal „bis 30 km", im alten Schema
+  `geoRadius: "30000"`. Neu abgeleitet aus der Ortsliste (Mosbach, 25 km).
+- **Rücknahme „auch für Geräte, die nicht bei uns gekauft wurden"**
+  (`app/recycling/page.tsx`) ist auf der Altseite nicht belegt.
+- **Checkup: „Profil kontrollieren" und „mit Protokoll"** gehen über die
+  belegten vier bzw. sechs Punkte hinaus; „Protokoll" steht alt nur beim
+  Wartungsvertrag. Gibt es das Prüfprotokoll physisch?
+- **§ 34d GewO fehlt.** Kein Treffer für Vermittlerstatus, Registernummer,
+  DIHK oder Schlichtungsstelle im ganzen Repo. Die Altseite hatte sie auch
+  nicht, aber die neue Seite bewirbt die Vermittlung mit eigener Route und
+  Formular. Erlaubnisstatus klären (Abs. 1 oder gebundener Vertreter Abs. 7).
+- **Keine ear-/WEEE-Nummer, keine ElektroG- und BattG-Hinweise**, obwohl
+  Elektrogeräte verkauft und Altgeräte zurückgenommen werden (§ 17 ElektroG).
+- **USt-IdNr. DE346591640 neben § 19 UStG.** Beides stand auch alt so da.
+  Möglich, aber ungewöhnlich — oft ist es in Wahrheit die Steuernummer. Wenn
+  ja: Überschrift ändern und `vatID` aus `lib/schema.tsx` entfernen.
+- **Zweite Preisspalte des ERGO-Aushangs ist im ausgelieferten Foto sichtbar**
+  (122/186/180/115/130 €), die Tabelle nennt nur eine. Bedeutung klären oder
+  den Bildausschnitt beschneiden — ein unerklärter Zweitpreis ist PAngV-
+  riskanter als gar keiner.
+- **Erster Tarifzeitraum endet 31.03.2027**, das Verkehrsjahr am 28.02.2027.
+  So steht es auf dem Aushang, ist aber sachlich fragwürdig.
+- **`skopegebrauchtwarenhandel.de` gehört dem Betreiber**, zeigt auf Wix und
+  ist nicht verbunden (404). Das alte JSON-LD nutzte bereits die .de-Adresse
+  als `@id`, obwohl die Seite unter .com lief. Hauptdomain festlegen, die
+  andere per 301.
+- **Hinweis auf eine Festnetznummer:** Das alte Schema trug den Platzhalter
+  `+49-7139-XXXXXX` (Vorwahl Neuenstadt). Festnetz ist im Local Pack das
+  stärkere NAP-Signal als eine Mobilnummer.
+- **eBay-Konto:** Es gibt Treffer, aber über mehrere Konten verteilt und
+  keinem davon zuzuordnen. Verkäufernamen erfragen, dann in `sameAs`.
+
+**Erledigt durch die Prüfung, nicht mehr offen:**
+
+- **Social-Profile gibt es nicht.** Roh-HTML aller sechs Altseiten nach
+  facebook/instagram/tiktok/youtube/whatsapp/ebay/kleinanzeigen durchsucht:
+  null Treffer. `sameAs` bleibt einelementig.
+- **Geo bestätigt:** Der Maps-Kurzlink löst auf `!3d49.2373006!4d9.3436176`
+  auf — exakt die Werte in `lib/site.ts`. Die Altseite lag mit 49,2333/9,3333
+  rund einen Kilometer daneben.
+- **Nicht prüfbar blieb das Google-Profil** (Consent-Wall): Öffnungszeiten und
+  5,0 aus 37 Rezensionen sind weiterhin unbestätigt. Im eingeloggten Browser
+  ablesen.
+- **Deckungsgleich und sauber übernommen:** alle Leistungspreise (59,99 €,
+  ab 15/25/40 €, 130 €/Jahr, 17,99 €/Monat, 215,88 €, 15 km Abholung,
+  Kennzeichen 5–10 Werktage), „über 500 reparierte Scooter", Gewährleistung
+  ein Jahr (wörtlich in den Alt-AGB, § 476 Abs. 2 BGB), Adresse, Telefon,
+  E-Mail, alle sechs ERGO-Zeiträume, die ABE-Warnungen bei F2 E und Xiaomi 5
+  Max. Zwei Altseiten-Übertreibungen wurden zu Recht nicht übernommen: der
+  „27-Punkte-Sicherheitscheck" und die „unbegrenzten Checks".
 
 ## Der Erklärfilm
 
