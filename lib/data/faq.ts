@@ -103,10 +103,22 @@ export const faqBuy: FaqItem[] = [
   },
 ];
 
-/** Kurz-FAQ für die Startseite: die vier häufigsten Einstiegsfragen. */
+/**
+ * Kurz-FAQ für die Startseite.
+ *
+ * Bis zum 20.08.2026 standen hier zwei Reparaturfragen zuerst und der Kauf an
+ * dritter Stelle. Das war die Reihenfolge einer Werkstatt; verkauft werden in
+ * erster Linie generalüberholte Geräte. Jetzt führen die drei Fragen, die vor
+ * einem Gebrauchtkauf tatsächlich gestellt werden – was steht da, was ist
+ * geprüft, was gilt wenn etwas ist –, danach der Preis einer Reparatur.
+ *
+ * Fünf statt vier: Die Frage nach Bestand und Preisen ist die häufigste
+ * Einstiegsfrage überhaupt und ersetzt keine der bisherigen.
+ */
 export const faqHome: FaqItem[] = [
-  faqRepair[1],
-  faqRepair[2],
+  faqBuy[2],
   faqBuy[0],
-  faqInsurance[0],
+  faqBuy[1],
+  faqBuy[5],
+  faqRepair[1],
 ];

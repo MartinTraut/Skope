@@ -46,13 +46,20 @@ const cities: Node[] = [
 function baseNodes(): Node[] {
   return [
     {
-      "@type": ["LocalBusiness", "AutoRepair", "Organization"],
+      /* `Store` steht vorn, `AutoRepair` dahinter.
+         Die Reihenfolge hat keine formale Bedeutung, die Auswahl schon: Bis
+         zum 20.08.2026 war der Betrieb ausschließlich als Werkstatt
+         ausgezeichnet. Für einen Betrieb, dessen Hauptgeschäft der Verkauf
+         generalüberholter Geräte ist, fehlte damit im Schema genau der Typ,
+         unter dem er gefunden werden soll. Beide bleiben stehen – er ist
+         tatsächlich beides, und `AutoRepair` trägt die Reparaturseiten. */
+      "@type": ["Store", "LocalBusiness", "AutoRepair", "Organization"],
       "@id": ORG_ID,
       name: site.legalName,
       alternateName: site.name,
       url: site.url,
       description:
-        "Fachwerkstatt für E-Scooter und Verkauf generalüberholter Elektrokleinstfahrzeuge in Neuenstadt am Kocher. Reparatur, Wartungsverträge, Versicherung über ERGO und kostenlose Verwertung von Altgeräten.",
+        "Verkauf generalüberholter E-Scooter mit Skope-Qualitätssiegel und einem Jahr Gewährleistung in Neuenstadt am Kocher. Jedes Gerät wird in der eigenen Fachwerkstatt geprüft und aufbereitet. Dazu Reparatur aller Marken, Wartungsverträge, Versicherungskennzeichen über ERGO und kostenlose Verwertung von Altgeräten.",
       telephone: site.phone.display,
       email: site.email,
       vatID: site.vatId,
@@ -82,14 +89,20 @@ function baseNodes(): Node[] {
         availableLanguage: "German",
       },
       areaServed: cities,
+      /* Reihenfolge nach Geschäftsgewicht: Verkauf zuerst. `knowsAbout` ist
+         kein Ranking-Signal im engeren Sinn, aber es ist die Liste, aus der
+         Antwortsysteme ableiten, wofür dieser Betrieb steht – und dort stand
+         die Reparatur an erster und der Verkauf an vierter Stelle. */
       knowsAbout: [
+        "Refurbished E-Scooter",
+        "Gebrauchte E-Scooter mit Gewährleistung",
+        "Ankauf gebrauchter E-Scooter",
         "E-Scooter Reparatur",
         "Akku-Diagnose",
         "Elektrokleinstfahrzeuge",
-        "Refurbished E-Scooter",
         "E-Scooter Versicherung",
       ],
-      image: `${site.url}/img/werkstatt-service.jpg`,
+      image: `${site.url}/img/scooter-studio.jpg`,
       // Pflichtfeld für das Marken-Panel. Quelle ist dieselbe Glyphe, aus der
       // auch das App-Icon gerastert wird – Next liefert sie unter /icon.png aus.
       logo: {
@@ -110,6 +123,7 @@ function baseNodes(): Node[] {
       jobTitle: "Inhaber und Werkstattleiter",
       worksFor: { "@id": ORG_ID },
       knowsAbout: [
+        "Aufbereitung gebrauchter E-Scooter",
         "E-Scooter Reparatur",
         "Akku-Diagnose",
         "Elektrokleinstfahrzeuge",

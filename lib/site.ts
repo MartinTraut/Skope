@@ -10,7 +10,11 @@ export const site = {
   owner: "Thomas Zielke",
   // TODO Betreiber: finale Domain festlegen (.com oder .de) und hier eintragen.
   url: "https://www.skopegebrauchtwarenhandel.com",
-  tagline: "E-Scooter Fachwerkstatt & Refurbished-Verkauf",
+  /* Die Reihenfolge ist die Rangfolge des Geschäfts, nicht Geschmack: Der
+     Verkauf generalüberholter Geräte trägt den Betrieb, die Werkstatt ist der
+     Grund, warum man dort kauft. Der Wert steht im WebSite-Knoten des Schemas
+     und im Namen jeder Seite ohne eigenen Titel. */
+  tagline: "Geprüfte E-Scooter & Fachwerkstatt",
   vatId: "DE346591640",
 
   address: {

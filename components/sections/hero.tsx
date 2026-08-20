@@ -9,6 +9,7 @@ import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials } from "@/lib/data/testimonials";
+import { inventoryFacts } from "@/lib/inventory";
 import { googleRating, proof } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
@@ -33,24 +34,27 @@ const leadReview = testimonials.reduce((shortest, item) =>
  * der Gattung hängt statt am Einzelfall. Vier Zahlen in Neon sagen „das hier
  * sind die Zahlen", eine sagt „diese ist wichtiger" – und das wäre gelogen.
  *
- * Der frühere Zähler bleibt weg: Er erzählt „Menge", was auf eine Entfernung
- * oder eine Frist nicht zutrifft.
+ * Die Reihenfolge folgt dem Geschäft: Bestand, Einstiegspreis und
+ * Gewährleistung stehen vorn, weil der Verkauf generalüberholter Geräte das
+ * Hauptgeschäft ist. Die Zahl der Reparaturen steht hinten und hat dort eine
+ * andere Aufgabe als früher – sie ist nicht mehr das Angebot, sondern der
+ * Beleg dafür, dass die Aufbereitung aus einer Werkstatt kommt und nicht aus
+ * einem Lager.
+ *
+ * Anzahl und Einstiegspreis kommen aus dem Bestand, nicht aus dem Fließtext:
+ * Bei einer Liste, die laut eigener Ansage laufend wechselt, wäre eine von
+ * Hand geschriebene Zahl der erste Satz, der unbemerkt falsch wird.
  */
+const facts = inventoryFacts();
+
 const stats = [
-  { value: `${proof.repairs}+`, label: "reparierte E-Scooter" },
-  { value: "59,99 €", label: "kompletter Sicherheits-Checkup" },
-  { value: `${proof.warrantyYears} Jahr`, label: "Gewährleistung gebraucht" },
-  // „bis 25 km" statt der früheren Spanne: Ausgeschrieben („8 bis 25 km")
-  // bricht der Wert auf 390 px in zwei Zeilen um und schiebt seine Bildunter-
-  // zeile 32 px unter die des Nachbarn in derselben Rasterreihe – gemessen.
-  // Die Untergrenze trägt ohnehin keine Aussage; die Reichweite tut es.
-  //
-  // Die Bildunterzeile nennt die Städte. „Einzugsgebiet um Neuenstadt" war
-  // ein Fachwort über einem Ort, den außerhalb der Region niemand einordnen
-  // kann – zusammen sagten Zahl und Zeile nicht, was sie bedeuten. Drei
-  // bekannte Städte beantworten die Frage „bin ich da drin?" sofort und sind
-  // zugleich das, wonach gesucht wird.
-  { value: "bis 25 km", label: "Umkreis mit Heilbronn, Öhringen, Mosbach" },
+  { value: `${facts.count}`, label: "geprüfte Geräte vorrätig" },
+  { value: facts.priceFrom, label: "Einstiegspreis, Endpreis ohne USt." },
+  {
+    value: `${proof.warrantyYears} Jahr`,
+    label: "Gewährleistung auf jedes Gerät",
+  },
+  { value: `${proof.repairs}+`, label: "reparierte E-Scooter in eigener Werkstatt" },
 ];
 
 export function Hero() {
@@ -169,24 +173,37 @@ export function Hero() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
           <div className="lg:col-span-7">
             <Reveal immediate>
+              {/* Die Auszeichnungszeile nennt jetzt das Angebot, nicht den
+                  Betriebstyp: „Fachwerkstatt" beschreibt, was hier steht,
+                  „Refurbished" beschreibt, was verkauft wird. Der Ort bleibt,
+                  er ist die halbe Suchanfrage. */}
               <p className="eyebrow text-current/90">
-                E-Scooter Fachwerkstatt · Neuenstadt am Kocher
+                Refurbished E-Scooter · Neuenstadt am Kocher
               </p>
             </Reveal>
 
             {/*
-              Nüchtern statt Wortspiel. Die vorherige Zeile „Wegwerfen ist
-              keine Diagnose." war ein Werbespruch mit goldenem Verlaufswort
-              und sagte weder, was hier passiert, noch für wen. Jetzt trägt
-              die H1 die Leistung und den Ort, das ist zugleich das, wonach
-              gesucht wird.
+              Die Überschrift trägt das Hauptgeschäft, nicht die bekannteste
+              Leistung.
 
-              Der Umbruch steht wieder fest. Frei umbrochen verteilte
+              Vorher stand hier „E-Scooter reparieren statt neu kaufen". Der
+              Satz war gut gebaut und beschrieb den falschen Betrieb: Er
+              verkauft in erster Linie generalüberholte Geräte; Reparatur,
+              Wartung und Versicherung hängen daran. Eine Startseite, deren
+              erster Satz eine Reparaturannahme ankündigt, wird für „E-Scooter
+              gebraucht kaufen" nicht gefunden – und wer sie trotzdem findet,
+              liest zuerst ein Angebot, das er nicht gesucht hat.
+
+              „Geprüfte E-Scooter gebraucht kaufen" enthält die Suchanfrage
+              vollständig und stellt ihr das Unterscheidungsmerkmal voran.
+              Markiert ist „geprüfte": Das ist der Unterschied zum
+              Kleinanzeigenportal, und es ist das einzige Wort im Satz, für
+              das dieser Betrieb einsteht.
+
+              Der Umbruch steht fest. Frei umbrochen verteilte
               `text-wrap: balance` den Satz in der halbbreiten Spalte auf drei
-              ungleiche Zeilen und trennte „reparieren" von „E-Scooter" – die
-              Leistung stand damit nicht mehr in einer Zeile mit dem, woran
-              sie geschieht. Zwei Blöcke setzen die Zäsur dorthin, wo der Satz
-              sie im Sinn hat.
+              ungleiche Zeilen. Zwei Blöcke setzen die Zäsur dorthin, wo der
+              Satz sie im Sinn hat.
 
               Eine Maske für beide Zeilen: Sie steigen gemeinsam auf, weil
               zwei getrennte Masken denselben Satz in zwei Ereignisse
@@ -201,9 +218,9 @@ export function Hero() {
             <h1 className="rise-line mt-6 text-[length:var(--text-hero)] lg:w-[115%]">
               <span>
                 <span className="block">
-                  E-Scooter <Mark>reparieren</Mark>
+                  <Mark>Geprüfte</Mark> E-Scooter
                 </span>
-                <span className="block">statt neu kaufen</span>
+                <span className="block">gebraucht kaufen</span>
               </span>
             </h1>
 
@@ -220,22 +237,24 @@ export function Hero() {
                   Unterlängen-Reserve. Gemessen begann der Fließtext dadurch
                   neun Pixel oberhalb der Unterkante der Überschrift. */}
               <p className="mt-8 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
-                Die meisten Defekte sind kein Totalschaden. Wir messen zuerst
-                Fehlerspeicher, Akkukapazität und Bauteile und nennen den Preis,
-                bevor wir anfangen. Werkstatt in Neuenstadt am Kocher, für
-                Heilbronn, Neckarsulm und die Region.
+                Jedes Gerät wird in der eigenen Werkstatt vollständig geprüft,
+                aufbereitet und mit {proof.warrantyYears} Jahr Gewährleistung
+                übergeben. Dieselbe Werkstatt repariert und wartet ihn danach.
+                In Neuenstadt am Kocher, für Heilbronn, Neckarsulm und die
+                Region.
               </p>
             </Reveal>
 
             <Reveal immediate>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <PhoneButton className="max-sm:w-full" />
-                <ButtonLink
-                  href="/reparatur#anfrage"
-                  variant="outline"
-                  size="lg"
-                >
-                  Reparatur anfragen
+                {/* Der zweite Weg führt in den Bestand, nicht in die
+                    Reparaturannahme. Wer kaufen will, soll die Geräte sehen;
+                    wer eine Reparatur braucht, greift zum Telefon daneben
+                    oder findet die Leistung in der Navigation an zweiter
+                    Stelle. */}
+                <ButtonLink href="/e-scooter#bestand" variant="outline" size="lg">
+                  {facts.count} Geräte ansehen
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </ButtonLink>
               </div>
@@ -255,7 +274,7 @@ export function Hero() {
                   aria-hidden="true"
                   className="size-2.5 shrink-0 rounded-full bg-neon"
                 />
-                Bremsen und Reifen meist am selben Tag
+                Alle Geräte sofort verfügbar, Probefahrt vor Ort
               </p>
             </Reveal>
 

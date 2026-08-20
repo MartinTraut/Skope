@@ -5,13 +5,60 @@ herausfinden müssen, was hier schon entschieden und gemessen wurde.
 
 ## Was das ist
 
-Website der SKOPE E-Scooter Fachwerkstatt, Im Kampfrad 3, 74196 Neuenstadt am
-Kocher. Verkauf geprüfter Gebrauchtgeräte, Reparatur, Wartungsverträge,
-Versicherungsvermittlung (ERGO), kostenlose Altgerät-Rücknahme. Inhaber Thomas
+Website von SKOPE, Im Kampfrad 3, 74196 Neuenstadt am Kocher. Inhaber Thomas
 Zielke, Kleinunternehmer nach § 19 UStG.
+
+**Das Hauptgeschäft ist der Verkauf generalüberholter E-Scooter.** Reparatur,
+Wartungsverträge, Versicherungsvermittlung (ERGO) und die kostenlose
+Altgerät-Rücknahme sind Nebenleistungen; sie tragen den Betrieb nicht, sondern
+begründen ihn: Die eigene Werkstatt ist der Grund, warum man dort ein
+gebrauchtes Gerät kauft statt über ein Kleinanzeigenportal.
+
+Das war bis zum **20.08.2026 andersherum aufgebaut** — Auskunft des Betreibers,
+nicht Vermutung. Was daraufhin gedreht wurde, steht unter „Rangfolge der
+Leistungen". Wer hier Texte ändert, prüft vorher, ob die Änderung diese
+Rangfolge wieder aufweicht.
 
 Next.js 16 (App Router), React 19, TypeScript, Tailwind v4. Keine
 Animationsbibliothek, kein UI-Framework über shadcn hinaus.
+
+## Rangfolge der Leistungen
+
+Umgestellt am 20.08.2026. Die Seite verkaufte bis dahin eine Reparaturwerkstatt,
+die nebenbei Geräte hat. Gedreht wurde nicht der Tonfall, sondern die Struktur:
+
+- **Die Startseite zeigt jetzt Geräte.** Vorher stand hinter dem Kopfbereich der
+  Ablauf einer Reparatur — und auf der ganzen Startseite kein einziger Scooter.
+  `components/sections/inventory-teaser.tsx` steht jetzt auf diesem Platz, mit
+  drei Karten aus `inventoryHighlights()`, Anzahl, Preisspanne und
+  Gewährleistung.
+- **`components/sections/process.tsx` ist gelöscht,** nicht verschoben. Die vier
+  Schritte standen dort wortgleich noch einmal, obwohl `/reparatur` sie führt.
+- **H1 der Startseite:** „E-Scooter reparieren statt neu kaufen" →
+  „Geprüfte E-Scooter gebraucht kaufen". Die zweite Aktion im Kopfbereich führt
+  in den Bestand statt in die Reparaturannahme, die Verfügbarkeitszeile nennt
+  die Geräte statt der Bearbeitungszeit.
+- **Kennzahlen im Kopfbereich:** Bestand, Einstiegspreis und Gewährleistung
+  zuerst; die 500 reparierten Scooter stehen hinten und haben dort eine andere
+  Aufgabe — sie sind der Beleg für die Aufbereitung, nicht das Angebot.
+  Anzahl und Einstiegspreis kommen aus `inventoryFacts()`, nicht aus dem Text.
+- **Schema:** `Store` ist als Typ dazugekommen (vorher nur LocalBusiness,
+  AutoRepair, Organization — für einen Betrieb, dessen Hauptgeschäft der Verkauf
+  ist, fehlte genau der Typ). `description` und `knowsAbout` führen den Verkauf
+  voran, das Organisationsbild zeigt ein Gerät statt einer Reparaturszene.
+- **`site.tagline`** ist „Geprüfte E-Scooter & Fachwerkstatt", nicht mehr
+  umgekehrt. Der Wert steht im WebSite-Knoten und in jedem Seitennamen ohne
+  eigenen Titel.
+- **Titel:** Startseite „Geprüfte E-Scooter kaufen in Neuenstadt", Bestandsseite
+  „E-Scooter gebraucht kaufen in Heilbronn". Bewusst nicht wortgleich — zwei
+  Seiten auf dieselbe Wortfolge lässt Google eine davon aussortieren.
+- **`faqHome`** führt drei Kauffragen vor der Reparaturfrage.
+
+**Offen:** Der Betreiber nennt „Ersatzteile" als zweites Standbein neben der
+Reparatur. Auf der Seite kommen Ersatzteile bisher nur als Rabatt im
+Wartungsvertrag und als wiederverwendete Teile aus dem Recycling vor. Ob
+Ersatzteile auch einzeln verkauft werden — an wen, welche, zu welchen Preisen —
+ist nicht belegt und deshalb nirgends behauptet. Vor dem Ausbau erfragen.
 
 ## Bevor etwas als fertig gemeldet wird
 

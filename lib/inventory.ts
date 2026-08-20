@@ -749,3 +749,29 @@ export function inventoryFacts() {
     brands,
   };
 }
+
+/**
+ * Eine Auswahl für die Startseite.
+ *
+ * Nicht die drei ersten, sondern über die Preisspanne verteilt: Die Liste ist
+ * nach Preis sortiert, drei aufeinanderfolgende Geräte zeigen deshalb dreimal
+ * dasselbe Preissegment – und der Bestand sieht schmaler aus, als er ist.
+ * Gleichmäßig verteilt steht auf der Startseite das billigste, ein mittleres
+ * und ein oberes Gerät.
+ *
+ * Nur Geräte mit deutscher Betriebserlaubnis. Die beiden Ausnahmen tragen
+ * eine Warnung, die auf der Karte nie eingeklappt wird; als Aushängeschild
+ * auf der Startseite wären sie das falsche erste Beispiel für ein Angebot,
+ * dessen Argument gerade die Straßentauglichkeit ist. Auf der Bestandsseite
+ * stehen sie vollständig und mit Hinweis.
+ */
+export function inventoryHighlights(count = 3): InventoryItem[] {
+  const legal = inventory.filter((item) => item.streetLegal);
+  if (legal.length <= count) return legal;
+
+  const step = (legal.length - 1) / (count - 1);
+  return Array.from(
+    { length: count },
+    (_, i) => legal[Math.round(i * step)],
+  );
+}
