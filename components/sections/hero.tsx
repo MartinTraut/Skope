@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
-import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
@@ -54,7 +53,10 @@ const stats = [
     value: `${proof.warrantyYears} Jahr`,
     label: "Gewährleistung auf jedes Gerät",
   },
-  { value: `${proof.repairs}+`, label: "reparierte E-Scooter in eigener Werkstatt" },
+  {
+    value: `${proof.repairs}+`,
+    label: "reparierte E-Scooter in eigener Werkstatt",
+  },
 ];
 
 export function Hero() {
@@ -69,7 +71,7 @@ export function Hero() {
           Roller bliebe ein Ausschnitt der Lenkstange. Auf die Textzone
           begrenzt liegt das Verhältnis bei etwa 1,6 – dem der Aufnahme. */}
       <div className="relative">
-      {/* Die Werkstatt selbst als Grund, über die volle Breite.
+        {/* Die Werkstatt selbst als Grund, über die volle Breite.
           Vorher stand hier der Shader und rechts daneben ein Hochformat im
           Rahmen – zwei Gegenstände, die um dieselbe Fläche konkurrierten.
           Jetzt trägt eine Aufnahme beides: Tiefe für die Glasleiste des
@@ -82,7 +84,7 @@ export function Hero() {
 
           `object-position` hält den Roller rechts neben der Textspalte: Der
           Bildausschnitt wandert mit der Breite, das Motiv nicht. */}
-      {/* Die Bildfläche endet an derselben Kante wie die Textspalte, nicht am
+        {/* Die Bildfläche endet an derselben Kante wie die Textspalte, nicht am
           Fensterrand.
 
           Gemessen auf einem 49-Zoll-Schirm (5120 px): Die Aufnahme liegt
@@ -103,11 +105,11 @@ export function Hero() {
           harte senkrechte Kante mitten in der Sektion. Der Auslauf hängt an
           `min-[104rem]`, damit er unterhalb der Grenze nicht den Roller
           anschneidet – dort steht er am rechten Bildrand. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-full max-w-[104rem] -translate-x-1/2 overflow-hidden min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]"
-      >
-        {/* `object-contain` statt `object-cover` – die Aufnahme wird
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]"
+        >
+          {/* `object-contain` statt `object-cover` – die Aufnahme wird
             vollständig gezeigt, nicht beschnitten.
 
             Mit `cover` bestimmt die längere Seite den Maßstab: Die Bildzone
@@ -120,30 +122,63 @@ export function Hero() {
             immer vollständig; was oben fehlt, ist Tinte – der Grund der
             Sektion, kein Loch. Unten und rechts verankert, damit der Roller
             neben der Textspalte steht und auf der Standfläche aufsitzt. */}
-        {/* Die Beschreibung sitzt an dieser Fläche, nicht an der Tafel weiter
-            unten: Die Tafel ist `lg:hidden`, auf dem Schreibtisch war das
-            Motiv des Kopfbereichs damit gar nicht beschrieben. Hier steht es
-            auf jeder Breite. Die Tafel trägt dafür jetzt ein leeres Attribut –
-            sie zeigt dieselbe Aufnahme, und zweimal derselbe Text hintereinander
-            ist am Vorleser eine Wiederholung ohne Gewinn. */}
-        <Image
-          src="/img/hero-werkstatt.jpg"
-          alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
-        />
-        {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
-        <div className="hero-scrim absolute inset-0" />
-        {/* Der Werkstattboden ist die hellste Stelle der Aufnahme und lag
+          {/* Diese Fläche ist `hidden lg:block`, die Bühne darüber `lg:hidden`:
+            Auf keiner Breite steht die Aufnahme zweimal, deshalb trägt jede
+            der beiden dieselbe Beschreibung und dieselbe `sizes`-Angabe – es
+            ist immer nur eine da, und zwei verschiedene Angaben hätten mit
+            `priority` zwei Breiten derselben Datei vorgeladen. */}
+          <Image
+            src="/img/hero-werkstatt.jpg"
+            alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
+          />
+          {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
+          <div className="hero-scrim absolute inset-0" />
+          {/* Der Werkstattboden ist die hellste Stelle der Aufnahme und lag
             genau auf der Unterkante der Bildzone – eine waagerechte Kante
             quer durch die Sektion. Der zweite Verlauf zieht die letzten
             10 rem in die Tinte, in der das Beweisband darunter steht. */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
-      </div>
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
+        </div>
 
-      {/* Der Kopfabstand hängt an der Höhe des Fensters, nicht an seiner
+        {/* Dieselbe Aufnahme für das Telefon – aber als Bühne über dem Text,
+            nicht als Grund hinter der ganzen Sektion.
+
+            Über die volle Sektionshöhe gelegt bleibt bei 390 px nichts vom
+            Motiv übrig: Die Sektion ist 1630 px hoch, die Aufnahme 2400 × 1507.
+            `object-cover` skaliert dann über die Höhe (Faktor 1,08), das Bild
+            wird 2600 px breit, und sichtbar sind 15 % davon – ein Ausschnitt
+            der Trittfläche. Auf eine Zone von 26 rem begrenzt liegt der Faktor
+            bei 0,28, sichtbar sind 59 % der Breite, und der Roller steht
+            vollständig darin.
+
+            Die Fläche läuft bis an beide Gehäusekanten (`w-screen`), weil ein
+            Motiv, das im Satzspiegel endet, auf dem Telefon eine Tafel wäre –
+            und eine Tafel war hier schon.
+
+            Der Verlauf ist dreiteilig: oben leicht abgedunkelt für die
+            Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
+            damit die Überschrift darauf steht und die Zone ohne Kante in die
+            Tinte übergeht. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58vh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden"
+        >
+          <Image
+            src="/img/hero-werkstatt.jpg"
+            alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[82%_center] brightness-115"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
+        </div>
+
+        {/* Der Kopfabstand hängt an der Höhe des Fensters, nicht an seiner
           Breite.
 
           Gemessen im Querformat eines iPhone (844 × 390): 112 px fester
@@ -158,8 +193,8 @@ export function Hero() {
           115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
           dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
           ändert sich also nichts. */}
-      <Container className="relative pt-[clamp(5.5rem,3rem+8vh,8rem)] pb-14 md:pb-16">
-        {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
+        <Container className="relative pt-[clamp(7rem,4.5rem+11vh,10rem)] pb-10 lg:pt-[clamp(5.5rem,3rem+8vh,8rem)] md:pb-16">
+          {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der
             seitliche Schleier durchlässt; dort steht der Roller.
@@ -170,19 +205,19 @@ export function Hero() {
             zwischen „E-Scooter" und „reparieren" um, und aus zwei Zeilen
             wurden drei. Der Grad in `--text-hero` ist auf diese sieben
             Spalten gerechnet. */}
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
-          <div className="lg:col-span-7">
-            <Reveal immediate>
-              {/* Die Auszeichnungszeile nennt jetzt das Angebot, nicht den
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
+            <div className="lg:col-span-7">
+              <Reveal immediate>
+                {/* Die Auszeichnungszeile nennt jetzt das Angebot, nicht den
                   Betriebstyp: „Fachwerkstatt" beschreibt, was hier steht,
                   „Refurbished" beschreibt, was verkauft wird. Der Ort bleibt,
                   er ist die halbe Suchanfrage. */}
-              <p className="eyebrow text-current/90">
-                Refurbished E-Scooter · Neuenstadt am Kocher
-              </p>
-            </Reveal>
+                <p className="eyebrow text-current/90">
+                  Refurbished E-Scooter · Neuenstadt am Kocher
+                </p>
+              </Reveal>
 
-            {/*
+              {/*
               Die Überschrift trägt das Hauptgeschäft, nicht die bekannteste
               Leistung.
 
@@ -209,162 +244,170 @@ export function Hero() {
               zwei getrennte Masken denselben Satz in zwei Ereignisse
               zerlegen.
             */}
-            {/* Acht Spalten für die Überschrift, sieben für alles darunter.
+              {/* Acht Spalten für die Überschrift, sieben für alles darunter.
                 Die Textspalte fällt bei 1024 px von 820 auf 515 px, und dieser
                 eine Punkt deckelte den Grad auf jeder größeren Breite mit.
                 115 % sind gemessen genau die achte Spalte samt Rasterabstand
                 (800 → 920 px bei 1512 px); der Fließtext bleibt bei sieben,
                 weil eine Lesestrecke nicht breiter werden soll. */}
-            <h1 className="rise-line mt-6 text-[length:var(--text-hero)] lg:w-[115%]">
-              <span>
-                <span className="block">
-                  <Mark>Geprüfte</Mark> E-Scooter
+              <h1 className="rise-line mt-6 text-[length:var(--text-hero)] lg:w-[115%]">
+                <span>
+                  <span className="block">
+                    <Mark>Geprüfte</Mark> E-Scooter
+                  </span>
+                  <span className="block">gebraucht kaufen</span>
                 </span>
-                <span className="block">gebraucht kaufen</span>
-              </span>
-            </h1>
+              </h1>
 
-            <Reveal immediate>
-              {/* Der Vorgänger war eine Leistungsaufzählung („Fehlerdiagnose,
+              <Reveal immediate>
+                {/* Der Vorgänger war eine Leistungsaufzählung („Fehlerdiagnose,
                   Wartung und geprüfte Gebrauchtgeräte"). Sie beantwortete die
                   Frage, die jemand mit einem defekten Gerät im Kopf hat, an
                   keiner Stelle: Ist das noch zu retten, und was kostet mich
                   das Nachfragen? Beides steht jetzt in den ersten zwei
                   Sätzen. */}
-              {/* `mt-8` gehört hierher und nicht an den Abstand des Rasters:
+                {/* `mt-8` gehört hierher und nicht an den Abstand des Rasters:
                   Die Überschrift zieht mit dem negativen Ausgleich von
                   `.rise-line` acht Pixel nach oben in ihre eigene
                   Unterlängen-Reserve. Gemessen begann der Fließtext dadurch
                   neun Pixel oberhalb der Unterkante der Überschrift. */}
-              <p className="mt-8 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
-                Jedes Gerät wird in der eigenen Werkstatt vollständig geprüft,
-                aufbereitet und mit {proof.warrantyYears} Jahr Gewährleistung
-                übergeben. Dieselbe Werkstatt repariert und wartet ihn danach.
-                In Neuenstadt am Kocher, für Heilbronn, Neckarsulm und die
-                Region.
-              </p>
-            </Reveal>
+                <p className="mt-8 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
+                  Jedes Gerät wird in der eigenen Werkstatt vollständig geprüft,
+                  aufbereitet und mit {proof.warrantyYears} Jahr Gewährleistung
+                  übergeben. Dieselbe Werkstatt repariert und wartet ihn danach.
+                  In Neuenstadt am Kocher, für Heilbronn, Neckarsulm und die
+                  Region.
+                </p>
+              </Reveal>
 
-            <Reveal immediate>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <PhoneButton className="max-sm:w-full" />
-                {/* Der zweite Weg führt in den Bestand, nicht in die
+              <Reveal immediate>
+                {/* Die Aktionen als ein Block, nicht als drei Kästen
+                    untereinander.
+
+                    Am Telefon standen hier ein neongelber Knopf, ein
+                    Umrissknopf und darunter mit 28 px Abstand eine dritte
+                    Fläche mit der Zusage – drei gleich große Rechtecke in drei
+                    verschiedenen Abständen. Jetzt liegen die beiden Knöpfe
+                    2,5 Einheiten auseinander, die Zusage 3 darunter und über
+                    die volle Spaltenbreite mittig: eine Gruppe mit einer Kante
+                    links und einer rechts.
+
+                    Beide Knöpfe sind am Telefon voll breit. Der Umrissknopf
+                    bekommt dort zusätzlich eine schwache Fläche – auf Tinte
+                    ist ein reiner Umriss neben einem Vollton so leicht, dass
+                    er wie ein Nachtrag aussieht. */}
+                <div className="mt-8 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:items-center sm:gap-3">
+                  <PhoneButton className="max-sm:w-full" />
+                  {/* Der zweite Weg führt in den Bestand, nicht in die
                     Reparaturannahme. Wer kaufen will, soll die Geräte sehen;
                     wer eine Reparatur braucht, greift zum Telefon daneben
                     oder findet die Leistung in der Navigation an zweiter
                     Stelle. */}
-                <ButtonLink href="/e-scooter#bestand" variant="outline" size="lg">
-                  {facts.count} Geräte ansehen
-                  <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </ButtonLink>
-              </div>
-              {/* Die Zusage neben den Aktionen, nicht als Fußnote darunter.
+                  <ButtonLink
+                    href="/e-scooter#bestand"
+                    variant="outline"
+                    size="lg"
+                    className="max-sm:w-full max-sm:border-current/25 max-sm:bg-current/8"
+                  >
+                    {facts.count} Geräte ansehen
+                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </ButtonLink>
+                </div>
+                {/* Die Zusage neben den Aktionen, nicht als Fußnote darunter.
                   Vorher stand sie in 14 px bei 65 % Deckkraft unter zwei
                   Buttons – die einzige Stelle im Kopfbereich, an der etwas
                   Konkretes über die Wartezeit steht, und optisch die
                   schwächste. Jetzt trägt sie eine eigene Fläche und den
                   Neonpunkt, der auf der ganzen Seite „verfügbar" meint. */}
-              {/* Dasselbe umlaufende Licht wie an den Prüfpositionen der
+                {/* Dasselbe umlaufende Licht wie an den Prüfpositionen der
                   Geräteseite: Es meint an beiden Stellen dasselbe – hier
                   wird geprüft, hier ist etwas verfügbar. Der Kern der Spur
                   läuft in `currentColor`, deshalb ist er auf Tinte hell und
                   auf Silber dunkel, ohne zweite Regel. */}
-              {/* Rund wie eine Pille nur, solange die Zeile einzeilig ist.
+                {/* Rund wie eine Pille nur, solange die Zeile einzeilig ist.
                   Bei 390 px läuft der Satz über zwei Zeilen, und ein
                   Stadionradius um einen zweizeiligen Block liest sich als
                   Fehler, nicht als Form. Unterhalb von `sm` deshalb der
                   Kachelradius und ein Innenrand, der oben und unten gleich
                   ist. */}
-              <p className="trace mt-7 inline-flex items-center gap-3 rounded-2xl bg-current/8 px-4.5 py-3 font-display text-[0.9375rem] font-semibold tracking-tight sm:rounded-full sm:py-2.5 sm:pr-6 sm:pl-4.5">
-                <span
-                  aria-hidden="true"
-                  className="size-2.5 shrink-0 rounded-full bg-neon"
-                />
-                Alle Geräte sofort verfügbar, Probefahrt vor Ort
-              </p>
-            </Reveal>
+                <p className="trace mt-3 flex items-center gap-3 rounded-2xl bg-current/8 px-4.5 py-3 font-display text-[0.9375rem] font-semibold tracking-tight sm:mt-7 sm:inline-flex sm:w-auto sm:rounded-full sm:py-2.5 sm:pr-6 sm:pl-4.5">
+                  <span
+                    aria-hidden="true"
+                    className="size-2.5 shrink-0 rounded-full bg-neon"
+                  />
+                  Alle Geräte sofort verfügbar, Probefahrt vor Ort
+                </p>
+              </Reveal>
 
-            {/* Auf dem Telefon steht die Aufnahme im Text, nicht dahinter.
-                Gemessen bleibt bei 390 px von einem 16:10-Bild hinter einer
-                Sektion von rund 1100 px Höhe ein Streifen von 22 % der
-                Bildbreite übrig – dort ist der Roller entweder ganz oder gar
-                nicht zu sehen, und der Schleier, der die Schrift trägt,
-                verdunkelt ihn zusätzlich. Als eigene Fläche zeigt sie das
-                Motiv vollständig; der Lichtring gibt ihr auf Schwarz die
-                Kante, die ein Schatten dort nicht geben kann. */}
-            <Reveal immediate delay={40} className="mt-10 lg:hidden">
-              <BorderBeamPanel
-                radius={20}
-                thickness={2}
-                beams={2}
-                className="aspect-[16/10] w-full overflow-hidden bg-ink-700"
-              >
-                <Image
-                  src="/img/hero-werkstatt.jpg"
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              </BorderBeamPanel>
-            </Reveal>
+              {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
+                  Die Rezensionen standen bisher unterhalb von Ablauf und
+                  Werkstatt – wer nach dem Kopfbereich weiterklickt, hatte bis
+                  dahin nur unsere eigenen Aussagen gelesen. Der Beleg gehört
+                  dorthin, wo die Entscheidung fällt.
 
-            {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
-                Die Rezensionen standen bisher unterhalb von Ablauf und
-                Werkstatt – wer nach dem Kopfbereich weiterklickt, hatte bis
-                dahin nur unsere eigenen Aussagen gelesen. Der Beleg gehört
-                dorthin, wo die Entscheidung fällt.
+                  Es ist derselbe Bestand wie im Band weiter unten, nur der
+                  Auszug: die Gesichter aller Stimmen, die Note, und eine
+                  Rezension im Wortlaut. Gold statt Neon, weil das hier ein
+                  Zitat von Google ist und kein Handlungsangebot – die Regel
+                  steht an `components/ui/stars.tsx`.
 
-                Es ist derselbe Bestand wie im Band weiter unten, nur der
-                Auszug: die Gesichter aller Stimmen, die Note, und eine
-                Rezension im Wortlaut. Gold statt Neon, weil das hier ein
-                Zitat von Google ist und kein Handlungsangebot – die Regel
-                steht an `components/ui/stars.tsx`. */}
-            <Reveal immediate delay={60}>
-              <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4">
-                <div aria-hidden="true" className="flex items-center -space-x-3">
-                  {testimonials.map((item) => (
-                    <span
-                      key={item.author}
-                      className="grid size-10 place-items-center rounded-full border-2 border-ink bg-silver/12 font-display text-xs font-bold tracking-wide backdrop-blur-sm"
+                  Und als ein Gegenstand, nicht als drei: Gestapelt standen
+                  hier auf dem Telefon vier Kreise, darunter eine Note mit
+                  Sternen, darunter eine Zeile mit dem Google-Zeichen und
+                  darunter ein Zitat an einer Randlinie – vier Blöcke in vier
+                  verschiedenen Abständen, die alle dasselbe sagen und die
+                  nichts zusammenhält. Jetzt eine Fläche mit Haarlinie: oben
+                  die Note samt Anzahl, unten die Stimme im Wortlaut. Die
+                  Gesichter stehen in derselben Zeile wie die Note, weil sie
+                  ihre Herkunft sind. */}
+              <Reveal immediate delay={60}>
+                <div className="mt-9 max-w-[46ch] overflow-hidden rounded-md border border-current/12 bg-current/5">
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-current/12 px-5 py-4">
+                    <div
+                      aria-hidden="true"
+                      className="flex items-center -space-x-1.5 sm:-space-x-2.5"
                     >
-                      {initials(item.author)}
-                    </span>
-                  ))}
-                </div>
+                      {testimonials.map((item) => (
+                        <span
+                          key={item.author}
+                          className="grid size-9 place-items-center rounded-full border-2 border-ink bg-silver/12 font-display text-xs font-bold tracking-wide"
+                        >
+                          {initials(item.author)}
+                        </span>
+                      ))}
+                    </div>
 
-                <div className="min-w-0">
-                  <p className="flex items-center gap-2.5">
-                    <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
-                      {googleRating.value}
-                    </span>
-                    <Stars
-                      rating={5}
-                      className="size-4"
-                      label={`${googleRating.value} von 5 Sternen bei Google`}
-                    />
-                  </p>
-                  <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
-                    <GoogleMark className="size-3.5 shrink-0" />
-                    {googleRating.count} Rezensionen bei Google
-                  </p>
-                </div>
-              </div>
+                    <div className="min-w-0">
+                      <p className="flex items-center gap-2.5">
+                        <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
+                          {googleRating.value}
+                        </span>
+                        <Stars
+                          rating={5}
+                          className="size-4"
+                          label={`${googleRating.value} von 5 Sternen bei Google`}
+                        />
+                      </p>
+                      <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
+                        <GoogleMark className="size-3.5 shrink-0" />
+                        {googleRating.count} Rezensionen bei Google
+                      </p>
+                    </div>
+                  </div>
 
-              <figure className="mt-6 max-w-[46ch] border-l-2 border-current/20 pl-5">
-                <blockquote className="font-display leading-snug font-semibold tracking-tight text-current/90">
-                  &bdquo;{leadReview.quote}&ldquo;
-                </blockquote>
-                <figcaption className="mt-2 text-sm text-current/60">
-                  {leadReview.author} · {leadReview.context}
-                </figcaption>
-              </figure>
-            </Reveal>
+                  <figure className="px-5 py-4">
+                    <blockquote className="font-display leading-snug font-semibold tracking-tight text-current/90">
+                      &bdquo;{leadReview.quote}&ldquo;
+                    </blockquote>
+                    <figcaption className="mt-2 text-sm text-current/60">
+                      {leadReview.author} · {leadReview.context}
+                    </figcaption>
+                  </figure>
+                </div>
+              </Reveal>
+            </div>
           </div>
-
-        </div>
-
-      </Container>
+        </Container>
       </div>
 
       <Container className="relative">

@@ -166,6 +166,44 @@ Die waren an drei Stellen tatsächlich falsch:
   begannen darunter. Deckel jetzt `max(20rem, min(26rem, 38vh))` ab `sm`, am
   Telefon unverändert volle Spalte, ab `lg` das Raster.
 
+- **Der Kopfbereich zeigte den Roller auf dem Telefon zweimal** – als Grund
+  hinter der Sektion *und* als gerahmte Tafel im Text. Jetzt trägt jede Breite
+  genau eine Aufnahme: der Grund `hidden lg:block`, die Telefonbühne
+  `lg:hidden`. Beide tragen dieselbe Beschreibung und dieselbe `sizes`-Angabe;
+  beide stehen mit `priority` im Vorladen, und zwei verschiedene Angaben hätten
+  zwei Breiten derselben Datei geholt.
+- **Auf dem Telefon steht der Text jetzt auf dem Bild, nicht daneben.** Über
+  die volle Sektionshöhe gelegt bleibt vom Motiv nichts: Die Sektion ist bei
+  390 px rund 1400 px hoch, die Aufnahme 2400 × 1507 – `object-cover` skaliert
+  dann über die Höhe und zeigt 15 % der Bildbreite, einen Ausschnitt der
+  Trittfläche. Deshalb eine **Bühne** am oberen Rand statt eines Grundes:
+  `h-[max(min(58vh,26rem),min(56vw,26rem))]`, volle Gehäusebreite (`w-screen`).
+  Der zweite Term ist für das Querformat – bei 844 × 390 wären 58 vh nur
+  226 px, und die Aufnahme wird dort über die Breite skaliert; man sah nur die
+  Lenkstange.
+- **Der Verlauf darüber ist dreiteilig:** oben 45 % Tinte für die
+  Auszeichnungszeile, bei 38 % nur 8 % für den Roller, ab 74 % dicht, damit die
+  Überschrift darauf steht und die Bühne ohne Kante in die Tinte übergeht.
+  Gemessen mit ausgeblendetem Text: hinter Überschrift und Fließtext liegt das
+  95. Perzentil bei 18–22 von 255, hellste Stelle 116 (Weiß darauf 4,7:1),
+  im Querformat 135 (3,6:1 – Großtext, Grenze 3:1).
+- **Der Bildausschnitt ist `object-[82%_center]`** und nicht mittig: Bei 59 %
+  sichtbarer Bildbreite steht der Roller sonst halb hinter der Überschrift.
+  `brightness-115` hebt ihn aus dem dunklen Motiv, ohne die Tinte aufzuhellen.
+- **Der Kopfabstand am Telefon ist eigenständig** (`clamp(7rem,4.5rem+11vh,
+  10rem)`, ab `lg` wieder der alte Wert): Die Überschrift muss auf den dichten
+  Teil des Verlaufs fallen, nicht darüber.
+- **Die Aktionen sind ein Block, nicht drei Kästen.** Zwei Knöpfe in vollem
+  Satz mit 2,5 Einheiten Abstand, die Zusage 3 darunter – vorher lagen 28 px
+  dazwischen und alle drei Flächen sahen gleich schwer aus. Der Umrissknopf
+  bekommt am Telefon `bg-current/8`, weil ein reiner Umriss neben einem
+  Neon-Vollton auf Tinte wie ein Nachtrag aussieht.
+- **Der Beleg ist eine Fläche statt vier freier Blöcke.** Gesichter, Note,
+  Anzahl und Zitat standen in vier verschiedenen Abständen untereinander und
+  sagten alle dasselbe. Jetzt eine Kachel mit Haarlinie; die Kürzel
+  überlappen nur noch `-space-x-1.5` (bei `-space-x-3` lag jedes zweite
+  Zeichen unter dem Nachbarn).
+
 Kleiner, aber aus demselben Grund geändert:
 
 - **Vorschaubilder der Galerie:** feste vier Spalten hießen bei sechs
