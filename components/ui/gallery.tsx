@@ -209,8 +209,27 @@ export function Gallery({
           ) : null}
         </div>
 
+        {/* Die Spaltenzahl kommt aus der Bildzahl, nicht aus der Breite.
+
+            Fest vier Spalten unter `sm` hieß bei sechs Aufnahmen: vier oben,
+            zwei unten – eine angebrochene zweite Reihe, die wie ein Fehler
+            aussieht. Mit `min(Anzahl, 6)` steht bei sechs Bildern eine volle
+            Reihe (51 px je Feld bei 390 px Fenster, über der 44-px-Grenze),
+            bei fünf eine Reihe zu fünft, bei zwölf zwei volle Reihen.
+
+            Unter 360 px sind es drei: Sechs Felder wären dort 39 px breit
+            und damit unter der 44-px-Grenze für Bedienelemente; zu dritt
+            sind es 74 px und zwei volle Reihen. */}
         {thumbnails && images.length > 1 ? (
-          <ul className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+          <ul
+            className="grid gap-2 [grid-template-columns:repeat(var(--thumbs-xs),minmax(0,1fr))] min-[360px]:[grid-template-columns:repeat(var(--thumbs),minmax(0,1fr))]"
+            style={
+              {
+                "--thumbs": Math.min(images.length, 6),
+                "--thumbs-xs": Math.min(images.length, 3),
+              } as React.CSSProperties
+            }
+          >
             {images.map((image, i) => (
               <li key={image.src}>
                 <button

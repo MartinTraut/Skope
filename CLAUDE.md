@@ -137,6 +137,69 @@ Was dabei entschieden wurde und nicht wieder aufgeweicht werden darf:
   Etikettenreihen auf 11 px. Untergrenze ist jetzt 11 px, und die gilt nur für
   die eine Zeile unter der Marke.
 
+## Zweiter Telefondurchgang — 21.08.2026
+
+Gemessen mit Playwright über zwölf Routen × zehn Breiten (320 – 1024 px) plus
+Querformat, dazu Leistungswerte bei vierfach gedrosselter CPU und 1,6 Mbit/s.
+Ergebnis nach dem Durchgang: kein waagerechter Überlauf, keine Konsolenfehler,
+LCP 0,76 – 0,79 s, CLS 0, längste Aufgabe 76 ms.
+
+Der Durchgang vom 17.08. hatte Überlauf, Zielflächen und Kleinstgrade
+abgeräumt — die Beschwerde danach betraf nicht Fehler, sondern **Proportionen**.
+Die waren an drei Stellen tatsächlich falsch:
+
+- **Die Schriftgrade standen auf dem Kopf.** Bei 390 px war die H1 der
+  Startseite 28 px, jede Abschnittsüberschrift 34 px und jeder
+  Unterseitentitel 42 px. Ursache: Der Boden von `--text-hero` (1,75 rem) war
+  auf die **alte** H1 „E-Scooter reparieren statt neu kaufen" gerechnet, die
+  am 20.08. ersetzt wurde. Jetzt Hero und Unterseitentitel auf 2,125 rem,
+  Displaygrad auf 1,75 rem — Rangfolge 34 / 28 / 24 / 17 px. Ab 565 px
+  übernimmt wieder der alte Anstieg, am Desktop ändert sich nichts. Die
+  Rechnung steht am Token in `globals.css`.
+- **Das Kennzahlenband war auf dem Telefon 380 px hoch** — eine halbe Bildhöhe
+  für drei Angaben. Auf Telefon und Tablet stehen sie jetzt als Zeilen mit
+  zwei Enden (210 px), erst ab `lg` als drei Spalten. Der Umschaltpunkt ist
+  `lg` und nicht `sm`, weil bei 768 px drei Spalten je 181 px Satz haben und
+  „ab 169,99 €" im Statgrad rund 190 px braucht.
+- **Auf dem iPad füllte die Galerie den ersten Bildschirm allein.** Ohne
+  Deckel war sie bei 768 px 688 px breit und 917 px hoch; Modell und Preis
+  begannen darunter. Deckel jetzt `max(20rem, min(26rem, 38vh))` ab `sm`, am
+  Telefon unverändert volle Spalte, ab `lg` das Raster.
+
+Kleiner, aber aus demselben Grund geändert:
+
+- **Vorschaubilder der Galerie:** feste vier Spalten hießen bei sechs
+  Aufnahmen vier oben, zwei unten. Jetzt `min(Anzahl, 6)`, unter 360 px drei —
+  sechs Felder wären dort 39 px breit und damit unter der 44-px-Grenze.
+- **Bearbeitungszeiten** (`workshop.tsx`) standen als Zeile mit zwei Enden;
+  bei 390 px stieß der Wert rechts an den Satzspiegel und eine der drei
+  Zeilen brach als einzige um. Auf dem Telefon jetzt gestapelt.
+- **Die Zusage im Kopfbereich** ist zweizeilig, sobald das Fenster schmal
+  ist. Ein Stadionradius um zwei Zeilen liest sich als Fehler — unter `sm`
+  deshalb Kachelradius.
+- **Die Kacheln der Premium-Leistungen** trugen `rounded-xl`; in dieser
+  Radienstaffel sind das 36 px und damit fast eine Pille um eine 78 px hohe
+  Kachel. Jetzt `rounded-md`.
+- **Die E-Mail im Fußbereich** brach mit `break-all` als „…gmail.c / om".
+  Jetzt `<wbr>` hinter dem Klammeraffen und `break-words` als Rückfall.
+- **Das Einzugsgebiet im Fußbereich** stand bei 390 px in zwei Spalten zu je
+  160 px; „Bad Friedrichshall" brach um, die Entfernung stand allein.
+  Einspaltig bis `sm`.
+- **`sizes` der Geräteaufnahme** stand auf 400 px und war seit der
+  Verbreiterung der Bildspalte zu klein — auf dem Schreibtisch wurde ein
+  400-px-Bild auf 608 px gezogen.
+
+**Bewusst nicht geändert:** Die Schrift „SAISON" auf der Plakette misst 8,5 px.
+Sie ist Teil einer Zeichnung (`role="img"` mit Beschriftung), kein Bedienelement
+und kein Text zum Lesen — die 11-px-Grenze gilt für Text, nicht für Grafik.
+
+**Werkzeug:** Playwright liegt nicht im Projekt, sondern im Sitzungsordner
+(`npm --prefix <scratchpad>/qa --cache <scratchpad>/.npmcache i playwright`,
+Browser über `PLAYWRIGHT_BROWSERS_PATH`). Der npm-Cache des Nutzers ist für
+diese Sitzung nicht beschreibbar; ohne eigenen Cache-Pfad bricht die
+Installation mit EACCES ab. Gemessen wird gegen `next start` (Port 4312),
+nicht gegen den Entwicklungsserver.
+
 ## Datumssignal und Alt-Texte
 
 Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):

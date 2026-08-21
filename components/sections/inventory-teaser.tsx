@@ -60,27 +60,44 @@ export function InventoryTeaser() {
             der Einstiegspreis groß, die Obergrenze klein darunter. Damit sind
             alle drei Felder gleich breit. */}
         <Reveal delay={60}>
-          <dl className="mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lift-lg sm:grid-cols-3">
-            <div className="border-b border-silver/12 p-6 sm:border-r sm:border-b-0 md:p-8">
+          {/* Auf dem Telefon drei Zeilen, ab `sm` drei Spalten.
+
+              Gestapelt trug jedes Feld denselben Aufbau wie auf dem
+              Schreibtisch – Bezeichnung oben, Zahl im Statgrad darunter – und
+              das Band war damit bei 390 px 380 px hoch: eine halbe Bildhöhe
+              für drei Angaben, die zusammen zwölf Wörter haben. Als Zeile mit
+              zwei Enden (Bezeichnung links, Wert rechts) sind es 210 px, und
+              die drei Werte stehen als Spalte untereinander statt
+              eingerückt.
+
+              Der Umschaltpunkt ist `lg`, nicht `sm`: Bei 768 px sind drei
+              Spalten je 229 px breit, davon 181 px Satz – „ab 169,99 €"
+              braucht im Statgrad rund 190 px und brach dort in zwei Zeilen.
+              Ab 1024 px stehen 251 px je Feld zur Verfügung, dort passt
+              es. */}
+          <dl className="lift-lg mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lg:grid-cols-3">
+            <div className="flex items-baseline justify-between gap-4 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
               <dt className="eyebrow-plain text-silver/55">Geräte vorrätig</dt>
-              <dd className="tabular mt-3 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
+              <dd className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
                 {facts.count}
               </dd>
             </div>
-            <div className="border-b border-silver/12 p-6 sm:border-r sm:border-b-0 md:p-8">
-              <dt className="eyebrow-plain text-silver/55">Preisspanne</dt>
-              <dd className="mt-3">
+            <div className="flex items-baseline justify-between gap-4 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
+              <dt className="eyebrow-plain shrink-0 text-silver/55">
+                Preisspanne
+              </dt>
+              <dd className="text-right lg:mt-3 lg:text-left">
                 <span className="tabular block font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
                   ab {facts.priceFrom}
                 </span>
-                <span className="tabular mt-2 block text-sm text-silver/60">
+                <span className="tabular mt-1 block text-sm text-silver/60 lg:mt-2">
                   bis {facts.priceTo}
                 </span>
               </dd>
             </div>
-            <div className="p-6 md:p-8">
+            <div className="flex items-baseline justify-between gap-4 px-5 py-4 lg:block lg:p-8">
               <dt className="eyebrow-plain text-silver/55">Gewährleistung</dt>
-              <dd className="mt-3 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
+              <dd className="font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight lg:mt-3">
                 {proof.warrantyYears} Jahr
               </dd>
             </div>

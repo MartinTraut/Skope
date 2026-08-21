@@ -48,72 +48,101 @@ export default function PlansPage() {
           drei Aussagen ihre eigene Form: der Kernsatz als Lead, die vier
           Zusatzleistungen als Liste, die Empfehlung als abgesetzter Block.
           Kein Wort und keine Zahl ist dabei weggefallen. */}
-      <Section tone="silver-200" className="py-14 md:py-16">
+      <Section tone="silver-200" className="py-16 md:py-24">
         <Container>
-          <Reveal className="max-w-4xl">
-            <p className="eyebrow text-current/90">Entscheidungshilfe</p>
-            <h2 className="mt-4 text-[length:var(--text-title)]">
-              Wofür Sie bei <Mark>Premium</Mark> bezahlen
-            </h2>
+          {/* Der Block stand in einer Spalte von 56 rem am linken Rand, auf
+              breiten Schirmen also auf gut der halben Fläche, und die rechte
+              Hälfte blieb leer. Er ist aber kein Fließtext, sondern eine
+              Gegenüberstellung: Aussage links, Beleg rechts. Genau so liegt
+              er jetzt – fünf Spalten Argument, sieben Spalten Leistungen –
+              und nimmt damit dieselbe Breite ein wie die Tarifkarten, die
+              direkt darunter kommen. */}
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <Reveal className="lg:col-span-5">
+              <p className="eyebrow text-current/90">Entscheidungshilfe</p>
+              <h2 className="mt-4 text-[length:var(--text-title)]">
+                Wofür Sie bei <Mark>Premium</Mark> bezahlen
+              </h2>
 
-            <p className="mt-5 max-w-2xl text-[length:var(--text-lead)] leading-relaxed">
-              Nicht für die Stückzahl, sondern für die Ausfallzeit.
-            </p>
+              <p className="mt-5 text-[length:var(--text-lead)] leading-relaxed">
+                Nicht für die Stückzahl, sondern für die Ausfallzeit.
+              </p>
 
-            <p className="mt-4 max-w-2xl leading-relaxed text-current/70">
-              Der jährliche Sicherheits-Checkup kostet einzeln 59,99&nbsp;€ und
-              ist in beiden Verträgen enthalten. Premium für 17,99&nbsp;€ im
-              Monat ergänzt vier Dinge:
-            </p>
+              <p className="mt-4 leading-relaxed text-current/70">
+                Der jährliche Sicherheits-Checkup kostet einzeln 59,99&nbsp;€
+                und ist in beiden Verträgen enthalten. Premium für
+                17,99&nbsp;€ im Monat ergänzt vier Dinge:
+              </p>
+            </Reveal>
 
-            <ul className="mt-6 grid max-w-3xl gap-x-10 gap-y-4 sm:grid-cols-2">
+            {/* Die vier Zusatzleistungen waren eine Hakenliste im Fließtext –
+                dieselbe Schriftgröße, dieselbe Farbe, dieselbe Fläche wie der
+                Absatz darüber. Es ist aber die Antwort auf die Frage der
+                Überschrift und damit der Grund, warum jemand den teureren
+                Vertrag nimmt. Jetzt vier eigene Kacheln mit gleichem Gewicht;
+                das Häkchen sitzt in einer Tintenscheibe statt frei im Satz. */}
+            <ul className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
               {[
                 "Akku-Deep-Check",
                 "20\u00a0% Rabatt auf Ersatzteile",
                 "Express-Reparatur innerhalb von 24 Stunden",
                 "Hol- und Bringservice im Umkreis von 15\u00a0km",
-              ].map((entry) => (
-                <li key={entry} className="flex items-start gap-3">
-                  <Check
-                    aria-hidden="true"
-                    className="mt-1 size-4 shrink-0 text-ink"
-                    strokeWidth={2.5}
-                  />
-                  <span className="leading-relaxed">{entry}</span>
-                </li>
+              ].map((entry, i) => (
+                <Reveal key={entry} delay={60 + i * 60} as="li">
+                  <div className="flex h-full items-start gap-4 rounded-md border border-current/10 bg-silver p-5 md:p-6">
+                    <span
+                      aria-hidden="true"
+                      className="grid size-8 shrink-0 place-items-center rounded-full bg-ink text-silver"
+                    >
+                      <Check className="size-4" strokeWidth={2.75} />
+                    </span>
+                    <span className="font-display leading-snug font-semibold tracking-tight">
+                      {entry}
+                    </span>
+                  </div>
+                </Reveal>
               ))}
             </ul>
+          </div>
 
-            {/* Die Empfehlung steht auf eigener Fläche, weil sie die einzige
-                Stelle ist, an der wir von einem der beiden Verträge abraten.
-                Im Fließtext war das der letzte Nebensatz. */}
-            <div className="lift mt-8 max-w-3xl rounded-xl bg-silver p-6 md:p-7">
-              <dl className="grid gap-6 sm:grid-cols-2 sm:gap-10">
-                <div>
-                  <dt className="eyebrow-plain text-current/60">
-                    Täglich zur Arbeit
-                  </dt>
-                  <dd className="mt-2 leading-relaxed">
-                    <strong className="font-display font-bold tracking-tight">
-                      Premium, 17,99&nbsp;€ im Monat.
-                    </strong>{" "}
+          {/* Die Empfehlung steht auf eigener Fläche, weil sie die einzige
+              Stelle ist, an der wir von einem der beiden Verträge abraten.
+              Im Fließtext war das der letzte Nebensatz.
+
+              Zwei Flächen statt einer: Der empfohlene Fall liegt in Tinte,
+              der günstigere auf Silber. Damit ist die Empfehlung schon vor
+              dem ersten Wort sichtbar, und der Preis darf links Neon sein –
+              auf Silber wäre er mit 1,18:1 unlesbar. */}
+          <Reveal delay={120}>
+            <dl className="lift-lg mt-12 grid overflow-hidden rounded-xl sm:grid-cols-2">
+              <div className="bg-ink p-7 text-silver on-dark md:p-10">
+                <dt className="eyebrow-plain text-silver/55">
+                  Täglich zur Arbeit
+                </dt>
+                <dd className="mt-3 leading-relaxed text-silver/85">
+                  <strong className="block font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight text-accent">
+                    Premium, 17,99&nbsp;€ im Monat.
+                  </strong>{" "}
+                  <span className="mt-2 block">
                     Sie zahlen für Planbarkeit, nicht für die Stückzahl der
                     Termine.
-                  </dd>
-                </div>
-                <div>
-                  <dt className="eyebrow-plain text-current/60">
-                    Gelegentlich unterwegs
-                  </dt>
-                  <dd className="mt-2 leading-relaxed">
-                    <strong className="font-display font-bold tracking-tight">
-                      Basis, 130&nbsp;€ im Jahr.
-                    </strong>{" "}
+                  </span>
+                </dd>
+              </div>
+              <div className="bg-silver p-7 md:p-10">
+                <dt className="eyebrow-plain text-current/60">
+                  Gelegentlich unterwegs
+                </dt>
+                <dd className="mt-3 leading-relaxed text-current/80">
+                  <strong className="block font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight text-ink">
+                    Basis, 130&nbsp;€ im Jahr.
+                  </strong>{" "}
+                  <span className="mt-2 block">
                     Günstiger, und der Sicherheits-Checkup ist auch hier drin.
-                  </dd>
-                </div>
-              </dl>
-            </div>
+                  </span>
+                </dd>
+              </div>
+            </dl>
           </Reveal>
         </Container>
       </Section>

@@ -269,7 +269,13 @@ export function Hero() {
                   wird geprüft, hier ist etwas verfügbar. Der Kern der Spur
                   läuft in `currentColor`, deshalb ist er auf Tinte hell und
                   auf Silber dunkel, ohne zweite Regel. */}
-              <p className="trace mt-7 inline-flex items-center gap-3 rounded-full bg-current/8 py-2.5 pr-6 pl-4.5 font-display text-[0.9375rem] font-semibold tracking-tight">
+              {/* Rund wie eine Pille nur, solange die Zeile einzeilig ist.
+                  Bei 390 px läuft der Satz über zwei Zeilen, und ein
+                  Stadionradius um einen zweizeiligen Block liest sich als
+                  Fehler, nicht als Form. Unterhalb von `sm` deshalb der
+                  Kachelradius und ein Innenrand, der oben und unten gleich
+                  ist. */}
+              <p className="trace mt-7 inline-flex items-center gap-3 rounded-2xl bg-current/8 px-4.5 py-3 font-display text-[0.9375rem] font-semibold tracking-tight sm:rounded-full sm:py-2.5 sm:pr-6 sm:pl-4.5">
                 <span
                   aria-hidden="true"
                   className="size-2.5 shrink-0 rounded-full bg-neon"

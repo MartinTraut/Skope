@@ -65,12 +65,22 @@ export function Footer() {
                 <Phone className="size-4 shrink-0" aria-hidden="true" />
                 <span className="tabular">{site.phone.display}</span>
               </a>
+              {/* Umbruch am Klammeraffen, nicht mitten im Wort.
+
+                  Mit `break-all` stand bei 390 px „…gmail.c" in der einen und
+                  „om" in der nächsten Zeile. Die Adresse hat genau eine
+                  Stelle, an der ein Umbruch gelesen werden kann; `<wbr>`
+                  bietet sie an, und `break-words` greift erst, wenn selbst
+                  das nicht reicht. */}
               <a
                 href={`mailto:${site.email}`}
-                className="press inline-flex min-h-11 items-center gap-3 py-1.5 break-all text-current/80 transition-[color,transform] hover:text-accent"
+                className="press inline-flex min-h-11 items-center gap-3 py-1.5 break-words text-current/80 transition-[color,transform] hover:text-accent"
               >
                 <Mail className="size-4 shrink-0" aria-hidden="true" />
-                {site.email}
+                <span>
+                  {site.email.split("@")[0]}@<wbr />
+                  {site.email.split("@")[1]}
+                </span>
               </a>
             </address>
 
@@ -102,7 +112,10 @@ export function Footer() {
           {/* Einzugsgebiet – echter GEO-Nutzen, nicht Keyword-Stapelung */}
           <div className="lg:col-span-4">
             <p className="eyebrow-plain text-current/90">Einzugsgebiet</p>
-            <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2.5">
+            {/* Eine Spalte auf dem Telefon: Bei zwei Spalten bleiben je
+                160 px, und „Bad Friedrichshall" mit Entfernung braucht mehr –
+                der Ort brach um, die Entfernung stand allein. */}
+            <ul className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
               {serviceArea.map((place) => (
                 <li
                   key={place.name}

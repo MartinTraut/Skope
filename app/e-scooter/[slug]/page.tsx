@@ -160,11 +160,21 @@ export default async function ScooterDetailPage({
               es sechs sind.
 
               Statt die Bildform zu ändern (das verschiebt den Beschnitt jeder
-              Aufnahme) ist die Spalte auf 25 rem begrenzt: 400 px breit,
-              533 px hoch, Vorschaureihe bei 809 px – über der Falz, ohne dass
-              ein Bild anders angeschnitten wird. Der frei werdende Platz geht
-              an die rechte Spalte, wo das vollständige Datenblatt steht. */}
-          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,25rem)_minmax(0,50rem)] lg:gap-14">
+              Aufnahme) hängt der Deckel an der Fensterhöhe, nicht an einem
+              festen Wert: `min(38rem, 62vh)`. Die Galerie ist 3:4, ihre Höhe
+              also ein Drittel größer als die Spalte.
+
+              Zusammen mit 62 rem rechter Spalte und der Lücke sind das
+              104 rem – exakt die Breite, auf die `Container` gedeckelt ist.
+              Ab 1664 px Fensterbreite steht damit keine Fläche mehr ungenutzt
+              neben dem Satz.
+
+              Der Preis dieser Größe ist die Vorschaureihe: Bei 830 px
+              Fensterhöhe ist die Galerie 515 px breit, 686 px hoch, und die
+              Reihe beginnt rund 30 px unter der Falz – ein Wischen, nicht die
+              halbe Seite wie in der Ausgangslage. Ab etwa 900 px Fensterhöhe
+              steht sie wieder vollständig im Bild. */}
+          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,min(38rem,62vh))_minmax(0,62rem)] lg:gap-14">
             {/* Die Galerie hebt sich beim Seitenaufbau an ihren Platz: aus
                 einer Spur kleiner und leicht tiefer, in einem Zug. Das ist
                 die Bewegung, die den Sprung von der Karte trägt – dieselbe
@@ -176,13 +186,31 @@ export default async function ScooterDetailPage({
                 Hintergrund und der gemeinsame IntersectionObserver. Der
                 Gewinn wäre eine sauberere Verwandlung, der Einsatz die
                 Stabilität jeder Seite. */}
-            <div className="settle">
+            {/* Solange die Spalten gestapelt sind, deckelt die Galerie sich
+                selbst. Gemessen bei 768 × 1024: Ohne Deckel war sie 688 px
+                breit und im Format 3:4 damit 917 px hoch – auf dem ersten
+                Bildschirm stand das Bild und sonst nichts, Modell und Preis
+                begannen erst darunter. Der Deckel ist an die Fensterhöhe
+                gebunden wie der Spaltendeckel darüber, mit 20 rem Boden für
+                das Querformat des Telefons (dort sind 38 vh nur 148 px).
+
+                Er greift erst ab `sm`: Auf dem Telefon im Hochformat sind
+                38 vh mit 321 px schmaler als der Satzspiegel (342 px), und
+                dort soll das Bild die volle Spalte haben. Ab `lg` übernimmt
+                das Raster. */}
+            <div className="settle mx-auto w-full sm:max-w-[max(20rem,min(26rem,38vh))] lg:mx-0 lg:max-w-none">
               <Gallery
                 images={item.images}
                 thumbnails
                 priority
                 ratio="portrait"
-                sizes="(max-width: 1024px) 92vw, 400px"
+                /* Die Spaltenbreiten von oben, in derselben Reihenfolge:
+                   ab 1024 px bis 38 rem, dazwischen der Tablet-Deckel von
+                   26 rem, darunter die volle Spalte. Der Wert stand auf
+                   400 px und war damit seit der Verbreiterung der Bildspalte
+                   zu klein – auf dem Schreibtisch wurde ein 400-px-Bild auf
+                   608 px gezogen. */
+                sizes="(min-width: 1024px) 38rem, (min-width: 640px) 26rem, 92vw"
               />
             </div>
 

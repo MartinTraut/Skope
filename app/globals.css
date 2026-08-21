@@ -145,14 +145,36 @@
      Desktop-Fenster nur 327, weil dort ein klassischer Rollbalken 15 px
      wegnimmt. In allen drei Fällen wurden drei Zeilen daraus.
 
-     Jetzt ist das Minimum auf den kleinsten Fall gerechnet: 272 / 9,636 =
-     28,2 px, gesetzt sind 28 px = 1,75 rem. Der Boden gilt bis 502 px
-     Fensterbreite, darüber übernimmt der Anstieg. Wer die Aufteilung im
-     Hero ändert oder den Text austauscht, muss die Laufweite neu messen —
-     der Faktor hängt an der Schrift, nicht an der Zeichenzahl. */
-  --text-hero: clamp(1.75rem, 5.2vw + 0.4rem, 5.6rem);
-  --text-page-title: clamp(2.6rem, 4.6vw + 0.5rem, 5.5rem);
-  --text-display: clamp(2.15rem, 3.4vw + 0.7rem, 4.25rem);
+     Der Boden war eine Runde lang 1,75 rem und auf genau jene Zeile
+     gerechnet. Die Überschrift heißt seit dem 20.08.2026 aber „Geprüfte
+     E-Scooter / gebraucht kaufen", und die läuft mit 8,89 px je Pixel Grad
+     statt 9,636. Der alte Boden war damit nicht mehr eng, sondern zu klein:
+     Auf dem Telefon stand die H1 der Startseite in 28 px unter
+     Abschnittsüberschriften in 34 px und unter Unterseitentiteln in 42 px —
+     die Rangfolge der ganzen Seite stand dort auf dem Kopf.
+
+     Nachgemessen bei 320 px Fenster (272 px Satzspiegel): „Geprüfte
+     E-Scooter" ist bei 28 px Grad 249 px breit, „gebraucht kaufen" 224 px.
+     Der Boden liegt jetzt bei 2,125 rem = 34 px: Ab 360 px Fenster (312 px
+     Satzspiegel, Zeile 302 px) bleiben beide Blöcke einzeilig, bei 320 px
+     bricht der erste — vier kurze Zeilen sind dort die bessere Lösung als
+     eine Überschrift, die kleiner ist als die Fließtextüberschriften
+     darunter. Der Boden gilt bis 565 px Fensterbreite, darüber übernimmt
+     der Anstieg; an Desktop und Tablet ändert sich nichts.
+
+     Wer die Aufteilung im Hero ändert oder den Text austauscht, muss die
+     Laufweite neu messen — der Faktor hängt an der Schrift, nicht an der
+     Zeichenzahl.
+
+     Dieselbe Rangfolge gilt für die beiden anderen Displaygrade: Der
+     Unterseitentitel steht auf dem Telefon auf demselben Boden wie der Hero
+     (er ist dieselbe Ebene, nicht die nächsthöhere), und der Displaygrad der
+     Abschnittsüberschriften liegt mit 1,75 rem eine Stufe darunter statt
+     eine darüber. Ab 610 px bzw. 683 px übernimmt jeweils wieder der
+     Anstieg, der Desktop-Satz bleibt unverändert. */
+  --text-hero: clamp(2.125rem, 5.2vw + 0.4rem, 5.6rem);
+  --text-page-title: clamp(2.125rem, 4.6vw + 0.5rem, 5.5rem);
+  --text-display: clamp(1.75rem, 3.4vw + 0.7rem, 4.25rem);
   --text-title: clamp(1.5rem, 1.4vw + 0.85rem, 2.1rem);
   --text-subtitle: clamp(1.3rem, 1.1vw + 0.95rem, 1.75rem);
   --text-lead: clamp(1.05rem, 0.5vw + 0.9rem, 1.375rem);

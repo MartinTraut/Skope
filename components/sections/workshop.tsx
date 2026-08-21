@@ -71,11 +71,19 @@ export function Workshop() {
                 </h3>
                 <dl className="mt-5 flex flex-col gap-3">
                   {turnaround.map((row) => (
+                    /* Auf dem Telefon untereinander, erst ab `sm` als Zeile
+                       mit zwei Enden. Gemessen bei 390 px: „meist am selben
+                       Tag" stieß rechts an den Satzspiegel, und die dritte
+                       Zeile brach als einzige um – drei Zeilen, drei
+                       verschiedene Formen. Gestapelt tragen alle drei
+                       dieselbe: Bezeichnung oben, Wert darunter. */
                     <div
                       key={row.label}
-                      className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-silver/12 pb-3"
+                      className="flex flex-col gap-0.5 border-b border-silver/12 pb-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-6 sm:gap-y-1"
                     >
-                      <dt className="text-current/70">{row.label}</dt>
+                      <dt className="text-sm text-current/70 sm:text-base">
+                        {row.label}
+                      </dt>
                       <dd className="font-display font-semibold tracking-tight text-silver">
                         {row.value}
                       </dd>
