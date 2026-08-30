@@ -84,9 +84,7 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
 
                 {/* Die Zahlungsweise als Kopfzeile beider Karten – dadurch
                     beginnen Basis und Premium auf derselben Linie. */}
-                <p className="eyebrow text-current/70">
-                  {plan.paymentType}
-                </p>
+                <p className="eyebrow text-current/70">{plan.paymentType}</p>
 
                 <h3 className="mt-6 font-display text-2xl font-bold tracking-tight">
                   {plan.name}

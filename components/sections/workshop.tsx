@@ -21,7 +21,7 @@ export function Workshop() {
                 src="/img/werkstatt-service.jpg"
                 alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
                 fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
+                sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                 className="parallax object-cover"
               />
             </div>
@@ -38,8 +38,8 @@ export function Workshop() {
                     Akzent – die harte Zahl ist einer der drei Fälle, für die
                     Neon reserviert ist. Die Sektion ist dunkel, dort ist Neon
                     Schrift (14,8:1 auf Tinte). */}
-                Was für <span className="text-accent">59,99&nbsp;€</span> tatsächlich
-                passiert.
+                Was für <span className="text-accent">59,99&nbsp;€</span>{" "}
+                tatsächlich passiert.
               </h2>
               <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
                 Der Checkup ist kein Blick über den Lenker. Er ist eine

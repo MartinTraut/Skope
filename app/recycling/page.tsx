@@ -99,7 +99,7 @@ export default function RecyclingPage() {
                   src="/img/scooter-strasse.jpg"
                   alt="Abgestellte E-Scooter am Straßenrand, Altgeräte für die Verwertung"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="parallax object-cover"
                 />
               </div>
@@ -135,7 +135,7 @@ export default function RecyclingPage() {
 
       {/* Anfrage – dieselbe Behandlung wie auf den übrigen Leistungsseiten:
           Wer hier ankommt, soll nicht erst auf die Kontaktseite wechseln. */}
-      <Section id="anfrage" tone="silver-200">
+      <Section tone="silver-200">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -151,7 +151,16 @@ export default function RecyclingPage() {
                 </p>
               </Reveal>
             </div>
-            <div className="lg:col-span-7">
+            {/* Der Anker sitzt an der Formularspalte, nicht an der Sektion.
+
+                An der Sektion landete jeder Knopf, der „Anfrage" heißt, auf
+                der Überschrift: Gemessen bei 390 px stand die Sektionsoberkante
+                bei 184 px und das erste Feld bei 646 px, während zwischen
+                Kopfzeile und Aktionsleiste nur 696 px nutzbar sind – ein Feld
+                von sechs im Bild, für den Rest noch ein Wisch. Der
+                Abstandshalter lässt die Überschrift oben angeschnitten stehen,
+                damit klar bleibt, wozu das Formular gehört. */}
+            <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
                 <InquiryForm defaultTopic="Altgerät abgeben / Recycling" />
               </Reveal>
@@ -160,7 +169,14 @@ export default function RecyclingPage() {
         </Container>
       </Section>
 
+      {/* Der Flächenwechsel ist der einzige Rhythmusgeber der Seite, und an
+          den Nahtstellen zum Abschluss fiel er aus: `Related` stand auf allen
+          Seiten außer der Reparaturseite auf Tinte und ging damit ohne Kante
+          in das ebenfalls dunkle `CtaBand` über – gemessen auf /e-scooter
+          1220 px ununterbrochene Tinte. Der Ton ist deshalb je Seite gesetzt:
+          verschieden vom Block davor und verschieden vom Abschluss. */}
       <Related
+        tone="silver"
         items={[
           {
             href: "/reparatur",

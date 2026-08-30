@@ -34,12 +34,7 @@ export function Container({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={cn(
-        "gutter mx-auto w-full max-w-[104rem]",
-        className,
-      )}
-    >
+    <div className={cn("gutter mx-auto w-full max-w-[104rem]", className)}>
       {children}
     </div>
   );
@@ -71,11 +66,17 @@ export function Container({
 export function Section({
   id,
   tone = "ink",
+  space = "default",
   className,
   children,
 }: {
   id?: string;
   tone?: "silver" | "silver-200" | "ink" | "ink-800";
+  /**
+   * `tight` halbiert den Abstand nach oben – erlaubt **nur**, wenn die
+   * Sektion darüber denselben Ton hat. Begründung an `spaces`.
+   */
+  space?: "default" | "tight";
   className?: string;
   children: React.ReactNode;
 }) {
@@ -86,11 +87,34 @@ export function Section({
     "ink-800": "bg-ink-800 text-silver on-dark",
   } as const;
 
+  /* Zwei Stufen, nicht eine.
+     
+     Bis hierher stand zwischen *jedem* Sektionspaar derselbe Abstand:
+     gemessen 128 px am Telefon und 208 px auf 1512 – egal, ob dazwischen die
+     Fläche von Tinte auf Silber springt oder ob zwei Blöcke in derselben
+     Farbe stehen und inhaltlich ein Kapitel sind. Im ersten Fall trägt die
+     Farbkante die Zäsur und der Abstand gibt ihr Luft; im zweiten trägt gar
+     nichts eine Zäsur, und dieselben 208 px sind kein Absatz, sondern ein
+     Loch.
+     
+     Deshalb: Wo eine Kante ist, bleibt die volle Stufe. Wo keine ist, fällt
+     der obere Rand weg und der untere Rand der Sektion davor trägt den
+     Abstand allein – exakt die halbe Stufe, 64 statt 128 und 104 statt 208.
+     
+     `tight` setzt damit voraus, dass beide Sektionen denselben Ton haben.
+     Bei einem Farbwechsel würde die neue Fläche unmittelbar an der letzten
+     Textzeile beginnen. */
+  const spaces = {
+    default: "py-16 md:py-22 lg:py-26",
+    tight: "pb-16 md:pb-22 lg:pb-26",
+  } as const;
+
   return (
     <section
       id={id}
       className={cn(
-        "relative scroll-mt-24 py-16 md:py-22 lg:py-26",
+        "relative scroll-mt-24",
+        spaces[space],
         tones[tone],
         className,
       )}

@@ -155,7 +155,7 @@ export default function InsurancePage() {
                   alt="Preisaushang der Saison 2026/2027: Tabelle mit Haftpflicht- und Teilkaskopreisen je Versicherungszeitraum, Hinweis auf sofortige Mitnahme der Plakette und Zahlung bar oder mit EC-Karte"
                   width={860}
                   height={1190}
-                  sizes="(min-width: 1024px) 24vw, 100vw"
+                  sizes="(min-width: 1024px) 24vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="h-auto w-full"
                 />
               </div>
@@ -219,26 +219,37 @@ export default function InsurancePage() {
                 key={step.step}
                 delay={i * 70}
                 as="li"
-                className="relative grid grid-cols-[3rem_1fr] gap-x-5 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:gap-x-8"
+                className="relative grid grid-cols-[2.75rem_1fr] items-center gap-x-4 gap-y-3 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:items-start sm:gap-x-8 sm:gap-y-0"
               >
                 {i < insuranceSteps.length - 1 && (
                   <span
                     aria-hidden="true"
-                    className="chain-draw absolute top-14 bottom-0 left-6 w-px bg-ink/25 sm:top-16 sm:left-7"
+                    className="chain-draw absolute top-12 bottom-0 left-[1.375rem] w-px bg-ink/25 sm:top-16 sm:left-7"
                   />
                 )}
                 <span
                   aria-hidden="true"
-                  className="tabular grid size-12 place-items-center rounded-full bg-neon font-display text-lg font-bold tracking-tight text-ink sm:size-14 sm:text-xl"
+                  className="tabular grid size-11 place-items-center self-start rounded-full bg-neon font-display text-base font-bold tracking-tight text-ink sm:size-14 sm:row-span-2 sm:text-xl"
                 >
                   {step.step}
                 </span>
 
-                <div className="min-w-0 pt-1.5 sm:pt-2.5">
-                  <h3 className="text-[length:var(--text-subtitle)]">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2.5 leading-relaxed text-current/65">
+                {/* Am Telefon steht die Nummer neben der Überschrift, der
+                    Fließtext darunter über die volle Breite.
+
+                    Als durchgehende zweite Spalte war der Satz bei 390 px
+                    nur 274 px breit, in den verschachtelten Kästen 234 px –
+                    gemessen 23 bis 25 Zeichen je Zeile, wo der Satzspiegel
+                    342 px hergibt. Ein Ablauf, dessen Erklärung in einer
+                    Rinne steht, liest sich mühsamer als er ist. Ab `sm` ist
+                    genug Platz, dort bleibt die Nummer über beide Zeilen
+                    stehen und der Text rückt wieder ein. */}
+                <h3 className="text-[length:var(--text-subtitle)]">
+                  {step.title}
+                </h3>
+
+                <div className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:pt-2.5">
+                  <p className="leading-relaxed text-current/65 sm:mt-2.5">
                     {step.text}
                   </p>
 
@@ -311,7 +322,7 @@ export default function InsurancePage() {
       </Section>
 
       {/* Anfrage */}
-      <Section id="anfrage" tone="ink">
+      <Section tone="ink">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -329,7 +340,16 @@ export default function InsurancePage() {
                 </p>
               </Reveal>
             </div>
-            <div className="lg:col-span-7">
+            {/* Der Anker sitzt an der Formularspalte, nicht an der Sektion.
+
+                An der Sektion landete jeder Knopf, der „Anfrage" heißt, auf
+                der Überschrift: Gemessen bei 390 px stand die Sektionsoberkante
+                bei 184 px und das erste Feld bei 646 px, während zwischen
+                Kopfzeile und Aktionsleiste nur 696 px nutzbar sind – ein Feld
+                von sechs im Bild, für den Rest noch ein Wisch. Der
+                Abstandshalter lässt die Überschrift oben angeschnitten stehen,
+                damit klar bleibt, wozu das Formular gehört. */}
+            <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
                 <InquiryForm defaultTopic="Versicherung: Haftpflicht" />
               </Reveal>
@@ -351,7 +371,14 @@ export default function InsurancePage() {
         />
       </Section>
 
+      {/* Der Flächenwechsel ist der einzige Rhythmusgeber der Seite, und an
+          den Nahtstellen zum Abschluss fiel er aus: `Related` stand auf allen
+          Seiten außer der Reparaturseite auf Tinte und ging damit ohne Kante
+          in das ebenfalls dunkle `CtaBand` über – gemessen auf /e-scooter
+          1220 px ununterbrochene Tinte. Der Ton ist deshalb je Seite gesetzt:
+          verschieden vom Block davor und verschieden vom Abschluss. */}
       <Related
+        tone="silver-200"
         items={[
           {
             href: "/e-scooter",

@@ -25,7 +25,16 @@ export function InsuranceTeaser() {
     <Section id="versicherung" tone="ink">
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-16">
-          <Reveal className="order-2 lg:order-1 lg:col-span-6">
+          {/* Text zuerst, Tafel danach – auch im DOM.
+
+              `order-2` drehte nur das Bild: Am Telefon stand die
+              Tariftabelle mit vier Datums- und Preiszeilen *vor* ihrer
+              eigenen Überschrift, und ein Screenreader las die Preise, bevor
+              gesagt war, wofür sie gelten. Eine Preistabelle ohne
+              vorangehende Überschrift lässt sich auf 390 px nicht einordnen
+              (WCAG 1.3.2). Ab `lg` dreht `lg:order-*` die Spalten wie zuvor;
+              am Schreibtisch ändert sich nichts. */}
+          <Reveal className="lg:order-1 lg:col-span-6">
             <p className="eyebrow text-current/90">
               Pflichtversicherung · ERGO
             </p>
@@ -83,7 +92,7 @@ export function InsuranceTeaser() {
 
           {/* Tariftafel – dieselben Werte wie auf der Versicherungsseite,
               gekürzt auf die vier Zeiträume, nach denen tatsächlich gefragt wird. */}
-          <Reveal delay={90} className="order-1 lg:order-2 lg:col-span-6">
+          <Reveal delay={90} className="lg:order-2 lg:col-span-6">
             <div className="rounded-lg border border-current/12 bg-steel-900/60 p-7 md:p-9">
               <p className="eyebrow-plain text-current/90">Saison 2026/2027</p>
               <dl className="mt-7">

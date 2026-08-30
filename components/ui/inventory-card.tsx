@@ -79,7 +79,12 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
           src={cover.src}
           alt={cover.alt}
           fill
-          sizes="(max-width: 640px) 92vw, (max-width: 1280px) 46vw, 30vw"
+          /* Die Schwellen standen an anderen Stellen als die des Rasters
+             (640/1280 gegen 380/640/1280) und behaupteten durchgehend zu
+             viel: Bei 640 px Fenster ist die Karte gemessen 250 px breit,
+             `92vw` versprach 589 – geholt wurde ein 1200er Bild für einen
+             500-px-Bedarf. Jetzt folgen die Schwellen dem Raster. */
+          sizes="(min-width: 1280px) 30vw, (min-width: 380px) 46vw, calc(100vw - 3rem)"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
@@ -94,9 +99,22 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
       {/* Modell und Preis auf einer Grundlinie: In einer Rasterspalte ist der
           Preis das zweite, was gelesen wird, und untereinander kostet er eine
           eigene Zeile pro Karte. */}
-      <div className="mt-4 flex items-baseline justify-between gap-4">
-        <h3 className="text-lg leading-snug font-semibold">{item.model}</h3>
-        <p className="tabular shrink-0 font-display text-xl leading-none font-bold tracking-tight text-accent">
+      {/* In zwei Spalten ist die Karte am Telefon 163 px breit. Modell und
+          Preis nebeneinander gehen dort nicht auf – „199,99 €" braucht allein
+          85 px, für den Modellnamen blieben 60. Deshalb untereinander, bis
+          die Karte wieder Platz hat. */}
+      <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+        {/* 1,0625 rem ist der Grundschriftgrad der Seite (`body` in
+            globals.css), nicht 1 rem. Die Überschrift der Karte stand mit
+            16 px darunter – in der zweispaltigen Ansicht war sie damit die
+            kleinste Überschrift des ganzen Auftritts und lag nur 3 px über
+            dem Kennwert darunter. Jetzt schließt sie mit dem Fließtext der
+            Seite ab, und der Abstand zum Kartentext (14 px) ist eine
+            sichtbare Stufe statt einer gemessenen. */}
+        <h3 className="text-[1.0625rem] leading-snug font-semibold sm:text-lg">
+          {item.model}
+        </h3>
+        <p className="tabular font-display text-lg leading-none font-bold tracking-tight text-accent sm:shrink-0 sm:text-xl">
           {item.price}
         </p>
       </div>
@@ -106,13 +124,23 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
       </p>
 
       {!item.streetLegal ? (
-        <p className="mt-3 flex items-start gap-2 rounded-md bg-amber-400/10 px-3 py-2 text-sm text-amber-200">
+        /* Der Text muss im Kasten umbrechen, nicht daneben. In einer
+           Flex-Zeile ist ein bloßer Textknoten ein anonymes Element mit
+           `min-width: auto` und schrumpft nicht: In der zweispaltigen Karte
+           (163 px) war der Kasten gemessen 129 px breit bei 160 px Inhalt,
+           „Betriebserlaubnis" stand also 31 px außerhalb der gelben Fläche. */
+        <p className="mt-3 flex items-start gap-2 rounded-md bg-amber-400/10 px-3 py-2 text-xs text-amber-200 sm:text-sm">
           <AlertTriangle
             aria-hidden="true"
             className="mt-0.5 size-4 shrink-0"
             strokeWidth={2}
           />
-          Ohne deutsche Betriebserlaubnis
+          {/* Silbentrennung, weil das Wort allein nicht passt: In der
+              schmalen Karte bleiben 105 px Satz, „Betriebserlaubnis" misst
+              bei 13 px 118. Dieselbe Ausnahme wie in der Tarif-Tabelle. */}
+          <span className="min-w-0 [hyphens:auto] break-words">
+            Ohne deutsche Betriebserlaubnis
+          </span>
         </p>
       ) : null}
 
@@ -123,8 +151,12 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
           Kein Knopf, sondern eine Zeile mit Pfeil. Ein Knopf in einer Karte,
           die selbst ein Link ist, verspricht eine zweite Aktion, die es nicht
           gibt – und wäre als `<button>` im `<a>` ungültig. */}
-      <span className="mt-auto flex items-center gap-2 pt-5 font-display text-sm font-semibold tracking-tight text-accent">
-        Alle Daten und Bilder
+      {/* In der schmalen Spalte (163 px am Telefon, davon 129 px Satz) brach
+          „Alle Daten und Bilder" auf zwei Zeilen. Kürzere Beschriftung und
+          ein Grad kleiner: 85 px Text plus Abstand und Pfeil sind 109 px. Der
+          vollständige Satz steht weiterhin im `aria-label` der Karte. */}
+      <span className="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-semibold tracking-tight text-accent sm:text-sm">
+        Daten &amp; Bilder
         <ArrowRight
           aria-hidden="true"
           className="size-4 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-1 motion-reduce:transition-none"

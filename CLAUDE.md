@@ -238,6 +238,179 @@ diese Sitzung nicht beschreibbar; ohne eigenen Cache-Pfad bricht die
 Installation mit EACCES ab. Gemessen wird gegen `next start` (Port 4312),
 nicht gegen den Entwicklungsserver.
 
+## Handy-Qualitätsprüfung — 21.08.2026
+
+Vier Gutachter (Komposition, Bedienbarkeit, Code/Responsive, Conversion) gegen
+elf Routen × 320/390/430 px plus Querformat, Produktionsbuild auf Port 4312.
+Ergebnis nach der Abarbeitung: kein waagerechter Überlauf, keine
+Konsolenfehler, keine Zielfläche unter 44 px, keine Schrift unter 11 px auf
+keiner Route und keiner Breite.
+
+**Was echt kaputt war und nicht wieder eingebaut werden darf:**
+
+- **`--text-stat` war auf dem ganzen Telefon tot geklemmt.** Der Anstieg
+  (2,4vw + 0,85rem) erreichte den Boden von 2 rem erst bei 766 px – 447 px
+  Fensterbreite ohne jede Skalierung. Sichtbare Folge: Im Kennzahlenband der
+  Startseite war die Zelle bei 320 px 297 px breit bei 272 px Platz, und
+  `overflow-hidden` schnitt 25 px **jedes Werts** ab („1 Jah", „bis 599,99"
+  ohne Zeichen, der Preis angeschnitten). Wer an einem Grad-Token schraubt,
+  rechnet nach, ab welcher Breite der PREFERRED-Term den Boden überholt.
+- **Der Fokusring lief in `currentColor`** und liegt mit 3 px Versatz
+  *außerhalb* des Elements. Auf einem Neon-Knopf ist `currentColor` Tinte, und
+  der Knopf steht auf Tinte: 1,0:1 auf der wichtigsten Schaltfläche der Seite.
+  Er kommt jetzt wie Akzent und Knopfkante aus der Fläche (`--focus-ring`).
+- **`overflow-x: clip` an `html`/`body` hebelt die Scrollsperre des
+  `<dialog>` aus.** Gemessen: Galerie-Vollbild offen, ein Wisch, `scrollY`
+  0 → 1063. Die Sperre läuft jetzt wie im Menü über `position: fixed` am
+  `<body>`, aufgehoben in `onClose` (Escape läuft nicht durch `closeZoom`).
+  Der Rücksprung braucht ein erzwungenes Layout (`void body.offsetHeight`) –
+  ohne das klemmt `scrollTo` gegen die noch fensterhohe Seite.
+- **`aria-hidden` an der Bildfläche tötet den `alt` darunter.** Beide Flächen
+  im Kopfbereich trugen es; das Kopfbild war auf Telefon *und* Schreibtisch
+  unbeschrieben, obwohl der Eintrag unter „Datumssignal und Alt-Texte" das
+  Gegenteil behauptete. `pointer-events-none` und `-z-10` halten die Fläche
+  auch ohne `aria-hidden` aus jeder Bedienung heraus.
+- **Ein Textknoten in einer Flex-Zeile schrumpft nicht.** Die ABE-Warnung der
+  Bestandskarte stand in der zweispaltigen Ansicht 31 px außerhalb ihrer
+  gelben Fläche. Braucht einen `<span className="min-w-0">`, und weil
+  „Betriebserlaubnis" bei 13 px 118 px misst und nur 105 px Satz bleiben,
+  zusätzlich `[hyphens:auto]`.
+
+**Proportionen und Struktur:**
+
+- **Der Kopfbereich am Telefon ist kompakter.** Auszeichnungszeile
+  „Generalüberholt · Neuenstadt" statt „Refurbished E-Scooter · Neuenstadt am
+  Kocher" – einzeilig bei 390 px statt zweizeilig, und „refurbished" ist der
+  Fachbegriff der Branche, nicht das Wort des Kunden. Der Lead hat den
+  Satzteil verloren, der drei Zeilen tiefer als Kennzahl steht
+  („mit 1 Jahr Gewährleistung übergeben"): vier Zeilen statt sechs. Sektion
+  1411 → 1328 px, H1 bei 207 statt 227.
+- **Der Unterseitenkopf begann 200 px unter der Kopfzeile.**
+  `pt-[clamp(6rem,3.5rem+9vh,10rem)]` = 132 px, dazu `mt-10` und `mt-6` –
+  H1 bei 270 bis 283 px auf allen zehn Unterseiten. Jetzt
+  `clamp(4.5rem,2rem+7vh,10rem)` mit `mt-7`/`mt-4` unter `md`.
+- **Die Zusage im Kopfbereich hat am Telefon keine Fläche mehr.** Mit
+  Kachelradius und Füllung war sie ein drittes Rechteck in Knopfgröße unter
+  zwei Knöpfen – man liest drei Aktionen und tippt auf eine, die keine ist. Ab
+  `sm` trägt die Pille wieder; `sm:trace` gibt es nicht (components-Layer),
+  dafür steht `.trace-from-sm` in `globals.css`.
+- **Die Startseite ist von 19.667 auf 12.845 px gefallen** (23,3 → 15,2
+  Bildschirmhöhen), die Bestandsseite von 16.156 auf 12.266. `Plans`,
+  `InsuranceTeaser` und `RecyclingTeaser` sind von der Startseite weg: Sie
+  standen dort nicht als Anriss, sondern in voller Länge, und alle drei sind
+  in `Pillars` angerissen und verlinkt. `Region` steht jetzt vor der FAQ –
+  wer ein Gerät gesehen hat, entscheidet als Nächstes über die Strecke.
+- **Das Zitat stand zweimal auf der Startseite.** `leadReview` im Kopfbereich
+  kam aus derselben `testimonials`-Liste wie das Band der Kundenstimmen. Der
+  Kopfbereich trägt jetzt Note, Anzahl und den Weg dorthin.
+- **Das Zitatband ist am Telefon eine Wischbahn.** Bei 390 px ist die Karte
+  304 px breit – links stand eine halbe Karte an der Gehäusekante, rechts eine,
+  die mitten im Wort abbrach. Dazu ließ sich das Band mit dem Finger nur
+  *anhalten* (`group-active`), nicht bewegen; 64 s Umlauf heißt bis zu 21 s
+  Wartezeit auf die dritte Stimme. Ab `sm` läuft das Band weiter.
+- **Bestandsraster: zwei Spalten ab 380 px auf der Bestandsseite, eine Spalte
+  im Startseiten-Teaser.** Dieselbe Karte, andere Aufgabe: drei Geräte sind
+  eine Auslage (zweispaltig standen sie als zwei plus eins), dreizehn sind ein
+  Katalog (einspaltig 7,5 Bildschirmhöhen, zweispaltig 3,8). Unter 380 px eine
+  Spalte – dort wäre die Karte 160 px breit.
+- **Nummerierte Ablaufschritte:** Die Textspalte war bei 342 px Satzspiegel
+  nur 274 px breit, verschachtelt 234 px – 23 bis 25 Zeichen je Zeile. Am
+  Telefon steht die Nummer jetzt neben der Überschrift und der Fließtext
+  darunter über beide Spalten (`col-span-2 sm:col-start-2`).
+- **Die Schlagwortkapseln der Reparaturbereiche sind eine Liste mit
+  Haarlinien.** Als `flex-wrap` brachen fünf verschieden breite Kapseln als
+  zwei plus eins plus eins plus eins um, und jede Karte an anderer Stelle.
+- **Zwei `<h2>` liefen mit 13 px** („Passt dazu", „Marken, die wir betreuen") –
+  kleiner als jedes H3 der Seite. Auszeichnungszeile ist jetzt ein `<p>`, die
+  Überschrift trägt `--text-title`. Dasselbe für „Direkt erreichbar" auf
+  /kontakt.
+- **Schriftleiter am Telefon:** H1 34 / Display 26 / Titel 24 / Subtitle 19.
+  Vorher lagen Display bei 28 und Subtitle bei 20,8 – Faktoren von 1,21 und
+  1,17, die man misst statt sieht. Zeilenabstand der großen Grade unter 40 rem
+  auf 1,12 statt 1,03: Am Telefon läuft fast jede Abschnittsüberschrift über
+  drei Zeilen, und bei 1,03 stoßen Unterlängen an die Versalien der nächsten.
+- **`order-*` dreht nur das Bild, nicht den DOM.** Auf /kontakt sprang der
+  Tastaturfokus dadurch 1600 px zurück, und ein Screenreader las Adresse und
+  Karte vor dem Formular; im `insurance-teaser` stand die Tariftabelle vor
+  ihrer eigenen Überschrift. Beide drehen jetzt nur noch ab `lg`.
+- **Der Anker `#anfrage` sitzt an der Formularspalte, nicht an der Sektion.**
+  An der Sektion landete jeder „Anfrage"-Knopf auf der Überschrift: erstes
+  Feld bei 646 px, nutzbar sind 696 px.
+- **Formularfelder hatten keine sichtbare Grenze:** Feld `current/8` auf Karte
+  `current/5` sind rund 1,2:1, gefordert sind 3:1 (WCAG 1.4.11). Jetzt Füllung
+  *und* dünne Kontur bei 50 % – gemessen 3,3:1. Das ist nicht der alte leere
+  Kasten: Die Fläche trägt weiter die Schreibfläche, die Linie zieht nur die
+  Grenze.
+- **`--header-h` ist das eine Token für die Kopfhöhe.** Die Menütafel rechnete
+  fest mit 4,5 rem, die Kopfzeile ist ab `md` 5 rem – die Tafel stand von 768
+  bis 1279 px acht Pixel unter der Fensterkante. `scroll-padding-top` hängt
+  jetzt auch daran.
+- **Zwischen 1280 und 1439 px gab es keinen Telefonverweis.** Die Nummer oben
+  ist dort ausgeblendet, `PhoneButton` war `lg:hidden`, die untere
+  Aktionsleiste ebenfalls. Jetzt Symbolknopf in genau diesem Band.
+- **`sizes` folgt jetzt der echten Bildbreite, nicht dem Fenster.**
+  `(max-width: 1024px) 100vw` ignorierte die `.gutter` und holte im Querformat
+  bei DPR 3 fünf 3840er Bilder – gemessen 1103 KB statt rund 500. Kinder von
+  `.gutter` tragen `calc(100vw - 3rem)` bzw. `- 5rem` ab 768 px. Das Siegel
+  ist über `max-w-md` bei 28 rem gedeckelt, nicht über eine Media Query.
+- **Kleineres, aber aus demselben Grund:** Brotkrume 42 → 44 px; Kartennachweis
+  von 4,27:1 auf 5,6:1; `aria-current` und volle Deckkraft der aktiven Zeile im
+  Telefonmenü; Live-Region für den Sendezustand des Formulars; `quiet`-Knopf
+  immer unterstrichen (auf dem Telefon gibt es kein Hover); Einzugsgebiet auf
+  /kontakt einspaltig bis `sm`; Ortsliste im Fußbereich auf drei Orte gekürzt
+  (die vollständige steht in `Region` und auf /kontakt); alle drei Werte der
+  Kennzahlenkarte in Neon statt nur der erste; die Markenliste auf /e-scooter
+  ist eine Zeile mit Trennpunkten statt runder Kapseln, die wie Filter aussahen
+  und auf nichts antworten.
+
+**Zwei Roh-Treffer waren Messartefakte, keine Fehler:** Der Skip-Link ist im
+Ruhezustand 1 × 1 px, im Fokus 200 × 52 px und korrekt gebaut. Das
+193 × 28-`<input>` auf jeder Formularseite ist der Honeypot
+(`absolute -left-[9999px]`, `aria-hidden`, `tabIndex={-1}`).
+
+**Die beiden offenen Punkte sind am 23.08.2026 nachgezogen.** Was dabei
+entschieden wurde:
+
+- **Die Abstandsleiter hat zwei Stufen.** `Section` nimmt jetzt
+  `space="tight"` und lässt damit den oberen Rand weg; die Sektion darüber
+  trägt den Abstand allein – gemessen 64 statt 128 px am Telefon, 104 statt
+  208 auf 1512. Erlaubt ist das **nur bei gleichem Ton**: Bei einem
+  Farbwechsel begänne die neue Fläche an der letzten Textzeile.
+- **Die Regel dahinter:** Wo die Fläche wechselt, trägt die Kante die Zäsur
+  und der volle Abstand gibt ihr Luft. Wo sie nicht wechselt, trägt nichts
+  eine Zäsur – und dieselben 208 px sind kein Absatz, sondern ein Loch.
+  Gemessen gab es drei solche Nahtstellen, und zwei davon waren gar keine
+  Abstandsfrage, sondern eine fehlende Kante:
+  - `/wartungsvertrag`: „Was nicht abgedeckt ist" gehört zu den Tarifkarten
+    darüber (was in denselben zwei Verträgen *nicht* drinsteht) → `tight`.
+    Das ist die einzige Stelle im Projekt, die die Stufe benutzt.
+  - `/e-scooter`: `Related` stand auf Silber unter einer FAQ auf Silber –
+    entgegen der eigenen Vorgabe des Bauteils („Muss sich vom Ton der
+    vorhergehenden Sektion unterscheiden"). Jetzt silver-200.
+  - `/ueber-uns`: `Testimonials` (silver-200) stieß an `Region`
+    (silver-200). Das Band nimmt deshalb ein `tone`-Prop und steht dort auf
+    Silber.
+- **Einzelwerte für `py-*` an Sektionen sind weg** (`/reparatur` Marken,
+  `/wartungsvertrag` zweimal). Sie wichen nur zwischen 768 und 1023 px von
+  der Leiter ab – ein Unterschied, den niemand als Absicht liest.
+- **Die H3 der Bestandskarte steht auf 1,0625 rem**, dem Grundschriftgrad aus
+  `body`. 1 rem war ein Wert aus der Tailwind-Skala, nicht aus dieser Seite.
+
+Zwei Kapselwolken sind bei der Gelegenheit mitgegangen, weil es dieselbe
+Sorte Fehler war wie bei den Reparaturbereichen:
+
+- **Die Ausschlüsse im Wartungsvertrag** brachen als zwei plus eins plus eins
+  um („Wasserschäden durch Hochdruckreiniger" allein über die volle Breite).
+  Jetzt dieselbe Haarlinienliste, mit `×` statt Neonpunkt.
+- **Die Markenliste auf `/reparatur`** war eine Wolke aus acht Kapseln, auf
+  `/e-scooter` dieselbe Liste eine Zeile mit Trennpunkten. Jetzt beide als
+  Zeile; der Grad bleibt hier größer, weil die Namen dort der Inhalt des
+  Blocks sind.
+- **Die obere Haarlinie sitzt am ersten `<li>`, nicht an der `<ul>`.**
+  `globals.css` gibt jedem `li` in `main` ein Lesemaß von 58ch, der Liste
+  nicht: Am Schreibtisch lief die Linie der Liste 923 px breit über Einträge
+  von 574 px.
+
 ## Datumssignal und Alt-Texte
 
 Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
@@ -257,6 +430,9 @@ Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
   Beschreibungen. Die Aufnahme im Kopfbereich wird an der Fläche beschrieben,
   die auf jeder Breite da ist — die Tafel darunter ist `lg:hidden` und trug die
   einzige Beschreibung, auf dem Schreibtisch war das Motiv also unbeschrieben.
+  **Das hat bis zum 21.08.2026 nichts bewirkt:** Beide Bildflächen trugen
+  `aria-hidden`, und das nimmt den Bildknoten samt `alt` aus dem Baum — siehe
+  „Handy-Qualitätsprüfung".
   Offen bleiben die positionsbeschreibenden Alt-Texte der importierten Geräte
   (siehe unten).
 

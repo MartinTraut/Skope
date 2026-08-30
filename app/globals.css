@@ -174,11 +174,29 @@
      Anstieg, der Desktop-Satz bleibt unverändert. */
   --text-hero: clamp(2.125rem, 5.2vw + 0.4rem, 5.6rem);
   --text-page-title: clamp(2.125rem, 4.6vw + 0.5rem, 5.5rem);
-  --text-display: clamp(1.75rem, 3.4vw + 0.7rem, 4.25rem);
+  /* Boden von 1,75 auf 1,625 rem: Bei 390 px war der Abstand zwischen H1
+     (34 px) und Abschnittsüberschrift (28 px) der Faktor 1,21 und zwischen
+     Abschnittsüberschrift und H3 (24 px) 1,17 – zwei Stufen, die man nur
+     misst, nicht sieht. Jetzt 34 / 26 / 24. Der Anstieg ist so nachgezogen,
+     dass sich am Schreibtisch nichts ändert. */
+  --text-display: clamp(1.625rem, 3.55vw + 0.63rem, 4.25rem);
   --text-title: clamp(1.5rem, 1.4vw + 0.85rem, 2.1rem);
-  --text-subtitle: clamp(1.3rem, 1.1vw + 0.95rem, 1.75rem);
+  /* Dieselbe Rechnung eine Stufe tiefer: 20,8 px standen zu dicht an den
+     24 px des Titelgrades. Jetzt 19,2 px am Telefon. */
+  --text-subtitle: clamp(1.2rem, 1.22vw + 0.9rem, 1.75rem);
   --text-lead: clamp(1.05rem, 0.5vw + 0.9rem, 1.375rem);
-  --text-stat: clamp(2rem, 2.4vw + 0.85rem, 3.5rem);
+  /* Der Statgrad war auf dem ganzen Telefon tot geklemmt: Der Anstieg
+     (2,4vw + 0,85rem) erreichte den Boden von 2 rem erst bei 766 px
+     Fensterbreite, der Grad stand also von 320 bis 766 px konstant auf
+     32 px – 447 px ohne jede Skalierung, der breiteste tote Bereich aller
+     Grade. Sichtbare Folge: Im Kennzahlenband der Startseite war die Zelle
+     bei 320 px 297 px breit bei 272 px Platz, `overflow-hidden` hat 25 px
+     jedes Werts abgeschnitten („1 Jah", „bis 599,99" ohne Zeichen).
+
+     Jetzt 24 px bei 320, 25,5 bei 390, 34 bei 768. Der Anstieg ist so
+     gelegt, dass der Desktop bleibt, wo er war: bei 1512 px sind es 50,5
+     statt 49,9 px. */
+  --text-stat: clamp(1.5rem, 2.23vw + 1.05rem, 3.5rem);
 
   /* --- Form ----------------------------------------------------------- */
   /* Großzügige Radien. Die vorherige Staffel (2/4/8/14 px) war an einer
@@ -237,6 +255,20 @@
      * Fläche, wie der Akzent auch, und ist auf Dunkel die Neonfarbe selbst.
      */
     --btn-edge: #9ef605;
+    /**
+     * Farbe des Fokusrings.
+     *
+     * Der Ring lief in `currentColor` und liegt mit 3 px Versatz *außerhalb*
+     * des Elements – auf der Fläche der Sektion, nicht auf der des Knopfes.
+     * Im Neon-Knopf ist `currentColor` aber Tinte, und der Knopf steht auf
+     * einer Tinte-Sektion: gemessen 1,0:1, der Ring war auf der wichtigsten
+     * Schaltfläche der Seite unsichtbar (WCAG 2.4.11 verlangt 3:1).
+     *
+     * Deshalb kommt er wie Akzent und Knopfkante aus der *Fläche*. Ein
+     * Element, das seine eigene Schriftfarbe umstellt, erbt den Ring der
+     * Sektion und nicht seinen eigenen Vollton.
+     */
+    --focus-ring: #eef1f4;
   }
 
   /**
@@ -255,12 +287,34 @@
     --accent: #08090b;
     --on-accent: #eef1f4;
     --btn-edge: #08090b;
+    --focus-ring: #08090b;
   }
 
   .on-dark {
     --accent: #9ef605;
     --on-accent: #08090b;
     --btn-edge: #9ef605;
+    --focus-ring: #eef1f4;
+  }
+
+  :root {
+    /**
+     * Höhe der Kopfzeile, an einer Stelle.
+     *
+     * Die Menütafel rechnete fest mit 4,5 rem
+     * (`max-h-[calc(100svh-4.5rem)]`), die Kopfzeile ist aber ab `md` 5 rem
+     * hoch (`h-[4.5rem] md:h-20`). Gemessen bei 844 px Fensterhöhe stand die
+     * Unterkante der Tafel bei 390 px genau auf der Fensterkante und bei
+     * 768 und 1023 px acht Pixel darunter – über die ganze Strecke 768 bis
+     * 1279 px, in der das Menü sichtbar ist.
+     */
+    --header-h: 4.5rem;
+  }
+
+  @media (width >= 48rem) {
+    :root {
+      --header-h: 5rem;
+    }
   }
 
   html {
@@ -292,7 +346,7 @@
      * Browser selbst auslöst: Tastaturfokus, `:target`, die Fehlerliste des
      * Formulars. 5,5 rem sind die Kopfzeile (4,5 rem) plus Luft.
      */
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
   }
 
   body {
@@ -353,6 +407,19 @@
     letter-spacing: -0.022em;
   }
 
+  /* Am Telefon läuft derselbe Wert zu eng, weil dort fast jede
+     Abschnittsüberschrift über drei Zeilen geht statt über eine: „Kaufen,
+     reparieren, absichern: alles bei derselben Werkstatt." misst bei 390 px
+     drei Zeilen mit 28,8 px Abstand bei 28 px Grad – die Unterlängen der
+     einen Zeile stoßen an die Versalien der nächsten. 1,12 ist auf großen
+     Graden zu locker, deshalb hängt der Wert an der Breite. */
+  @media (width < 40rem) {
+    h1,
+    h2 {
+      line-height: 1.12;
+    }
+  }
+
   h3,
   h4 {
     line-height: 1.18;
@@ -402,11 +469,12 @@
     color: #08090b;
   }
 
-  /* Der Fokusring läuft in currentColor, damit er auf Silber wie auf der
-     dunklen Fläche sichtbar bleibt. Ein fest neongrüner Ring läge auf der
-     hellen Fläche bei 1,2:1 und wäre praktisch unsichtbar. */
+  /* Der Fokusring kommt aus der Fläche (`--focus-ring`, oben begründet),
+     nicht aus `currentColor`: Er liegt außerhalb des Elements und muss
+     deshalb gegen die Sektion stimmen, nicht gegen den Knopf. Ein fest
+     neongrüner Ring läge auf der hellen Fläche bei 1,2:1. */
   :focus-visible {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--focus-ring, currentColor);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -432,6 +500,7 @@
     color: var(--color-ink);
     --accent: #08090b;
     --on-accent: #eef1f4;
+    --focus-ring: #08090b;
   }
 
   /**
@@ -783,21 +852,21 @@
    * Aussparung ist `env()` gleich null und es bleibt beim gesetzten Wert.
    */
   .gutter {
-    padding-inline:
-      max(1.5rem, env(safe-area-inset-left)) max(1.5rem, env(safe-area-inset-right));
+    padding-inline: max(1.5rem, env(safe-area-inset-left))
+      max(1.5rem, env(safe-area-inset-right));
   }
 
   @media (width >= 48rem) {
     .gutter {
-      padding-inline:
-        max(2.5rem, env(safe-area-inset-left)) max(2.5rem, env(safe-area-inset-right));
+      padding-inline: max(2.5rem, env(safe-area-inset-left))
+        max(2.5rem, env(safe-area-inset-right));
     }
   }
 
   @media (width >= 64rem) {
     .gutter {
-      padding-inline:
-        max(3rem, env(safe-area-inset-left)) max(3rem, env(safe-area-inset-right));
+      padding-inline: max(3rem, env(safe-area-inset-left))
+        max(3rem, env(safe-area-inset-right));
     }
   }
 
@@ -960,14 +1029,14 @@
          50 Prozent Tinte und wirkte matt. Die Rampe beginnt jetzt am Ende
          der Spalte und ist bei 68 Prozent durch; die Schrift verliert nichts,
          weil über ihr weiterhin 86 Prozent liegen. */
-      linear-gradient(
-        to right,
-        color-mix(in oklab, var(--color-ink) 86%, transparent) 0%,
-        color-mix(in oklab, var(--color-ink) 78%, transparent) 36%,
-        color-mix(in oklab, var(--color-ink) 46%, transparent) 52%,
-        color-mix(in oklab, var(--color-ink) 12%, transparent) 68%,
-        transparent 84%
-      );
+        linear-gradient(
+          to right,
+          color-mix(in oklab, var(--color-ink) 86%, transparent) 0%,
+          color-mix(in oklab, var(--color-ink) 78%, transparent) 36%,
+          color-mix(in oklab, var(--color-ink) 46%, transparent) 52%,
+          color-mix(in oklab, var(--color-ink) 12%, transparent) 68%,
+          transparent 84%
+        );
   }
 
   /**
@@ -1155,7 +1224,27 @@
 
   .trace {
     position: relative;
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, currentColor 8%, transparent);
+    box-shadow: inset 0 0 0 1px
+      color-mix(in oklab, currentColor 8%, transparent);
+  }
+
+  /**
+   * Die Spur erst ab `sm`.
+   *
+   * `sm:trace` gibt es nicht: `.trace` liegt im components-Layer und ist
+   * keine Utility, auf die sich ein Breakpoint-Präfix anwenden ließe. Die
+   * Zusage im Kopfbereich braucht das aber – am Telefon steht sie ohne
+   * Fläche, und eine leuchtende Kante um bloßen Text wäre ein Rahmen ohne
+   * Gegenstand.
+   */
+  @media (width < 40rem) {
+    .trace-from-sm {
+      box-shadow: none;
+    }
+
+    .trace-from-sm::before {
+      display: none;
+    }
   }
 
   .trace::before {
@@ -1180,8 +1269,12 @@
        zweite Fläche mit Weichzeichner hätte dieselbe Maske gebraucht.
        Zwei Radien übereinander – der enge macht den Kern hart, der weite
        trägt den Schein über die Kante hinaus. */
-    filter: drop-shadow(0 0 3px color-mix(in oklab, var(--color-neon) 85%, transparent))
-      drop-shadow(0 0 10px color-mix(in oklab, var(--color-neon) 45%, transparent));
+    filter: drop-shadow(
+        0 0 3px color-mix(in oklab, var(--color-neon) 85%, transparent)
+      )
+      drop-shadow(
+        0 0 10px color-mix(in oklab, var(--color-neon) 45%, transparent)
+      );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);

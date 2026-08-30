@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils";
 export function Gallery({
   images,
   className,
-  sizes = "(max-width: 640px) 92vw, (max-width: 1280px) 46vw, 30vw",
+  sizes = "(min-width: 1280px) 30vw, (min-width: 380px) 46vw, calc(100vw - 3rem)",
   thumbnails = false,
   priority = false,
   ratio = "square",
@@ -124,15 +124,54 @@ export function Gallery({
    * Vollbild über das native `<dialog>`: Es bringt Fokusfalle, Escape und die
    * Sperre für den Hintergrund mit. Eine nachgebaute Überlagerung müsste all
    * das von Hand haben – und hat es in der Praxis nie vollständig.
+   *
+   * Eines bringt es hier aber *nicht* mit: Die Scrollsperre des Dialogs hängt
+   * daran, dass der Browser den Hintergrund still stellen kann – und
+   * `overflow-x: clip` an `html` und `body` (globals.css, Sicherheitsnetz
+   * gegen waagerechten Überlauf) hebelt sie aus. Gemessen: Vollbild offen,
+   * ein Wisch, `scrollY` springt von 0 auf 1063. Nach Escape steht man tausend
+   * Pixel woanders – und Wischen ist im Vollbild die naheliegendste Geste.
+   *
+   * Deshalb dieselbe Sperre wie im Menü (`components/layout/header.tsx`):
+   * `position: fixed` am `<body>` mit gemerktem Versatz, beim Schließen
+   * `behavior: "instant"` zurück. Nicht `overflow: hidden` – das wirkt auf
+   * iOS Safari nicht.
    */
+  const scrollY = React.useRef(0);
+
   const openZoom = () => {
     setZoomed(true);
+    scrollY.current = window.scrollY;
+    const body = document.body;
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY.current}px`;
+    body.style.insetInline = "0";
+    body.style.width = "100%";
     dialogRef.current?.showModal();
   };
 
+  /* Das Aufheben hängt an `onClose` und nicht hier: Escape schließt den
+     Dialog nativ, ohne durch diese Funktion zu laufen. `onClose` feuert auf
+     jedem Weg. */
   const closeZoom = React.useCallback(() => {
-    setZoomed(false);
     dialogRef.current?.close();
+  }, []);
+
+  const releaseScroll = React.useCallback(() => {
+    setZoomed(false);
+    const body = document.body;
+    body.style.position = "";
+    body.style.top = "";
+    body.style.insetInline = "";
+    body.style.width = "";
+    /* Layout erzwingen, bevor zurückgesprungen wird. Solange der Körper
+       `position: fixed` trägt, ist die Seite so hoch wie das Fenster; ein
+       `scrollTo` unmittelbar nach dem Zurücksetzen der Stile rechnet noch
+       gegen diese Höhe und klemmt. Gemessen: 400 px vorher, 6 px nachher.
+       Der Lesezugriff auf `offsetHeight` zwingt den Browser, vorher neu zu
+       rechnen. */
+    void body.offsetHeight;
+    window.scrollTo({ top: scrollY.current, behavior: "instant" });
   }, []);
 
   return (
@@ -248,7 +287,7 @@ export function Gallery({
                     src={image.src}
                     alt=""
                     fill
-                    sizes="80px"
+                    sizes="(min-width: 360px) 60px, 88px"
                     className="object-cover"
                   />
                 </button>
@@ -264,7 +303,7 @@ export function Gallery({
           Bildansicht erwartet. */}
       <dialog
         ref={dialogRef}
-        onClose={() => setZoomed(false)}
+        onClose={releaseScroll}
         onClick={(event) => {
           if (event.target === dialogRef.current) closeZoom();
         }}

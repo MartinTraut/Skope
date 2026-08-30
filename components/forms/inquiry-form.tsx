@@ -38,14 +38,26 @@ function subscribeToUrl(onChange: () => void) {
  * hineinschreibt. Eine leichte Füllung macht das Gegenteil – sie zeigt die
  * Schreibfläche und verschwindet als Kontur.
  *
- * Der transparente Rahmen bleibt stehen, damit der Wechsel auf `border-accent`
- * im Fokus die Höhe nicht verschiebt. Kein `focus:outline-none`: Der
+ * Die Füllung allein reicht aber nicht als Grenze. Gemessen: Feld
+ * `current/8` auf einer Karte `current/5` – drei Prozent Unterschied, das
+ * sind rund 1,2:1, wo WCAG 1.4.11 für die Grenze eines Bedienelements 3:1
+ * verlangt. Auf dem Telefon war der Rand des Schreibfeldes damit praktisch
+ * nicht zu sehen; man erkannte die Felder an den Beschriftungen, nicht an
+ * ihrer Form.
+ *
+ * Deshalb jetzt Füllung *und* Kontur, aber eine dünne bei 50 %: Das ist nicht
+ * der alte leere Kasten mit 45-prozentiger Kontur, denn die Fläche trägt
+ * weiterhin die Schreibfläche – die Linie zieht nur ihre Grenze. Gemessen
+ * 3,3:1 auf Silber.
+ *
+ * Die Kontur bleibt auch im Fokus stehen und wechselt nur die Farbe, damit
+ * sich die Höhe nicht verschiebt. Kein `focus:outline-none`: Der
  * Rahmenwechsel allein bleibt unter dem für Fokusindikatoren geforderten
  * Kontrast (WCAG 2.4.11), die globale `:focus-visible`-Outline aus globals.css
  * muss hier greifen dürfen.
  */
 const fieldClass =
-  "w-full rounded-lg border border-transparent bg-current/8 px-4 py-3.5 text-current placeholder:text-current/50 transition-colors duration-200 focus:border-accent focus:bg-current/12";
+  "w-full rounded-lg border border-current/50 bg-current/8 px-4 py-3.5 text-current placeholder:text-current/50 transition-colors duration-200 focus:border-accent focus:bg-current/12";
 
 const labelClass =
   "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-75";
@@ -396,6 +408,15 @@ export function InquiryForm({
             "Anfrage senden"
           )}
         </Button>
+        {/* Der Zwischenzustand war der einzige, der nicht angesagt wurde:
+            Erfolg, Fehler und Rückfall haben eine Live-Region und den
+            Fokuswechsel, das Senden selbst wechselte nur die Beschriftung des
+            Knopfes. Wer nicht sieht, bekam zwischen Absenden und Antwort –
+            eine Server Action, auf dem Telefon spürbar – keinerlei
+            Rückmeldung. */}
+        <p role="status" aria-live="polite" className="sr-only">
+          {pending ? "Anfrage wird gesendet" : ""}
+        </p>
         {/* Art. 13 DSGVO verlangt den Verweis an der Erhebungsstelle – und an
             genau dieser Stelle kostet ein fehlender Link Vertrauen. */}
         <p className="text-sm opacity-70">

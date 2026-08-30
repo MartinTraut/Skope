@@ -52,8 +52,19 @@ export function Related({
   return (
     <Section tone={tone} className="py-14 md:py-16">
       <Container>
+        {/* Auszeichnungszeile *und* Überschrift, nicht die Überschrift im
+            Grad der Auszeichnungszeile.
+
+            Hier stand ein `<h2 className="eyebrow">`, gemessen 13 px – kleiner
+            als jedes H3 der Seite (20,8 bis 24 px). Optisch hatte der Block
+            damit gar keine Überschrift, sondern nur eine Beschriftung über
+            zwei Karten, und in der Gliederung stand eine Ebene, die man nicht
+            sehen konnte. */}
         <Reveal>
-          <h2 className="eyebrow text-current/90">Passt dazu</h2>
+          <p className="eyebrow text-current/90">Passt dazu</p>
+          <h2 className="mt-4 text-[length:var(--text-title)]">
+            Das brauchen Sie als Nächstes.
+          </h2>
           <ul className="mt-7 grid gap-4 md:grid-cols-2">
             {items.map((item) => (
               <li key={item.href}>

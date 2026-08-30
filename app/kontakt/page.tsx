@@ -39,8 +39,20 @@ export default function ContactPage() {
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             {/* Kontaktdaten – auf Mobile bewusst NACH dem Formular: Wer über
                 einen „Anfrage senden"-CTA hier landet, will schreiben, nicht
-                erst an Adresse und Anfahrtsliste vorbeiscrollen. */}
-            <div className="order-2 lg:order-1 lg:col-span-5">
+                erst an Adresse und Anfahrtsliste vorbeiscrollen.
+
+                Das stand vorher als `order-2` in einem DOM, in dem die
+                Kontaktdaten *zuerst* kamen – die Reihenfolge war also nur
+                gemalt. Gemessen bei 390 px sprang der Tastaturfokus von den
+                Kontaktdaten unten (y 2680) zurück auf das erste Feld oben
+                (y 1056), also 1600 px nach oben, und ein Screenreader las
+                Adresse, Karte und Einzugsgebiet, bevor das Formular
+                überhaupt auftauchte (WCAG 1.3.2 / 2.4.3).
+
+                Jetzt steht das Formular auch im DOM zuerst und die Spalten
+                drehen ausschließlich ab `lg`. Am Schreibtisch ändert sich
+                dadurch nichts. */}
+            <div className="lg:order-1 lg:col-span-5">
               <Reveal>
                 {/* Die Karte steht oben in dieser Spalte, nicht in einem
                     eigenen Band am Seitenende. Wer Kontakt aufnimmt, will
@@ -60,7 +72,10 @@ export default function ContactPage() {
                   Friedrichshall sind es acht Kilometer, aus Heilbronn fünfzehn.
                 </p>
 
-                <h2 className="eyebrow-plain mt-10 text-current/90">
+                {/* Eigener Grad statt `eyebrow-plain`: Das ist die zweite
+                    H2 dieser Sektion und stand mit 13 px unter jedem H3 der
+                    Seite – eine Gliederungsebene, die man nicht sehen kann. */}
+                <h2 className="mt-10 text-[length:var(--text-title)]">
                   Direkt erreichbar
                 </h2>
                 <address className="mt-7 flex flex-col gap-6 not-italic">
@@ -159,7 +174,11 @@ export default function ContactPage() {
                   <h3 className="eyebrow-plain text-current/90">
                     Anfahrt aus der Region
                   </h3>
-                  <ul className="mt-5 grid grid-cols-2 gap-x-6">
+                  {/* Einspaltig bis `sm`. Bei 390 px waren zwei Spalten je
+                      160 px breit: „Bad Friedrichshall" brach um, und die
+                      Entfernung stand als „8 / km" auf zwei Zeilen. Im
+                      Fußbereich ist derselbe Fehler längst behoben. */}
+                  <ul className="mt-5 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
                     {serviceArea.map((place) => (
                       <li
                         key={place.name}
@@ -179,11 +198,7 @@ export default function ContactPage() {
               </Reveal>
             </div>
 
-            {/* Formular */}
-            <div
-              id="anfrage"
-              className="order-1 scroll-mt-28 lg:order-2 lg:col-span-7"
-            >
+            <div id="anfrage" className="scroll-mt-28 lg:order-2 lg:col-span-7">
               <Reveal delay={80}>
                 <h2 className="text-[length:var(--text-title)]">
                   <Mark>Anfrage</Mark> schreiben

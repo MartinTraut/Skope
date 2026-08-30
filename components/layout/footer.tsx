@@ -43,9 +43,9 @@ export function Footer() {
               Gebrauchtwarenhandel
             </p>
             <p className="mt-6 max-w-sm leading-relaxed text-current/60">
-              Fachwerkstatt für Elektrokleinstfahrzeuge und Verkauf geprüfter
-              refurbished E-Scooter in Neuenstadt am Kocher, für Heilbronn,
-              Neckarsulm, Bad Friedrichshall und die ganze Region.
+              Fachwerkstatt für Elektrokleinstfahrzeuge und Verkauf
+              generalüberholter E-Scooter in Neuenstadt am Kocher, für
+              Heilbronn, Neckarsulm, Bad Friedrichshall und die ganze Region.
             </p>
 
             <address className="mt-8 flex flex-col gap-3 not-italic">
@@ -115,8 +115,16 @@ export function Footer() {
             {/* Eine Spalte auf dem Telefon: Bei zwei Spalten bleiben je
                 160 px, und „Bad Friedrichshall" mit Entfernung braucht mehr –
                 der Ort brach um, die Entfernung stand allein. */}
+            {/* Drei Orte, nicht alle sechs.
+
+                Die vollständige Tabelle mit denselben Entfernungen steht auf
+                der Startseite in der Region-Sektion, rund 3500 px weiter oben,
+                und ein drittes Mal auf /kontakt – zusammen gut 780 px für
+                dieselbe Auskunft. Hier stehen die drei nächsten als Beleg,
+                dass es ein Einzugsgebiet gibt; wer die ganze Liste sucht,
+                findet sie über den Verweis. */}
             <ul className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
-              {serviceArea.map((place) => (
+              {serviceArea.slice(0, 3).map((place) => (
                 <li
                   key={place.name}
                   className="flex items-baseline justify-between gap-2 border-b border-current/8 pb-2 text-sm"
@@ -129,7 +137,14 @@ export function Footer() {
               ))}
             </ul>
             <p className="mt-5 text-sm leading-relaxed text-current/60">
-              Ebenso im Einzugsgebiet: {nearbyPlaceNames.join(", ")}.
+              <Link
+                href="/#region"
+                className="font-semibold underline underline-offset-2 hover:text-accent"
+              >
+                Das ganze Einzugsgebiet
+              </Link>{" "}
+              – von Neckarsulm bis Mosbach, ebenso {nearbyPlaceNames.join(", ")}
+              .
             </p>
           </div>
         </div>

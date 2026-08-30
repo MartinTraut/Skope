@@ -53,7 +53,7 @@ export function RecyclingTeaser() {
                 src="/img/scooter-strasse.jpg"
                 alt="Ausgediente E-Scooter an einer Betonwand, bereit zur Verwertung"
                 fill
-                sizes="(max-width: 1024px) 100vw, 55vw"
+                sizes="(min-width: 1024px) 55vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                 className="parallax object-cover"
               />
             </div>

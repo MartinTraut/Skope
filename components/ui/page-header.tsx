@@ -31,9 +31,21 @@ export function PageHeader({
   /* Kopf- und Fußabstand hängen an der Bildhöhe, nicht an der Breite – dieselbe
      Rechnung wie im Hero der Startseite, wo sie ausführlich steht. Hier war es
      noch deutlicher: 128 px oben plus 80 px unten sind im Querformat eines
-     Telefons 53 % der Bildhöhe für zwei Ränder. */
+     Telefons 53 % der Bildhöhe für zwei Ränder.
+
+     Der Boden war trotzdem zu hoch. Gemessen bei 390 × 844: 132 px Vorlauf,
+     dazu `mt-10` (40) für die Auszeichnungszeile und `mt-6` (24) für die
+     Überschrift – die H1 begann bei 270 bis 283 px, also 200 px unter der
+     Kopfzeile, und dazwischen stand auf zehn Unterseiten nichts als der
+     bewegte Grund und die Brotkrume. Am Schreibtisch fällt das nicht auf,
+     weil dieselben Werte dort ein Viertel der Bildhöhe sind.
+
+     Jetzt 91 px am Telefon, der Anstieg über `vh` bleibt: Ab 1000 px
+     Fensterhöhe steht wieder der alte Wert. Die beiden Innenabstände sind
+     mitgezogen (`mt-7` / `mt-4`), sonst hätte der gewonnene Platz nur die
+     Stelle gewechselt. */
   return (
-    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(6rem,3.5rem+9vh,10rem)] pb-[clamp(3.5rem,2rem+5vh,6rem)] text-silver on-dark">
+    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(4.5rem,2rem+7vh,10rem)] pb-[clamp(3.5rem,2rem+5vh,6rem)] text-silver on-dark">
       {/* Derselbe bewegte Grund wie im Hero der Startseite, nicht ein zweiter.
           Vorher lag hier ein statischer radialer Neonfleck – zwei Verfahren
           für dieselbe Aufgabe, und der Unterschied fiel beim Wechsel von der
@@ -54,7 +66,7 @@ export function PageHeader({
               <li>
                 <Link
                   href="/"
-                  className="-mx-1 inline-flex min-h-11 items-center px-1 transition-colors hover:text-accent"
+                  className="-mx-2 inline-flex min-h-11 items-center px-2 transition-colors hover:text-accent"
                 >
                   Start
                 </Link>
@@ -82,9 +94,9 @@ export function PageHeader({
             bei 78 px lief ihre breiteste Zeile 910 px, bei 88 px sind es
             1027 px und damit drei Pixel über dem Deckel. 1152 px fangen das
             ab. Wer eine längere Überschrift einträgt, misst nach. */}
-        <Reveal immediate className="mt-10">
+        <Reveal immediate className="mt-7 md:mt-10">
           <p className="eyebrow text-current/90">{eyebrow}</p>
-          <h1 className="mt-6 max-w-6xl text-[length:var(--text-page-title)]">
+          <h1 className="mt-4 max-w-6xl text-[length:var(--text-page-title)] md:mt-6">
             {title}
           </h1>
         </Reveal>

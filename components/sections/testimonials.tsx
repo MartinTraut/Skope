@@ -7,6 +7,7 @@ import { Container, Section, SectionHead } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials, type Testimonial } from "@/lib/data/testimonials";
 import { googleRating, site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
 
 /**
@@ -35,13 +36,27 @@ import { Mark } from "@/components/ui/mark";
  * mit vestibulären Beschwerden den Inhalt unbenutzbar macht.
  */
 
-function QuoteCard({ quote, author, context, rating }: Testimonial) {
+function QuoteCard({
+  quote,
+  author,
+  context,
+  rating,
+  className,
+}: Testimonial & { className?: string }) {
   return (
     /* Feste Kartenbreite, nicht mitwachsend: Ein Laufband braucht ein
        gleichbleibendes Maß, sonst ruckelt die Schleife optisch, obwohl sie
        gleichmäßig läuft. 24rem ergibt rund 45 Zeichen je Zeile – kurz genug
-       für ein Zitat im Vorbeigehen, lang genug, dass kein Satz zerfällt. */
-    <figure className="lift flex w-[min(78vw,24rem)] shrink-0 flex-col rounded-lg bg-ink p-7 text-silver on-dark md:p-8">
+       für ein Zitat im Vorbeigehen, lang genug, dass kein Satz zerfällt.
+
+       Am Telefon gibt die Wischbahn das Maß vor (siehe unten), deshalb ist
+       die Breite hier überschreibbar. */
+    <figure
+      className={cn(
+        "lift flex shrink-0 flex-col rounded-lg bg-ink p-7 text-silver on-dark md:p-8",
+        className ?? "w-[min(78vw,24rem)]",
+      )}
+    >
       <div className="flex items-center justify-between gap-4">
         <Stars rating={rating} />
         {/* Das Anführungszeichen in derselben Farbe wie die Sterne: Beides
@@ -88,9 +103,18 @@ function QuoteCard({ quote, author, context, rating }: Testimonial) {
   );
 }
 
-export function Testimonials() {
+export function Testimonials({
+  tone = "silver-200",
+}: {
+  /**
+   * Muss sich vom Ton der Sektion darüber *und* darunter unterscheiden –
+   * dieselbe Regel wie bei `Related`. Auf `/ueber-uns` folgt `Region`
+   * (silver-200), deshalb steht das Band dort auf Silber.
+   */
+  tone?: "silver" | "silver-200";
+} = {}) {
   return (
-    <Section id="kundenstimmen" tone="silver-200">
+    <Section id="kundenstimmen" tone={tone}>
       <Container>
         <SectionHead
           eyebrow="Kundenstimmen"
@@ -133,9 +157,33 @@ export function Testimonials() {
           5 rem sind dort ein Fünftel der Bildbreite, und die erste Karte stand
           halb im Nebel. Gemessen bei 390 px – 2 rem lassen die Kante weich und
           die Karte lesbar. */}
+      {/* Am Telefon eine Wischbahn statt des Laufbands.
+
+          Das Band war dort keine Darstellung, sondern ein Defekt: Bei 390 px
+          ist die Karte 304 px breit, es passt also eine und ein Drittel ins
+          Bild – gemessen stand links eine halbe Karte an der Gehäusekante und
+          rechts eine, die mitten im Wort abbrach („sehr net", „immer fü").
+          Dazu ließ sich das Band mit dem Finger nur *anhalten*
+          (`group-active`), nicht bewegen; bei 64 s Umlauf wartet man auf die
+          dritte Stimme bis zu 21 Sekunden.
+
+          Eine Karte je Bild, Einrastpunkte, gewischt wie in der Galerie –
+          derselbe Auslöser für dieselbe Absicht. Ab `sm` läuft das Band
+          weiter, dort stehen mehrere Karten gleichzeitig im Bild und die
+          Bewegung leistet, wofür sie gedacht ist. */}
+      <Reveal delay={80} className="mt-14 sm:hidden">
+        <ul className="scroll-x flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2">
+          {testimonials.map((item) => (
+            <li key={item.author} className="flex snap-center">
+              <QuoteCard {...item} className="w-[calc(100vw-3rem)]" />
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+
       <Reveal
         delay={80}
-        className="mt-14 [--fade:2rem] md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
+        className="mt-14 hidden [--fade:2rem] sm:block md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
       >
         <Marquee
           className="[--duration:64s] [--gap:1.5rem]"

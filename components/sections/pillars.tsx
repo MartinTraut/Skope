@@ -110,7 +110,7 @@ export function Pillars() {
                     src={pillar.image}
                     alt={pillar.imageAlt}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 30vw"
+                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                     className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
                   />
                   <span className="absolute top-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 font-display text-xs font-semibold tracking-[0.14em] uppercase backdrop-blur-sm text-silver on-dark">

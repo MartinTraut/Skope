@@ -71,7 +71,7 @@ export default function AboutPage() {
                   src="/img/werkstatt-service.jpg"
                   alt="Thomas Zielke bei der Arbeit an einem eingespannten E-Scooter in der Werkstatt"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="parallax object-cover"
                 />
               </div>
@@ -181,15 +181,17 @@ export default function AboutPage() {
                 Warum sich eine Reparatur meist lohnt, wie wir messen statt zu
                 raten, was ein Kostenvoranschlag enthält – und was es bei uns
                 sonst noch gibt: geprüfte Gebrauchtgeräte, Wartungsverträge ab
-                17,99 € im Monat und das Versicherungskennzeichen zum
-                Mitnehmen.
+                17,99 € im Monat und das Versicherungskennzeichen zum Mitnehmen.
               </>
             }
           />
         </Container>
       </Section>
 
-      <Testimonials />
+      {/* Silber statt silver-200: Darüber steht der Film auf Tinte, darunter
+          `Region` auf silver-200 – im Standardton lägen hier zwei silberne
+          Sektionen ohne Kante aneinander. */}
+      <Testimonials tone="silver" />
       <Region />
 
       <CtaBand

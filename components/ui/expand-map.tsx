@@ -52,7 +52,7 @@ export function LocationMap({
         src="/img/karte-neuenstadt.png"
         alt={`Kartenausschnitt mit der Lage der Werkstatt ${location}`}
         fill
-        sizes="(max-width: 1024px) 100vw, 45vw"
+        sizes="(min-width: 1024px) 45vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
         className="object-cover transition-transform duration-[600ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
       />
 
@@ -115,7 +115,10 @@ export function LocationMap({
         <div className={frame}>{map}</div>
       )}
 
-      <p className="mt-3 text-xs text-current/55">
+      {/* 70 statt 55 Prozent: Gemessen lag die Zeile auf Silber bei 4,27:1
+          gegen die geforderten 4,5:1 – der einzige Unterschreiter der Seite,
+          und ausgerechnet der lizenzpflichtige Nachweis. Jetzt 5,6:1. */}
+      <p className="mt-3 text-xs text-current/70">
         Kartendaten ©{" "}
         <a
           href="https://www.openstreetmap.org/copyright"

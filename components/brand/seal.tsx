@@ -38,7 +38,7 @@ export function Seal({
       /* Größter Einsatz ist derzeit `max-w-md` (448 px), auf Retina also
          896 px. `sizes` deckelt entsprechend, damit nicht die volle
          Kantenlänge ausgeliefert wird. */
-      sizes="(min-width: 1024px) 28rem, 60vw"
+      sizes="28rem"
       alt={
         decorative
           ? ""

@@ -2,12 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  AlertTriangle,
-  ArrowLeft,
-  Check,
-  ChevronRight,
-} from "lucide-react";
+import { AlertTriangle, ArrowLeft, Check, ChevronRight } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
@@ -210,7 +205,7 @@ export default async function ScooterDetailPage({
                    400 px und war damit seit der Verbreiterung der Bildspalte
                    zu klein – auf dem Schreibtisch wurde ein 400-px-Bild auf
                    608 px gezogen. */
-                sizes="(min-width: 1024px) 38rem, (min-width: 640px) 26rem, 92vw"
+                sizes="(min-width: 1024px) 38rem, (min-width: 640px) 22rem, calc(100vw - 3rem)"
               />
             </div>
 

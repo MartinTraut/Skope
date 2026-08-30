@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import type { LucideIcon } from "lucide-react";
-import { BatteryCharging, CircuitBoard, Cog, Timer, Wrench } from "lucide-react";
+import {
+  BatteryCharging,
+  CircuitBoard,
+  Cog,
+  Timer,
+  Wrench,
+} from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -168,15 +174,27 @@ export default function RepairPage() {
                       {area.description}
                     </p>
 
-                    {/* Die Schlagworte tragen jetzt einen Punkt.
-                        Ohne ihn waren es graue Kapseln auf grauer Karte in
-                        grauer Sektion – lesbar, aber ohne jeden Hinweis
-                        darauf, dass es eine Aufzählung von Leistungen ist. */}
-                    <ul className="relative mt-7 flex flex-wrap gap-2">
+                    {/* Eine Liste mit Kanten statt einer Wolke aus Kapseln.
+                        
+                        Als `flex-wrap` mit unterschiedlich breiten Kapseln
+                        brach die Aufzählung nach Zufall um: Bei fünf
+                        Einträgen standen zwei in der ersten Zeile und je
+                        einer in den drei folgenden, mit einer Lücke rechts,
+                        die von Karte zu Karte anders groß war. Das sah nach
+                        Umbruchfehler aus, nicht nach Aufzählung – und die
+                        Karten daneben trugen vier Einträge und brachen an
+                        anderer Stelle.
+
+                        Untereinander mit Haarlinie hat jede Zeile dieselbe
+                        Kante links und rechts, jede Karte denselben Rhythmus,
+                        und die Liste ist von oben nach unten lesbar statt im
+                        Zickzack. Der Neonpunkt bleibt: Er ist der Hinweis,
+                        dass hier Leistungen stehen und kein Fließtext. */}
+                    <ul className="relative mt-7">
                       {area.items.map((item) => (
                         <li
                           key={item}
-                          className="flex items-center gap-2 rounded-md bg-ink/6 py-1.5 pr-3 pl-2.5 text-sm text-current/80"
+                          className="flex items-center gap-3 border-b border-current/10 py-2.5 text-sm text-current/80 first:border-t"
                         >
                           <span
                             aria-hidden="true"
@@ -329,7 +347,7 @@ export default function RepairPage() {
       </Section>
 
       {/* Marken */}
-      <Section tone="ink" className="py-16 md:py-20">
+      <Section tone="ink">
         <Container>
           {/* Die Markenliste war vorher eine graue Zeile neben einer noch
               graueren Beschriftung – acht Namen bei 75 % Deckkraft, in
@@ -338,19 +356,27 @@ export default function RepairPage() {
               Deshalb steht sie jetzt als eigener Block, die Namen in
               Überschriftengrösse und voller Deckkraft. */}
           <Reveal className="flex flex-col gap-8">
-            <h2 className="eyebrow text-current/90">
-              Marken, die wir betreuen
-            </h2>
-            <ul className="flex flex-wrap items-center gap-2.5">
-              {brands.map((brand) => (
-                <li
-                  key={brand}
-                  className="rounded-lg bg-current/8 px-4 py-2.5 font-display text-lg font-bold tracking-tight md:text-xl"
-                >
-                  {brand}
-                </li>
-              ))}
-            </ul>
+            {/* Dieselbe Korrektur wie in `related.tsx`: Die Zeile war ein
+                `<h2>` im Grad der Auszeichnungszeile (13 px) und damit
+                kleiner als jedes H3 daneben. */}
+            <div>
+              <p className="eyebrow text-current/90">Markenabdeckung</p>
+              <h2 className="mt-4 text-[length:var(--text-title)]">
+                Diese Marken kommen hier durch die Werkstatt.
+              </h2>
+            </div>
+            {/* Dieselbe Liste steht auf /e-scooter als Zeile mit
+                Trennpunkten, hier stand sie als Kapselwolke – ein Baustein
+                mit zwei Erscheinungsformen ist kein zweiter Entwurf, sondern
+                ein halber. Dazu brachen die acht verschieden breiten Kapseln
+                am Telefon als zwei plus vier plus zwei um, jede Reihe mit
+                anderer rechter Kante.
+
+                Der Grad bleibt: Die Namen sind hier der Inhalt des Blocks,
+                nicht eine Randnotiz wie auf der Bestandsseite. */}
+            <p className="font-display text-lg leading-relaxed font-bold tracking-tight md:text-xl">
+              {brands.join(" · ")}
+            </p>
             <p className="text-current/65">
               … und weitere, auch exotische Modelle. Wenn Ihre Marke nicht dabei
               ist: anrufen, in den meisten Fällen passt es trotzdem.
@@ -360,7 +386,7 @@ export default function RepairPage() {
       </Section>
 
       {/* Anfrage */}
-      <Section id="anfrage" tone="silver">
+      <Section tone="silver">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -376,7 +402,16 @@ export default function RepairPage() {
                 </p>
               </Reveal>
             </div>
-            <div className="lg:col-span-7">
+            {/* Der Anker sitzt an der Formularspalte, nicht an der Sektion.
+
+                An der Sektion landete jeder Knopf, der „Anfrage" heißt, auf
+                der Überschrift: Gemessen bei 390 px stand die Sektionsoberkante
+                bei 184 px und das erste Feld bei 646 px, während zwischen
+                Kopfzeile und Aktionsleiste nur 696 px nutzbar sind – ein Feld
+                von sechs im Bild, für den Rest noch ein Wisch. Der
+                Abstandshalter lässt die Überschrift oben angeschnitten stehen,
+                damit klar bleibt, wozu das Formular gehört. */}
+            <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
                 <InquiryForm defaultTopic="Reparatur" />
               </Reveal>

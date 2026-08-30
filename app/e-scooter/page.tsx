@@ -47,7 +47,7 @@ export default function ScooterPage() {
     <>
       <PageHeader
         crumb="E-Scooter kaufen"
-        eyebrow="Refurbished · Skope-Qualitätssiegel"
+        eyebrow="Generalüberholt · Skope-Qualitätssiegel"
         title={
           <>
             Gebraucht kaufen, ohne <Mark>Restrisiko</Mark>.
@@ -182,16 +182,20 @@ export default function ScooterPage() {
             <p className="eyebrow-plain mt-10 text-current/60">
               Marken im Bestand
             </p>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {facts.brands.map((brand) => (
-                <li
-                  key={brand}
-                  className="rounded-full border border-current/15 bg-silver px-4 py-2 font-display text-sm font-semibold tracking-tight"
-                >
-                  {brand}
-                </li>
-              ))}
-            </ul>
+            {/* Keine Pillen mit Rahmen und Fläche.
+
+                Rund, gerahmt, halbfett und direkt über einer Liste von
+                dreizehn Geräten – das ist die Form eines Filters, und genau
+                den greift man auf dem Telefon als Erstes an. Es sind aber
+                `<li>`, sie antworten auf nichts. Eine falsche Aufforderung an
+                der Stelle, an der ein Filter hingehörte, ist schlechter als
+                gar keine.
+
+                Als Zeile mit Trennpunkten steht dieselbe Auskunft da – welche
+                Marken hier liegen – ohne etwas zu versprechen. */}
+            <p className="mt-4 font-display leading-relaxed font-semibold tracking-tight">
+              {facts.brands.join(" · ")}
+            </p>
           </Reveal>
 
           {inventory.length > 0 ? (
@@ -208,8 +212,16 @@ export default function ScooterPage() {
 
                Ein Gebrauchtkauf entscheidet sich an Akku, Zulassung und
                Bremsen – aber diese Fragen stellt man an einem Gerät, nicht an
-               dreizehn gleichzeitig. */
-            <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+               dreizehn gleichzeitig.
+
+               Zwei Spalten schon am Telefon, ab 380 px: Einspaltig war die
+               Liste bei 390 px 483 px je Karte hoch – dreizehn Geräte ergaben
+               7,5 Bildschirmhöhen ohne jede Formvariation, und wer das vierte
+               Gerät sehen wollte, wischte viermal. Zweispaltig sind es 3,8.
+               Unter 380 px bleibt es bei einer Spalte: Dort wäre die Karte
+               160 px breit, und der längste Modellname (Audi Electric Kick
+               Scooter powered by Egret Pro) läuft darin über sechs Zeilen. */
+            <div className="mt-14 grid gap-4 min-[380px]:grid-cols-2 sm:gap-6 xl:grid-cols-3">
               {inventory.map((item, i) => (
                 <Reveal key={item.id} delay={(i % 3) * 70}>
                   <InventoryCard item={item} />
@@ -255,7 +267,7 @@ export default function ScooterPage() {
       </Section>
 
       {/* Suchauftrag */}
-      <Section id="suchauftrag" tone="ink">
+      <Section tone="ink">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -271,9 +283,18 @@ export default function ScooterPage() {
                 </p>
               </Reveal>
             </div>
-            <div className="lg:col-span-7">
+            {/* Der Anker sitzt an der Formularspalte, nicht an der Sektion.
+
+                An der Sektion landete jeder Knopf, der „Anfrage" heißt, auf
+                der Überschrift: Gemessen bei 390 px stand die Sektionsoberkante
+                bei 184 px und das erste Feld bei 646 px, während zwischen
+                Kopfzeile und Aktionsleiste nur 696 px nutzbar sind – ein Feld
+                von sechs im Bild, für den Rest noch ein Wisch. Der
+                Abstandshalter lässt die Überschrift oben angeschnitten stehen,
+                damit klar bleibt, wozu das Formular gehört. */}
+            <div id="suchauftrag" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm defaultTopic="Suchauftrag refurbished E-Scooter" />
+                <InquiryForm defaultTopic="Suchauftrag generalüberholter E-Scooter" />
               </Reveal>
             </div>
           </div>
@@ -282,7 +303,10 @@ export default function ScooterPage() {
 
       <Testimonials />
 
-      <Section tone="silver-200">
+      {/* Silber statt silber-200: Die Kundenstimmen darüber stehen selbst auf
+          silber-200 – gemessen 2003 px in einem einzigen Ton, ohne dass eine
+          Kante die beiden Themen trennt. */}
+      <Section tone="silver">
         <FaqSection
           eyebrow="Häufige Fragen zum Kauf"
           title={
@@ -295,7 +319,20 @@ export default function ScooterPage() {
         />
       </Section>
 
+      {/* Der Flächenwechsel ist der einzige Rhythmusgeber der Seite, und an
+          den Nahtstellen zum Abschluss fiel er aus: `Related` stand auf allen
+          Seiten außer der Reparaturseite auf Tinte und ging damit ohne Kante
+          in das ebenfalls dunkle `CtaBand` über – gemessen auf /e-scooter
+          1220 px ununterbrochene Tinte. Der Ton ist deshalb je Seite gesetzt:
+          verschieden vom Block davor und verschieden vom Abschluss.
+
+          Genau daran hielt sich diese Seite als einzige nicht: Die FAQ
+          darüber steht auf Silber, `Related` stand es auch – 208 px ohne
+          Kante zwischen zwei Blöcken, die nichts miteinander zu tun haben.
+          Silber-200 stellt die Kante her, und die Kachel darin wechselt
+          über `surface` von selbst auf Silber. */}
       <Related
+        tone="silver-200"
         items={[
           {
             href: "/versicherung",

@@ -49,8 +49,13 @@ const button = cva(
           "border-silver bg-silver text-ink hover:bg-silver-200 hover:border-silver-200",
         outline:
           "border-current/40 bg-transparent hover:border-current/70 hover:bg-current/[0.05]",
+        /* Die Unterstreichung steht immer, sie kommt nicht erst beim
+           Überfahren. Auf dem Telefon gibt es kein Hover: „Checkup im Vertrag
+           ab 17,99 €" stand dort als freier fetter Text vierzig Pixel unter
+           einem Neon-Knopf, ohne jedes Zeichen, dass es ein Ziel ist. Der
+           Hover vertieft jetzt nur noch die Linie. */
         quiet:
-          "border-transparent bg-transparent px-0 underline-offset-[6px] decoration-current/40 hover:underline",
+          "border-transparent bg-transparent px-0 underline decoration-current/40 underline-offset-[6px] transition-[text-decoration-color] hover:decoration-current",
       },
       size: {
         md: "h-11 px-5 text-[0.9375rem]",

@@ -48,7 +48,7 @@ export default function PlansPage() {
           drei Aussagen ihre eigene Form: der Kernsatz als Lead, die vier
           Zusatzleistungen als Liste, die Empfehlung als abgesetzter Block.
           Kein Wort und keine Zahl ist dabei weggefallen. */}
-      <Section tone="silver-200" className="py-16 md:py-24">
+      <Section tone="silver-200">
         <Container>
           {/* Der Block stand in einer Spalte von 56 rem am linken Rand, auf
               breiten Schirmen also auf gut der halben Fläche, und die rechte
@@ -70,8 +70,8 @@ export default function PlansPage() {
 
               <p className="mt-4 leading-relaxed text-current/70">
                 Der jährliche Sicherheits-Checkup kostet einzeln 59,99&nbsp;€
-                und ist in beiden Verträgen enthalten. Premium für
-                17,99&nbsp;€ im Monat ergänzt vier Dinge:
+                und ist in beiden Verträgen enthalten. Premium für 17,99&nbsp;€
+                im Monat ergänzt vier Dinge:
               </p>
             </Reveal>
 
@@ -149,8 +149,14 @@ export default function PlansPage() {
 
       <Plans />
 
-      {/* Ausschlüsse – Ehrlichkeit ist hier das Verkaufsargument */}
-      <Section tone="silver" className="py-16 md:py-20">
+      {/* Ausschlüsse – Ehrlichkeit ist hier das Verkaufsargument.
+
+          `space="tight"`: Der Block gehört zu den Tarifkarten darüber – er
+          sagt, was in denselben zwei Verträgen *nicht* drinsteht – und liegt
+          in derselben Fläche. Mit der vollen Stufe standen dort 128 px
+          silberne Leere ohne jede Kante zwischen Preis und Einschränkung,
+          und die Einschränkung las sich als eigenes Thema. */}
+      <Section tone="silver" space="tight">
         <Container>
           {/* Vorher: eine Etikettenzeile in vier Spalten links, ein blasser
               Absatz in acht Spalten rechts – dazwischen eine halbe
@@ -177,15 +183,26 @@ export default function PlansPage() {
               <p className="mt-5 leading-relaxed text-current/70">
                 {planExclusions.intro}
               </p>
-              <ul className="mt-4 flex flex-wrap gap-2">
+              {/* Dieselbe Korrektur wie bei den Reparaturbereichen: Als
+                  `flex-wrap` brachen vier verschieden breite Kapseln am
+                  Telefon als zwei plus eins plus eins um – „Wasserschäden
+                  durch Hochdruckreiniger" allein über die volle Breite, mit
+                  einem einzelnen „Unfälle" darunter. Eine Aufzählung, die
+                  je nach Wortlänge eine andere Form annimmt, liest sich als
+                  Fehler. Haarlinien geben jedem Punkt dieselbe Zeile. */}
+              {/* Die obere Haarlinie sitzt am ersten Eintrag, nicht an der
+                  Liste: `li` trägt aus `globals.css` das Lesemaß von 58ch,
+                  die Liste nicht – am Schreibtisch lief die Linie der Liste
+                  923 px breit über Einträge von 574 px. */}
+              <ul className="mt-5">
                 {planExclusions.items.map((entry) => (
                   <li
                     key={entry}
-                    className="flex items-center gap-2 rounded-full bg-current/6 px-4 py-2 text-sm font-semibold"
+                    className="flex items-center gap-3 border-b border-current/12 py-2.5 text-sm font-semibold first:border-t"
                   >
                     <X
                       aria-hidden="true"
-                      className="size-3.5 shrink-0"
+                      className="size-3.5 shrink-0 text-current/45"
                       strokeWidth={3}
                     />
                     {entry}
@@ -215,7 +232,7 @@ export default function PlansPage() {
 
       {/* Anfrage – bisher zwang diese Seite als einzige Vertragsseite zum
           Seitenwechsel, obwohl die Vorauswahl längst existiert. */}
-      <Section id="anfrage" tone="silver">
+      <Section tone="silver">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -231,7 +248,16 @@ export default function PlansPage() {
                 </p>
               </Reveal>
             </div>
-            <div className="lg:col-span-7">
+            {/* Der Anker sitzt an der Formularspalte, nicht an der Sektion.
+
+                An der Sektion landete jeder Knopf, der „Anfrage" heißt, auf
+                der Überschrift: Gemessen bei 390 px stand die Sektionsoberkante
+                bei 184 px und das erste Feld bei 646 px, während zwischen
+                Kopfzeile und Aktionsleiste nur 696 px nutzbar sind – ein Feld
+                von sechs im Bild, für den Rest noch ein Wisch. Der
+                Abstandshalter lässt die Überschrift oben angeschnitten stehen,
+                damit klar bleibt, wozu das Formular gehört. */}
+            <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
                 <InquiryForm defaultTopic="Wartungsvertrag Basis" />
               </Reveal>
@@ -240,7 +266,14 @@ export default function PlansPage() {
         </Container>
       </Section>
 
+      {/* Der Flächenwechsel ist der einzige Rhythmusgeber der Seite, und an
+          den Nahtstellen zum Abschluss fiel er aus: `Related` stand auf allen
+          Seiten außer der Reparaturseite auf Tinte und ging damit ohne Kante
+          in das ebenfalls dunkle `CtaBand` über – gemessen auf /e-scooter
+          1220 px ununterbrochene Tinte. Der Ton ist deshalb je Seite gesetzt:
+          verschieden vom Block davor und verschieden vom Abschluss. */}
       <Related
+        tone="silver-200"
         items={[
           {
             href: "/reparatur",

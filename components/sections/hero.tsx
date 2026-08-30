@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
@@ -11,18 +12,6 @@ import { testimonials } from "@/lib/data/testimonials";
 import { inventoryFacts } from "@/lib/inventory";
 import { googleRating, proof } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
-
-/**
- * Die Stimme, die im Kopfbereich im Wortlaut steht.
- *
- * Die kürzeste der drei: Der Kopfbereich trägt bereits Überschrift, Lead und
- * zwei Aktionen – ein Zitat, das dort über drei Zeilen läuft, wird zur
- * zweiten Lesestrecke und nicht mehr überflogen. Ausgewählt wird nach Länge
- * und nicht von Hand, damit eine neue Rezension die Auswahl mitmacht.
- */
-const leadReview = testimonials.reduce((shortest, item) =>
-  item.quote.length < shortest.quote.length ? item : shortest,
-);
 
 /**
  * Kennzahlen in der Akzentfarbe – aber alle vier, nicht eine.
@@ -48,7 +37,13 @@ const facts = inventoryFacts();
 
 const stats = [
   { value: `${facts.count}`, label: "geprüfte Geräte vorrätig" },
-  { value: facts.priceFrom, label: "Einstiegspreis, Endpreis ohne USt." },
+  /* Die Obergrenze steht in der Zeile darunter und nicht mehr in einer
+     zweiten Kachel eine Bildschirmhöhe tiefer – siehe den Kommentar am
+     Kennzahlenband in `inventory-teaser.tsx`. */
+  {
+    value: facts.priceFrom,
+    label: `Einstiegspreis bis ${facts.priceTo}, Endpreis ohne USt.`,
+  },
   {
     value: `${proof.warrantyYears} Jahr`,
     label: "Gewährleistung auf jedes Gerät",
@@ -105,10 +100,7 @@ export function Hero() {
           harte senkrechte Kante mitten in der Sektion. Der Auslauf hängt an
           `min-[104rem]`, damit er unterhalb der Grenze nicht den Roller
           anschneidet – dort steht er am rechten Bildrand. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]"
-        >
+        <div className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]">
           {/* `object-contain` statt `object-cover` – die Aufnahme wird
             vollständig gezeigt, nicht beschnitten.
 
@@ -126,13 +118,21 @@ export function Hero() {
             Auf keiner Breite steht die Aufnahme zweimal, deshalb trägt jede
             der beiden dieselbe Beschreibung und dieselbe `sizes`-Angabe – es
             ist immer nur eine da, und zwei verschiedene Angaben hätten mit
-            `priority` zwei Breiten derselben Datei vorgeladen. */}
+            `priority` zwei Breiten derselben Datei vorgeladen.
+
+            Kein `aria-hidden` an der umgebenden Fläche. Es stand hier, und
+            damit war der `alt`-Text darunter wirkungslos – `aria-hidden` am
+            Elternteil nimmt den Bildknoten samt Beschreibung aus dem Baum.
+            Das Kopfbild war auf Telefon *und* Schreibtisch unbeschrieben,
+            obwohl beide Flächen einen ausformulierten `alt` tragen.
+            `pointer-events-none` und `-z-10` halten die Fläche weiterhin aus
+            jeder Bedienung heraus. */}
           <Image
             src="/img/hero-werkstatt.jpg"
             alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
             fill
             priority
-            sizes="100vw"
+            sizes="min(100vw, 104rem)"
             className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
           />
           {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
@@ -163,10 +163,7 @@ export function Hero() {
             Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
             damit die Überschrift darauf steht und die Zone ohne Kante in die
             Tinte übergeht. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58vh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden"
-        >
+        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58vh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden">
           <Image
             src="/img/hero-werkstatt.jpg"
             alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
@@ -193,7 +190,7 @@ export function Hero() {
           115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
           dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
           ändert sich also nichts. */}
-        <Container className="relative pt-[clamp(7rem,4.5rem+11vh,10rem)] pb-10 lg:pt-[clamp(5.5rem,3rem+8vh,8rem)] md:pb-16">
+        <Container className="relative pt-[clamp(6.5rem,4rem+10vh,10rem)] pb-10 lg:pt-[clamp(5.5rem,3rem+8vh,8rem)] md:pb-16">
           {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der
@@ -208,12 +205,18 @@ export function Hero() {
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
             <div className="lg:col-span-7">
               <Reveal immediate>
-                {/* Die Auszeichnungszeile nennt jetzt das Angebot, nicht den
+                {/* Die Auszeichnungszeile nennt das Angebot, nicht den
                   Betriebstyp: „Fachwerkstatt" beschreibt, was hier steht,
-                  „Refurbished" beschreibt, was verkauft wird. Der Ort bleibt,
-                  er ist die halbe Suchanfrage. */}
+                  „generalüberholt" beschreibt, was verkauft wird. Der Ort
+                  bleibt, er ist die halbe Suchanfrage.
+
+                  „Refurbished" stand hier eine Runde lang und war der
+                  Fachbegriff der Branche, nicht das Wort des Kunden – wer
+                  „E-Scooter gebraucht kaufen" sucht, kennt es nicht. Dazu
+                  brauchte die Zeile bei 390 px zwei Zeilen; als erstes, was
+                  über der Überschrift steht, ist das eine Zeile zu viel. */}
                 <p className="eyebrow text-current/90">
-                  Refurbished E-Scooter · Neuenstadt am Kocher
+                  Generalüberholt · Neuenstadt
                 </p>
               </Reveal>
 
@@ -250,7 +253,7 @@ export function Hero() {
                 115 % sind gemessen genau die achte Spalte samt Rasterabstand
                 (800 → 920 px bei 1512 px); der Fließtext bleibt bei sieben,
                 weil eine Lesestrecke nicht breiter werden soll. */}
-              <h1 className="rise-line mt-6 text-[length:var(--text-hero)] lg:w-[115%]">
+              <h1 className="rise-line mt-4 text-[length:var(--text-hero)] sm:mt-6 lg:w-[115%]">
                 <span>
                   <span className="block">
                     <Mark>Geprüfte</Mark> E-Scooter
@@ -271,12 +274,17 @@ export function Hero() {
                   `.rise-line` acht Pixel nach oben in ihre eigene
                   Unterlängen-Reserve. Gemessen begann der Fließtext dadurch
                   neun Pixel oberhalb der Unterkante der Überschrift. */}
-                <p className="mt-8 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
-                  Jedes Gerät wird in der eigenen Werkstatt vollständig geprüft,
-                  aufbereitet und mit {proof.warrantyYears} Jahr Gewährleistung
-                  übergeben. Dieselbe Werkstatt repariert und wartet ihn danach.
-                  In Neuenstadt am Kocher, für Heilbronn, Neckarsulm und die
-                  Region.
+                {/* Kürzer als bisher, und zwar um genau den Satzteil, der
+                  drei Zeilen tiefer noch einmal als Kennzahl steht: „mit
+                  1 Jahr Gewährleistung übergeben". Bei 390 px lief der Absatz
+                  über sechs Zeilen und war damit der längste Block über der
+                  ersten Aktion – der Kopfbereich soll die Sache benennen,
+                  nicht sie schon erklären. Jetzt vier Zeilen. */}
+                <p className="mt-6 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75 sm:mt-8">
+                  Jedes Gerät wird in der eigenen Werkstatt geprüft und
+                  aufbereitet – von derselben Werkstatt, die es danach repariert
+                  und wartet. In Neuenstadt am Kocher, für Heilbronn, Neckarsulm
+                  und die Region.
                 </p>
               </Reveal>
 
@@ -296,7 +304,7 @@ export function Hero() {
                     bekommt dort zusätzlich eine schwache Fläche – auf Tinte
                     ist ein reiner Umriss neben einem Vollton so leicht, dass
                     er wie ein Nachtrag aussieht. */}
-                <div className="mt-8 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:items-center sm:gap-3">
+                <div className="mt-7 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:items-center sm:gap-3">
                   <PhoneButton className="max-sm:w-full" />
                   {/* Der zweite Weg führt in den Bestand, nicht in die
                     Reparaturannahme. Wer kaufen will, soll die Geräte sehen;
@@ -324,16 +332,21 @@ export function Hero() {
                   wird geprüft, hier ist etwas verfügbar. Der Kern der Spur
                   läuft in `currentColor`, deshalb ist er auf Tinte hell und
                   auf Silber dunkel, ohne zweite Regel. */}
-                {/* Rund wie eine Pille nur, solange die Zeile einzeilig ist.
-                  Bei 390 px läuft der Satz über zwei Zeilen, und ein
-                  Stadionradius um einen zweizeiligen Block liest sich als
-                  Fehler, nicht als Form. Unterhalb von `sm` deshalb der
-                  Kachelradius und ein Innenrand, der oben und unten gleich
-                  ist. */}
-                <p className="trace mt-3 flex items-center gap-3 rounded-2xl bg-current/8 px-4.5 py-3 font-display text-[0.9375rem] font-semibold tracking-tight sm:mt-7 sm:inline-flex sm:w-auto sm:rounded-full sm:py-2.5 sm:pr-6 sm:pl-4.5">
+                {/* Am Telefon keine Fläche, ab `sm` die Pille.
+
+                  Mit Fläche und Kachelradius stand hier ein drittes Rechteck
+                  in der Größe der beiden Knöpfe darüber – gleiche Breite,
+                  gleiche Höhe, gleiche Rundung. Wer den Block überfliegt,
+                  liest drei Aktionen und tippt auf eine, die keine ist. Ohne
+                  Fläche ist es das, was es sein soll: eine Zustandszeile mit
+                  dem Neonpunkt, der auf der ganzen Seite „verfügbar" meint.
+
+                  Ab `sm` ist der Satz einzeilig, dort trägt die Pille wieder
+                  – ein Stadionradius um zwei Zeilen liest sich als Fehler. */}
+                <p className="trace trace-from-sm mt-4 flex items-start gap-3 font-display text-[0.9375rem] leading-snug font-semibold tracking-tight text-current/80 sm:mt-7 sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:bg-current/8 sm:py-2.5 sm:pr-6 sm:pl-4.5 sm:text-current">
                   <span
                     aria-hidden="true"
-                    className="size-2.5 shrink-0 rounded-full bg-neon"
+                    className="mt-2 size-2.5 shrink-0 rounded-full bg-neon sm:mt-0"
                   />
                   Alle Geräte sofort verfügbar, Probefahrt vor Ort
                 </p>
@@ -361,7 +374,7 @@ export function Hero() {
                   Gesichter stehen in derselben Zeile wie die Note, weil sie
                   ihre Herkunft sind. */}
               <Reveal immediate delay={60}>
-                <div className="mt-9 max-w-[46ch] overflow-hidden rounded-md border border-current/12 bg-current/5">
+                <div className="mt-7 max-w-[46ch] overflow-hidden rounded-md border border-current/12 bg-current/5 sm:mt-9">
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-current/12 px-5 py-4">
                     <div
                       aria-hidden="true"
@@ -395,14 +408,27 @@ export function Hero() {
                     </div>
                   </div>
 
-                  <figure className="px-5 py-4">
-                    <blockquote className="font-display leading-snug font-semibold tracking-tight text-current/90">
-                      &bdquo;{leadReview.quote}&ldquo;
-                    </blockquote>
-                    <figcaption className="mt-2 text-sm text-current/60">
-                      {leadReview.author} · {leadReview.context}
-                    </figcaption>
-                  </figure>
+                  {/* Hier stand die kürzeste Rezension im Wortlaut. Sie steht
+                    auf derselben Seite ein zweites Mal: `leadReview` kommt aus
+                    derselben `testimonials`-Liste, die das Band der
+                    Kundenstimmen rendert – gemessen 4300 px auseinander, aber
+                    Wort für Wort dasselbe Zitat.
+
+                    Der Beleg braucht es hier auch nicht. Note, Anzahl und die
+                    drei Gesichter sagen im Kopfbereich, was zu sagen ist; der
+                    Wortlaut ist die Aufgabe der Sektion weiter unten. Statt
+                    des Zitats jetzt der Weg dorthin – und damit ist die Karte
+                    eine Aussage mit einem Ziel statt zweier Aussagen. */}
+                  <Link
+                    href="#kundenstimmen"
+                    className="press group flex items-center justify-between gap-3 px-5 py-3.5 text-sm font-semibold transition-colors hover:bg-current/6"
+                  >
+                    Was drei Kunden geschrieben haben
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-current/50 transition-transform duration-200 group-hover:translate-x-0.5"
+                    />
+                  </Link>
                 </div>
               </Reveal>
             </div>
@@ -427,7 +453,7 @@ export function Hero() {
             abzuschließen. */}
         <Reveal
           delay={80}
-          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-8 pb-20 lg:grid-cols-4 lg:gap-x-10 lg:pt-10 lg:pb-24"
+          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-8 pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-10 lg:pb-24"
         >
           {stats.map((stat) => (
             <div key={stat.label} className="min-w-0">

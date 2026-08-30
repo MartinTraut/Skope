@@ -162,7 +162,7 @@ export function Header() {
         )}
       />
 
-      <Container className="flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
+      <Container className="flex h-[var(--header-h)] items-center justify-between gap-4">
         {/* Ohne Unterzeile: Gestapelt war der Logoblock 56 px hoch, der
             Schriftzug selbst saß dadurch bei 34 px Mitte, während Navigation,
             Telefonpille und CTA alle bei 40 px liegen. Sechs Pixel daneben –
@@ -269,7 +269,17 @@ export function Header() {
             Anfrage senden
           </ButtonLink>
 
-          <PhoneButton iconOnly className="lg:hidden" />
+          {/* Zwischen 1280 und 1439 px gab es gar keinen Telefonverweis mehr:
+              Die Nummer oben ist dort ausgeblendet (kein Platz, Begründung
+              darüber), `PhoneButton` war `lg:hidden` und die untere
+              Aktionsleiste ebenfalls. Gemessen: bei 1279 px sichtbar, bei
+              1280 px weg, ab 1440 px wieder da – und 1280 und 1366 px sind die
+              beiden häufigsten Notebookbreiten. Als Symbolknopf kostet die
+              Nummer dort 44 px statt der 150 px der vollen Schreibweise. */}
+          <PhoneButton
+            iconOnly
+            className="lg:hidden min-[1280px]:inline-flex min-[1440px]:hidden"
+          />
 
           <button
             ref={toggleRef}
@@ -320,7 +330,7 @@ export function Header() {
            der Menüliste an die Seite darunter weiter. Man wischt im Menü und
            bewegt die Seite dahinter – sichtbar, sobald das Menü wieder zugeht. */
         className={cn(
-          "absolute inset-x-0 top-full max-h-[calc(100svh-4.5rem)] min-h-[calc(100svh-4.5rem)] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
+          "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-h))] min-h-[calc(100svh-var(--header-h))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
           "transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none",
           open
             ? "visible translate-y-0 opacity-100"
@@ -351,17 +361,35 @@ export function Header() {
                 className={cn(
                   "border-b border-current/8 transition-[opacity,transform] duration-400 ease-[cubic-bezier(.22,1,.36,1)]",
                   "motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
-                  open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+                  open
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-2 opacity-0",
                 )}
               >
+                {/* `aria-current` und die volle Deckkraft der Ziffer wie in
+                    der Schreibtisch-Navigation. Sie fehlten hier beide: Auf
+                    dem Telefon ist das Menü der einzige Orientierungspunkt,
+                    und dort sahen alle sechs Zeilen gleich aus – gemessen kein
+                    `aria-current` im Panel auf keiner der sechs Routen. */}
                 <Link
                   href={item.href}
+                  aria-current={pathname === item.href ? "page" : undefined}
                   // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist –
                   // dann ändert sich `pathname` nicht und das Menü bliebe offen.
                   onClick={() => setOpen(false)}
-                  className="press flex items-baseline gap-4 py-4 font-display text-2xl font-bold"
+                  className={cn(
+                    "press flex items-baseline gap-4 py-4 font-display text-2xl font-bold",
+                    pathname === item.href
+                      ? "text-current"
+                      : "text-current/[0.88]",
+                  )}
                 >
-                  <span className="tabular font-sans text-xs font-medium text-accent">
+                  <span
+                    className={cn(
+                      "tabular font-sans text-xs font-medium",
+                      pathname === item.href ? "text-accent" : "text-accent/45",
+                    )}
+                  >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {item.label}

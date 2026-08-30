@@ -770,8 +770,5 @@ export function inventoryHighlights(count = 3): InventoryItem[] {
   if (legal.length <= count) return legal;
 
   const step = (legal.length - 1) / (count - 1);
-  return Array.from(
-    { length: count },
-    (_, i) => legal[Math.round(i * step)],
-  );
+  return Array.from({ length: count }, (_, i) => legal[Math.round(i * step)]);
 }

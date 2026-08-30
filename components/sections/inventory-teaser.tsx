@@ -58,7 +58,14 @@ export function InventoryTeaser() {
             Tinte darf die harte Zahl Neon sein – auf Silber wäre sie mit
             1,18:1 unlesbar –, und die Spanne bekommt zwei Zeilen statt einer:
             der Einstiegspreis groß, die Obergrenze klein darunter. Damit sind
-            alle drei Felder gleich breit. */}
+            alle drei Felder gleich breit.
+
+            Alle drei Werte in Neon, nicht nur der erste. Vorher trug „13" die
+            Akzentfarbe und „ab 169,99 €" wie „1 Jahr" standen weiß – drei
+            gleichrangige Zeilen mit zufällig unterschiedlichem Gewicht. Die
+            Regel ist dieselbe wie am Kennzahlenband des Kopfbereichs: Die
+            Farbe hängt an der Gattung („das hier sind die Zahlen"), nicht am
+            Einzelfall. */}
         <Reveal delay={60}>
           {/* Auf dem Telefon drei Zeilen, ab `sm` drei Spalten.
 
@@ -76,18 +83,20 @@ export function InventoryTeaser() {
               Ab 1024 px stehen 251 px je Feld zur Verfügung, dort passt
               es. */}
           <dl className="lift-lg mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lg:grid-cols-3">
-            <div className="flex items-baseline justify-between gap-4 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
-              <dt className="eyebrow-plain text-silver/55">Geräte vorrätig</dt>
-              <dd className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
+              <dt className="eyebrow-plain min-w-0 text-silver/55">
+                Geräte vorrätig
+              </dt>
+              <dd className="tabular min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
                 {facts.count}
               </dd>
             </div>
-            <div className="flex items-baseline justify-between gap-4 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
-              <dt className="eyebrow-plain shrink-0 text-silver/55">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
+              <dt className="eyebrow-plain min-w-0 text-silver/55">
                 Preisspanne
               </dt>
-              <dd className="text-right lg:mt-3 lg:text-left">
-                <span className="tabular block font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
+              <dd className="min-w-0 text-right lg:mt-3 lg:text-left">
+                <span className="tabular block font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                   ab {facts.priceFrom}
                 </span>
                 <span className="tabular mt-1 block text-sm text-silver/60 lg:mt-2">
@@ -95,15 +104,25 @@ export function InventoryTeaser() {
                 </span>
               </dd>
             </div>
-            <div className="flex items-baseline justify-between gap-4 px-5 py-4 lg:block lg:p-8">
-              <dt className="eyebrow-plain text-silver/55">Gewährleistung</dt>
-              <dd className="font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight lg:mt-3">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 px-5 py-4 lg:block lg:p-8">
+              <dt className="eyebrow-plain min-w-0 text-silver/55">
+                Gewährleistung
+              </dt>
+              <dd className="min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
                 {proof.warrantyYears} Jahr
               </dd>
             </div>
           </dl>
         </Reveal>
 
+        {/* Hier eine Spalte am Telefon, auf der Bestandsseite zwei.
+
+            Es ist dieselbe Karte, aber nicht dieselbe Aufgabe: Drei Geräte
+            sind eine Auslage, dreizehn sind ein Katalog. Zweispaltig standen
+            die drei hier als zwei plus eins – dieselbe ausgefranste Reihe,
+            die auch die Schlagwortkapseln auf der Reparaturseite hatten – und
+            drei Karten kosten einspaltig nur 1,7 Bildschirmhöhen. Auf der
+            Bestandsseite wären dieselben Karten einspaltig 7,5. */}
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item, i) => (
             <Reveal key={item.id} delay={i * 80} as="li">

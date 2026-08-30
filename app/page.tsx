@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
-import { InsuranceTeaser } from "@/components/sections/insurance-teaser";
 import { Pillars } from "@/components/sections/pillars";
 import { InventoryTeaser } from "@/components/sections/inventory-teaser";
-import { Plans } from "@/components/sections/plans";
-import { RecyclingTeaser } from "@/components/sections/recycling-teaser";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Workshop } from "@/components/sections/workshop";
@@ -65,16 +62,34 @@ export default function HomePage() {
         Der Flächenwechsel bleibt: Bestand steht auf Silber, genau dort, wo der
         Ablauf stand. Hell → dunkel → hell läuft durch, keine zwei gleichen
         Töne stoßen aneinander.
+
+        Drei Sektionen sind seitdem dazugekommen und wieder weg: `Plans`,
+        `InsuranceTeaser` und `RecyclingTeaser`. Gemessen bei 390 px war die
+        Startseite 19.667 px lang – 23,3 Bildschirmhöhen –, und diese drei
+        trugen davon 5.645 px. Sie standen hier nicht als Anriss, sondern in
+        voller Länge: `Plans` ist dieselbe Komponente wie auf
+        /wartungsvertrag, samt beider Vertragskarten mit je vier
+        Leistungspunkten; `InsuranceTeaser` wiederholte den Tarifauszug von
+        /versicherung; `RecyclingTeaser` die Rücknahme von /recycling. Alle
+        drei sind in `Pillars` angerissen und verlinkt – die Übersicht bleibt,
+        die zweite Ausführung geht.
+
+        `Region` steht jetzt vor der FAQ statt an neunter Stelle. Wer ein
+        Gerät gesehen hat, entscheidet als Nächstes, ob er die Strecke fährt;
+        „Aus Heilbronn sind es 15 Kilometer" ist genau diese Antwort und kam
+        vorher nach Verträgen und Versicherung.
+
+        Der Flächenwechsel geht auf: ink → silber → ink → silber-200 → ink →
+        silber-200 → silber → ink. Zwei helle Töne stoßen nur zwischen Region
+        und FAQ aneinander, und die trennen sich über silber-200 gegen silber
+        plus die Kartenfläche der Region.
       */}
       <Hero />
       <InventoryTeaser />
       <Workshop />
       <Testimonials />
       <Pillars />
-      <Plans />
-      <InsuranceTeaser />
       <Region />
-      <RecyclingTeaser />
 
       <Section id="faq" tone="silver">
         <FaqSection
