@@ -36,7 +36,12 @@ export const site = {
      auf dem Kartenausschnitt keine sichtbare Verschiebung. */
   geo: { lat: 49.2373006, lng: 9.3436176 },
 
-  phone: { display: "+49 178 5097654", href: "tel:+491785097654" },
+  phone: {
+    display: "+49 178 5097654",
+    href: "tel:+491785097654",
+    /** Maschinenlesbare Form für das Schema – NAP-Abgleicher normalisieren nicht zuverlässig. */
+    e164: "+491785097654",
+  },
   email: "skopegebrauchtwarenhandel@gmail.com",
 
   // TODO Betreiber: verbindliche Öffnungszeiten festlegen und hier eintragen.
@@ -61,25 +66,32 @@ export const proof = {
 } as const;
 
 /**
- * Bewertung aus dem Google-Unternehmensprofil.
+ * Letzter von Hand abgeglichener Stand der Google-Bewertung.
+ *
+ * **Das ist der Rückfall, nicht die Quelle.** Angezeigt wird, was
+ * `getGoogleRating()` aus `lib/google-rating.ts` liefert – einmal am Tag frisch
+ * aus der Places API. Diese Konstante greift nur, wenn kein Schlüssel gesetzt
+ * ist oder Google nicht antwortet. Wer sie ändert, ändert also nicht die
+ * Anzeige, sondern nur das Sicherheitsnetz darunter.
  *
  * Am 18.08.2026 im Profil abgelesen: 5,0 aus 37 Rezensionen. Vorher standen
  * hier 3 – die Zahl der Rezensionen, die von der Altseite übernommen wurden
  * und in `lib/data/testimonials.ts` liegen. Das war keine Angabe aus dem
- * Profil, sondern die Länge unserer eigenen Liste.
- *
- * Beide Werte sind eine Tatsachenbehauptung: Steht dort in Wirklichkeit 4,8
- * oder eine andere Anzahl, ist die Angabe irreführend im Sinne von § 5 UWG.
- * Deshalb gehören sie vor jedem Deploy abgeglichen, so wie der Warenbestand.
+ * Profil, sondern die Länge unserer eigenen Liste. Genau dieser Fehler ist der
+ * Grund, warum die Zahl heute nicht mehr hier entschieden wird: Beide Werte
+ * sind eine Tatsachenbehauptung, und eine Behauptung, die nur am Tag des
+ * Deploys stimmt, ist an jedem Tag danach irreführend im Sinne von § 5 UWG.
  *
  * Weiterhin bewusst kein `AggregateRating` im Schema: Google wertet eine
  * Bewertung, die ein Betrieb über sich selbst auszeichnet, als
  * self-serving – erlaubt ist sie nur für Bewertungen, die nicht die eigene
  * Organisation betreffen. Ein Verstoß kostet die Auszeichnung für die ganze
  * Domain, nicht nur für diesen Block. Der Beleg läuft stattdessen über
- * `site.googleProfile`: sichtbarer Verweis auf die Quelle statt Markup.
+ * `site.googleProfile`: sichtbarer Verweis auf die Quelle statt Markup. Daran
+ * ändert die Schnittstelle nichts – auch eine Zahl von Google bleibt eine
+ * Aussage über sich selbst.
  */
-export const googleRating = { value: "5,0", count: 37 } as const;
+export const googleRatingFallback = { value: "5,0", count: 37 } as const;
 
 /** Einzugsgebiet mit Entfernungen – von der Altseite übernommen. */
 export const serviceArea = [

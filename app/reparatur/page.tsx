@@ -31,11 +31,8 @@ import { Mark } from "@/components/ui/mark";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Reparatur Heilbronn & Neuenstadt",
   description:
-    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Akku, Elektronik, Bremsen, Motor. Alle Marken, Kostenvoranschlag vorab, Bremsen oft am selben Tag. Jetzt anfragen.",
+    "E-Scooter Reparatur für Heilbronn und Neckarsulm: Akku, Elektronik, Bremsen, Motor. Alle Marken, Kostenvoranschlag vorab, Bremsen oft am selben Tag.",
   path: "/reparatur",
-  image: "/img/akku-diagnose.jpg",
-  imageAlt:
-    "Kapazitätsmessung an einem geöffneten E-Scooter-Akku auf der Werkbank",
 });
 
 /**
@@ -94,7 +91,7 @@ export default function RepairPage() {
               <dt className="eyebrow-plain text-current/60">
                 Reparierte Scooter
               </dt>
-              <dd className="tabular mt-2 font-display text-4xl font-bold tracking-tight">
+              <dd className="tabular mt-2 font-display text-4xl font-bold tracking-tight text-accent">
                 500+
               </dd>
             </div>
@@ -139,6 +136,9 @@ export default function RepairPage() {
               const Icon = areaIcons[area.slug] ?? Wrench;
               return (
                 <Reveal key={area.slug} delay={(i % 2) * 80} as="article">
+                  {/* Der Neonschimmer oben links (`.tint-neon`) bleibt –
+                      am 02.09.2026 entfernt, am 03.09. auf Ansage des
+                      Nutzers zurückgeholt: „die sahen davor schöner aus". */}
                   <div className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-silver p-7 lift transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:p-9">
                     <span
                       aria-hidden="true"
@@ -188,8 +188,8 @@ export default function RepairPage() {
                         Untereinander mit Haarlinie hat jede Zeile dieselbe
                         Kante links und rechts, jede Karte denselben Rhythmus,
                         und die Liste ist von oben nach unten lesbar statt im
-                        Zickzack. Der Neonpunkt bleibt: Er ist der Hinweis,
-                        dass hier Leistungen stehen und kein Fließtext. */}
+                        Zickzack. Der Punkt ist Tinte, nicht Neon: 17 Neonpunkte
+                        in vier Karten waren Dekoration, keine Markierung. */}
                     <ul className="relative mt-7">
                       {area.items.map((item) => (
                         <li
@@ -198,7 +198,7 @@ export default function RepairPage() {
                         >
                           <span
                             aria-hidden="true"
-                            className="size-1.5 shrink-0 rounded-full bg-neon"
+                            className="size-1.5 shrink-0 rounded-full bg-current/40"
                           />
                           {item}
                         </li>
@@ -321,19 +321,16 @@ export default function RepairPage() {
                     </h3>
                   </div>
                   <dl className="mt-7">
-                    {turnaround.map((row, i) => (
+                    {turnaround.map((row) => (
                       <div
                         key={row.label}
                         className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-ink/10 py-4"
                       >
                         <dt className="text-current/70">{row.label}</dt>
-                        <dd
-                          className={
-                            i === 0
-                              ? "rounded-full bg-neon px-3 py-1 font-display text-sm font-bold tracking-tight text-ink"
-                              : "font-display font-semibold tracking-tight"
-                          }
-                        >
+                        {/* Alle drei Werte gleich: „meist am selben Tag" trug
+                            als Neonkapsel ein Signal, das weder Zahl noch
+                            Aktion ist. */}
+                        <dd className="font-display font-semibold tracking-tight">
                           {row.value}
                         </dd>
                       </div>
@@ -361,7 +358,7 @@ export default function RepairPage() {
                 kleiner als jedes H3 daneben. */}
             <div>
               <p className="eyebrow text-current/90">Markenabdeckung</p>
-              <h2 className="mt-4 text-[length:var(--text-title)]">
+              <h2 className="mt-4 text-[length:var(--text-display)]">
                 Diese Marken kommen hier durch die Werkstatt.
               </h2>
             </div>
@@ -440,7 +437,7 @@ export default function RepairPage() {
           {
             href: "/wartungsvertrag",
             label: "Wartungsvertrag",
-            text: "Express-Reparatur innerhalb von 24 Stunden und Vorrang bei der Terminvergabe.",
+            text: "Express-Reparatur, bevorzugt innerhalb von 24 Stunden, und Vorrang bei der Terminvergabe.",
           },
           {
             href: "/recycling",
@@ -452,6 +449,7 @@ export default function RepairPage() {
 
       <Region />
       <CtaBand
+        formHref="#anfrage"
         eyebrow="Werkstatttermin"
         title={
           <>

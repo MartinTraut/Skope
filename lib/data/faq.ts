@@ -14,7 +14,7 @@ export const faqRepair: FaqItem[] = [
   },
   {
     q: "Was kostet eine E-Scooter Reparatur bei euch ungefähr?",
-    a: "Die Diagnose ist im Sicherheits-Checkup für 59,99 € enthalten. Die Reparaturkosten selbst hängen vom Defekt ab: Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag. Es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
+    a: "Bremsbeläge ab 15 €, Reifenwechsel ab 25 €, Elektronik-Reparaturen ab 40 €, je nach Defekt. Die vollständige Diagnose aller sechs Prüfpositionen ist im Sicherheits-Checkup für 59,99 € enthalten. Vor jeder Arbeit bekommen Sie einen Kostenvoranschlag. Es wird nichts getauscht, was Sie nicht freigegeben haben. Alle Preise sind Endpreise, gemäß § 19 UStG berechnen wir keine Umsatzsteuer.",
   },
   {
     q: "Wie lange dauert es, bis ich meinen E-Scooter wieder abholen kann?",
@@ -33,11 +33,11 @@ export const faqRepair: FaqItem[] = [
 export const faqPlans: FaqItem[] = [
   {
     q: "Lohnt sich ein E-Scooter Wartungsvertrag für mich wirklich?",
-    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur innerhalb von 24 Stunden. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
+    a: "Wenn Sie täglich fahren: ja. Ein einzelner Sicherheits-Checkup kostet 59,99 €. Im Premium-Paket für 17,99 € im Monat sind der jährliche Sicherheits-Check, der Akku-Deep-Check, Vorrang bei der Terminvergabe und 20 % Rabatt auf alle Ersatzteile enthalten. Der Preisvorteil liegt beim Ersatzteil-Rabatt und beim Hol- und Bringservice, der eigentliche Nutzen bei der Express-Reparatur, die bevorzugt innerhalb von 24 Stunden erledigt wird. Fahren Sie nur gelegentlich, ist der Basis-Vertrag für 130 € im Jahr die passendere Wahl.",
   },
   {
     q: "Welcher Wartungsvertrag passt zu mir, Basis oder Premium?",
-    a: "Basis für Gelegenheitsfahrer, Premium für Pendler. Der Basis-Vertrag (130 € pro Jahr) bringt einmal jährlich den großen Sicherheitscheck mit kompletter Funktionsprüfung und 10 % Ersatzteil-Rabatt. Premium (17,99 € pro Monat, 215,88 € im Jahr, Mindestlaufzeit 12 Monate) ist auf Leute zugeschnitten, die den Scooter aus Heilbronn oder Neckarsulm täglich zur Arbeit nutzen: Akku-Deep-Check, 20 % Rabatt, Express-Reparatur innerhalb von 24 Stunden und Hol- und Bringservice im Umkreis von 15 km.",
+    a: "Basis für Gelegenheitsfahrer, Premium für Pendler. Der Basis-Vertrag (130 € pro Jahr) bringt einmal jährlich den großen Sicherheitscheck mit kompletter Funktionsprüfung und 10 % Ersatzteil-Rabatt. Premium (17,99 € pro Monat, 215,88 € im Jahr, Mindestlaufzeit 12 Monate) ist auf Leute zugeschnitten, die den Scooter aus Heilbronn oder Neckarsulm täglich zur Arbeit nutzen: Akku-Deep-Check, 20 % Rabatt, Express-Reparatur (bevorzugt innerhalb von 24 Stunden) und Hol- und Bringservice im Umkreis von 15 km.",
   },
   {
     q: "Wo findet die Wartung statt, und holt ihr den Scooter auch ab?",
@@ -56,15 +56,15 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Was kostet eine E-Scooter Versicherung über euch als ERGO-Partner?",
-    a: "Die Haftpflicht startet je nach Saison und Risikoklasse ab 42 € für ein volles Versicherungsjahr, Teilkasko mit Diebstahlschutz ab 49 €. Kürzere Zeiträume sind entsprechend günstiger. Der genaue Beitrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO auf Basis Ihrer Angaben ermittelt. Es ist kein Abo: Sie zahlen einmal und fahren die ganze Saison abgesichert.",
+    a: "Die Haftpflicht startet je nach Saison und Risikoklasse ab 42 € für ein volles Versicherungsjahr, Teilkasko mit Diebstahlschutz ab 69 €. Wer mitten in der Saison einsteigt, zahlt nur die verbleibenden Monate, im Januar zum Beispiel ab 49 €. Der genaue Beitrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO auf Basis Ihrer Angaben ermittelt. Es ist kein Abo: Sie zahlen einmal und fahren die ganze Saison abgesichert.",
   },
   {
     q: "Wie lange dauert es, bis ich mein Versicherungskennzeichen bekomme?",
-    a: "Das hängt davon ab, wo Sie den Antrag stellen. In unserer Werkstatt in Neuenstadt am Kocher bekommen Sie die Plakette direkt mit: Antrag ausfüllen, Beitrag bar oder mit EC-Karte zahlen, Kennzeichen ans Heck kleben, losfahren. Wenn Sie online anfragen, übermitteln wir Ihre Daten verschlüsselt an die ERGO, und die versendet das Versicherungskennzeichen innerhalb von fünf bis zehn Werktagen direkt zu Ihnen nach Hause.",
+    a: "Fünf bis zehn Werktage nach dem Antrag, per Post. Ob Sie den Antrag in unserer Werkstatt in Neuenstadt am Kocher oder online stellen: Wir geben ihn am selben Werktag an die ERGO, und die versendet das Versicherungskennzeichen direkt an Ihre Adresse. Wer zum Saisonstart am 1. März fahren will, fragt am besten zwei Wochen vorher an.",
   },
   {
     q: "Kann ich die Plakette bei euch im Laden direkt mitnehmen, oder muss ich auf die Post warten?",
-    a: "Sie können sie direkt mitnehmen. Wir haben die Versicherungskennzeichen in der Werkstatt vorrätig, der Antrag ist in wenigen Minuten ausgefüllt und der Beitrag ist sofort zahlbar, bar oder mit EC-Karte. Bringen Sie den Scooter oder die Rahmennummer mit, dann verlassen Sie den Laden versichert und mit angebrachter Plakette. Nur bei der Online-Anfrage läuft der Versand über die ERGO.",
+    a: "Nein, das Kennzeichen kommt per Post von der ERGO. Wir haben keine Versicherungskennzeichen in der Werkstatt vorrätig: Der Antrag wird bei uns oder online gestellt, die ERGO prüft ihn und versendet die Plakette innerhalb von fünf bis zehn Werktagen an Ihre Adresse. In der Werkstatt füllen wir den Antrag gemeinsam aus, der Beitrag ist bar oder mit EC-Karte zahlbar.",
   },
   {
     q: "Welche Unterlagen brauche ich für den Versicherungsantrag?",
@@ -83,19 +83,19 @@ export const faqBuy: FaqItem[] = [
   },
   {
     q: "Bekomme ich auf einen gebrauchten E-Scooter überhaupt Gewährleistung?",
-    a: "Ja, ein Jahr ab Übergabe. Für Gebrauchtwaren gilt bei uns die gesetzlich zulässige verkürzte Gewährleistungsfrist von einem Jahr. Die Haftung für Schäden aus der Verletzung von Leben, Körper oder Gesundheit sowie für grob fahrlässige oder vorsätzliche Pflichtverletzungen bleibt davon unberührt. Zusätzlich haben Sie als Verbraucher ein 14-tägiges Widerrufsrecht.",
+    a: "Ja, ein Jahr ab Übergabe. Für Gebrauchtwaren gilt bei uns die gesetzlich zulässige verkürzte Gewährleistungsfrist von einem Jahr. Die Haftung für Schäden aus der Verletzung von Leben, Körper oder Gesundheit sowie für grob fahrlässige oder vorsätzliche Pflichtverletzungen bleibt davon unberührt. Bestellen Sie per Telefon oder E-Mail, gilt zusätzlich das gesetzliche 14-tägige Widerrufsrecht; beim Kauf vor Ort nach einer Probefahrt gilt es nicht.",
   },
   {
     q: "Welche gebrauchten E-Scooter habt ihr gerade da, und was kosten sie?",
-    a: "Aktuell stehen dreizehn geprüfte Geräte zwischen 169,99 € und 599,99 € in Neuenstadt am Kocher. Vertreten sind Xiaomi (4, 4 Lite, 5 Max), Segway-Ninebot (F2 E, F2 Pro, E3 Pro), NIU (KQi1 Pro, KQi 100F), Sharp EM-KS1DE, Odys Pax, Zamelux Green E9 und der Audi Egret Pro. Jedes Gerät ist ein Einzelstück mit eigenen Fotos, eigenen Messwerten und einem Jahr Gewährleistung. Der Bestand wechselt laufend: Was auf der Seite steht, war beim letzten Abgleich da, ist aber nicht reserviert, bis Sie anfragen.",
+    a: "Was gerade da ist, steht mit Fotos, Messwerten und Preis auf der Bestandsseite. Jedes Gerät ist ein Einzelstück, aufbereitet in der Werkstatt in Neuenstadt am Kocher, mit einem Jahr Gewährleistung, und der Bestand wechselt laufend. Wenn nichts Passendes dabei ist, hinterlegen Sie einen Suchauftrag, und wir melden uns, sobald ein solches Gerät geprüft ist.",
   },
   {
     q: "Sind eure gebrauchten E-Scooter für die Straße in Deutschland zugelassen?",
     a: "Die meisten ja, zwei ausdrücklich nicht. Der Großteil des Bestands hat eine Allgemeine Betriebserlaubnis nach eKFV und darf mit Versicherungskennzeichen auf öffentlichen Straßen gefahren werden. Zwei Geräte sind internationale 25-km/h-Versionen ohne deutsche Betriebserlaubnis, der Segway-Ninebot F2 E und der Xiaomi Electric Scooter 5 Max. Beide sind auf der Übersichtsseite als solche gekennzeichnet und ausschließlich für Privatgelände, Export oder die Nutzung im Ausland gedacht. Wer ein solches Gerät im Straßenverkehr bewegt, fährt ohne Versicherungsschutz.",
   },
   {
-    q: "Warum steht bei manchen Geräten Differenzbesteuerung nach § 25a UStG?",
-    a: "Weil wir die Geräte gebraucht von Privatpersonen ankaufen. Bei der Differenzbesteuerung wird die Umsatzsteuer nur auf die Handelsspanne berechnet und in der Rechnung nicht gesondert ausgewiesen. Für Sie als Privatkäufer ändert das nichts: Der genannte Preis ist der Endpreis. Ein Vorsteuerabzug ist bei diesen Geräten allerdings nicht möglich, was für gewerbliche Käufer relevant sein kann. Geräte, die als Neuware im Originalkarton bei uns stehen, sind davon ausgenommen.",
+    q: "Kann ich als Firma bei euch einen E-Scooter kaufen und die Vorsteuer ziehen?",
+    a: "Kaufen ja, Vorsteuer nein. Als Kleinunternehmer nach § 19 UStG weisen wir keine Umsatzsteuer aus; der genannte Preis ist der Endpreis, für Privat- wie für Geschäftskunden. Eine Rechnung auf Ihre Firma stellen wir aus, ein Vorsteuerabzug ist daraus aber nicht möglich.",
   },
   {
     q: "Was passiert, wenn nach dem Kauf etwas am Scooter nicht stimmt?",

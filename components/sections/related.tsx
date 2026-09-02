@@ -67,7 +67,14 @@ export function Related({
           </h2>
           <ul className="mt-7 grid gap-4 md:grid-cols-2">
             {items.map((item) => (
-              <li key={item.href}>
+              /* `min-w-0` an Feld und Textspalte: Ein Rasterfeld hat
+                 `min-width: auto`, und „Versicherungskennzeichen" im
+                 Untertitelgrad plus Ring, Lücke und Innenabstand ergab bei
+                 320 px eine feste Mindestbreite von 349 px – die Karte lief
+                 rechts aus dem Satzspiegel, ohne dass die Seite Überlauf
+                 meldete (die Sektion schneidet ab). Das Wort darf jetzt
+                 trennen. */
+              <li key={item.href} className="min-w-0">
                 <Link
                   href={item.href}
                   className={cn(
@@ -75,8 +82,8 @@ export function Related({
                     surface[tone],
                   )}
                 >
-                  <span>
-                    <span className="block font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
+                  <span className="min-w-0">
+                    <span className="block font-display text-[length:var(--text-subtitle)] font-bold tracking-tight [hyphens:auto] break-words">
                       {item.label}
                     </span>
                     <span className="mt-1.5 block leading-relaxed text-current/70">

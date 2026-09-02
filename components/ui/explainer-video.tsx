@@ -1,3 +1,5 @@
+import { generatedVideoNotice } from "@/lib/data/generated-images";
+
 /**
  * Der Erklärfilm, 35 Sekunden, ohne Ton.
  *
@@ -7,9 +9,16 @@
  * aussieht. Ein nachgebauter Abspieler müsste all das erst wieder herstellen
  * und wäre am Ende schlechter.
  *
- * `preload="none"` und ein Standbild als `poster`: Der Film wiegt 1,3 MB, das
- * Standbild 47 kB. Ohne die Angabe lädt Safari beim Seitenaufruf Teile der
+ * `preload="none"` und ein Standbild als `poster`: Der Film wiegt 2,7 MB, das
+ * Standbild 80 kB. Ohne die Angabe lädt Safari beim Seitenaufruf Teile der
  * Datei mit — für einen Film, den die meisten nicht starten, auf Mobilfunk.
+ *
+ * Beide Dateien sind am 02.09.2026 neu aus dem Schnitt gezogen worden, weil
+ * der Film sichtbar unscharf war: Er lag bei 292 kbit/s für 1280 × 720 (CRF 27),
+ * gemessen 0,9958 SSIM gegen das Original – bei Schrifttafeln vor dunklem
+ * Grund verschmieren dort die Kanten. Jetzt CRF 20, 626 kbit/s, 0,9985. Das
+ * Standbild war zusätzlich aus der komprimierten Fassung gezogen und hat deren
+ * Weichheit geerbt; es kommt jetzt aus dem Schnitt (Sekunde 3,6, q:v 2).
  *
  * Bewusst kein Autoplay-Loop im Hintergrund: Der Film erklärt mit Schrifttafeln
  * und will gelesen werden. Als Deko hinter Text wäre er beides nicht.
@@ -47,7 +56,15 @@ export function ExplainerVideo({
       {/* Die Zeile läuft nicht über die Breite des Films: Bei 1120 px stehen
           dort rund 130 Zeichen je Zeile, das Doppelte des Lesbaren. */}
       <figcaption className="mx-auto mt-5 max-w-[70rem] text-sm leading-relaxed text-current/70">
-        <span className="block max-w-2xl">{caption}</span>
+        <span className="block max-w-2xl">
+          {caption}{" "}
+          {/* Die Offenlegung steht in derselben Zeile wie die
+              Textalternative, nicht als eigener Absatz darunter: Sie gehört
+              zum Film, nicht zur Seite, und ein eigener Block würde sie zu
+              einer Fußnote machen. Sichtbar ohne Tippen und ohne Aufklappen –
+              das verlangt Art. 50 Abs. 4. */}
+          <span className="text-current/50">{generatedVideoNotice}.</span>
+        </span>
       </figcaption>
     </figure>
   );

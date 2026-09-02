@@ -3,8 +3,11 @@ import { Instrument_Sans, Inter } from "next/font/google";
 
 import "./globals.css";
 import { Header } from "@/components/layout/header";
+import { ScrollManager } from "@/components/motion/scroll-manager";
 import { Footer } from "@/components/layout/footer";
 import { MobileCta } from "@/components/layout/mobile-cta";
+import { getGoogleRating } from "@/lib/google-rating";
+import { isPreview } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 /**
@@ -57,11 +60,13 @@ export const metadata: Metadata = {
     locale: "de_DE",
     siteName: site.legalName,
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
-  },
+  robots: isPreview
+    ? { index: false, follow: false }
+    : {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, "max-image-preview": "large" },
+      },
 };
 
 /**
@@ -92,12 +97,15 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const rating = await getGoogleRating();
+
   return (
     <html
       lang="de"
+      data-scroll-behavior="smooth"
       className={`${display.variable} ${sans.variable} antialiased`}
     >
       <body>
@@ -112,7 +120,10 @@ export default function RootLayout({
         >
           Zum Inhalt springen
         </a>
-        <Header />
+        {/* Seitenwechsel beginnen oben, Sprungziele stehen ganz im Bild –
+            siehe das Bauteil. */}
+        <ScrollManager />
+        <Header rating={rating} />
         {/* tabIndex, damit der Sprunglink den Fokus wirklich versetzt: Ohne ihn
             setzen Safari und ältere Engines ihn zurück auf <body>, und der Link
             tut sichtbar nichts. scroll-mt hält das Ziel unter dem festen Header. */}

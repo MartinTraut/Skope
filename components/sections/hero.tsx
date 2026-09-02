@@ -1,16 +1,14 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
-import { ButtonLink } from "@/components/ui/button";
-import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials } from "@/lib/data/testimonials";
 import { inventoryFacts } from "@/lib/inventory";
-import { googleRating, proof } from "@/lib/site";
+import { GeneratedMark } from "@/components/ui/generated-mark";
+import { getGoogleRating } from "@/lib/google-rating";
+import { proof } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
 /**
@@ -40,10 +38,15 @@ const stats = [
   /* Die Obergrenze steht in der Zeile darunter und nicht mehr in einer
      zweiten Kachel eine Bildschirmhöhe tiefer – siehe den Kommentar am
      Kennzahlenband in `inventory-teaser.tsx`. */
-  {
-    value: facts.priceFrom,
-    label: `Einstiegspreis bis ${facts.priceTo}, Endpreis ohne USt.`,
-  },
+  /* Ohne Preise (leerer Bestand) fällt die Kachel weg statt „null" zu zeigen. */
+  ...(facts.priceFrom && facts.priceTo
+    ? [
+        {
+          value: facts.priceFrom,
+          label: `Einstiegspreis bis ${facts.priceTo}, Endpreis ohne USt.`,
+        },
+      ]
+    : []),
   {
     value: `${proof.warrantyYears} Jahr`,
     label: "Gewährleistung auf jedes Gerät",
@@ -54,9 +57,11 @@ const stats = [
   },
 ];
 
-export function Hero() {
+export async function Hero() {
+  const googleRating = await getGoogleRating();
+
   return (
-    <section className="relative isolate overflow-hidden bg-ink pb-0 text-silver on-dark">
+    <section className="relative isolate flex flex-col overflow-hidden bg-ink pb-0 text-silver on-dark lg:min-h-svh">
       {/* Zwei Zonen, nicht eine: Oben die Bildzone mit Text darauf, darunter
           das Beweisband auf reiner Tinte.
 
@@ -65,7 +70,22 @@ export function Hero() {
           Breite) müsste `object-cover` sie auf 224 % hochziehen, und vom
           Roller bliebe ein Ausschnitt der Lenkstange. Auf die Textzone
           begrenzt liegt das Verhältnis bei etwa 1,6 – dem der Aufnahme. */}
-      <div className="relative">
+      {/* `flex-1`: Was von der Fensterhöhe übrig bleibt, bekommt die Bildzone –
+          nicht der Abstand unter den Kennzahlen.
+
+          Vorher stand die Sektion auf ihrer Inhaltshöhe. Nachdem die beiden
+          Knöpfe weggefallen waren, war sie bei 1990 × 1080 rund 130 px kürzer
+          als das Fenster: Unter den Kennzahlen lag ein Streifen Tinte, und
+          weil die Aufnahme `contain` in der Bildzone liegt, war sie um
+          dieselbe Strecke geschrumpft – der Roller stand zu klein und zu weit
+          oben. Jetzt wächst die Zone mit, der Roller sitzt wieder auf seiner
+          Standfläche direkt über dem Kennzahlenband, und die Sektion endet
+          genau an der Fensterkante.
+
+          Nur ab `lg`. Am Telefon ist die Sektion ohnehin höher als das
+          Fenster, dort würde `min-h-svh` nichts festlegen und `flex-1` nichts
+          verteilen. */}
+      <div className="relative lg:flex-1">
         {/* Die Werkstatt selbst als Grund, über die volle Breite.
           Vorher stand hier der Shader und rechts daneben ein Hochformat im
           Rahmen – zwei Gegenstände, die um dieselbe Fläche konkurrierten.
@@ -95,12 +115,20 @@ export function Hero() {
           wieder an die Spalte. Unter 1664 px ändert sich nichts – dort ist
           das Fenster schmaler als die Grenze.
 
+          Die Fläche endet 2,5 rem *unter* der Bildzone, nicht an ihrer
+          Unterkante. Die Aufnahme liegt `contain` und unten verankert, steht
+          also immer auf dem Boden dieser Fläche – bündig mit der Zone stand der
+          Roller damit auf einer Linie mit der letzten Textzeile und wirkte
+          angehoben. Die 40 px reichen in den oberen Rand des Kennzahlenbands
+          hinein; dort liegt nur der Auslauf in die Tinte, und die Fläche steht
+          ohnehin auf `-z-10` hinter allem.
+
           Ab der Grenze bekommt die Fläche seitlich denselben weichen Auslauf,
           den sie unten schon hat: Sonst steht dort, wo das Foto aufhört, eine
           harte senkrechte Kante mitten in der Sektion. Der Auslauf hängt an
           `min-[104rem]`, damit er unterhalb der Grenze nicht den Roller
           anschneidet – dort steht er am rechten Bildrand. */}
-        <div className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]">
+        <div className="pointer-events-none absolute top-0 bottom-[-2.5rem] left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]">
           {/* `object-contain` statt `object-cover` – die Aufnahme wird
             vollständig gezeigt, nicht beschnitten.
 
@@ -137,6 +165,22 @@ export function Hero() {
           />
           {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
           <div className="hero-scrim absolute inset-0" />
+          {/* Die Kennzeichnung liegt über dem Schleier, nicht darunter: Der
+              Schleier zieht die rechte Bildhälfte auf ein Fünftel der
+              Helligkeit, und ein Hinweis, den man suchen muss, ist keiner.
+
+              Sie steht in der äußersten unteren Ecke, nicht auf dem Motiv:
+              11 rem über der Kante lag sie auf dem hellen Werkstattboden und
+              damit auf der Aufnahme selbst. Gemessen bei 1512 px endet die
+              Kennzahlenreihe bei 1056 px, die Sektion bei 1155 – unterhalb
+              davon liegt nur noch der Auslauf in die Tinte. Dort ist die
+              Marke vollständig lesbar (Silber auf Tinte) und stört das Bild
+              nicht mehr. Erkennbar bleibt sie, weil sie im selben Bildfeld
+              steht; Art. 50 Abs. 4 verlangt Erkennbarkeit, nicht Auffälligkeit. */}
+          <GeneratedMark
+            src="/img/hero-werkstatt.jpg"
+            className="right-[max(1.5rem,env(safe-area-inset-right))] bottom-6"
+          />
           {/* Der Werkstattboden ist die hellste Stelle der Aufnahme und lag
             genau auf der Unterkante der Bildzone – eine waagerechte Kante
             quer durch die Sektion. Der zweite Verlauf zieht die letzten
@@ -172,6 +216,25 @@ export function Hero() {
             sizes="100vw"
             className="object-cover object-[82%_center] brightness-115"
           />
+          {/* Rechts, und so tief wie die Bühne es zulässt.
+
+              Die untere Hälfte der Bühne ist besetzt: Gemessen bei 320 px
+              beginnt die Auszeichnungszeile bei 148 px, die Überschrift bei
+              207, der Fließtext bei 384 – die Bühne endet bei 416. Unterhalb
+              der Überschrift bleibt nirgends ein freier Streifen, und die
+              Bühne liegt mit `-z-10` *hinter* dem Text: Eine Marke dort wäre
+              nicht dezent, sondern von Buchstaben überdeckt und damit keine
+              Kennzeichnung mehr.
+
+              Frei ist genau der Streifen zwischen Kopfzeile und
+              Auszeichnungszeile. Dort steht sie jetzt rechts statt links und
+              2,75 rem unter der Kopfzeile statt 0,5 – weit genug vom Menüknopf
+              (44 px), damit sie nicht wieder als dessen Beschriftung gelesen
+              wird, und 19 px über der Auszeichnungszeile. */}
+          <GeneratedMark
+            src="/img/hero-werkstatt.jpg"
+            className="top-[calc(var(--header-h)+2.75rem)] right-[max(1.5rem,env(safe-area-inset-right))] bottom-auto left-auto"
+          />
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
         </div>
 
@@ -190,7 +253,7 @@ export function Hero() {
           115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
           dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
           ändert sich also nichts. */}
-        <Container className="relative pt-[clamp(6.5rem,4rem+10vh,10rem)] pb-10 lg:pt-[clamp(5.5rem,3rem+8vh,8rem)] md:pb-16">
+        <Container className="relative pt-[clamp(6.5rem,4rem+10vh,10rem)] pb-6 lg:pt-[clamp(4rem,2rem+6vh,6.5rem)] md:pb-8">
           {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der
@@ -280,47 +343,30 @@ export function Hero() {
                   über sechs Zeilen und war damit der längste Block über der
                   ersten Aktion – der Kopfbereich soll die Sache benennen,
                   nicht sie schon erklären. Jetzt vier Zeilen. */}
-                <p className="mt-6 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75 sm:mt-8">
-                  Jedes Gerät wird in der eigenen Werkstatt geprüft und
-                  aufbereitet – von derselben Werkstatt, die es danach repariert
-                  und wartet. In Neuenstadt am Kocher, für Heilbronn, Neckarsulm
-                  und die Region.
+                <p className="mt-6 max-w-[42ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
+                  Jedes Gerät wird hier geprüft und aufbereitet – in der
+                  Werkstatt, die es danach auch repariert und wartet. In
+                  Neuenstadt am Kocher, für Heilbronn, Neckarsulm und die
+                  Region.
                 </p>
               </Reveal>
 
               <Reveal immediate>
-                {/* Die Aktionen als ein Block, nicht als drei Kästen
-                    untereinander.
+                {/* Hier standen zwei Knöpfe: die Telefonnummer im Vollton
+                    und „13 Geräte ansehen" als Umriss.
 
-                    Am Telefon standen hier ein neongelber Knopf, ein
-                    Umrissknopf und darunter mit 28 px Abstand eine dritte
-                    Fläche mit der Zusage – drei gleich große Rechtecke in drei
-                    verschiedenen Abständen. Jetzt liegen die beiden Knöpfe
-                    2,5 Einheiten auseinander, die Zusage 3 darunter und über
-                    die volle Spaltenbreite mittig: eine Gruppe mit einer Kante
-                    links und einer rechts.
+                    Sie sind weg, und der Kopfbereich verliert dadurch keinen
+                    Weg: Dieselbe Nummer steht ab 1280 px in der Kopfzeile, auf
+                    jeder schmaleren Breite als Symbolknopf bzw. in der unteren
+                    Aktionsleiste, und „Anfrage senden" wie „E-Scooter kaufen"
+                    stehen ebenfalls oben. Zwei Knöpfe in einem Bereich, dessen
+                    Aufgabe die Ansage ist, wiederholten also nur, was die
+                    Kopfzeile ohnehin dauerhaft trägt.
 
-                    Beide Knöpfe sind am Telefon voll breit. Der Umrissknopf
-                    bekommt dort zusätzlich eine schwache Fläche – auf Tinte
-                    ist ein reiner Umriss neben einem Vollton so leicht, dass
-                    er wie ein Nachtrag aussieht. */}
-                <div className="mt-7 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:items-center sm:gap-3">
-                  <PhoneButton className="max-sm:w-full" />
-                  {/* Der zweite Weg führt in den Bestand, nicht in die
-                    Reparaturannahme. Wer kaufen will, soll die Geräte sehen;
-                    wer eine Reparatur braucht, greift zum Telefon daneben
-                    oder findet die Leistung in der Navigation an zweiter
-                    Stelle. */}
-                  <ButtonLink
-                    href="/e-scooter#bestand"
-                    variant="outline"
-                    size="lg"
-                    className="max-sm:w-full max-sm:border-current/25 max-sm:bg-current/8"
-                  >
-                    {facts.count} Geräte ansehen
-                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </ButtonLink>
-                </div>
+                    Was sie kosteten, war die Höhe: Mit ihnen begann das
+                    Kennzahlenband bei 1512 × 900 erst unterhalb der Falz, die
+                    vier Werte waren im ersten Bild angeschnitten. Der Rest der
+                    Sektion rückt an ihre Stelle nach oben. */}
                 {/* Die Zusage neben den Aktionen, nicht als Fußnote darunter.
                   Vorher stand sie in 14 px bei 65 % Deckkraft unter zwei
                   Buttons – die einzige Stelle im Kopfbereich, an der etwas
@@ -343,13 +389,21 @@ export function Hero() {
 
                   Ab `sm` ist der Satz einzeilig, dort trägt die Pille wieder
                   – ein Stadionradius um zwei Zeilen liest sich als Fehler. */}
-                <p className="trace trace-from-sm mt-4 flex items-start gap-3 font-display text-[0.9375rem] leading-snug font-semibold tracking-tight text-current/80 sm:mt-7 sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:bg-current/8 sm:py-2.5 sm:pr-6 sm:pl-4.5 sm:text-current">
+                {/* Seit dem Wegfall der beiden Knöpfe (02.09.2026) war der
+                    Kopfbereich ohne Handlung. Die Zustandszeile ist jetzt der
+                    Verweis in den Bestand – ohne Höhe zu kosten. Die Anzahl
+                    kommt aus `inventoryFacts()` wie im Band darunter. */}
+                <a
+                  href="#bestand"
+                  className="trace trace-from-sm mt-7 flex min-h-11 items-start gap-3 font-display text-[0.9375rem] leading-snug font-semibold tracking-tight text-current/80 underline-offset-4 hover:text-current hover:underline sm:mt-7 sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:bg-current/8 sm:py-2.5 sm:pr-6 sm:pl-4.5 sm:text-current sm:hover:bg-current/12 sm:hover:no-underline"
+                >
                   <span
                     aria-hidden="true"
                     className="mt-2 size-2.5 shrink-0 rounded-full bg-neon sm:mt-0"
                   />
-                  Alle Geräte sofort verfügbar, Probefahrt vor Ort
-                </p>
+                  Alle {facts.count} Geräte vor Ort, Probefahrt möglich – zum
+                  Bestand
+                </a>
               </Reveal>
 
               {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
@@ -359,76 +413,61 @@ export function Hero() {
                   dorthin, wo die Entscheidung fällt.
 
                   Es ist derselbe Bestand wie im Band weiter unten, nur der
-                  Auszug: die Gesichter aller Stimmen, die Note, und eine
-                  Rezension im Wortlaut. Gold statt Neon, weil das hier ein
+                  Auszug: die Gesichter aller Stimmen, die Note und die
+                  Anzahl. Gold statt Neon, weil das hier ein
                   Zitat von Google ist und kein Handlungsangebot – die Regel
                   steht an `components/ui/stars.tsx`.
 
-                  Und als ein Gegenstand, nicht als drei: Gestapelt standen
-                  hier auf dem Telefon vier Kreise, darunter eine Note mit
-                  Sternen, darunter eine Zeile mit dem Google-Zeichen und
-                  darunter ein Zitat an einer Randlinie – vier Blöcke in vier
-                  verschiedenen Abständen, die alle dasselbe sagen und die
-                  nichts zusammenhält. Jetzt eine Fläche mit Haarlinie: oben
-                  die Note samt Anzahl, unten die Stimme im Wortlaut. Die
-                  Gesichter stehen in derselben Zeile wie die Note, weil sie
-                  ihre Herkunft sind. */}
-              <Reveal immediate delay={60}>
-                <div className="mt-7 max-w-[46ch] overflow-hidden rounded-md border border-current/12 bg-current/5 sm:mt-9">
-                  <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-current/12 px-5 py-4">
-                    <div
-                      aria-hidden="true"
-                      className="flex items-center -space-x-1.5 sm:-space-x-2.5"
-                    >
-                      {testimonials.map((item) => (
-                        <span
-                          key={item.author}
-                          className="grid size-9 place-items-center rounded-full border-2 border-ink bg-silver/12 font-display text-xs font-bold tracking-wide"
-                        >
-                          {initials(item.author)}
-                        </span>
-                      ))}
-                    </div>
+                  Ohne Fläche, ohne Kante, ohne zweite Zeile: Note, Sterne,
+                  Anzahl und die drei Gesichter stehen frei auf der Tinte.
 
-                    <div className="min-w-0">
-                      <p className="flex items-center gap-2.5">
-                        <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
-                          {googleRating.value}
-                        </span>
-                        <Stars
-                          rating={5}
-                          className="size-4"
-                          label={`${googleRating.value} von 5 Sternen bei Google`}
-                        />
-                      </p>
-                      <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
-                        <GoogleMark className="size-3.5 shrink-0" />
-                        {googleRating.count} Rezensionen bei Google
-                      </p>
-                    </div>
+                  Eine Kachel mit Rahmen und Füllung stand hier eine Runde
+                  lang und war ein Rückschritt in dieselbe Richtung wie die
+                  Zusage darüber: ein weiteres Rechteck in Knopfgröße unter
+                  zwei Knöpfen, dazu eine Haarlinie und darunter ein Verweis
+                  („Was drei Kunden geschrieben haben") – aus einem Beleg
+                  wurde ein drittes Bedienelement. Der Verweis ist weg: Die
+                  Kundenstimmen stehen weiter unten auf derselben Seite, und
+                  wer vom Kopfbereich aus irgendwohin geht, soll ans Telefon
+                  oder in den Bestand.
+
+                  Was bleibt, ist die Aussage selbst. Auf Tinte trägt sie das
+                  Gold der Sterne und das vierfarbige Google-Zeichen; beides
+                  ist als Zitat sofort erkennbar und braucht keinen Rahmen,
+                  der es als Karte ausweist. Die Gesichter stehen in derselben
+                  Zeile wie die Note, weil sie ihre Herkunft sind. */}
+              <Reveal immediate delay={60}>
+                <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
+                  <div
+                    aria-hidden="true"
+                    className="flex items-center -space-x-1.5 sm:-space-x-2.5"
+                  >
+                    {testimonials.map((item) => (
+                      <span
+                        key={item.author}
+                        className="grid size-9 place-items-center rounded-full border-2 border-ink bg-silver/12 font-display text-xs font-bold tracking-wide"
+                      >
+                        {initials(item.author)}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* Hier stand die kürzeste Rezension im Wortlaut. Sie steht
-                    auf derselben Seite ein zweites Mal: `leadReview` kommt aus
-                    derselben `testimonials`-Liste, die das Band der
-                    Kundenstimmen rendert – gemessen 4300 px auseinander, aber
-                    Wort für Wort dasselbe Zitat.
-
-                    Der Beleg braucht es hier auch nicht. Note, Anzahl und die
-                    drei Gesichter sagen im Kopfbereich, was zu sagen ist; der
-                    Wortlaut ist die Aufgabe der Sektion weiter unten. Statt
-                    des Zitats jetzt der Weg dorthin – und damit ist die Karte
-                    eine Aussage mit einem Ziel statt zweier Aussagen. */}
-                  <Link
-                    href="#kundenstimmen"
-                    className="press group flex items-center justify-between gap-3 px-5 py-3.5 text-sm font-semibold transition-colors hover:bg-current/6"
-                  >
-                    Was drei Kunden geschrieben haben
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="size-4 shrink-0 text-current/50 transition-transform duration-200 group-hover:translate-x-0.5"
-                    />
-                  </Link>
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-2.5">
+                      <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
+                        {googleRating.value}
+                      </span>
+                      <Stars
+                        rating={googleRating.stars}
+                        className="size-4"
+                        label={`${googleRating.value} von 5 Sternen bei Google`}
+                      />
+                    </p>
+                    <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
+                      <GoogleMark className="size-3.5 shrink-0" />
+                      {googleRating.count} Rezensionen bei Google
+                    </p>
+                  </div>
                 </div>
               </Reveal>
             </div>
@@ -453,14 +492,34 @@ export function Hero() {
             abzuschließen. */}
         <Reveal
           delay={80}
-          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-8 pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-10 lg:pb-24"
+          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-6 pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-4 lg:pb-14"
         >
+          {/* Ab `lg` mittig in der eigenen Spalte, darunter linksbündig.
+
+              Vier gleich breite Spalten mit linksbündigem Inhalt sehen
+              ungleichmäßig aus, sobald die Inhalte verschieden lang sind: „13"
+              füllt 60 von 376 px, „Einstiegspreis bis 599,99 €, Endpreis ohne
+              USt." fast die ganze Spalte. Der Abstand *zwischen* den Blöcken
+              ist damit an jeder Naht ein anderer, obwohl das Raster
+              gleichmäßig ist – man sieht die Lücke, nicht die Spalte.
+
+              Mittig gesetzt liegt um jeden Block links und rechts derselbe
+              Rest, und die Reihe liest sich als vier gleich schwere Angaben.
+              Die Beschriftung ist zusätzlich auf 26 Zeichen begrenzt: Ohne
+              Deckel läuft die längste über die volle Spaltenbreite und die
+              kürzeste über ein Drittel – nebeneinander wieder derselbe Effekt,
+              nur eine Zeile tiefer.
+
+              Am Telefon bleibt es linksbündig. Dort stehen zwei Spalten, die
+              Beschriftungen laufen ohnehin über zwei bis drei Zeilen, und
+              zentrierter Flattersatz über drei Zeilen liest sich schlechter
+              als linksbündiger. */}
           {stats.map((stat) => (
-            <div key={stat.label} className="min-w-0">
+            <div key={stat.label} className="min-w-0 lg:text-center">
               <p className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
                 {stat.value}
               </p>
-              <p className="mt-3 text-sm leading-snug text-current/70">
+              <p className="mt-3 text-sm leading-snug text-current/70 lg:mx-auto lg:max-w-[26ch]">
                 {stat.label}
               </p>
             </div>

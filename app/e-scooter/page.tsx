@@ -31,11 +31,8 @@ import { Mark } from "@/components/ui/mark";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter gebraucht kaufen in Heilbronn",
   description:
-    "Generalüberholte E-Scooter mit Skope-Qualitätssiegel aus der eigenen Werkstatt in Neuenstadt am Kocher. Vollständig geprüft, ein Jahr Gewährleistung. Suchauftrag hinterlegen.",
+    "Generalüberholte E-Scooter mit Qualitätssiegel und einem Jahr Gewährleistung, geprüft in eigener Werkstatt bei Heilbronn. Oder Suchauftrag hinterlegen.",
   path: "/e-scooter",
-  image: "/img/scooter-studio.jpg",
-  imageAlt:
-    "Geprüfter E-Scooter mit Prüfanhänger in der Werkstatt, unter dem Skope-Schild",
 });
 
 export default function ScooterPage() {
@@ -50,7 +47,8 @@ export default function ScooterPage() {
         eyebrow="Generalüberholt · Skope-Qualitätssiegel"
         title={
           <>
-            Gebraucht kaufen, ohne <Mark>Restrisiko</Mark>.
+            Gebrauchte <span className="whitespace-nowrap">E-Scooter</span>{" "}
+            kaufen, mit <Mark>Gewährleistung</Mark>.
           </>
         }
         lead="Ein gebrauchter E-Scooter aus einem Kleinanzeigenportal ist eine Wette auf den Akku. Bei uns ist er ein Gerät, das eine vollständige Werkstattprüfung hinter sich hat: dokumentiert, mit Siegel und mit einem Jahr Gewährleistung."
@@ -74,7 +72,13 @@ export default function ScooterPage() {
                   </dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-6 border-b border-current/12 py-4">
-                  <dt className="text-current/70">Widerrufsrecht</dt>
+                  {/* Das gesetzliche Widerrufsrecht gibt es nur im Fernabsatz.
+                      „14 Tage" ohne Zusatz neben der Einladung zur Probefahrt
+                      im Laden weckt eine Rückgabeerwartung, die beim Kauf vor
+                      Ort nicht eingelöst wird. */}
+                  <dt className="text-current/70">
+                    Widerruf bei Fernbestellung
+                  </dt>
                   <dd className="font-display font-semibold tracking-tight">
                     14 Tage
                   </dd>
@@ -136,7 +140,7 @@ export default function ScooterPage() {
                 Welche <Mark>Geräte</Mark> gerade da sind.
               </>
             }
-            lead="Jedes Gerät ein Einzelstück, aufbereitet in der eigenen Werkstatt in Neuenstadt am Kocher. Der Bestand wechselt laufend."
+            lead="Alle Geräte stehen geprüft und aufbereitet in der Werkstatt in Neuenstadt am Kocher. Was verkauft ist, verschwindet aus der Liste – jedes Gerät gibt es nur einmal."
           />
 
           {/* Stückzahl, Preisspanne und Marken standen bis hierher in einem
@@ -156,46 +160,51 @@ export default function ScooterPage() {
               Die Werte kommen aus `inventoryFacts()` und damit aus dem
               Bestand selbst. Ein Satz, der „dreizehn Geräte" behauptet, ist
               beim nächsten Verkauf falsch. */}
-          <Reveal delay={100}>
-            <dl className="mt-10 flex flex-wrap gap-x-14 gap-y-8">
+          {/* Ein Band, nicht drei lose Blöcke: Als `flex-wrap` mit
+              `gap-x-14` standen die Kennwerte links, mittig und – weil das
+              Preisband breit ist – 900 px auseinander, und die Marken darunter
+              als Textzeile. Jetzt drei gleich breite Zellen mit Haarlinien,
+              darunter die Marken im Untertitelgrad in derselben Fläche. Die
+              Marken bleiben Text mit Trennpunkten, keine Kapseln: Kapseln
+              über einer Liste sind die Form eines Filters. */}
+          <Reveal delay={100} className="mt-10 border-y border-current/12">
+            {/* Mittlere Spalte in natürlicher Breite: Die Preisspanne im Zahlengrad
+                braucht rund 430 px, ein Drittel des Satzspiegels sind bei
+                1512 px nur 406. Mit drei gleichen Spalten brach sie um. */}
+            <dl className="grid divide-y divide-current/12 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:divide-x sm:divide-y-0">
               {[
                 { label: "Geräte vorrätig", value: String(facts.count) },
-                {
-                  label: "Preisspanne",
-                  value: `${facts.priceFrom} – ${facts.priceTo}`,
-                },
+                ...(facts.priceFrom && facts.priceTo
+                  ? [
+                      {
+                        label: "Preisspanne",
+                        value: `${facts.priceFrom} – ${facts.priceTo}`,
+                      },
+                    ]
+                  : []),
                 { label: "Gewährleistung", value: "1 Jahr" },
               ].map((fact) => (
-                <div key={fact.label}>
+                <div key={fact.label} className="py-6 sm:px-8 sm:first:pl-0">
                   <dt className="eyebrow-plain text-current/60">
                     {fact.label}
                   </dt>
-                  <dd className="tabular mt-2 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight">
+                  <dd className="tabular mt-2 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight sm:whitespace-nowrap">
                     {fact.value}
                   </dd>
                 </div>
               ))}
             </dl>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <p className="eyebrow-plain mt-10 text-current/60">
-              Marken im Bestand
-            </p>
-            {/* Keine Pillen mit Rahmen und Fläche.
-
-                Rund, gerahmt, halbfett und direkt über einer Liste von
-                dreizehn Geräten – das ist die Form eines Filters, und genau
-                den greift man auf dem Telefon als Erstes an. Es sind aber
-                `<li>`, sie antworten auf nichts. Eine falsche Aufforderung an
-                der Stelle, an der ein Filter hingehörte, ist schlechter als
-                gar keine.
-
-                Als Zeile mit Trennpunkten steht dieselbe Auskunft da – welche
-                Marken hier liegen – ohne etwas zu versprechen. */}
-            <p className="mt-4 font-display leading-relaxed font-semibold tracking-tight">
-              {facts.brands.join(" · ")}
-            </p>
+            <div className="border-t border-current/12 py-6">
+              <p className="eyebrow-plain text-current/60">Marken im Bestand</p>
+              {/* Ohne Trennpunkte: Am Telefon bricht die Reihe um, und eine
+                  Zeile, die mit „·" beginnt, liest sich als Fehler. Der
+                  Abstand allein trennt die Namen. */}
+              <ul className="mt-3 flex flex-wrap gap-x-7 gap-y-1 font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
+                {facts.brands.map((brand) => (
+                  <li key={brand}>{brand}</li>
+                ))}
+              </ul>
+            </div>
           </Reveal>
 
           {inventory.length > 0 ? (
@@ -244,9 +253,8 @@ export default function ScooterPage() {
                   Weil jedes Gerät ein Einzelstück ist und oft schon verkauft
                   ist, bevor eine Online-Liste aktualisiert wäre, läuft der
                   Verkauf über ein kurzes Gespräch. Rufen Sie an oder schreiben
-                  Sie uns, was Sie suchen. Wir sagen Ihnen ehrlich, ob wir
-                  gerade etwas Passendes haben oder wann wieder etwas
-                  hereinkommt.
+                  Sie uns, was Sie suchen. Wir sagen Ihnen, ob wir gerade etwas
+                  Passendes haben oder wann wieder etwas hereinkommt.
                 </p>
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                   <PhoneButton />
@@ -348,6 +356,7 @@ export default function ScooterPage() {
       />
 
       <CtaBand
+        formHref="#suchauftrag"
         eyebrow="Kauf"
         title={
           <>

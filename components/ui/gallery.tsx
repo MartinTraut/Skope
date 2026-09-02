@@ -174,6 +174,10 @@ export function Gallery({
     window.scrollTo({ top: scrollY.current, behavior: "instant" });
   }, []);
 
+  /* Nach den Hooks, nicht davor: Ein Gerät ohne Aufnahme ließe `step()`
+     durch `% 0` auf NaN laufen und `images[active]` werfen. */
+  if (images.length === 0) return null;
+
   return (
     <>
       <div className={cn("flex flex-col gap-3", className)}>

@@ -42,7 +42,7 @@ export const plans: Plan[] = [
     paymentType: "Monatlich",
     yearlyTotal: "215,88 € im Jahr",
     minDuration: "Mindestlaufzeit 12 Monate",
-    claim: "Der Scooter fällt nicht aus.",
+    claim: "Für den täglichen Arbeitsweg.",
     description:
       "Für Pendler aus Heilbronn, Neckarsulm und Umgebung, die täglich fahren und keinen Ausfalltag einplanen können.",
     features: [

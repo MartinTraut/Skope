@@ -6,8 +6,9 @@ import { Marquee } from "@/components/ui/marquee";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials, type Testimonial } from "@/lib/data/testimonials";
-import { googleRating, site } from "@/lib/site";
-import { cn } from "@/lib/utils";
+import { getGoogleRating } from "@/lib/google-rating";
+import { site } from "@/lib/site";
+import { cn, noBreak } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
 
 /**
@@ -70,12 +71,12 @@ function QuoteCard({
       </div>
 
       <blockquote className="mt-5 font-display text-[length:var(--text-subtitle)] leading-[1.35] font-semibold tracking-tight text-balance">
-        {quote}
+        {noBreak(quote)}
       </blockquote>
 
       {/* `mt-auto` statt fester Höhe: Die Zeile sitzt unten, egal wie lang das
           Zitat darüber ist, und alle Karten des Bands schließen bündig ab. */}
-      <figcaption className="mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5 mt-7">
+      <figcaption className="mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5">
         {/* Anfangsbuchstaben statt Profilbild. Die Fotos liegen auf Googles
             Servern: Sie einzubinden hieße, bei jedem Seitenaufruf die
             IP-Adresse jedes Besuchers dorthin zu schicken – und damit ein
@@ -95,7 +96,7 @@ function QuoteCard({
           </span>
           <span className="mt-0.5 flex items-center gap-1.5 text-sm text-current/60">
             <GoogleMark className="size-3.5 shrink-0" />
-            <span className="truncate">Google-Rezension · {context}</span>
+            <span className="break-words">Google-Rezension · {context}</span>
           </span>
         </span>
       </figcaption>
@@ -103,7 +104,7 @@ function QuoteCard({
   );
 }
 
-export function Testimonials({
+export async function Testimonials({
   tone = "silver-200",
 }: {
   /**
@@ -113,6 +114,8 @@ export function Testimonials({
    */
   tone?: "silver" | "silver-200";
 } = {}) {
+  const googleRating = await getGoogleRating();
+
   return (
     <Section id="kundenstimmen" tone={tone}>
       <Container>
@@ -120,7 +123,7 @@ export function Testimonials({
           eyebrow="Kundenstimmen"
           title={
             <>
-              Was <Mark>Kunden</Mark> nach dem Werkstattbesuch sagen.
+              Was <Mark>Käufer</Mark> bei Google schreiben.
             </>
           }
           lead="Rezensionen aus dem Google-Profil der Werkstatt, unverändert im Wortlaut übernommen."
@@ -128,7 +131,7 @@ export function Testimonials({
 
         {/* Der Verweis auf das Profil steht hier, weil die Note und die Zahl
             der Rezensionen sonst nur eine Behauptung dieser Seite wären. Drei
-            Stimmen stehen im Band, 37 stehen bei Google – der Link ist der
+            Stimmen stehen im Band, alle stehen bei Google – der Link ist der
             Unterschied zwischen „wir sagen" und „sehen Sie selbst". */}
         <Reveal delay={180}>
           <a
@@ -172,7 +175,15 @@ export function Testimonials({
           weiter, dort stehen mehrere Karten gleichzeitig im Bild und die
           Bewegung leistet, wofür sie gedacht ist. */}
       <Reveal delay={80} className="mt-14 sm:hidden">
-        <ul className="scroll-x flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2">
+        {/* Fokussierbar wie die Tarifbahn auf /versicherung: Die Karten
+            enthalten nichts Fokussierbares, ohne `tabIndex` wären zweite und
+            dritte Stimme per Tastatur unerreichbar. */}
+        <ul
+          tabIndex={0}
+          role="region"
+          aria-label="Kundenstimmen"
+          className="scroll-x flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2"
+        >
           {testimonials.map((item) => (
             <li key={item.author} className="flex snap-center">
               <QuoteCard {...item} className="w-[calc(100vw-3rem)]" />

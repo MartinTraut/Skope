@@ -6,6 +6,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
 import { ExplainerVideo } from "@/components/ui/explainer-video";
+import { GeneratedMark, GeneratedNote } from "@/components/ui/generated-mark";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { brands } from "@/lib/data/services";
@@ -25,8 +26,6 @@ export const metadata: Metadata = pageMeta({
   description:
     "Thomas Zielke betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Über 500 reparierte E-Scooter, Verkauf und Service in einer Hand.",
   path: "/ueber-uns",
-  image: "/img/werkstatt-service.jpg",
-  imageAlt: "Arbeit an einem E-Scooter in der Fachwerkstatt",
 });
 
 const principles = [
@@ -43,8 +42,8 @@ const principles = [
     text: "Wer hier einen Scooter kauft, bekommt ihn auch Jahre später in derselben Werkstatt gewartet.",
   },
   {
-    title: "Nichts wird erfunden",
-    text: "Wenn sich eine Reparatur nicht mehr rechnet, sagen wir das und verwerten das Altgerät kostenlos.",
+    title: "Wenn es sich nicht lohnt, sagen wir das",
+    text: "Rechnet sich eine Reparatur nicht mehr, bekommen Sie genau das als Antwort, und wir verwerten das Altgerät kostenlos.",
   },
 ];
 
@@ -68,17 +67,30 @@ export default function AboutPage() {
             <Reveal className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-ink text-silver on-dark">
                 <Image
-                  src="/img/werkstatt-service.jpg"
-                  alt="Thomas Zielke bei der Arbeit an einem eingespannten E-Scooter in der Werkstatt"
+                  src="/img/akku-diagnose.jpg"
+                  alt="Symbolbild: Kapazitätsmessung an einem geöffneten E-Scooter-Akku mit Prüfspitzen und Messgerät"
                   fill
                   sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="parallax object-cover"
                 />
+                <GeneratedMark src="/img/akku-diagnose.jpg" />
               </div>
-              {/* TODO Betreiber: durch ein echtes Foto von Thomas Zielke und der
-                  Werkstatt ersetzen – nichts baut mehr Vertrauen auf als das. */}
+              {/* Der Alt-Text nannte hier „Thomas Zielke bei der Arbeit". Das
+                  Motiv ist erzeugt: Es ordnet einer realen, namentlich
+                  genannten Person ein Gesicht zu, das nicht ihres ist – und
+                  zwar auf der Seite, die genau diese Person vorstellt. Weder
+                  der Name im Alt-Text noch die Adresse in der Bildunterschrift
+                  dürfen unter einem erfundenen Motiv stehen.
+
+                  Entscheidung des Betreibers vom 02.09.2026: Die erzeugten
+                  Motive bleiben. Damit bleibt auch diese Fassung des
+                  Alt-Textes – ohne Namen –, und die Kennzeichnung trägt die
+                  Offenlegung allein. Wer hier später doch ein echtes Foto
+                  einsetzt, nimmt den Pfad aus `generatedImages` und darf den
+                  Namen zurückschreiben. */}
               <p className="mt-4 text-sm text-current/60">
-                Werkstatt {fullAddress}.
+                Kapazitätsmessung an einem E-Scooter-Akku.{" "}
+                <GeneratedNote src="/img/akku-diagnose.jpg" />
               </p>
 
               {/* Füllt die kurze linke Spalte mit echtem Nutzen statt Leerraum */}
@@ -118,22 +130,26 @@ export default function AboutPage() {
 
               <dl className="mt-12">
                 {principles.map((item, i) => (
-                  <Reveal key={item.title} delay={i * 70}>
-                    <div className="border-t border-current/12 py-6">
-                      <dt className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
-                        {item.title}
-                      </dt>
-                      <dd className="mt-2.5 max-w-xl leading-relaxed text-current/65">
-                        {item.text}
-                      </dd>
-                    </div>
+                  /* Genau eine div-Ebene zwischen dl und dt/dd – das Reveal
+                     ist sie. Ein zweites div darin war ungültiges Markup. */
+                  <Reveal
+                    key={item.title}
+                    delay={i * 70}
+                    className="border-t border-current/12 py-6"
+                  >
+                    <dt className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
+                      {item.title}
+                    </dt>
+                    <dd className="mt-2.5 max-w-xl leading-relaxed text-current/65">
+                      {item.text}
+                    </dd>
                   </Reveal>
                 ))}
               </dl>
 
               <Reveal delay={120}>
                 <div className="mt-12 border-t border-current/12 pt-8">
-                  <h3 className="eyebrow-plain text-current/90">
+                  <h3 className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
                     Marken im Werkstattalltag
                   </h3>
                   <p className="mt-4 leading-relaxed text-current/65">
@@ -181,7 +197,7 @@ export default function AboutPage() {
                 Warum sich eine Reparatur meist lohnt, wie wir messen statt zu
                 raten, was ein Kostenvoranschlag enthält – und was es bei uns
                 sonst noch gibt: geprüfte Gebrauchtgeräte, Wartungsverträge ab
-                17,99 € im Monat und das Versicherungskennzeichen zum Mitnehmen.
+                17,99 € im Monat und die Versicherung über die ERGO.
               </>
             }
           />

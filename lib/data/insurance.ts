@@ -64,41 +64,29 @@ export const tariffDisclaimer =
 /**
  * Ablauf vom Antrag bis zum Kennzeichen.
  *
- * Schritt 03 ist die Weiche, und sie ist der Grund, warum dieser Ablauf
- * überarbeitet wurde: Die Altseite kannte nur den Postweg und schrieb
- * ausdrücklich, eine Abholung sei „aus versicherungstechnischen Gründen
- * leider nicht möglich". Der Werkstattaushang sagt das Gegenteil – wer
- * vorbeikommt, nimmt die Plakette mit. Beides steht jetzt nebeneinander,
- * getrennt nach dem Weg, den der Kunde wählt.
+ * Das Kennzeichen kommt **per Post von der ERGO**, auch wenn der Antrag in
+ * der Werkstatt gestellt wird – Auskunft des Betreibers vom 03.09.2026. Die
+ * Altseite sagte dasselbe („Abholung vor Ort leider nicht möglich"); der
+ * Werkstattaushang behauptet „Sofort Mitnahme" und ist damit falsch. Bis zum
+ * 03.09. stand hier eine Weiche „Werkstatt: sofort / online: 5–10 Werktage",
+ * die aus dem Aushang stammte. Wer den Aushang neu druckt, streicht die
+ * Mitnahme.
  */
 export const insuranceSteps = [
   {
     step: "01",
     title: "Antrag stellen",
-    text: "Persönliche Daten, Fahrzeugdaten (Marke, Modell, Rahmennummer, Baujahr) und IBAN. Online über das Formular oder direkt bei uns in der Werkstatt.",
+    text: "In der Werkstatt alles auf einmal: persönliche Daten, Fahrzeugdaten, IBAN – der Antrag ist in wenigen Minuten ausgefüllt. Online zuerst Marke, Modell und Zeitraum über das Formular; Rahmennummer und IBAN fragen wir anschließend telefonisch ab, nicht über das Formular.",
   },
   {
     step: "02",
     title: "Wir bearbeiten sofort",
-    text: "Ihre Daten gehen verschlüsselt an die ERGO. Wir prüfen die Angaben und stoßen den Antrag noch am selben Tag an.",
+    text: "Sobald die Angaben vollständig sind, prüfen wir sie und geben den Antrag noch am selben Werktag an die ERGO.",
   },
   {
     step: "03",
-    title: "Kennzeichen bekommen",
-    text: "Hier trennen sich die beiden Wege. Wo Sie den Antrag stellen, entscheidet, wann Sie fahren dürfen.",
-    branches: [
-      {
-        label: "In der Werkstatt",
-        value: "sofort",
-        text: "Wir haben die Versicherungskennzeichen vorrätig. Beitrag bar oder mit EC-Karte zahlen, Plakette ans Heck, fertig.",
-        instant: true,
-      },
-      {
-        label: "Online angefragt",
-        value: "5 bis 10 Werktage",
-        text: "Die ERGO versendet das Kennzeichen direkt zu Ihnen nach Hause, deutschlandweit.",
-      },
-    ],
+    title: "Kennzeichen per Post",
+    text: "Die ERGO prüft den Antrag und versendet das Versicherungskennzeichen innerhalb von fünf bis zehn Werktagen direkt an Ihre Adresse, deutschlandweit – auch wenn Sie den Antrag in der Werkstatt gestellt haben.",
   },
   {
     step: "04",

@@ -20,8 +20,6 @@ export const metadata: Metadata = pageMeta({
   description:
     "Wartungsvertrag für E-Scooter: Basis 130 € im Jahr, Premium 17,99 € im Monat mit Akku-Deep-Check, Express-Reparatur und Hol- und Bringservice bis 15 km.",
   path: "/wartungsvertrag",
-  image: "/img/werkstatt-service.jpg",
-  imageAlt: "Wartung an einem E-Scooter in der Werkstatt Neuenstadt am Kocher",
 });
 
 export default function PlansPage() {
@@ -32,7 +30,7 @@ export default function PlansPage() {
         eyebrow="Service-Verträge"
         title={
           <>
-            Wartung, <Mark>bevor</Mark> etwas kaputtgeht.
+            E-Scooter-Wartung, <Mark>bevor</Mark> etwas kaputtgeht.
           </>
         }
         lead="Wer täglich pendelt, merkt einen Defekt meistens genau dann, wenn er losfahren will. Ein Wartungsvertrag verschiebt diesen Moment nach vorn, in die Werkstatt, zu einem geplanten Termin."
@@ -85,7 +83,7 @@ export default function PlansPage() {
               {[
                 "Akku-Deep-Check",
                 "20\u00a0% Rabatt auf Ersatzteile",
-                "Express-Reparatur innerhalb von 24 Stunden",
+                "Express-Reparatur, bevorzugt innerhalb von 24 Stunden",
                 "Hol- und Bringservice im Umkreis von 15\u00a0km",
               ].map((entry, i) => (
                 <Reveal key={entry} delay={60 + i * 60} as="li">
@@ -289,13 +287,14 @@ export default function PlansPage() {
       />
 
       <CtaBand
+        formHref="#anfrage"
         eyebrow="Vertrag abschließen"
         title={
           <>
-            <Mark>Kurz</Mark> durchsprechen, dann steht es.
+            Welcher Vertrag passt, klären wir am <Mark>Telefon</Mark>.
           </>
         }
-        text="Welcher Vertrag passt, hängt vor allem davon ab, wie oft Sie fahren. Ein Anruf reicht, um das in zwei Minuten zu klären."
+        text="Das hängt vor allem davon ab, wie oft Sie fahren. Zwei Minuten reichen dafür, und Sie erfahren auch, wenn der einzelne Checkup für Sie die günstigere Wahl ist."
       />
 
       <JsonLd
@@ -313,7 +312,7 @@ export default function PlansPage() {
             offers: plans.map((plan) => ({
               name: `${plan.name}-Wartungsvertrag`,
               price: plan.priceValue,
-              unit: plan.period === "pro Jahr" ? "JAHR" : "MON",
+              unit: plan.period === "pro Jahr" ? "ANN" : "MON",
               description: [plan.features.join(", "), plan.minDuration]
                 .filter(Boolean)
                 .join(". "),

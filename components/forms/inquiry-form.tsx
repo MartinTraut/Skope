@@ -117,8 +117,15 @@ export function InquiryForm({
    * Auf /kontakt bleibt es leer und damit Pflichtfeld: Dort ist keine Absicht
    * bekannt, und eine stille Vorbelegung würde als Antwort gewertet.
    */
+  /* `Object.hasOwn`, weil `TOPIC_BY_SLUG` ein Objektliteral ist:
+     `?anliegen=constructor` fände sonst `Object` auf dem Prototyp und
+     schriebe eine Funktion in das Auswahlfeld. */
   const preselected =
-    (slug ? TOPIC_BY_SLUG[slug] : undefined) ?? defaultTopic ?? "";
+    (slug && Object.hasOwn(TOPIC_BY_SLUG, slug)
+      ? TOPIC_BY_SLUG[slug]
+      : undefined) ??
+    defaultTopic ??
+    "";
 
   const successRef = React.useRef<HTMLDivElement>(null);
   const errorRef = React.useRef<HTMLDivElement>(null);
@@ -315,7 +322,7 @@ export function InquiryForm({
         />
         <Field
           id="phone"
-          label="Telefon (optional)"
+          label="Telefon (optional, für Rückfragen)"
           type="tel"
           autoComplete="tel"
           defaultValue={state.values?.phone}
@@ -337,12 +344,13 @@ export function InquiryForm({
 
       <div className="flex flex-col gap-2">
         <label htmlFor="message" className={labelClass}>
-          Was ist los? <span className="text-accent">*</span>
+          Ihre Nachricht <span className="text-accent">*</span>
         </label>
         {/* Als sichtbarer Hilfetext statt als Placeholder: die Anleitung darf
             nicht verschwinden, sobald jemand zu tippen beginnt. */}
         <p id="message-hint" className="text-sm opacity-70">
-          Fehlermeldung, Geräusch, Reichweite und seit wann.
+          Beim Kauf: Budget, gewünschte Reichweite, Einsatz. Bei einer
+          Reparatur: Fehlermeldung, Geräusch, seit wann.
         </p>
         <textarea
           id="message"

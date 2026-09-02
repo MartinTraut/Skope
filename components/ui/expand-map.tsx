@@ -74,8 +74,23 @@ export function LocationMap({
       <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/85 to-transparent p-5 pt-12 text-silver on-dark">
         <span className="flex items-end justify-between gap-4">
           <span className="block">
+            {/* Straße und Ort als zwei Zeilen: In einer Zeile brach die
+                Adresse bei 390 px als „… Neuenstadt am / Kocher". Getrennt
+                wird am letzten Komma, damit `location` für alt und
+                aria-label ein Satz bleibt. */}
             <span className="block font-display text-sm leading-snug font-bold">
-              {location}
+              {location.includes(", ") ? (
+                <>
+                  <span className="block">
+                    {location.slice(0, location.lastIndexOf(", ") + 1)}
+                  </span>
+                  <span className="block">
+                    {location.slice(location.lastIndexOf(", ") + 2)}
+                  </span>
+                </>
+              ) : (
+                location
+              )}
             </span>
             <span className="tabular mt-1 block text-xs text-current/65">
               {coordinates}

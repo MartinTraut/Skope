@@ -9,10 +9,20 @@ import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
-import { googleRating, nav, site } from "@/lib/site";
+import type { GoogleRating } from "@/lib/google-rating";
+import { nav, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-export function Header() {
+/*
+ * Die Bewertung kommt als Eigenschaft herein, nicht aus einem Import.
+ *
+ * Die Leiste ist ein Client-Bauteil (Scrollzustand, Menü, aktive Route), und
+ * `getGoogleRating()` liest einen Schlüssel aus der Umgebung – der gehört in
+ * kein Browser-Bündel. Das Wurzel-Layout holt den Wert einmal auf dem Server
+ * und reicht ihn durch; über `cache()` ist es derselbe Abruf, den auch
+ * Kopfbereich und Kundenstimmen benutzen.
+ */
+export function Header({ rating }: { rating: GoogleRating }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
 
@@ -240,7 +250,7 @@ export function Header() {
               benutzt. Der vollständige Satz steht im `aria-label`. */}
           <Link
             href="/#kundenstimmen"
-            aria-label={`${googleRating.value} von 5 Sternen bei Google, ${googleRating.count} Rezensionen lesen`}
+            aria-label={`${rating.value} von 5 Sternen bei Google, ${rating.count} Rezensionen lesen`}
             className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex"
           >
             <Star
@@ -249,7 +259,7 @@ export function Header() {
               strokeWidth={1.5}
             />
             <span className="tabular font-display text-sm font-bold tracking-tight">
-              {googleRating.value}
+              {rating.value}
             </span>
           </Link>
 

@@ -21,12 +21,18 @@ export function PageHeader({
   lead,
   crumb,
   aside,
+  asideClassName,
+  below,
 }: {
   eyebrow: string;
   title: React.ReactNode;
   lead: React.ReactNode;
   crumb: string;
   aside?: React.ReactNode;
+  /** Ersetzt die Spaltenlage des aside (Standard: vier Spalten rechts). */
+  asideClassName?: string;
+  /** Volle Breite unter der Einordnung – für Kennzahlen als Zeile. */
+  below?: React.ReactNode;
 }) {
   /* Kopf- und Fußabstand hängen an der Bildhöhe, nicht an der Breite – dieselbe
      Rechnung wie im Hero der Startseite, wo sie ausführlich steht. Hier war es
@@ -116,7 +122,9 @@ export function PageHeader({
             Die Haarlinie, die vorher zwischen Überschrift und Einordnung lag,
             ist weg: Sie hat den Kopf quer durchgeschnitten, statt ihn zu
             gliedern. Der Abstand allein trägt die Zäsur. */}
-        <div className="mt-12 grid gap-x-16 gap-y-8 lg:grid-cols-12 lg:mt-14">
+        {/* mt-8/10 statt 12/14: Eyebrow→H1 sind 24 px, H1→Lead waren 56 –
+            Faktor 2,3, der Lead hing nicht mehr an der Überschrift. */}
+        <div className="mt-8 grid gap-x-16 gap-y-8 lg:mt-10 lg:grid-cols-12">
           <Reveal immediate className="lg:col-span-6">
             <p className="text-[length:var(--text-lead)] leading-relaxed text-current/70">
               {lead}
@@ -125,12 +133,20 @@ export function PageHeader({
           {aside ? (
             <Reveal
               immediate
-              className="lg:col-span-4 lg:col-start-9 lg:justify-self-end"
+              className={
+                asideClassName ??
+                "lg:col-span-4 lg:col-start-9 lg:justify-self-end"
+              }
             >
               {aside}
             </Reveal>
           ) : null}
         </div>
+        {below ? (
+          <Reveal immediate className="mt-10">
+            {below}
+          </Reveal>
+        ) : null}
       </Container>
     </section>
   );

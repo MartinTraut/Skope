@@ -10,18 +10,14 @@ import { nav } from "@/lib/site";
 export default function NotFound() {
   return (
     <section className="relative flex min-h-[70svh] items-center overflow-hidden bg-ink pt-32 pb-24 text-silver on-dark">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-60"
-      />
       <Container className="relative">
         <p className="eyebrow text-current/90">Fehler 404</p>
         <h1 className="mt-6 max-w-2xl text-[length:var(--text-display)]">
-          Diese Seite gibt es <Mark>nicht</Mark> mehr.
+          Diese Seite gibt es hier <Mark>nicht</Mark>.
         </h1>
         <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
-          Vielleicht hat sich die Adresse geändert. Diese Wege führen weiter,
-          oder rufen Sie einfach kurz an.
+          Vielleicht ein Tippfehler in der Adresse, vielleicht ist die Seite
+          umgezogen. Diese Wege führen weiter, oder Sie rufen kurz an.
         </p>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">

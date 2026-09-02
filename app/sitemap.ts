@@ -3,9 +3,14 @@ import type { MetadataRoute } from "next";
 import { inventory } from "@/lib/inventory";
 import { legalNav, nav, site } from "@/lib/site";
 
+/**
+ * Kein `lastModified`. Bis zum 02.09.2026 stand hier die Bauzeit an allen
+ * 21 Adressen – Google ignoriert das Feld dauerhaft, sobald es nachweislich
+ * nicht die Änderung des Dokuments beschreibt, und damit war auch das
+ * wöchentliche Signal der Geräteseiten wertlos. Ein Datum kommt zurück,
+ * sobald der Bestand über Shopify ein echtes `updatedAt` je Gerät liefert.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   return [
     { url: site.url, changeFrequency: "monthly" as const, priority: 1 },
     ...nav.map((item) => ({
@@ -34,5 +39,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.2,
     })),
-  ].map((entry) => ({ ...entry, lastModified: now }));
+  ];
 }

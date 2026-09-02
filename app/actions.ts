@@ -36,8 +36,11 @@ const MAX = {
   message: 4000,
 } as const;
 
+const UNAVAILABLE_MESSAGE =
+  "Die Anfrage konnte gerade nicht übermittelt werden. Rufen Sie uns bitte kurz an oder schreiben Sie direkt eine E-Mail.";
+
 const SUCCESS_MESSAGE =
-  "Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich, bei Reparaturen mit einem Kostenvoranschlag.";
+  "Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich: bei Reparaturen mit einem Kostenvoranschlag, bei Suchaufträgen, sobald ein passendes Gerät geprüft ist.";
 
 /**
  * Einfache Drosselung pro IP. Der Endpunkt ist unauthentifiziert: ohne Limit
@@ -77,13 +80,17 @@ function rateLimited(key: string, now: number) {
  * das Limit aus. Vertrauenswürdig ist nur der Eintrag, den der eigene Proxy
  * anhängt – das ist der LETZTE, nicht der erste. Auf Vercel steht die geprüfte
  * Adresse zusätzlich in `x-vercel-forwarded-for`; die hat Vorrang.
+ *
+ * `x-real-ip` steht bewusst nicht in der Reihe: Hinter einem Proxy, der ihn
+ * nicht überschreibt (oder ohne Proxy, `next start`), ist er vom Client frei
+ * setzbar. Fehlt jeder vertrauenswürdige Header, teilen sich alle Aufrufer
+ * einen Eimer – lieber zu streng als gar nicht.
  */
 async function clientKey() {
   const h = await headers();
   return (
     h.get("x-vercel-forwarded-for") ??
     h.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    h.get("x-real-ip") ??
     "unknown"
   );
 }
@@ -138,7 +145,9 @@ export async function submitInquiry(
   }
 
   if (Object.keys(errors).length > 0) {
-    return { status: "error", errors, values: inquiry };
+    // `topic` roh zurück, nicht normalisiert: Sonst steht auf /kontakt „Bitte
+    // wählen Sie Ihr Anliegen aus" über einem Feld, das den Rückfall zeigt.
+    return { status: "error", errors, values: { ...inquiry, topic: topicRaw } };
   }
 
   if (rateLimited(await clientKey(), Date.now())) {
@@ -151,20 +160,28 @@ export async function submitInquiry(
   }
 
   try {
-    const { delivered } = await sendInquiry(inquiry);
-    return delivered
-      ? { status: "ok", message: SUCCESS_MESSAGE }
-      : {
-          status: "fallback",
-          message:
-            "Der Formularversand ist auf diesem Server noch nicht eingerichtet. Bitte rufen Sie uns kurz an oder schreiben Sie direkt eine E-Mail. Wir kümmern uns sofort darum.",
-          values: { ...inquiry, topic: topicRaw },
-        };
-  } catch {
+    const result = await sendInquiry(inquiry);
+    if (result.delivered) return { status: "ok", message: SUCCESS_MESSAGE };
     return {
       status: "fallback",
       message:
-        "Die Anfrage konnte gerade nicht übermittelt werden. Rufen Sie uns bitte kurz an oder schreiben Sie direkt eine E-Mail.",
+        result.reason === "unconfigured"
+          ? "Der Formularversand ist auf diesem Server noch nicht eingerichtet. Bitte rufen Sie uns kurz an oder schreiben Sie direkt eine E-Mail. Wir kümmern uns sofort darum."
+          : UNAVAILABLE_MESSAGE,
+      values: { ...inquiry, topic: topicRaw },
+    };
+  } catch (err) {
+    /* Netzfehler oder Zeitüberschreitung. Der Nutzer bekommt den Rückfall,
+       der Betreiber muss es im Protokoll sehen – sonst fällt ein Ausfall des
+       Versands erst auf, wenn wochenlang keine Anfrage mehr ankommt. Nur die
+       Fehlerart, keine Nutzerdaten (siehe notify.ts). */
+    console.error(
+      "[anfrage] Versand abgebrochen",
+      err instanceof Error ? err.name : "unknown",
+    );
+    return {
+      status: "fallback",
+      message: UNAVAILABLE_MESSAGE,
       values: { ...inquiry, topic: topicRaw },
     };
   }

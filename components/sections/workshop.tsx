@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
+import { GeneratedMark, GeneratedNote } from "@/components/ui/generated-mark";
 import { Container, Section } from "@/components/ui/section";
 import { checkupIncludes, turnaround } from "@/lib/data/services";
 
@@ -15,18 +16,32 @@ export function Workshop() {
       <Container>
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
           {/* Bild – hochformatig, bricht das Raster der übrigen Sektionen */}
-          <Reveal className="lg:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700">
+          {/* Ab `lg` bestimmt die Textspalte die Höhe, das Bild füllt sie:
+              Gemessen bei 1999 × 1123 war die Textspalte 902 px hoch, das
+              4/5-Bild 770 – und die ganze Sektion 1110 px, die Knöpfe damit
+              unter der Fensterkante. Jetzt ist die Textspalte auf rund 690 px
+              gestrafft und das Bild wächst mit ihr statt mit einem festen
+              Seitenverhältnis. Am Telefon bleibt 4/5. */}
+          <Reveal className="flex flex-col lg:col-span-5">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700 lg:aspect-auto lg:min-h-[28rem] lg:flex-1">
               <Image
                 src="/img/werkstatt-service.jpg"
-                alt="Mechaniker prüft mit dem Drehmomentschlüssel das Klappscharnier eines eingespannten E-Scooters"
+                alt="Symbolbild: Prüfung des Klappscharniers an einem eingespannten E-Scooter mit dem Drehmomentschlüssel"
                 fill
                 sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                 className="parallax object-cover"
               />
+              <GeneratedMark src="/img/werkstatt-service.jpg" />
             </div>
+            {/* Die Zeile nannte den Ort: „Werkstatt Im Kampfrad 3, Neuenstadt
+                am Kocher." Unter einem erzeugten Motiv ist das keine
+                Bildunterschrift mehr, sondern eine Tatsachenbehauptung über
+                den eigenen Betrieb – genau der Fall, den § 5 UWG meint. Sie
+                benennt jetzt den Vorgang, nicht den Ort. Die Adresse steht
+                unverändert im Fußbereich, auf /kontakt und im Schema. */}
             <p className="mt-4 text-sm text-current/65">
-              Werkstatt Im Kampfrad 3, Neuenstadt am Kocher.
+              Sicherheits-Checkup an einem Klappscharnier.{" "}
+              <GeneratedNote src="/img/werkstatt-service.jpg" />
             </p>
           </Reveal>
 
@@ -41,19 +56,19 @@ export function Workshop() {
                 Was für <span className="text-accent">59,99&nbsp;€</span>{" "}
                 tatsächlich passiert.
               </h2>
-              <p className="mt-6 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
-                Der Checkup ist kein Blick über den Lenker. Er ist eine
-                vollständige Aufnahme des Zustands: dieselbe Prüfung, die jeder
-                Scooter durchläuft, bevor er unser Qualitätssiegel bekommt.
+              <p className="mt-5 max-w-xl text-[length:var(--text-lead)] leading-relaxed text-current/65">
+                Eine vollständige Aufnahme des Zustands in sechs Positionen:
+                dieselbe Prüfung, die jeder Scooter durchläuft, bevor er unser
+                Qualitätssiegel bekommt.
               </p>
             </Reveal>
 
             <Reveal delay={80}>
-              <ul className="mt-10 grid gap-x-10 gap-y-0 sm:grid-cols-2">
+              <ul className="mt-8 grid gap-x-10 gap-y-0 sm:grid-cols-2">
                 {checkupIncludes.map((item, i) => (
                   <li
                     key={item}
-                    className="flex items-baseline gap-4 border-b border-silver/12 py-4"
+                    className="flex items-baseline gap-4 border-b border-silver/12 py-3"
                   >
                     <span className="tabular font-display text-xs font-semibold text-current/65">
                       {String(i + 1).padStart(2, "0")}
@@ -65,26 +80,24 @@ export function Workshop() {
             </Reveal>
 
             <Reveal delay={140}>
-              <div className="mt-12">
-                <h3 className="eyebrow-plain text-current/90">
+              <div className="mt-9">
+                <p className="eyebrow-plain text-current/90">
                   Wie lange es dauert
-                </h3>
-                <dl className="mt-5 flex flex-col gap-3">
+                </p>
+                {/* Drei Angaben, die man vergleicht, stehen nebeneinander –
+                    als drei Zeilen mit zwei Enden waren es 175 px für
+                    neun Wörter. Am Telefon gestapelt (gemessen bei 390 px:
+                    „meist am selben Tag" stieß rechts an den Satzspiegel).
+                    Bezeichnung oben, Wert darunter, in jeder Breite dieselbe
+                    Form. */}
+                <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-3">
                   {turnaround.map((row) => (
-                    /* Auf dem Telefon untereinander, erst ab `sm` als Zeile
-                       mit zwei Enden. Gemessen bei 390 px: „meist am selben
-                       Tag" stieß rechts an den Satzspiegel, und die dritte
-                       Zeile brach als einzige um – drei Zeilen, drei
-                       verschiedene Formen. Gestapelt tragen alle drei
-                       dieselbe: Bezeichnung oben, Wert darunter. */
                     <div
                       key={row.label}
-                      className="flex flex-col gap-0.5 border-b border-silver/12 pb-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-6 sm:gap-y-1"
+                      className="flex flex-col gap-1 border-t border-silver/12 pt-3"
                     >
-                      <dt className="text-sm text-current/70 sm:text-base">
-                        {row.label}
-                      </dt>
-                      <dd className="font-display font-semibold tracking-tight text-silver">
+                      <dt className="text-sm text-current/70">{row.label}</dt>
+                      <dd className="font-display font-semibold tracking-tight text-balance text-silver">
                         {row.value}
                       </dd>
                     </div>
@@ -95,7 +108,7 @@ export function Workshop() {
               {/* Eine Hauptaktion, ein Textlink daneben: Dasselbe Button-Paar
                   stand auf der Startseite vorher viermal. Der zweite Weg bleibt
                   erhalten, tritt aber nicht mehr als gleichwertig auf. */}
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <ButtonLink href="/reparatur#anfrage" size="lg">
                   Reparatur anfragen
                 </ButtonLink>

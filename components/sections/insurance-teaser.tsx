@@ -57,19 +57,19 @@ export function InsuranceTeaser() {
                   volles Versicherungsjahr, kein Abo
                 </dd>
               </div>
-              {/* „Sofort" statt „5 bis 10 Werktage". Die Frist gilt für den
-                  Postweg der ERGO und damit für die Online-Anfrage; wer in die
-                  Werkstatt kommt, nimmt die Plakette mit. Von beiden Angaben
-                  ist die kürzere das Argument, und sie steht hier neben dem
-                  Preis, weil genau diese zwei Zahlen die Entscheidung
-                  tragen. Die Frist steht darunter im Fließtext. */}
+              {/* Die Frist ist der Postweg der ERGO – für jeden Antrag, auch
+                  den in der Werkstatt gestellten (Auskunft des Betreibers vom
+                  03.09.2026; hier stand vorher „sofort"). Preis und Frist
+                  sind die zwei Zahlen, die die Entscheidung tragen. */}
               <div>
-                <dt className="text-sm text-current/65">Plakette vor Ort</dt>
+                <dt className="text-sm text-current/65">
+                  Kennzeichen per Post
+                </dt>
                 <dd className="tabular mt-1 font-display text-3xl font-bold tracking-tight">
-                  sofort
+                  5–10
                 </dd>
                 <dd className="mt-1 text-xs text-current/65">
-                  zum Mitnehmen, bar oder EC
+                  Werktage nach dem Antrag
                 </dd>
               </div>
             </dl>

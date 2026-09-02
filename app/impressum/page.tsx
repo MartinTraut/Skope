@@ -106,6 +106,33 @@ export default function ImprintPage() {
           Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des
           jeweiligen Autors bzw. Erstellers.
         </p>
+
+        {/* Der Nachweis ersetzt die Kennzeichnung am Bild nicht, er ergänzt
+            sie. Art. 50 Abs. 4 EU-KI-VO verlangt die Offenlegung dort, wo der
+            Inhalt wahrgenommen wird – das leistet die Marke im Bild. Hier
+            steht, was sich in einer Ecke nicht sagen lässt: welche Aufnahmen
+            es betrifft, womit sie entstanden sind und dass die Motive keinen
+            realen Ort und keine reale Person zeigen. */}
+        <h2>Bildnachweis und KI-Kennzeichnung</h2>
+        <p>
+          Ein Teil der Aufnahmen auf dieser Website ist mit künstlicher
+          Intelligenz erzeugt und im Bild selbst als KI-Bild gekennzeichnet.
+          Betroffen sind die Motive aus Werkstatt und Umgebung: die Aufnahme im
+          Kopfbereich der Startseite, die Werkstattszene auf den Seiten Über uns
+          und Wartungsvertrag, die Akku-Diagnose, die Studioaufnahme, die
+          Tarifübersicht sowie die drei Straßen- und Stadtmotive. Diese Bilder
+          sind Symbolbilder. Sie zeigen weder die Räume in Im Kampfrad 3 noch
+          reale Personen; abgebildete Menschen existieren nicht. In den Dateien
+          selbst ist die Herkunft zusätzlich als IPTC-Angabe hinterlegt
+          (<code>DigitalSourceType: trainedAlgorithmicMedia</code>).
+        </p>
+        <p>
+          Nicht erzeugt und damit nicht gekennzeichnet sind: das
+          Skope-Qualitätssiegel, die Wort- und Bildmarke, die Preistafel zur
+          ERGO-Versicherung, der Erklärfilm sowie die Fotos der angebotenen
+          Geräte. Der Kartenausschnitt auf der Kontaktseite stammt aus
+          OpenStreetMap.
+        </p>
       </LegalPage>
 
       <JsonLd

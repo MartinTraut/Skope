@@ -20,7 +20,7 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                 Zwei Verträge. <Mark>Einer</Mark> davon passt.
               </>
             }
-            lead="Verschleiß an Bremsen, Lagern und Klappmechanik kündigt sich an, bevor er zum Ausfall führt, wenn jemand danach sucht. Der Unterschied zwischen den beiden Verträgen ist nicht der Prüfumfang, sondern wie schnell Sie drankommen."
+            lead="Verschleiß an Bremsen, Lagern und Klappmechanik kündigt sich an, bevor er zum Ausfall führt, wenn jemand danach sucht. Beide Verträge enthalten den jährlichen Sicherheits-Checkup. Premium ergänzt die Akkuprüfung, die Express-Reparatur und den Hol- und Bringservice."
           />
         ) : null}
 

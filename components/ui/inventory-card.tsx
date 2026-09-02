@@ -155,7 +155,11 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
           „Alle Daten und Bilder" auf zwei Zeilen. Kürzere Beschriftung und
           ein Grad kleiner: 85 px Text plus Abstand und Pfeil sind 109 px. Der
           vollständige Satz steht weiterhin im `aria-label` der Karte. */}
-      <span className="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-semibold tracking-tight text-accent sm:text-sm">
+      {/* Kein Neon: Der Verweis ist weder Hauptaktion noch harte Zahl. Mit
+          Neon trug jede Karte zwei Signale, und der Preis – die eine harte
+          Zahl je Karte – verlor seine Auszeichnung. Unterstrichen wie der
+          `quiet`-Knopf. */}
+      <span className="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-semibold tracking-tight text-current underline decoration-current/40 underline-offset-4 group-hover:decoration-current sm:text-sm">
         Daten &amp; Bilder
         <ArrowRight
           aria-hidden="true"

@@ -19,7 +19,7 @@ import {
   pageGraph,
   serviceRef,
 } from "@/lib/schema";
-import { pageMeta } from "@/lib/seo";
+import { fitDescription, pageMeta } from "@/lib/seo";
 import { proof } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
@@ -78,11 +78,12 @@ export async function generateMetadata({
 
   return pageMeta({
     title: `${item.model} gebraucht kaufen`,
-    description:
-      `${item.model} für ${item.price} aus der SKOPE-Fachwerkstatt in Neuenstadt am Kocher: geprüft, generalüberholt, mit ${proof.warrantyYears} Jahr Gewährleistung. ${item.summary}`.slice(
-        0,
-        300,
-      ),
+    // Google schneidet bei rund 158 Zeichen; die Zusammenfassung kommt nur
+    // dazu, wenn sie als ganzer Satz noch hineinpasst.
+    description: fitDescription(
+      `${item.model} für ${item.price} aus der SKOPE-Fachwerkstatt in Neuenstadt am Kocher: geprüft, generalüberholt, mit ${proof.warrantyYears} Jahr Gewährleistung.`,
+      item.summary,
+    ),
     path: `/e-scooter/${item.id}`,
     image: item.images[0].src,
     imageAlt: item.images[0].alt,
@@ -122,7 +123,7 @@ export default async function ScooterDetailPage({
               <li>
                 <Link
                   href="/"
-                  className="-mx-1 inline-flex min-h-11 items-center px-1 transition-colors hover:text-accent"
+                  className="-mx-2 inline-flex min-h-11 items-center px-2 transition-colors hover:text-accent"
                 >
                   Start
                 </Link>
@@ -169,7 +170,13 @@ export default async function ScooterDetailPage({
               Reihe beginnt rund 30 px unter der Falz – ein Wischen, nicht die
               halbe Seite wie in der Ausgangslage. Ab etwa 900 px Fensterhöhe
               steht sie wieder vollständig im Bild. */}
-          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,min(38rem,62vh))_minmax(0,62rem)] lg:gap-14">
+          {/* 03.09.2026: Deckel von `min(38rem,62vh)` auf `min(30rem,48vh)`.
+              Bei 1512 × 860 war die Galerie 533 px breit und mit Vorschaureihe
+              rund 830 px hoch, die H1 lief im Seitentitelgrad über zwei
+              Zeilen, und das Datenblatt begann unter der Falz – „links, rechts,
+              unten alles abgeschnitten". Jetzt stehen Bild, Modell, Preis,
+              Aktionen und Datenblatt in einem Bild. */}
+          <div className="mt-5 grid gap-10 lg:grid-cols-[minmax(0,min(30rem,48vh))_minmax(0,1fr)] lg:gap-12">
             {/* Die Galerie hebt sich beim Seitenaufbau an ihren Platz: aus
                 einer Spur kleiner und leicht tiefer, in einem Zug. Das ist
                 die Bewegung, die den Sprung von der Karte trägt – dieselbe
@@ -205,7 +212,7 @@ export default async function ScooterDetailPage({
                    400 px und war damit seit der Verbreiterung der Bildspalte
                    zu klein – auf dem Schreibtisch wurde ein 400-px-Bild auf
                    608 px gezogen. */
-                sizes="(min-width: 1024px) 38rem, (min-width: 640px) 22rem, calc(100vw - 3rem)"
+                sizes="(min-width: 1024px) 30rem, (min-width: 640px) 22rem, calc(100vw - 3rem)"
               />
             </div>
 
@@ -213,20 +220,24 @@ export default async function ScooterDetailPage({
               <p className="eyebrow text-current/90">
                 Einzelstück · {proof.sealName}
               </p>
-              <h1 className="mt-5 text-[length:var(--text-display)]">
+              {/* Displaygrad, nicht Seitentitelgrad: Im Seitentitelgrad lief
+                  „Segway Ninebot E3 Pro" bei 1512 px über zwei Zeilen à 96 px
+                  und drückte Preis und Datenblatt aus dem Bild. Die einzige
+                  H2 dieser Seite steht eine Sektion tiefer im Titelgrad. */}
+              <h1 className="mt-4 text-[length:var(--text-display)]">
                 {item.model}
               </h1>
 
               {/* Der Preis steht allein auf seiner Zeile und im Zahlengrad.
                   Neben der Überschrift wäre er ein Detail; hier ist er die
                   zweite Angabe, die gelesen wird. */}
-              <p className="tabular mt-7 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
+              <p className="tabular mt-4 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                 {item.price}
               </p>
 
               {/* Die Einordnung ist eine Lesestrecke, das Datenblatt darunter
                   nicht – deshalb greift die Zeichenbegrenzung nur hier. */}
-              <p className="mt-6 max-w-[56ch] text-[length:var(--text-lead)] leading-relaxed text-current/75">
+              <p className="mt-4 max-w-[56ch] leading-relaxed text-current/75">
                 {item.summary}
               </p>
 
@@ -253,14 +264,14 @@ export default async function ScooterDetailPage({
                 </p>
               ) : null}
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link href={anfrage} className={buttonVariants({ size: "lg" })}>
                   Zu diesem Gerät anfragen
                 </Link>
                 <PhoneButton variant="outline" />
               </div>
 
-              <p className="mt-6 text-sm text-current/60">
+              <p className="mt-4 text-sm text-current/60">
                 Abholung und Probefahrt in der Werkstatt in Neuenstadt am
                 Kocher. Versand auf Anfrage.
               </p>
@@ -281,7 +292,7 @@ export default async function ScooterDetailPage({
                   Konstruktion, nicht der Inhalt. Eine leichte Fläche und
                   Weissraum ordnen dieselben Werte ruhiger. */}
               {specs.length > 0 ? (
-                <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 rounded-xl bg-current/6 p-6 md:p-7">
+                <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 rounded-xl bg-current/6 p-5 xl:grid-cols-3">
                   {specs.map((spec) => (
                     <div key={spec.label}>
                       <dt className="eyebrow-plain text-current/55">

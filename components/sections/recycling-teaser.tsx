@@ -4,6 +4,7 @@ import { Recycle } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/section";
+import { GeneratedMark } from "@/components/ui/generated-mark";
 import { Mark } from "@/components/ui/mark";
 
 const parts = [
@@ -56,6 +57,7 @@ export function RecyclingTeaser() {
                 sizes="(min-width: 1024px) 55vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                 className="parallax object-cover"
               />
+              <GeneratedMark src="/img/scooter-strasse.jpg" />
             </div>
           </Reveal>
 

@@ -411,6 +411,143 @@ Sorte Fehler war wie bei den Reparaturbereichen:
   nicht: Am Schreibtisch lief die Linie der Liste 923 px breit über Einträge
   von 574 px.
 
+## Kopfbereich der Startseite — 02.09.2026
+
+- **Die beiden Knöpfe sind weg** (Telefonnummer im Vollton, „13 Geräte
+  ansehen" als Umriss). Sie wiederholten, was die Kopfzeile dauerhaft trägt:
+  Nummer ab 1280 px im Kopf, darunter als Symbolknopf bzw. in der unteren
+  Aktionsleiste, dazu „Anfrage senden" und „E-Scooter kaufen" in der
+  Navigation. Bezahlt wurde das mit Höhe — mit ihnen begann das Kennzahlenband
+  bei 1512 × 790 erst bei 797 px und die vier Werte waren im ersten Bild
+  angeschnitten.
+- **Der Rest ist nachgerückt, nicht nur der Wegfall.** Oberer Rand ab `lg`
+  `clamp(4rem,2rem+6vh,6.5rem)` statt `clamp(5.5rem,3rem+8vh,8rem)`, unterer
+  Rand `pb-6 md:pb-8` statt `pb-10 md:pb-16`, Band `pt-6 lg:pt-4` statt
+  `pt-8 lg:pt-10`, dazu drei Abstände ab `sm` um acht Pixel enger. Gemessen
+  liegt die Unterkante der Kennzahlen jetzt bei 772 (1512 × 790), 759
+  (1440 × 780), 735 (1280 × 800) und 822 px (390 × 844) — auf allen vier
+  Formaten über der Falz. Bei 320 px geht es nicht: Dort läuft die H1 über
+  drei und der Lead über sechs Zeilen.
+- **Die Sektion füllt ab `lg` die Fensterhöhe** (`min-h-svh`, Bildzone
+  `flex-1`). Nach dem Wegfall der Knöpfe war sie bei 1990 × 1080 rund 130 px
+  kürzer als das Fenster: unter den Kennzahlen ein Streifen Tinte, und weil
+  die Aufnahme `contain` in der Bildzone liegt, war sie um dieselbe Strecke
+  geschrumpft – der Roller stand zu klein und zu weit oben. Die Resthöhe
+  bekommt jetzt die Bildzone, nicht der Abstand: Gemessen 1080 von 1080 px
+  bei 1990 Breite, 900 von 900 bei 1512, und der Roller sitzt wieder auf
+  seiner Standfläche direkt über dem Band. Der Auslauf unter den Kennzahlen
+  ist dabei von `lg:pb-24` auf `lg:pb-14` gefallen – 96 px waren der Rest,
+  aus dem der Leerstreifen bestand. Nur ab `lg`: Am Telefon ist die Sektion
+  ohnehin höher als das Fenster.
+- **Die Bildfläche endet 2,5 rem unter der Bildzone** (`bottom-[-2.5rem]`
+  statt `inset-y-0`). Die Aufnahme liegt `contain` und unten verankert, steht
+  also immer auf dem Boden dieser Fläche – bündig mit der Zone stand der Roller
+  auf einer Linie mit der letzten Textzeile und wirkte angehoben. Die 40 px
+  reichen in den oberen Rand des Kennzahlenbands hinein; dort liegt nur der
+  Auslauf in die Tinte, und die Fläche steht auf `-z-10` hinter allem.
+- **Der Beleg steht ohne Fläche.** Rahmen, Füllung, Haarlinie und die Zeile
+  „Was drei Kunden geschrieben haben" sind weg; Note, Sterne, Anzahl und die
+  drei Kürzel stehen frei auf der Tinte. Als Kachel war es dasselbe Problem
+  wie bei der Zusage darüber — ein weiteres Rechteck in Knopfgröße, das sich
+  als Bedienelement liest. Das Gold der Sterne und das Google-Zeichen weisen
+  den Beleg auch ohne Rahmen als Zitat aus.
+
+## Telefonknöpfe — 03.09.2026
+
+Auf Ansage entfernt: der Neon-Telefonknopf im Abschlussband (`CtaBand`, alle
+Seiten) und der im Kopf von `/kontakt`. Beide wiederholten, was die
+Kopfzeile ab 1280 px, der Symbolknopf darunter und die untere Aktionsleiste
+am Telefon dauerhaft tragen. Im Band trägt „Anfrage senden" jetzt den
+Vollton – ein Umrissknopf allein ist keine Hauptaktion. Die Telefonknöpfe
+auf `/e-scooter`, der Geräteseite und der 404 stehen noch; dort sind sie
+nicht die Wiederholung einer Aktion daneben.
+
+## Das Mausrad — 02.09.2026, zurückgenommen am selben Tag
+
+Es gab für einen Nachmittag `components/motion/smooth-scroll.tsx`: Das Rad
+wurde abgefangen und die Strecke exponentiell angenähert, weil ein Rad in
+100-px-Rasten springt. **Das ist wieder weg**, und zwar aus einem gemessenen
+Grund, nicht aus Geschmack: Die Erkennung „Rad oder Trackpad" (ganzzahliger
+Ausschlag ab 40 px, kein dichter Strom) kippte bei der Maus des Betreibers
+von Ereignis zu Ereignis. Die Hälfte der Rasten lief nativ, die andere
+Hälfte über die Annäherung mit aufsummiertem Ziel – „manchmal muss ich
+mehrmals scrollen, manchmal fliege ich über die ganze Seite". Ein
+Scroll-Ersatz, den man nicht auf jedem Eingabegerät des Nutzers testen kann,
+ist ein Fehler, den man nur beim Nutzer sieht. **Scrollen bleibt nativ.**
+Wer die Rasten wieder glätten will, macht es mit einer Bibliothek, die auf
+Rad *und* Trackpad denselben Weg nimmt, oder gar nicht.
+
+## Seitenposition — 02.09.2026
+
+`components/motion/scroll-manager.tsx`, im Layout vor dem Header. Zwei
+Regeln, beide aus der Beschwerde „ich lande irgendwo mitten auf der Seite":
+
+- **Ein Seitenwechsel beginnt oben.** Beim Wechsel des `pathname` steht die
+  Position hart auf 0 (`useLayoutEffect`, `behavior: "instant"`), bevor der
+  neue Inhalt gemalt ist. Next setzt sie zwar selbst, aber weich und auf das
+  erste geänderte Segment – das ließ sich überholen. `html` trägt jetzt
+  außerdem `data-scroll-behavior="smooth"`, womit Next die weiche Bewegung
+  während eines Routenwechsels selbst abschaltet.
+- **Ein Sprungziel steht ganz im Bild.** Jeder Verweis mit Raute auf
+  derselben Seite (`#bestand`, `#anfrage`, `/#kundenstimmen` aus der
+  Kopfzeile) und jeder Aufruf mit Raute von einer anderen Seite: Passt die
+  Sektion unter die Kopfzeile, wird sie dort mittig gesetzt; ist sie höher
+  als das Fenster, beginnt sie direkt unter der Kopfzeile (`--header-h`).
+  In beiden Fällen ist von der Sektion darüber nichts zu sehen. Gemessen:
+  Kundenstimmen bei 1512 × 900 → Oberkante 80 px, Bestand → 80 px,
+  Navigation aus 1500 px Tiefe → 0.
+
+## Versicherungsseite — 02.09.2026
+
+Neu komponiert, weil ab `lg` die rechte Hälfte auf der ganzen oberen Seite
+leer war: Kopf, Tabelle mit Deckel bei 48 rem und die Schrittfolge liefen
+alle als schmale Spalte an der linken Kante.
+
+- **Kopf:** drei Kennzahlen (Haftpflicht Saison, Teilkasko, 5–10 Werktage
+  Post) als **Zeile rechts neben dem Lead**, unten bündig – `PageHeader`
+  nimmt dafür `asideClassName` (sechs Spalten statt vier). Erst standen sie
+  als Turm rechts (335 px, „so wirkt der Hero zu groß"), dann als Zeile
+  unter dem Lead (`below`-Slot, zu weit vom Text). Lead auf drei Zeilen
+  gekürzt. Preise aus `tariffs[0]`. Nur ab `lg`.
+- **Tarife:** Tabelle 7 Spalten ohne Deckel, rechts 5 Spalten eine
+  Tinte-Karte „Abschluss direkt vor Ort" mit der Plakette, darunter der
+  Aushang in voller Spaltenbreite mit Unterschrift. Eine 9-rem-Miniatur
+  daneben war ein Versuch, der sofort zurückkam: „warum ist das so klein".
+- **Ablauf:** Schritte 7 Spalten, rechts 5 Spalten die Karte „Diese Angaben
+  brauchen wir", `sticky top-28`, Liste einspaltig.
+
+## Bestandsseite, Kennzahlenband — 03.09.2026
+
+Stückzahl, Preisspanne, Gewährleistung und Marken sind ein Band mit
+Haarlinien (`border-y`), nicht drei lose Blöcke mit `gap-x-14` – die
+standen bei 1512 px mit 900 px Luft in der Mitte. Mittlere Spalte `auto`,
+weil die Preisspanne im Zahlengrad breiter ist als ein Drittel. Marken im
+Untertitelgrad ohne Trennpunkte (am Telefon begann sonst die zweite Zeile
+mit „·"), weiterhin keine Kapseln.
+
+## Geräteseite am Schreibtisch — 03.09.2026
+
+„Links, rechts, unten alles abgeschnitten": Bei 1512 × 860 war die Galerie
+533 px breit und mit Vorschaureihe 830 px hoch, die H1 lief im
+Seitentitelgrad zweizeilig, das Datenblatt begann unter der Falz. Jetzt
+Bildspalte `min(30rem,48vh)`, H1 im Displaygrad (die einzige H2 der Seite
+steht eine Sektion tiefer im Titelgrad), Abstände 4/4/6 statt 7/6/9,
+Datenblatt ab `xl` dreispaltig mit `p-5`. Gemessen bei 1512 × 860: Galerie
+samt Vorschaureihe, Modell, Preis, Aktionen und das ganze Datenblatt im
+ersten Bild. Am Telefon ändert sich nichts.
+
+## Reparaturkarten
+
+Die vier Bereichskarten auf `/reparatur` tragen den Neonschimmer oben links
+(`.tint-neon`). Er war am 02.09. als „dritte Fläche" entfernt und kam am
+03.09. auf Ansage zurück – nicht wieder anfassen.
+
+## Kundenstimmen
+
+Das Laufband bleibt auf jeder Breite ab `sm` – ein Versuch, es ab `lg`
+durch drei feste Karten zu ersetzen, wurde am 02.09.2026 auf Ansage
+zurückgenommen. Am Telefon die Wischbahn.
+
 ## Datumssignal und Alt-Texte
 
 Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
@@ -468,14 +605,8 @@ als Tokens in `@theme`.
 Rechtsbezug (KI-Bilder, Google-Bewertung, zweite Preisspalte) sind bewusst
 zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
 
-- **KI-Kennzeichnung: später, aber vor dem Livegang.** Entscheidung vom
-  14.08.2026. Der Weg ist festgelegt: entweder echte Fotos aus Im Kampfrad 3,
-  oder die erzeugten Bilder werden zu Symbolbildern — `image` in
-  `lib/schema.tsx` und das Standard-og:image in `lib/seo.ts` auf das Logo
-  oder eine echte Aufnahme umstellen, sichtbarer Bildhinweis, IPTC-Kennzeichen
-  in den Dateien, Logo aus den Motiven raus. Ein Hinweis in AGB oder
-  Datenschutz erfüllt weder Art. 50 EU-KI-VO (Hinweis dort, wo der Inhalt
-  wahrgenommen wird) noch § 5 UWG (die Bilder behaupten den eigenen Betrieb).
+- **KI-Kennzeichnung: erledigt am 02.09.2026** — siehe eigenen Abschnitt
+  unten. Offen bleibt der bessere Weg: echte Fotos aus Im Kampfrad 3.
 - **`lib/inventory.ts` ist Platzhalter, keine Ware.** Auskunft des Betreibers
   vom 20.08.2026: Modelle, Preise und Stückzahl sind fiktiv. Der echte
   Bestand kommt später über Shopify — der alte Shop hängt bereits an einer
@@ -511,14 +642,75 @@ zurückgestellt und werden vor der Schaltung erledigt, nicht danach.
 - **Alt-Texte** der zwölf importierten Geräte sind positionsbeschreibend
   („Aufnahme 3 von 6"). Nur beim Zamelux Green E9 sind sie geschrieben, nachdem
   jemand die Fotos angesehen hat.
-- **Die vier Stimmungsbilder sind erzeugt, nicht fotografiert.**
-  `werkstatt-service`, `akku-diagnose`, `scooter-studio` und `ergo-tarife`
-  stammen aus Nano Banana Pro (14.08.2026), mit dem echten Logo als Vorlage;
-  das Schild an der Wand und der Aufnäher tragen deshalb die Marke korrekt.
-  Sie zeigen eine Werkstatt, die so nicht existiert, und Personen, die es
-  nicht gibt. Vor dem Livegang entweder durch echte Aufnahmen aus Im
-  Kampfrad 3 ersetzen oder als erzeugt kennzeichnen (EU-KI-VO Art. 50,
-  § 5 UWG). Echte Fotos sind hier ohnehin das stärkere Vertrauenssignal.
+- **Es sind acht erzeugte Bilder, nicht vier.** Diese Liste stand bis zum
+  02.09.2026 auf `werkstatt-service`, `akku-diagnose`, `scooter-studio` und
+  `ergo-tarife`. Dazu kommen `hero-werkstatt` — die Aufnahme über der H1 der
+  Startseite — und die drei `scooter-*` vom 06.08.2026. Die vollständige Liste
+  ist jetzt Code (`lib/data/generated-images.ts`), keine Notiz. Sie sind
+  gekennzeichnet; ersetzen bleibt der bessere Weg.
+
+## KI-Kennzeichnung der Bilder — 02.09.2026
+
+Abgearbeitet. Was dabei herauskam und nicht wieder aufgeweicht werden darf:
+
+- **Acht Bilder, nicht vier.** Der Eintrag oben nannte vier. Die drei
+  `scooter-*` vom 06.08. tragen die Herkunft bis heute in ihren eigenen
+  Metadaten (`photoshop:Credit="Made with Google AI"`), und `hero-werkstatt`
+  ist an den Werkzeugen an der Lochwand und den unlesbaren Plaketten am Lenker
+  als erzeugt zu erkennen. Beides stand nirgends. Die Liste ist deshalb jetzt
+  `lib/data/generated-images.ts` und keine Zeile in dieser Datei: Ein Bauteil,
+  das den Pfad nachschlägt, vergisst kein Motiv, ein Mensch schon.
+- **Die Kennzeichnung liegt im Bild** (`GeneratedMark`), nicht in einer
+  Fußnote. Art. 50 Abs. 4 EU-KI-VO verlangt die Offenlegung „spätestens zum
+  Zeitpunkt der ersten Interaktion oder Exposition"; ein Satz im Impressum
+  erfüllt das nicht. Die Kurzform „KI-BILD" steht sichtbar, der volle Wortlaut
+  „Symbolbild, mit KI erzeugt" in `title` und `sr-only`.
+- **Kein Neon an der Marke.** Die Akzentfarbe markiert drei Dinge —
+  Hauptaktion, harte Zahl, ein Wort je Überschrift. Die Herkunft eines Bildes
+  ist keines davon. Deckende Tinte statt Transparenz, sonst verschwindet der
+  Chip über einer hellen Bildstelle.
+- **Am Telefon steht die Marke rechts, 2,75 rem unter der Kopfzeile.** Der
+  Streifen zwischen Kopfzeile und Auszeichnungszeile ist der einzige freie:
+  Gemessen bei 320 px beginnt die Überschrift bei 207 px und der Fließtext bei
+  384, die Bühne endet bei 416 – und sie liegt mit `-z-10` hinter dem Text,
+  eine Marke weiter unten wäre von Buchstaben überdeckt statt dezent. Direkt
+  unter der Kopfzeile (0,5 rem) las sie sich als Beschriftung des Menüknopfs;
+  jetzt liegen 58 px dazwischen. Am Schreibtisch steht sie in der äußersten
+  unteren Ecke statt 11 rem darüber auf dem hellen Werkstattboden – dort ist
+  nur noch der Auslauf in die Tinte, Silber auf Tinte bleibt lesbar.
+- **Bildunterschriften nennen keinen Ort mehr, Alt-Texte keine Person.**
+  „Werkstatt Im Kampfrad 3, Neuenstadt am Kocher" unter einem erzeugten Motiv
+  ist keine Bildunterschrift, sondern eine Tatsachenbehauptung über den
+  eigenen Betrieb (§ 5 UWG). Der Alt-Text auf `/ueber-uns` lautete „Thomas
+  Zielke bei der Arbeit" — er ordnete einer namentlich genannten realen Person
+  ein erfundenes Gesicht zu, ausgerechnet auf der Seite, die sie vorstellt.
+- **Vorschaubilder sind das Siegel, nicht die Motive.** `public/img/og-skope.png`
+  (1200 × 630, aus `siegel-skope.png` auf Tinte) ist der Standard in
+  `lib/seo.ts` und die `image` der Organisation in `lib/schema.tsx`. Grund: Ein
+  og:image wird aus der Seite herausgelöst und steht ohne Bildunterschrift und
+  ohne Marke im Bild in Chats und Zeitleisten — genau dort, wo die Offenlegung
+  weiterhin gefordert ist und sich nicht mitliefern lässt. Die sechs
+  routen-eigenen `image:`/`imageAlt:`-Angaben sind deshalb weg.
+- **In den Dateien steht das IPTC-Kennzeichen**
+  (`Iptc4xmpExt:DigitalSourceType = trainedAlgorithmicMedia`). Es war bei den
+  fünf Dateien vom 14.08. durch eine Optimierung verlorengegangen. Neu
+  hineingeschrieben wurde es **verlustfrei**: als APP1-Segment direkt in den
+  JPEG-Bytestrom, nicht über ein Neukodieren mit sharp.
+- **Nicht gekennzeichnet und das mit Absicht:** `ergo-aushang.jpg` (die eigene
+  Preistafel), `siegel-skope.png`, die Gerätefotos, `karte-neuenstadt.png`
+  (OpenStreetMap). **Der Erklärfilm stand bis zum 02.09.2026 in dieser Reihe
+  und gehört nicht hierher** – hinter seinen Schrifttafeln liegt
+  `hero-werkstatt`. Er trägt die Offenlegung jetzt in eigener Formulierung. Eine falsche Kennzeichnung ist genauso
+  irreführend wie eine fehlende.
+- **Was nicht geht:** Das Logo aus den Motiven entfernen. Es steckt in den
+  Pixeln. Solange die Bilder stehen, trägt die Kennzeichnung die Last allein.
+- **Die Motive bleiben — Entscheidung des Betreibers vom 02.09.2026.** Der
+  Austausch gegen echte Aufnahmen ist vom Tisch; die Kennzeichnung ist damit
+  nicht die Zwischenlösung, sondern die Lösung. Was sie nicht abdeckt, bleibt
+  bewusst getragen: Der Chip sagt „nicht fotografiert", nicht „diese Werkstatt
+  gibt es so nicht". Praktische Folge für jeden künftigen Eingriff — an der
+  Kennzeichnung wird nichts gekürzt, gedimmt oder in eine Fußnote verschoben,
+  weil es keine zweite Absicherung mehr gibt.
 
 ## Faktenaudit vom 20.08.2026 — vor dem Livegang abarbeiten
 
@@ -549,10 +741,14 @@ Was bleibt, hängt an Leistungs- und Rechtsaussagen:
 
 **Braucht eine Auskunft des Betreibers:**
 
-- **Versicherungskennzeichen „sofort in der Werkstatt"** (`insurance.ts`)
-  widerspricht der Altseite direkt: dort ausdrücklich „Abholung vor Ort ist
-  leider nicht möglich … direkt von ERGO per Post". Die Repo-Aussage stammt
-  aus dem Werkstattaushang vom 14.08.2026. Gegenzeichnen lassen.
+- **Versicherungskennzeichen: geklärt am 03.09.2026 – es kommt per Post.**
+  Auskunft des Betreibers, deckungsgleich mit der Altseite. Die Aussage
+  „sofort in der Werkstatt" stammte aus dem Werkstattaushang und ist auf
+  allen Stellen gedreht (Kopf, Kennzahl, Karte, Ablauf ohne Weiche, FAQ,
+  Teaser, Kachel der Startseite, Filmunterschrift). **Offen bleibt der
+  Aushang selbst:** Das Foto auf /versicherung zeigt weiter „PLAKETTE –
+  Sofort Mitnahme". Die Bildunterschrift stellt es richtig; besser ist ein
+  neuer Druck.
 - **Leih-Scooter fehlt komplett.** Alt: „Dauert die Reparatur länger als 48
   Stunden, erhalten Sie kostenlos einen Leih-Scooter", Bestandteil des
   Premium-Vertrags. Die einzige ersatzlos verlorene Leistung. Gibt es sie
@@ -628,6 +824,22 @@ ffmpeg -i ROH.mp4 -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p \
   steht vor den Kundenstimmen: erst die eigene Darstellung, dann das Urteil
   anderer. Eigene Sektion in Tinte, damit die Folge Silber → Tinte →
   Silber-200 den Wechsel hält.
+- **Neu kodiert am 02.09.2026, weil er sichtbar unscharf war.** Er lag bei
+  **292 kbit/s** für 1280 × 720 (CRF 27) – gemessen 0,9958 SSIM gegen den
+  Schnitt; bei Schrifttafeln vor dunklem Grund verschmieren dort die Kanten.
+  Jetzt **CRF 20 / 626 kbit/s / 2,7 MB**, SSIM 0,9985. Das Standbild war
+  zusätzlich aus der *komprimierten* Fassung gezogen und hatte deren Weichheit
+  geerbt; es kommt jetzt aus dem Schnitt (Sekunde 3,6, `-q:v 2`, 80 kB).
+  Was damit **nicht** behoben ist: Die Quelle ist 720p, die Fläche bis 1120 px
+  breit – auf einem Retina-Schirm sind das 2240 Gerätepixel gegen 1280. Ganz
+  scharf wird er erst mit einem 1080p-Export aus dem Schnittprojekt.
+- **Er trägt die KI-Offenlegung** („Enthält mit KI erzeugte Bildinhalte",
+  `generatedVideoNotice`). Hinter den Schrifttafeln liegt dieselbe erzeugte
+  Werkstattaufnahme wie im Kopfbereich, und damit auch im Standbild. Der
+  frühere Eintrag „Erklärfilm: bewusst nicht gekennzeichnet" stammt aus der
+  Zeit, in der `hero-werkstatt` nicht als erzeugt geführt war. Der Wortlaut ist
+  ein anderer als bei den Bildern, weil der Film selbst gebaut ist und nur sein
+  Bildmaterial erzeugt.
 - **Nativer `<video controls>`, kein eigener Abspieler**, dazu `preload="none"`
   und Standbild. Ohne die Angabe lädt Safari beim Seitenaufruf Teile der Datei
   mit. Gemessen: null Videoanfragen beim Aufruf der Startseite.
@@ -683,3 +895,87 @@ Durchsicht der Scheibe: 32 % Tinte über `brightness(0.4)`.
 Faustformel: Schwankung ≈ (1 − Deckkraft) × Helligkeit × 229. Jetzt 90 % und
 0,35 → 8 Stufen, unter der Wahrnehmungsschwelle. Wer an `.liquid-glass`
 schraubt, rechnet das nach.
+
+## Gesamtaudit vor dem Livegang — 02.09.2026
+
+Fünf Gutachter (Sicherheit, Code, Design, Werbetext/Conversion, SEO/GEO)
+plus eigener Durchgang, danach ein Handy-Sweep über zwölf Routen × neunzehn
+Breiten (320 – 2560 px, drei Querformate) gegen den Produktionsbuild auf
+Port 4312. Ergebnis: kein Überlauf, keine Konsolenfehler, keine Zielfläche
+unter 44 px, keine Schrift unter 11 px. Nichts davon ist committet.
+
+**Sicherheit und Stabilität:**
+
+- **`next.config.ts` setzt jetzt die Sicherheitsheader:** CSP
+  (`script-src 'self' 'unsafe-inline'`, `'unsafe-eval'` nur in der
+  Entwicklung, `frame-ancestors 'none'`, `form-action 'self'`,
+  `upgrade-insecure-requests` in Produktion), X-Frame-Options,
+  nosniff, Referrer-Policy, Permissions-Policy, `poweredByHeader: false`.
+  `'unsafe-inline'` bleibt, weil Next JSON-LD und Hydrationsskripte inline
+  schreibt; ein Nonce-Setup bräuchte Middleware und dynamisches Rendering.
+- **`next` 16.2.6 → 16.3.4** wegen sharp/libvips-CVEs;
+  `npm audit --omit=dev` ist leer. `motion` ist deinstalliert,
+  `green-border.tsx` und `border-beam-panel.tsx` gelöscht – beides ohne
+  Aufruf.
+- **`lib/notify.ts` liefert einen typisierten `SendResult`**
+  (`unconfigured` | `provider`); die Aktion sagt dem Nutzer ehrlich, wenn
+  kein Versand eingerichtet ist, und loggt Fehler mit `err.name`. Der
+  Places-Abruf hat ein `AbortSignal.timeout(5000)`. `clientKey()` liest
+  kein `x-real-ip` mehr (fälschbar), `Object.hasOwn` gegen Prototyp-Slugs
+  im Formular, `INQUIRY_TO` wird gegen ein Muster geprüft.
+
+**SEO, die man nicht wieder rückgängig macht:**
+
+- **`title.template` greift nicht auf `app/page.tsx`.** Die Startseite
+  trägt deshalb `absolute: true` in `pageMeta`, sonst fehlt „| SKOPE".
+- **`openGraph` wird nicht tief zusammengeführt:** `siteName` steht in
+  jedem `pageMeta`-Aufruf, nicht nur im Layout.
+- **Vorschau-Deployments sind `noindex`** (`isPreview` in `lib/seo.ts`,
+  über `VERCEL_ENV`), `robots.ts` sperrt sie ebenfalls.
+- **Die Sitemap hat kein `lastmod` mehr.** Die Bauzeit als Datum an allen
+  zwölf Adressen sagt Google „alles hat sich geändert" – bei jedem Deploy.
+  Das Datum trägt der `WebPage`-Knoten.
+- **`unitCode` trägt die UN/CEFACT-Codes, `unitText` das lesbare Wort**
+  („Jahr", „Monat"). Telefon im Schema als E.164 (`site.phone.e164`).
+- **Alle fünf belegt falschen Aussagen aus dem Faktenaudit sind korrigiert:**
+  Teilkasko 69 € im Jahr (49 € nur im Januar), Express „bevorzugt innerhalb
+  24 h" überall, „werkstattgeprüft", Marke „Egret", Codes im richtigen Feld.
+  Die Preise stehen mit geschütztem Leerzeichen vor „€" – ein `sed` ohne
+  das findet sie nicht.
+
+**Text und Conversion:**
+
+- **Kein Neon außerhalb der drei Aufgaben.** „Daten & Bilder" auf der
+  Bestandskarte, die `tint-neon`-Karte auf `/reparatur` und die Punkte der
+  Marken-Liste waren Neon ohne Aufgabe; jetzt Tinte bzw. `current/40`.
+- **Werbewörter sind raus** („ehrlich", „Jetzt anfragen."), die FAQ zur
+  Differenzbesteuerung ist durch die Vorsteuerfrage ersetzt (§ 19 heißt:
+  keine Vorsteuer). Der Erfolgstext des Formulars nennt, was als Nächstes
+  passiert.
+- **`noBreak()` in `lib/utils.ts`** setzt in „E-Scooter" den geschützten
+  Bindestrich (U+2011); FAQ-Fragen und Zitate laufen darüber, im JSX steht
+  `whitespace-nowrap`. Vorher brach „E-/Scooter" in Überschriften um.
+- **`inventoryFacts()` liefert `null` statt „0,00 €"**, wenn kein Gerät
+  einen Preis hat; Hero und Teaser blenden den Preis dann aus. Wichtig für
+  den Shopify-Anschluss, bei dem der Bestand zeitweise leer sein kann.
+
+**Layout:**
+
+- **Die Werkstatt-Sektion passt auf einen Bildschirm** (972 statt 1110 px
+  bei 1920 × 1080): Bild `lg:flex-1`, Liste enger, Bearbeitungszeiten als
+  dreispaltige `dl` mit Haarlinie, `text-balance` am Wert („Express,
+  bevorzugt / innerhalb 24 h" statt „… 24 / h").
+- **`Related`-Karten trugen `min-width: auto`:** „Versicherungskennzeichen"
+  im Untertitelgrad plus Ring ergab bei 320 px 349 px Mindestbreite – die
+  Karte lief aus dem Satz, ohne dass die Seite Überlauf meldete. Jetzt
+  `min-w-0` und `[hyphens:auto]`.
+- **Adressen zweizeilig** (Kartenkachel, Kontaktblock): Straße, dann
+  PLZ und Ort – vorher „Neuenstadt am / Kocher". Der String
+  `fullAddress` bleibt einzeilig, weil er ins Schema und in alt-Texte geht.
+- **Bestandszeile im Hero ist ein Verweis auf `#bestand`** mit `min-h-11`;
+  die Brotkrume der Geräteseite hat dieselben `px-2` wie der Seitenkopf.
+
+**Bewusst nicht gemacht** (Entscheidung oder Betreiberauskunft nötig):
+Rate-Limit über Upstash, Nonce-CSP, Kennzahlenband im Teaser (vom Nutzer
+so gebaut), 1080p-Export des Films, Öffnungszeiten, `sameAs`-Erweiterung,
+alle Punkte aus dem Faktenaudit mit Rückfrage.

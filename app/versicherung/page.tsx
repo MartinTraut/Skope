@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { FileText } from "lucide-react";
+import { FileText, Mail } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -24,14 +24,15 @@ import { Plate } from "@/components/brand/plate";
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Versicherung ERGO: Tarife 2026/2027",
   description:
-    "E-Scooter Haftpflicht ab 42 € und Teilkasko ab 49 € über unseren Partner ERGO. Plakette in Neuenstadt am Kocher direkt mitnehmen, online deutschlandweit in 5 bis 10 Werktagen per Post.",
+    "E-Scooter Haftpflicht ab 42 €, Teilkasko ab 69 € im Jahr über ERGO. Antrag in Neuenstadt am Kocher oder online, Kennzeichen in 5 bis 10 Werktagen per Post.",
   path: "/versicherung",
-  image: "/img/ergo-tarife.jpg",
-  imageAlt:
-    "Beratung zu den Versicherungsunterlagen am Tresen der Werkstatt in Neuenstadt am Kocher",
 });
 
 export default function InsurancePage() {
+  /* Die erste Zeile der Tabelle ist die volle Saison – der Preis, der im
+     Kopf steht. */
+  const season = tariffs[0];
+
   return (
     <>
       <PageHeader
@@ -39,10 +40,36 @@ export default function InsurancePage() {
         eyebrow="ERGO Partner · deutschlandweit"
         title={
           <>
-            E-Scooter <Mark>Versicherung</Mark> mit Plakette zum Mitnehmen.
+            E-Scooter <Mark>Versicherung</Mark> vom ERGO-Partner.
           </>
         }
-        lead="Für jeden E-Scooter mit mehr als 6 km/h Höchstgeschwindigkeit schreibt die Elektrokleinstfahrzeuge-Verordnung eine Haftpflichtversicherung vor. Wir vermitteln sie als ERGO-Partner: In der Werkstatt bekommen Sie das Kennzeichen sofort mit, online schickt es die ERGO deutschlandweit per Post."
+        lead="Ab 6 km/h ist die Haftpflicht für jeden E-Scooter Pflicht. Wir vermitteln sie als ERGO-Partner, in der Werkstatt oder online – das Kennzeichen kommt in fünf bis zehn Werktagen per Post."
+        /* Die drei Antworten, wegen derer man die Seite aufruft, rechts
+           neben der Einordnung als Zeile. Erst ein Turm rechts (zu hoch),
+           dann eine Zeile unter dem Lead (zu weit weg vom Text) – jetzt sechs
+           Spalten neben dem Lead, unten bündig. Die Preise kommen aus der
+           Saisonzeile der Tariftabelle. Unter `lg` bleibt die Zeile weg: Die
+           Tabelle steht eine Wischlänge tiefer. */
+        asideClassName="hidden lg:col-span-6 lg:col-start-7 lg:block lg:self-end"
+        aside={
+          <dl className="flex flex-wrap gap-x-12 gap-y-6 lg:justify-end">
+            {[
+              { label: "Haftpflicht, Saison", value: season.liability },
+              {
+                label: "Teilkasko inkl. Diebstahl",
+                value: season.comprehensive,
+              },
+              { label: "Werktage bis zum Kennzeichen", value: "5–10" },
+            ].map((fact) => (
+              <div key={fact.label}>
+                <dt className="text-sm text-current/60">{fact.label}</dt>
+                <dd className="tabular mt-1 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
+                  {fact.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        }
       />
 
       {/* Tarife */}
@@ -71,120 +98,165 @@ export default function InsurancePage() {
               in der Tabelle davon ab, die Seite zurückzublättern. `tabIndex`
               bleibt ebenfalls: Solange die Fläche überhaupt rollen kann, muss
               sie per Tastatur erreichbar sein (WCAG 2.1.1). */}
-          <Reveal
-            delay={60}
-            className="scroll-x mt-14"
-            role="region"
-            aria-label="ERGO Tarife für die Saison 2026/2027"
-            tabIndex={0}
-          >
-            <table className="w-full border-collapse text-left">
-              <caption className="sr-only">
-                ERGO Tarife für E-Scooter, Saison 2026/2027, nach
-                Versicherungszeitraum
-              </caption>
-              <thead>
-                <tr className="border-b border-current/20">
-                  <th
-                    scope="col"
-                    className="py-4 pr-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
-                  >
-                    Zeitraum
-                  </th>
-                  <th
-                    scope="col"
-                    className="py-4 pr-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
-                  >
-                    Haftpflicht
-                  </th>
-                  <th
-                    scope="col"
-                    className="py-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em]"
-                  >
-                    Teilkasko inkl. Diebstahl
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tariffs.map((row) => (
-                  /* Die Zeile hebt sich beim Zeigen an: In einer Tabelle mit
+          {/* Zwei Spalten ab `lg`: links die Tabelle, rechts der Abschluss
+              vor Ort samt Aushang. Vorher stand die Tabelle mit Deckel
+              allein in der linken Hälfte, rechts davon 700 px leere Fläche,
+              und der Aushang hing als eigener Block darunter. Jetzt liest
+              man Preis und Weg zum Kennzeichen nebeneinander – das ist die
+              Frage, die beide zusammen beantworten. */}
+          <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-14">
+            <Reveal
+              delay={60}
+              className="scroll-x lg:col-span-7"
+              role="region"
+              aria-label="ERGO Tarife für die Saison 2026/2027"
+              tabIndex={0}
+            >
+              {/* Rechtsbündige Werte: Linksbündig standen die Preise mitten
+                in der Spalte, rechts davon Luft statt einer Kolonne. */}
+              <table className="w-full border-collapse text-left">
+                <caption className="sr-only">
+                  ERGO Tarife für E-Scooter, Saison 2026/2027, nach
+                  Versicherungszeitraum
+                </caption>
+                <thead>
+                  <tr className="border-b border-current/20">
+                    <th
+                      scope="col"
+                      className="py-4 pr-4 font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
+                    >
+                      Zeitraum
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-4 pr-4 text-right font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em] sm:pr-6"
+                    >
+                      Haftpflicht
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-4 text-right font-display text-xs font-semibold tracking-[0.08em] text-current/70 uppercase [hyphens:auto] sm:tracking-[0.14em]"
+                    >
+                      Teilkasko inkl. Diebstahl
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tariffs.map((row) => (
+                    /* Die Zeile hebt sich beim Zeigen an: In einer Tabelle mit
                      sechs Zeitspannen und zwei Preisspalten verrutscht sonst
                      genau die Zeile, die man vergleicht. */
-                  <tr
-                    key={row.period}
-                    className="border-b border-current/10 transition-colors duration-150 hover:bg-current/5"
-                  >
-                    <th
-                      scope="row"
-                      className="tabular py-5 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
+                    <tr
+                      key={row.period}
+                      className="border-b border-current/10 transition-colors duration-150 hover:bg-current/5"
                     >
-                      {row.period}
-                    </th>
-                    <td className="tabular py-5 pr-4 font-display text-base font-bold tracking-tight text-ink sm:pr-6 sm:text-lg">
-                      {row.liability}
-                    </td>
-                    <td className="tabular py-5 font-display text-base font-bold tracking-tight sm:text-lg">
-                      {row.comprehensive}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Reveal>
+                      <th
+                        scope="row"
+                        className="tabular py-5 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
+                      >
+                        {row.period}
+                      </th>
+                      <td className="tabular py-5 pr-4 text-right font-display text-base font-bold tracking-tight text-ink sm:pr-6 sm:text-lg">
+                        {row.liability}
+                      </td>
+                      <td className="tabular py-5 text-right font-display text-base font-bold tracking-tight sm:text-lg">
+                        {row.comprehensive}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Reveal>
 
-          {/* Der Aushang aus der Werkstatt – als Beleg, nicht als Inhalt.
-              Die Preise stehen darüber als Tabelle, weil ein Bild mit Text
-              darin weder durchsuchbar noch vorlesbar noch auf einem Telefon
-              lesbar ist. Das Foto daneben leistet etwas anderes: Es zeigt,
-              dass die Zahlen von einem echten Aushang stammen und nicht aus
-              einer Marketingtabelle. Deshalb steht es hier unter der Tabelle
-              und nicht an ihrer Stelle – und in einer Größe, in der man es
-              ansehen kann. */}
-          <Reveal
-            delay={80}
-            className="mt-16 grid items-center gap-8 lg:grid-cols-12 lg:gap-14"
-          >
-            {/* Vier Spalten, nicht fünf, und mittig statt oben ausgerichtet:
-                Das Hochformat wird bei fünf Spalten 770 px hoch, der Text
-                daneben ist 250 px – gemessen blieb eine halbe Bildschirmhöhe
-                leere Fläche rechts. */}
-            <figure className="lg:col-span-4">
+            {/* Der Aushang aus der Werkstatt – als Beleg, nicht als Inhalt.
+                Die Preise stehen links als Tabelle, weil ein Bild mit Text
+                darin weder durchsuchbar noch vorlesbar noch auf einem
+                Telefon lesbar ist. Das Foto zeigt, dass die Zahlen von einem
+                echten Aushang stammen – und dafür muss man es lesen können.
+                Eine 9-rem-Miniatur neben der Unterschrift war das nicht;
+                deshalb volle Spaltenbreite. */}
+            <Reveal
+              delay={120}
+              as="figure"
+              className="lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1"
+            >
               <div className="lift-lg overflow-hidden rounded-lg bg-ink">
                 <Image
                   src="/img/ergo-aushang.jpg"
                   alt="Preisaushang der Saison 2026/2027: Tabelle mit Haftpflicht- und Teilkaskopreisen je Versicherungszeitraum, Hinweis auf sofortige Mitnahme der Plakette und Zahlung bar oder mit EC-Karte"
                   width={860}
                   height={1190}
-                  sizes="(min-width: 1024px) 24vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
+                  sizes="(min-width: 1024px) 34vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="h-auto w-full"
                 />
               </div>
-              <figcaption className="mt-4 text-sm text-current/65">
+              <figcaption className="mt-4 text-sm leading-relaxed text-current/65">
                 Der Preisaushang zur Saison 2026/2027, wie er in der Werkstatt
-                hängt. Maßgeblich sind die Werte in der Tabelle oben.
+                hängt. Maßgeblich sind die Werte in der Tabelle; das Kennzeichen
+                versendet die ERGO per Post.
               </figcaption>
-            </figure>
-
-            <div className="lg:col-span-7 lg:col-start-6">
-              {/* Die Plakette steht über dem Absatz, der sie beschreibt –
-                  das Ergebnis zuerst, die Erklärung darunter. Begründung
-                  zur Zeichnung selbst in `components/brand/plate.tsx`. */}
-              <Plate className="mb-7" />
-              <h3 className="text-[length:var(--text-subtitle)]">
-                Abschluss direkt vor Ort
-              </h3>
-              <p className="mt-4 leading-relaxed text-current/70">
-                Wir haben die Versicherungskennzeichen in der Werkstatt
-                vorrätig. Antrag ausfüllen, Beitrag bar oder mit EC-Karte
-                zahlen, Plakette ans Heck. Wer mit dem Scooter oder der
-                Rahmennummer vorbeikommt, fährt versichert wieder weg. Der
-                Postweg der ERGO betrifft nur die Online-Anfrage.
-              </p>
-              <p className="mt-8 text-xs leading-relaxed text-current/60">
-                {tariffDisclaimer}
-              </p>
-            </div>
-          </Reveal>
+            </Reveal>
+            {/* Die Karte ist das Gegenstück zur Tabelle: links, was es
+                kostet, rechts, wie man es bekommt. Sie steht unter der Tabelle,
+                der Aushang rechts über beide Reihen – so bleibt links kein
+                Loch unter sechs Zeilen. Die Plakette steht über dem Absatz, der sie
+                beschreibt – das Ergebnis zuerst, die Erklärung darunter.
+                Begründung zur Zeichnung selbst in `components/brand/plate.tsx`. */}
+            <Reveal delay={80} className="lg:col-span-7">
+              {/* Plakette links, Text rechts, die zwei Wege nebeneinander,
+                  der Tarifhinweis über die volle Breite: Als Stapel blieb die
+                  rechte Hälfte der Karte leer. */}
+              <div className="lift-lg rounded-lg bg-ink p-8 text-silver on-dark md:p-9">
+                <div className="grid items-start gap-8 md:grid-cols-[auto_1fr] md:gap-10">
+                  <Plate />
+                  <div>
+                    <h3 className="text-[length:var(--text-subtitle)]">
+                      Antrag in der Werkstatt oder online
+                    </h3>
+                    {/* Zwei Kacheln statt zwei Textspalten ohne Kante, der
+                        Versand als eigene Zeile mit Symbol – so liest man
+                        drei Aussagen statt einen Block. */}
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-md border border-silver/12 bg-silver/5 p-5">
+                        <p className="eyebrow-plain text-current/60">
+                          In der Werkstatt
+                        </p>
+                        <p className="mt-2 leading-relaxed text-current/80">
+                          Antrag gemeinsam ausfüllen, Beitrag bar oder mit
+                          EC-Karte zahlen.
+                        </p>
+                      </div>
+                      <div className="rounded-md border border-silver/12 bg-silver/5 p-5">
+                        <p className="eyebrow-plain text-current/60">Online</p>
+                        <p className="mt-2 leading-relaxed text-current/80">
+                          Marke, Modell und Zeitraum über das Formular.
+                          Rahmennummer und IBAN fragen wir telefonisch ab.
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-4 flex items-start gap-3 rounded-md bg-silver/5 p-4 leading-relaxed text-current/80">
+                      <Mail
+                        aria-hidden="true"
+                        className="mt-0.5 size-5 shrink-0 text-accent"
+                        strokeWidth={1.75}
+                      />
+                      <span>
+                        In beiden Fällen versendet die ERGO das Kennzeichen per
+                        Post an Ihre Adresse,{" "}
+                        <strong className="font-display font-semibold text-current">
+                          innerhalb von fünf bis zehn Werktagen
+                        </strong>
+                        .
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-7 max-w-none border-t border-silver/12 pt-5 text-xs leading-relaxed text-current/55">
+                  {tariffDisclaimer}
+                </p>
+              </div>
+            </Reveal>
+          </div>
         </Container>
       </Section>
 
@@ -198,7 +270,7 @@ export default function InsurancePage() {
                 <Mark>Vier</Mark> Schritte bis zur Plakette.
               </>
             }
-            lead="Wer den Antrag bei uns in der Werkstatt stellt, fährt am selben Tag mit Kennzeichen weg. Online dauert es eine bis zwei Wochen; der längste Teil davon ist der Postweg der ERGO."
+            lead="Antrag in der Werkstatt oder online, Weitergabe an die ERGO am selben Werktag, Kennzeichen nach fünf bis zehn Werktagen im Briefkasten. Der längste Teil davon ist der Postweg."
           />
 
           {/* Der Ablauf als Kette mit sichtbaren Gliedern.
@@ -213,28 +285,34 @@ export default function InsurancePage() {
               (Neon als Schrift läge bei 1,18:1). Die Linie läuft zwischen den
               Scheiben und endet mit dem letzten Schritt, statt ins Leere zu
               zeigen. */}
-          <ol className="mt-14 max-w-3xl">
-            {insuranceSteps.map((step, i) => (
-              <Reveal
-                key={step.step}
-                delay={i * 70}
-                as="li"
-                className="relative grid grid-cols-[2.75rem_1fr] items-center gap-x-4 gap-y-3 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:items-start sm:gap-x-8 sm:gap-y-0"
-              >
-                {i < insuranceSteps.length - 1 && (
+          {/* Dieselbe Teilung wie bei den Tarifen: Der Ablauf links, rechts
+              die Liste dessen, was man für den Antrag mitbringt – die Frage,
+              die beim Lesen von Schritt 01 entsteht. Vorher lief der Ablauf
+              als 768 px schmale Spalte an der linken Kante, rechts davon
+              nichts, und die Angaben standen als eigener Block darunter. */}
+          <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-14">
+            <ol className="lg:col-span-7">
+              {insuranceSteps.map((step, i) => (
+                <Reveal
+                  key={step.step}
+                  delay={i * 70}
+                  as="li"
+                  className="relative grid grid-cols-[2.75rem_1fr] items-center gap-x-4 gap-y-3 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:items-start sm:gap-x-8 sm:gap-y-0"
+                >
+                  {i < insuranceSteps.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="chain-draw absolute top-12 bottom-0 left-[1.375rem] w-px bg-ink/25 sm:top-16 sm:left-7"
+                    />
+                  )}
                   <span
                     aria-hidden="true"
-                    className="chain-draw absolute top-12 bottom-0 left-[1.375rem] w-px bg-ink/25 sm:top-16 sm:left-7"
-                  />
-                )}
-                <span
-                  aria-hidden="true"
-                  className="tabular grid size-11 place-items-center self-start rounded-full bg-neon font-display text-base font-bold tracking-tight text-ink sm:size-14 sm:row-span-2 sm:text-xl"
-                >
-                  {step.step}
-                </span>
+                    className="tabular grid size-11 place-items-center self-start rounded-full bg-neon font-display text-base font-bold tracking-tight text-ink sm:size-14 sm:row-span-2 sm:text-xl"
+                  >
+                    {step.step}
+                  </span>
 
-                {/* Am Telefon steht die Nummer neben der Überschrift, der
+                  {/* Am Telefon steht die Nummer neben der Überschrift, der
                     Fließtext darunter über die volle Breite.
 
                     Als durchgehende zweite Spalte war der Satz bei 390 px
@@ -244,80 +322,50 @@ export default function InsurancePage() {
                     Rinne steht, liest sich mühsamer als er ist. Ab `sm` ist
                     genug Platz, dort bleibt die Nummer über beide Zeilen
                     stehen und der Text rückt wieder ein. */}
-                <h3 className="text-[length:var(--text-subtitle)]">
-                  {step.title}
+                  <h3 className="text-[length:var(--text-subtitle)]">
+                    {step.title}
+                  </h3>
+
+                  <div className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:pt-2.5">
+                    <p className="leading-relaxed text-current/65 sm:mt-2.5">
+                      {step.text}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+
+            <Reveal
+              delay={100}
+              className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start"
+            >
+              <div className="lift-lg rounded-lg border border-silver/15 bg-ink p-8 text-silver on-dark md:p-9">
+                <FileText
+                  aria-hidden="true"
+                  className="size-7 text-current/45"
+                  strokeWidth={1.5}
+                />
+                <h3 className="mt-5 text-[length:var(--text-subtitle)]">
+                  Diese Angaben brauchen wir für den Antrag
                 </h3>
-
-                <div className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:pt-2.5">
-                  <p className="leading-relaxed text-current/65 sm:mt-2.5">
-                    {step.text}
-                  </p>
-
-                  {/* Die Weiche als zwei Flächen, nicht als ein Absatz.
-                      Beide Wege in einem Fließtext zu nennen zwingt jeden
-                      Leser, den für ihn falschen mitzulesen und die eigene
-                      Frist herauszusuchen. Nebeneinander beantwortet die
-                      Zeile „sofort" gegen „5 bis 10 Werktage" die Frage im
-                      Vorbeigehen – und die Antwort, die uns Kunden in den
-                      Laden bringt, ist die farbige. */}
-                  {step.branches && (
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      {step.branches.map((branch) => (
-                        <div
-                          key={branch.label}
-                          className="rounded-md bg-silver p-5"
-                        >
-                          <p className="text-sm text-current/65">
-                            {branch.label}
-                          </p>
-                          <p
-                            className={
-                              branch.instant
-                                ? "mt-2 inline-block rounded-full bg-neon px-3 py-1 font-display text-lg font-bold tracking-tight text-ink"
-                                : "tabular mt-2 font-display text-lg font-bold tracking-tight"
-                            }
-                          >
-                            {branch.value}
-                          </p>
-                          <p className="mt-3 text-sm leading-relaxed text-current/65">
-                            {branch.text}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Reveal>
-            ))}
-          </ol>
-
-          <Reveal delay={100}>
-            <div className="mt-16 rounded-lg border border-silver/15 lift-lg bg-ink p-8 md:p-10 text-silver on-dark">
-              <FileText
-                aria-hidden="true"
-                className="size-7 text-current/45"
-                strokeWidth={1.5}
-              />
-              <h3 className="mt-5 text-[length:var(--text-subtitle)]">
-                Diese Angaben brauchen wir für den Antrag
-              </h3>
-              <ul className="mt-6 grid gap-x-10 md:grid-cols-3">
-                {insuranceDocs.map((doc) => (
-                  <li
-                    key={doc}
-                    className="border-t border-silver/12 py-4 text-current/75"
-                  >
-                    {doc}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-6 text-sm text-current/65">
-                Die Rahmennummer finden Sie meist am Trittbrett oder an der
-                Lenkstange. Wenn Sie sie nicht finden, suchen wir sie bei einem
-                Termin in der Werkstatt gemeinsam.
-              </p>
-            </div>
-          </Reveal>
+                <ul className="mt-6">
+                  {insuranceDocs.map((doc) => (
+                    <li
+                      key={doc}
+                      className="border-t border-silver/12 py-4 text-current/75"
+                    >
+                      {doc}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-sm text-current/65">
+                  Die Rahmennummer finden Sie meist am Trittbrett oder an der
+                  Lenkstange. Wenn Sie sie nicht finden, suchen wir sie bei
+                  einem Termin in der Werkstatt gemeinsam.
+                </p>
+              </div>
+            </Reveal>
+          </div>
         </Container>
       </Section>
 
@@ -394,13 +442,14 @@ export default function InsurancePage() {
       />
 
       <CtaBand
+        formHref="#anfrage"
         eyebrow="Versicherung"
         title={
           <>
             Kennzeichen <Mark>rechtzeitig</Mark> bestellen.
           </>
         }
-        text="In der Werkstatt gibt es die Plakette sofort. Wer online anfragt, sollte fünf bis zehn Werktage Postweg einplanen. Zum Saisonstart wird es sonst knapp."
+        text="Die ERGO braucht fünf bis zehn Werktage für den Postweg. Wer zum Saisonstart fahren will, stellt den Antrag zwei Wochen vorher."
       />
 
       <JsonLd
@@ -426,11 +475,11 @@ export default function InsurancePage() {
               },
               {
                 name: "Teilkasko inklusive Diebstahlschutz (ERGO)",
-                price: "49.00",
+                price: "69.00",
                 unit: "ANN",
                 from: true,
                 description:
-                  "Haftpflicht zuzüglich Teilkasko mit Diebstahlschutz. Startpreis der günstigsten Risikoklasse.",
+                  "Haftpflicht zuzüglich Teilkasko mit Diebstahlschutz. Startpreis der günstigsten Risikoklasse für ein volles Versicherungsjahr; einzelne Monate sind günstiger.",
               },
             ],
           }),

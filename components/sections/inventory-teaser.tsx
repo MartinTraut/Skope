@@ -81,34 +81,54 @@ export function InventoryTeaser() {
               Spalten je 229 px breit, davon 181 px Satz – „ab 169,99 €"
               braucht im Statgrad rund 190 px und brach dort in zwei Zeilen.
               Ab 1024 px stehen 251 px je Feld zur Verfügung, dort passt
-              es. */}
+              es.
+
+              Ab `lg` steht der Satz waagerecht mittig in der Zelle. Am
+              linken Rand ausgerichtet standen die drei Angaben auf breiten
+              Schirmen in der linken Hälfte ihrer Zelle, rechts daneben blieb
+              jeweils die halbe Fläche leer – bei 1512 px sind das drei
+              Zellen zu 530 px für Sätze von 60 bis 230 px. Die Trennlinien
+              machen daraus drei Kästen, und ein Kasten mit Inhalt in einer
+              Ecke liest sich als angeschnitten.
+
+              Senkrecht bleibt der Satz oben. Die Preisspanne trägt eine
+              zweite Zeile und ist damit 28 px höher als die anderen beiden
+              Felder; mittig gesetzt läge ihre Zahl 14 px über „13" und
+              „1 Jahr". Drei Zahlen derselben Gattung müssen auf einer Linie
+              stehen – die tote Fläche darunter ist der billigere Fehler.
+
+              Der Abstand zwischen Bezeichnung und Wert kommt jetzt aus
+              `gap-3` der Spalte, nicht mehr aus einem oberen Rand am Wert –
+              sonst stünden dort 24 px statt 12. */}
           <dl className="lift-lg mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lg:grid-cols-3">
-            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:flex-col lg:items-center lg:justify-start lg:border-r lg:border-b-0 lg:p-8 lg:text-center">
               <dt className="eyebrow-plain min-w-0 text-silver/55">
                 Geräte vorrätig
               </dt>
-              <dd className="tabular min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
+              <dd className="tabular min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                 {facts.count}
               </dd>
             </div>
-            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:block lg:border-r lg:border-b-0 lg:p-8">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:flex-col lg:items-center lg:justify-start lg:border-r lg:border-b-0 lg:p-8 lg:text-center">
               <dt className="eyebrow-plain min-w-0 text-silver/55">
                 Preisspanne
               </dt>
-              <dd className="min-w-0 text-right lg:mt-3 lg:text-left">
+              <dd className="min-w-0 text-right lg:text-center">
                 <span className="tabular block font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
-                  ab {facts.priceFrom}
+                  {facts.priceFrom ? `ab ${facts.priceFrom}` : "auf Anfrage"}
                 </span>
-                <span className="tabular mt-1 block text-sm text-silver/60 lg:mt-2">
-                  bis {facts.priceTo}
-                </span>
+                {facts.priceTo ? (
+                  <span className="tabular mt-1 block text-sm text-silver/60 lg:mt-2">
+                    bis {facts.priceTo}
+                  </span>
+                ) : null}
               </dd>
             </div>
-            <div className="flex min-w-0 items-baseline justify-between gap-3 px-5 py-4 lg:block lg:p-8">
+            <div className="flex min-w-0 items-baseline justify-between gap-3 px-5 py-4 lg:flex-col lg:items-center lg:justify-start lg:p-8 lg:text-center">
               <dt className="eyebrow-plain min-w-0 text-silver/55">
                 Gewährleistung
               </dt>
-              <dd className="min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent lg:mt-3">
+              <dd className="min-w-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                 {proof.warrantyYears} Jahr
               </dd>
             </div>

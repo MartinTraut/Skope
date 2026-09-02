@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { Container, SectionHead } from "@/components/ui/section";
 import type { FaqItem } from "@/lib/data/faq";
-import { cn } from "@/lib/utils";
+import { cn, noBreak } from "@/lib/utils";
 
 /**
  * Kopf und Fragen nebeneinander, nicht untereinander.
@@ -90,7 +90,7 @@ export function Faq({
                   selbst das Maß – rund 48 Zeichen, und die Frage endet dort,
                   wo ihr Schalter beginnt. */}
               <h3 className="text-[length:var(--text-subtitle)] transition-colors duration-200 group-hover:text-accent">
-                {item.q}
+                {noBreak(item.q)}
               </h3>
               <span
                 aria-hidden="true"

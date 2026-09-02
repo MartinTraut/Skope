@@ -60,7 +60,7 @@ function baseNodes(): Node[] {
       url: site.url,
       description:
         "Verkauf generalüberholter E-Scooter mit Skope-Qualitätssiegel und einem Jahr Gewährleistung in Neuenstadt am Kocher. Jedes Gerät wird in der eigenen Fachwerkstatt geprüft und aufbereitet. Dazu Reparatur aller Marken, Wartungsverträge, Versicherungskennzeichen über ERGO und kostenlose Verwertung von Altgeräten.",
-      telephone: site.phone.display,
+      telephone: site.phone.e164,
       email: site.email,
       vatID: site.vatId,
       priceRange: "€€",
@@ -82,7 +82,7 @@ function baseNodes(): Node[] {
       },
       contactPoint: {
         "@type": "ContactPoint",
-        telephone: site.phone.display,
+        telephone: site.phone.e164,
         email: site.email,
         contactType: "customer service",
         areaServed: "DE",
@@ -102,7 +102,7 @@ function baseNodes(): Node[] {
         "Elektrokleinstfahrzeuge",
         "E-Scooter Versicherung",
       ],
-      image: `${site.url}/img/scooter-studio.jpg`,
+      image: `${site.url}/img/og-skope.png`,
       // Pflichtfeld für das Marken-Panel. Quelle ist dieselbe Glyphe, aus der
       // auch das App-Icon gerastert wird – Next liefert sie unter /icon.png aus.
       logo: {
@@ -220,6 +220,8 @@ export function breadcrumb(trail: { name: string; path: string }[]): Node {
  * Leistungsseite – anderswo nur `serviceRef()` benutzen, sonst beschreiben
  * zwei URLs dieselbe @id unterschiedlich.
  */
+const UNIT_TEXT = { ANN: "Jahr", MON: "Monat" } as const;
+
 export function service({
   name,
   description,
@@ -235,7 +237,8 @@ export function service({
   offers?: {
     name: string;
     price: string;
-    unit?: string;
+    /** UN/CEFACT-Code der Abrechnungseinheit: „ANN" Jahr, „MON" Monat. */
+    unit?: "ANN" | "MON";
     description?: string;
     /**
      * Setzt den Wert als Untergrenze statt als Festpreis. Pflicht überall dort,
@@ -275,7 +278,11 @@ export function service({
                 priceCurrency: "EUR",
                 // Kleinunternehmerregelung: Der genannte Betrag ist der Endpreis.
                 valueAddedTaxIncluded: true,
-                ...(offer.unit ? { unitText: offer.unit } : {}),
+                // Der Code gehört in `unitCode`, `unitText` ist das lesbare
+                // Feld – vorher stand der Code in beiden.
+                ...(offer.unit
+                  ? { unitCode: offer.unit, unitText: UNIT_TEXT[offer.unit] }
+                  : {}),
               },
               // Festpreise zusätzlich flach als `price` – nur so erzeugt Google
               // ein Preis-Snippet. Bei „ab"-Preisen bleibt das Feld bewusst leer.

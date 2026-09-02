@@ -11,7 +11,7 @@
  * die ganze Domain, nicht nur für diesen Block.
  *
  * TODO Betreiber: Das sind die drei Rezensionen, die auf der Altseite standen.
- * Im Profil stehen 37 (Stand 18.08.2026, siehe `googleRating` in
+ * Im Profil stehen 37 (Stand 18.08.2026, siehe `googleRatingFallback` in
  * `lib/site.ts`). Der Auszug ist deshalb nicht falsch, aber dünn: Wer die
  * restlichen Stimmen hierher holt, sollte die aussagekräftigsten nehmen und
  * jeweils Wortlaut, Name und Anlass übernehmen. Sobald die Sternzahl je

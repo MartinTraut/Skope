@@ -12,7 +12,7 @@ import { Section } from "@/components/ui/section";
 import { faqHome } from "@/lib/data/faq";
 import { JsonLd, pageGraph, reviews, serviceRef } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
-import { fullAddress, site } from "@/lib/site";
+import { fullAddress, nav, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
 
 export const metadata: Metadata = pageMeta({
@@ -22,6 +22,7 @@ export const metadata: Metadata = pageMeta({
      den eigenen Ort und das Unterscheidungsmerkmal, die Bestandsseite die
      größere Nachbarstadt und das Wort „gebraucht". */
   title: "Geprüfte E-Scooter kaufen in Neuenstadt",
+  absolute: true,
   description:
     "Generalüberholte E-Scooter ab 169,99 € mit einem Jahr Gewährleistung, geprüft in eigener Werkstatt in Neuenstadt am Kocher. Dazu Reparatur und Wartung.",
   path: "/",
@@ -117,7 +118,7 @@ export default function HomePage() {
             Kommen Sie vorbei und <Mark>fahren</Mark> Sie ihn.
           </>
         }
-        text={`Alle Geräte stehen ${fullAddress} und können vor dem Kauf gefahren werden. Ist nichts Passendes dabei, hinterlegen Sie einen Suchauftrag – wir melden uns, sobald ein Gerät hereinkommt. Für Reparaturen reicht ein kurzer Anruf.`}
+        text={`Alle Geräte stehen ${fullAddress} und lassen sich vor dem Kauf fahren. Nichts Passendes dabei? Suchauftrag hinterlegen, wir melden uns.`}
       />
 
       {/*
@@ -134,17 +135,22 @@ export default function HomePage() {
             "@type": "ItemList",
             "@id": `${site.url}/#leistungen`,
             name: "Leistungen",
-            itemListElement: [
-              "/e-scooter",
-              "/reparatur",
-              "/wartungsvertrag",
-              "/versicherung",
-              "/recycling",
-            ].map((path, i) => ({
-              "@type": "ListItem",
-              position: i + 1,
-              item: serviceRef(path),
-            })),
+            // Name und Adresse je Eintrag, nicht nur die @id: Die Definition
+            // der Dienste steht auf ihren eigenen Seiten, und ein Verweis auf
+            // einen Knoten, der in diesem Dokument nicht vorkommt, ist für
+            // den Rich-Results-Test eine leere Entität.
+            itemListElement: nav
+              .filter((item) => item.href !== "/ueber-uns")
+              .map((item, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                item: {
+                  "@type": "Service",
+                  ...serviceRef(item.href),
+                  name: item.label,
+                  url: `${site.url}${item.href}`,
+                },
+              })),
           },
           ...reviews("/"),
         ])}

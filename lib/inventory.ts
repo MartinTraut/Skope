@@ -468,12 +468,12 @@ export const inventory: InventoryItem[] = [
     id: "ninebot-f2-pro",
     model: "Segway Ninebot F2 Pro",
     summary:
-      "Generalüberholt und meistergeprüft, mit Blinkern, Traktionskontrolle und 55 km Reichweite.",
+      "Generalüberholt und werkstattgeprüft, mit Blinkern, Traktionskontrolle und 55 km Reichweite.",
     price: "299,99 €",
     priceValue: "299.99",
     streetLegal: true,
     specs: [
-      { label: "Zustand", value: "Generalüberholt und meistergeprüft" },
+      { label: "Zustand", value: "Generalüberholt und werkstattgeprüft" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
       { label: "Höchstgeschwindigkeit", value: "20 km/h" },
       { label: "Motor", value: "450 W Nennleistung, 900 W Spitze" },
@@ -716,7 +716,7 @@ const BRAND_PATTERNS: readonly [RegExp, string][] = [
   [/^Sharp/i, "Sharp"],
   [/^Odys/i, "Odys"],
   [/^Zamelux/i, "Zamelux"],
-  [/Egret/i, "Audi Egret"],
+  [/Egret/i, "Egret"],
 ];
 
 /**
@@ -729,7 +729,13 @@ const BRAND_PATTERNS: readonly [RegExp, string][] = [
  * damit auch diese Zeile.
  */
 export function inventoryFacts() {
-  const values = inventory.map((item) => Number(item.priceValue));
+  /* Nur endliche Zahlen: Ein leerer Bestand ergäbe `Math.min()` = Infinity
+     („∞ €" im Kopfbereich), ein nicht-numerischer Wert aus der späteren
+     Shopify-Anbindung „NaN €". Ohne Preise gibt es keine Preisspanne, und
+     die Aufrufer müssen das entscheiden statt es zu drucken. */
+  const values = inventory
+    .map((item) => Number(item.priceValue))
+    .filter((value) => Number.isFinite(value));
   const format = (value: number) =>
     value.toLocaleString("de-DE", {
       style: "currency",
@@ -744,8 +750,8 @@ export function inventoryFacts() {
 
   return {
     count: inventory.length,
-    priceFrom: format(Math.min(...values)),
-    priceTo: format(Math.max(...values)),
+    priceFrom: values.length ? format(Math.min(...values)) : null,
+    priceTo: values.length ? format(Math.max(...values)) : null,
     brands,
   };
 }

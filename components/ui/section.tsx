@@ -177,8 +177,22 @@ export function SectionHead({
             <p className="eyebrow mb-5 text-current/90">{eyebrow}</p>
           </Reveal>
         ) : null}
+        {/* Deckel 68 rem, nicht `max-w-4xl` (56 rem).
+
+            Gemessen bei 1990 px Fensterbreite braucht die längste
+            Abschnittsüberschrift der Seite – „Kaufen, reparieren, absichern:
+            alles bei derselben Werkstatt." – einzeilig 1852 px. Bei 896 px
+            Deckel ergab das drei Zeilen, von denen die letzte halb leer war,
+            während rechts daneben 768 px Fläche frei blieben. 1088 px teilen
+            denselben Satz in zwei; `text-wrap: balance` (siehe `globals.css`)
+            macht daraus zwei etwa gleich lange Zeilen.
+
+            Der Deckel bindet erst ab rund 1170 px Fensterbreite – darunter
+            gibt der Satzspiegel ohnehin das schmalere Maß vor, am Telefon
+            ändert sich nichts. Und er ist kein Lesemaß im Sinne der 58ch für
+            Fließtext: 1088 px sind im Displaygrad rund 40 Zeichen je Zeile. */}
         <Reveal mask delay={60}>
-          <h2 className="max-w-4xl text-[length:var(--text-display)]">
+          <h2 className="max-w-[68rem] text-[length:var(--text-display)]">
             {title}
           </h2>
         </Reveal>

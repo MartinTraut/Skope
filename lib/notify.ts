@@ -21,11 +21,36 @@ export type Inquiry = {
  * bekommt einen ehrlichen Hinweis, direkt anzurufen – statt einer stillen
  * Erfolgsmeldung für eine Mail, die nie ankommt.
  */
-export async function sendInquiry(
-  inquiry: Inquiry,
-): Promise<{ delivered: boolean }> {
+export type SendResult =
+  | { delivered: true }
+  /**
+   * `unconfigured`: kein Schlüssel oder Absender gesetzt – der Betreiber hat
+   * den Versand noch nicht eingerichtet. `provider`: eingerichtet, aber der
+   * Dienst hat den Versand abgelehnt. Die Action zeigt dem Nutzer je nach
+   * Grund einen anderen Text; „noch nicht eingerichtet" wäre bei einem
+   * Ausfall des Dienstes eine falsche Aussage über den eigenen Betrieb.
+   */
+  | { delivered: false; reason: "unconfigured" | "provider" };
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/**
+ * Empfängeradresse. Ein Tippfehler in der Umgebung (`INQUIRY_TO=…,`) ließe
+ * den Dienst jede Anfrage mit 422 ablehnen – und das fiele erst auf, wenn
+ * ein Kunde anruft und fragt, warum niemand antwortet. Eine ungültige Angabe
+ * wird deshalb protokolliert und durch die Adresse aus `lib/site.ts` ersetzt.
+ */
+function recipient() {
+  const to = process.env.INQUIRY_TO?.trim();
+  if (!to) return site.email;
+  if (EMAIL.test(to)) return to;
+  console.error("[anfrage] INQUIRY_TO ist keine gültige Adresse, nehme site.email");
+  return site.email;
+}
+
+export async function sendInquiry(inquiry: Inquiry): Promise<SendResult> {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.INQUIRY_TO ?? site.email;
+  const to = recipient();
   const from = process.env.INQUIRY_FROM;
 
   if (!apiKey || !from) {
@@ -35,7 +60,7 @@ export async function sendInquiry(
       "[anfrage] Kein Mail-Provider konfiguriert, Anfrage nicht zugestellt.",
       { topic: inquiry.topic },
     );
-    return { delivered: false };
+    return { delivered: false, reason: "unconfigured" };
   }
 
   const lines = [
@@ -74,7 +99,7 @@ export async function sendInquiry(
       response.status,
       await response.text().catch(() => ""),
     );
-    return { delivered: false };
+    return { delivered: false, reason: "provider" };
   }
 
   return { delivered: true };

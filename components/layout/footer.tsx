@@ -28,7 +28,19 @@ export function Footer() {
                 stehen und die Buchstaben in der gestapelten Fassung auf 16 px
                 Versalhöhe fielen. Hier ist der Platz da, also gibt es keinen
                 Grund für den Kompromiss. */}
-            <LogoLockup className="h-20 w-auto text-silver" />
+            {/* Die Marke im Fußbereich ist jetzt ein Verweis auf die
+                Startseite. Sie sah aus wie eine Schaltfläche und war keine:
+                Wer unten auf einer Unterseite steht und auf das Logo tippt,
+                erwartet den Weg nach Hause – oben in der Kopfzeile bekommt er
+                ihn, hier bekam er nichts. Zwei Marken auf derselben Seite, von
+                denen nur eine antwortet, sind ein Defekt, kein Unterschied. */}
+            <Link
+              href="/"
+              aria-label={`${site.name}, Startseite`}
+              className="press inline-flex"
+            >
+              <LogoLockup className="h-20 w-auto text-silver" />
+            </Link>
             {/* 11 px, nicht 8. Gemessen war die Zeile die kleinste Schrift der ganzen
                 Seite – acht Pixel mit 0,24 em Sperrung in Versalien, bei 55 %
                 Deckkraft auf Tinte. Das ist keine Auszeichnung mehr, sondern

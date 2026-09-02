@@ -80,7 +80,7 @@ export const turnaround = [
   },
   {
     label: "Premium-Wartungskunden",
-    value: "Express innerhalb 24 h",
+    value: "Express, bevorzugt innerhalb 24\u00a0h",
   },
 ];
 

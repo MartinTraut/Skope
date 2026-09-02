@@ -5,7 +5,6 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { LocationMap } from "@/components/ui/expand-map";
 import { PageHeader } from "@/components/ui/page-header";
-import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
@@ -31,7 +30,6 @@ export default function ContactPage() {
           </>
         }
         lead="Am schnellsten geht ein Anruf. Bei den meisten Problemen lässt sich schon am Telefon einschätzen, worum es geht. Schriftlich erreichen Sie uns über das Formular oder direkt per E-Mail."
-        aside={<PhoneButton />}
       />
 
       <Section tone="silver">
@@ -134,8 +132,16 @@ export default function ContactPage() {
                           Zeilenabstand. Bei Displaygrösse riss das die
                           zweizeilige Adresse rund 20 px auseinander – sie las
                           sich als zwei Angaben statt als eine. */}
+                      {/* Straße und Ort als zwei Zeilen: Als ein String brach
+                          die Adresse bei 390 px als „… Neuenstadt am / Kocher". */}
                       <span className="block font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight transition-colors group-hover:text-accent">
-                        {fullAddress}
+                        <span className="block">{site.address.street}</span>
+                        <span className="block">
+                          {site.address.postalCode}{" "}
+                          <span className="whitespace-nowrap">
+                            {site.address.city}
+                          </span>
+                        </span>
                       </span>
                       {/* Unterstrichen und mit Pfeil: Vorher stand hier grauer
                           Text in derselben Grösse wie die Beschriftung
@@ -171,7 +177,7 @@ export default function ContactPage() {
                 </address>
 
                 <div className="mt-9">
-                  <h3 className="eyebrow-plain text-current/90">
+                  <h3 className="font-display text-[length:var(--text-subtitle)] font-bold tracking-tight">
                     Anfahrt aus der Region
                   </h3>
                   {/* Einspaltig bis `sm`. Bei 390 px waren zwei Spalten je

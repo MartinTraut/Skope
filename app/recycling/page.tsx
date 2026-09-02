@@ -6,6 +6,7 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
+import { GeneratedMark } from "@/components/ui/generated-mark";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { JsonLd, breadcrumb, pageGraph, service } from "@/lib/schema";
@@ -18,8 +19,6 @@ export const metadata: Metadata = pageMeta({
   description:
     "Kostenlose Verwertung und fachgerechtes Recycling ausgedienter E-Scooter. Motoren, Akkus und Aluminium-Rahmen gehen zurück in den Materialkreislauf.",
   path: "/recycling",
-  image: "/img/scooter-strasse.jpg",
-  imageAlt: "Abgestellte E-Scooter am Straßenrand",
 });
 
 const steps = [
@@ -50,10 +49,10 @@ export default function RecyclingPage() {
     <>
       <PageHeader
         crumb="Recycling"
-        eyebrow="Kreislaufwirtschaft"
+        eyebrow="Kostenlose Rücknahme"
         title={
           <>
-            Ausgedienter Scooter? Bringen Sie ihn <Mark>vorbei</Mark>.
+            Ausgedienter E-Scooter? Bringen Sie ihn <Mark>vorbei</Mark>.
           </>
         }
         lead="Ein defekter E-Scooter ist kein Sperrmüll. Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Wir übernehmen die Verwertung und das fachgerechte Recycling kostenlos, auch für Geräte, die nicht bei uns gekauft wurden."
@@ -102,6 +101,7 @@ export default function RecyclingPage() {
                   sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                   className="parallax object-cover"
                 />
+                <GeneratedMark src="/img/scooter-strasse.jpg" />
               </div>
               {/* Der Kasten hatte nur einen Rand bei 12 % Deckkraft und
                   darin zwei Grautöne – auf der silbernen Fläche war das ein
@@ -192,13 +192,14 @@ export default function RecyclingPage() {
       />
 
       <CtaBand
+        formHref="#anfrage"
         eyebrow="Altgerät abgeben"
         title={
           <>
-            <Mark>Kostenlos</Mark>, ohne Bedingungen.
+            <Mark>Kostenlos</Mark>, für jeden E-Scooter.
           </>
         }
-        text={`Vorbeibringen nach ${fullAddress} oder kurz anrufen, wenn der Transport ein Problem ist. Wir sagen Ihnen vorher ehrlich, ob sich eine Reparatur nicht doch noch lohnt.`}
+        text={`Vorbeibringen nach ${fullAddress} oder kurz anrufen, wenn der Transport ein Problem ist. Wir sagen Ihnen vorher, ob sich eine Reparatur nicht doch noch lohnt.`}
       />
 
       <JsonLd

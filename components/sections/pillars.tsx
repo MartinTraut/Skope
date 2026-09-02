@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
+import { GeneratedMark } from "@/components/ui/generated-mark";
 
 const pillars = [
   {
@@ -14,8 +15,8 @@ const pillars = [
     imageAlt:
       "Aufgeklappter E-Scooter auf dem Kopfsteinpflaster eines Marktplatzes, dahinter Fachwerkhäuser im Abendlicht",
     kicker: "Kaufen",
-    title: "Geprüfte E-Scooter statt Glücksspiel",
-    text: "Jedes Gerät läuft vor dem Verkauf durch unsere Werkstatt: Bremsen, Akkukapazität, Elektronik, Verschleißteile. Erst dann bekommt es das Skope-Qualitätssiegel, plus ein Jahr Gewährleistung.",
+    title: "Geprüfte E-Scooter mit Gewährleistung",
+    text: "Verkauft wird nur, was alle sechs Prüfpositionen bestanden hat. Und wenn nach dem Kauf etwas ist, kommen Sie in die Werkstatt zurück, die das Gerät kennt.",
     meta: "1 Jahr Gewährleistung",
   },
   {
@@ -34,8 +35,8 @@ const pillars = [
     imageAlt:
       "Hinterrad eines E-Scooters mit Rücklicht und noch leerem Halter für das Versicherungskennzeichen, auf einem Weg zwischen Bäumen",
     kicker: "Absichern",
-    title: "Versicherungskennzeichen über ERGO",
-    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. In der Werkstatt gibt es die Plakette sofort zum Mitnehmen.",
+    title: "Versicherung und Kennzeichen über ERGO",
+    text: "Die Haftpflicht ist für jeden E-Scooter über 6 km/h Pflicht. Wir vermitteln sie als ERGO-Partner deutschlandweit. Das Kennzeichen kommt innerhalb von fünf bis zehn Werktagen per Post.",
     meta: "ERGO Partner",
   },
 ];
@@ -61,7 +62,7 @@ export function Pillars() {
         {/* `lg:-mx-5` plus `lg:px-5` an jeder Kachel: gleiche Innenbreite in
             allen drei Spalten, und die Reihe schließt trotzdem bündig mit
             dem Abschnittskopf darüber ab. */}
-        <div className="mt-16 grid gap-y-14 lg:-mx-5 lg:grid-cols-3 lg:gap-y-0">
+        <div className="mt-16 grid gap-y-10 lg:-mx-5 lg:grid-cols-3 lg:gap-y-0">
           {pillars.map((pillar, i) => (
             /* Trennlinien und Innenabstände liegen auf dem Rasterkind, nicht
                auf dem Link. Vorher standen sie am Link mit `lg:first:…` –
@@ -116,6 +117,7 @@ export function Pillars() {
                   <span className="absolute top-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 font-display text-xs font-semibold tracking-[0.14em] uppercase backdrop-blur-sm text-silver on-dark">
                     {pillar.kicker}
                   </span>
+                  <GeneratedMark src={pillar.image} />
                 </div>
 
                 <h3 className="mt-7 flex items-start justify-between gap-4 text-[length:var(--text-title)]">
