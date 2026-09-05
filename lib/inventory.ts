@@ -109,6 +109,9 @@ export const inventory: InventoryItem[] = [
       { label: "Zustand", value: "Neuwertig, geprüft und gewartet" },
       { label: "Zulassung", value: "ABE / eKFV vorhanden" },
       { label: "Höchstgeschwindigkeit", value: "20 km/h" },
+      /* TODO Betreiber: Herstellerangabe, nicht gemessen. */
+      { label: "Reichweite", value: "bis 20 km" },
+      { label: "Motor", value: "350 W Nennleistung" },
       { label: "Bereifung", value: "8,5 Zoll Honeycomb-Vollgummi" },
       { label: "Bremsen", value: "Elektrische Bremse und Scheibenbremse" },
       { label: "Lieferumfang", value: "Ladegerät und Datenbestätigung" },
@@ -337,6 +340,12 @@ export const inventory: InventoryItem[] = [
     streetLegal: true,
     specs: [
       { label: "Zustand", value: "Generalüberholt, Akku ausgelesen" },
+      { label: "Zulassung", value: "ABE / eKFV vorhanden" },
+      /* TODO Betreiber: Tempo, Reichweite und Motor sind Herstellerangaben
+         zum Modell, nicht am Gerät gemessen. */
+      { label: "Höchstgeschwindigkeit", value: "20 km/h" },
+      { label: "Reichweite", value: "bis 25 km" },
+      { label: "Motor", value: "350 W Nennleistung" },
       { label: "Modelljahr", value: "2023" },
       { label: "Bremsen", value: "Duales Bremssystem, neu justiert" },
       { label: "Prüfung", value: "Akkutest, Bremsencheck, Elektroniktest" },
@@ -433,6 +442,8 @@ export const inventory: InventoryItem[] = [
         value: "Keine deutsche Straßenzulassung (internationale Version)",
       },
       { label: "Höchstgeschwindigkeit", value: "25 km/h" },
+      /* TODO Betreiber: Herstellerangabe, nicht gemessen. */
+      { label: "Reichweite", value: "bis 40 km" },
       { label: "Motor", value: "800 W Spitzenleistung, Heckantrieb" },
       { label: "Besonderheit", value: "Traktionskontrolle (TCS)" },
     ],
@@ -577,6 +588,9 @@ export const inventory: InventoryItem[] = [
         value: "Keine deutsche Straßenzulassung (ohne eKFV)",
       },
       { label: "Höchstgeschwindigkeit", value: "ca. 25 km/h" },
+      /* TODO Betreiber: Herstellerangabe, nicht gemessen. */
+      { label: "Reichweite", value: "bis 60 km" },
+      { label: "Motor", value: "400 W Nennleistung" },
       { label: "Einsatz", value: "Privatgelände, Export, Ausland" },
       { label: "Lieferumfang", value: "Scooter, Ladekabel" },
     ],

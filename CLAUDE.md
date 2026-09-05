@@ -452,6 +452,39 @@ Sorte Fehler war wie bei den Reparaturbereichen:
   als Bedienelement liest. Das Gold der Sterne und das Google-Zeichen weisen
   den Beleg auch ohne Rahmen als Zitat aus.
 
+## Telefon-Durchgang — 05.09.2026
+
+Auf Ansage des Betreibers, alles nur unter `sm` bzw. `lg`, am Schreibtisch
+unverändert:
+
+- **Zoom gesperrt** (`maximumScale: 1`, `userScalable: false`,
+  `touch-action: pan-x pan-y` am `html`, `gesturestart`-Riegel in
+  `ScrollManager` für Safari). Bewusst gegen WCAG 1.4.4.
+- **Der Shader blitzte beim Scrollen schwarz.** Ursache: Seitenkopf und Hero
+  hingen an `vh`, das sich mit der Adressleiste ändert; jeder Umbau leerte
+  die Zeichenfläche einen Frame lang. Jetzt `svh`, und Velaris zeichnet nach
+  jedem `ResizeObserver`-Aufruf sofort neu.
+- **Die untere Aktionsleiste ist ein Dock** mit 0,75 rem Rand (und
+  Aussparungsschutz über `max(…, env(safe-area-inset-*))`), weil der
+  Rollbalken des Systems über eine randlose Leiste lief.
+- **Kopfbereich am Telefon: 1328 → 726 px**, passt in ein Bild bei 390 × 844.
+  Bestandszeile ganz entfernt (auf Ansage, auch am Schreibtisch – die Zahl
+  steht im Band, der Weg in den Bestand in der Kopfzeile), Gesichter
+  `hidden sm:flex`, Beleg als zwei Zeilen (Note + Sterne, Quelle), Band mit
+  Kurzbeschriftung (`short`) unter `sm`.
+- **Bestandsraster einspaltig bis `sm`** (vorher zweispaltig ab 380 px). Die
+  Karte trägt drei feste Zellen mit je 100 px, dafür braucht sie die Spalte.
+  Vier Geräten fehlten Tempo/Reichweite/Motor; nachgetragen als
+  **Herstellerangaben mit `TODO Betreiber`**, nicht gemessen.
+- **Kundenstimmen am Telefon zentriert** (`centered`-Prop der `QuoteCard`),
+  Quelle einzeilig „G Google-Rezension · Käufer“; `context` „Käufer,
+  2 Scooter“ ist auf „Käufer“ gekürzt. Im Laufband bleibt die linke Kante.
+- **Bildunterschriften unter den Werkstattfotos sind weg** (Startseite,
+  /ueber-uns); die KI-Offenlegung trägt der Chip im Bild allein.
+- **Pfeil der Säulenkarten** steht unter `lg` in der Kennzahlzeile, der
+  `max-w-[16ch]`-Deckel der Überschrift gilt nur ab `lg` – sonst brach
+  „Erst messen, dann tauschen“ zweizeilig.
+
 ## Telefonknöpfe — 03.09.2026
 
 Auf Ansage entfernt: der Neon-Telefonknopf im Abschlussband (`CtaBand`, alle
@@ -591,7 +624,7 @@ als Tokens in `@theme`.
 | `components/motion/reveal.tsx` | Ein einziger IntersectionObserver für die ganze Seite. |
 | `components/ui/section.tsx` | `Section`, `Container`, `SectionHead`. Der Lead steht **unter** der Überschrift, nicht in einer Spalte rechts. |
 | `components/ui/gallery.tsx` | Bildergalerie der Bestandsgeräte. Alle Bilder gleichzeitig im DOM, quadratischer Ausschnitt. Drei Wege zum nächsten Bild, einer pro Eingabeart: Wischen (Pointer-Events, 44 px Schwelle, `touch-action: pan-y`), Pfeiltasten, Knöpfe auf dem Bild. Vorschaureihe vier Spalten unter `sm`, sechs darüber. |
-| `components/ui/inventory-card.tsx` | Bestandskarte. Geschlossen nur Bild, Modell, Preis, zwei Kennwerte — plus die ABE-Warnung, die nie eingeklappt wird. |
+| `components/ui/inventory-card.tsx` | Bestandskarte. Bild, Modell und Preis auf einer Zeile, dann **immer dieselben drei Zellen** Tempo / Reichweite / Zulassung mit Haarlinien; fehlt ein Wert, steht ein Strich. „Keine ABE“ in Bernstein plus ausgeschriebene Warnung, die nie eingeklappt wird. |
 | `components/ui/expand-map.tsx` | Lagekarte als eingefärbtes PNG aus OpenStreetMap-Kacheln. Kein Embed: kein Drittanbieter-Request, keine Einwilligung nötig. Namensnennung ist Lizenzpflicht. |
 | `components/ui/faq.tsx` | `FaqSection` trägt Kopf **und** Liste: fünf Spalten Überschrift, sieben Spalten Fragen. Alle fünf FAQ-Blöcke der Seite laufen darüber – gestapelt blieb die rechte Hälfte leer und das Pluszeichen stand 500 px hinter der Frage. |
 | `components/brand/seal.tsx` | Qualitätssiegel als Rasterbild (`public/img/siegel-skope.png`, kreisrund freigestellt, 1000 px). Der frühere SVG-Nachbau ist ersetzt; die Metallanmutung ist hier die Aussage. |

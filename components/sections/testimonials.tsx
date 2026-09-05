@@ -43,7 +43,20 @@ function QuoteCard({
   context,
   rating,
   className,
-}: Testimonial & { className?: string }) {
+  centered = false,
+}: Testimonial & {
+  className?: string;
+  /**
+   * Mittelachse statt linker Kante – für die Wischbahn am Telefon. Dort
+   * steht eine Karte allein im Bild, und linksbündig las sich die Karte
+   * als Textblock mit Rand: Sterne links oben, Anführungszeichen rechts
+   * tiefer, unten Kreis, Name und Quelle in drei Höhen. Auf der Achse
+   * stehen Sterne, Zitat, Kreis, Name und Quelle untereinander, und die
+   * Karte ist eine Karte. Im Laufband bleibt die linke Kante: Dort laufen
+   * mehrere Karten nebeneinander, und die Kante ist die Lesespur.
+   */
+  centered?: boolean;
+}) {
   return (
     /* Feste Kartenbreite, nicht mitwachsend: Ein Laufband braucht ein
        gleichbleibendes Maß, sonst ruckelt die Schleife optisch, obwohl sie
@@ -55,28 +68,46 @@ function QuoteCard({
     <figure
       className={cn(
         "lift flex shrink-0 flex-col rounded-lg bg-ink p-7 text-silver on-dark md:p-8",
+        centered && "items-center text-center",
         className ?? "w-[min(78vw,24rem)]",
       )}
     >
-      <div className="flex items-center justify-between gap-4">
+      <div
+        className={cn(
+          "flex items-center gap-4",
+          centered ? "justify-center" : "justify-between",
+        )}
+      >
         <Stars rating={rating} />
         {/* Das Anführungszeichen in derselben Farbe wie die Sterne: Beides
             gehört zur Herkunft der Aussage, nicht zur Seite. */}
-        <span
-          aria-hidden="true"
-          className="font-display text-5xl leading-none font-bold text-[#fbbc04]"
-        >
-          &bdquo;
-        </span>
+        {centered ? null : (
+          <span
+            aria-hidden="true"
+            className="font-display text-5xl leading-none font-bold text-[#fbbc04]"
+          >
+            &bdquo;
+          </span>
+        )}
       </div>
 
-      <blockquote className="mt-5 font-display text-[length:var(--text-subtitle)] leading-[1.35] font-semibold tracking-tight text-balance">
+      <blockquote
+        className={cn(
+          "mt-5 font-display text-[length:var(--text-subtitle)] leading-[1.35] font-semibold tracking-tight text-balance",
+          centered && "mt-6",
+        )}
+      >
         {noBreak(quote)}
       </blockquote>
 
       {/* `mt-auto` statt fester Höhe: Die Zeile sitzt unten, egal wie lang das
           Zitat darüber ist, und alle Karten des Bands schließen bündig ab. */}
-      <figcaption className="mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5">
+      <figcaption
+        className={cn(
+          "mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5",
+          centered && "w-full flex-col gap-3 pt-6",
+        )}
+      >
         {/* Anfangsbuchstaben statt Profilbild. Die Fotos liegen auf Googles
             Servern: Sie einzubinden hieße, bei jedem Seitenaufruf die
             IP-Adresse jedes Besuchers dorthin zu schicken – und damit ein
@@ -94,9 +125,20 @@ function QuoteCard({
           <span className="block font-display font-semibold tracking-tight">
             {author}
           </span>
-          <span className="mt-0.5 flex items-center gap-1.5 text-sm text-current/60">
-            <GoogleMark className="size-3.5 shrink-0" />
-            <span className="break-words">Google-Rezension · {context}</span>
+          {/* Eine Zeile: Zeichen, „Google-Rezension", Rolle. Das Zeichen
+              misst 12 px wie im Kopfbereich – auf Versalhöhe des Textes,
+              nicht darüber. Was hier steht, ist so kurz, dass es bei 300 px
+              nicht bricht; bricht es doch, wandert die Rolle als Ganzes. */}
+          <span
+            className={cn(
+              "mt-0.5 flex items-center gap-1.5 text-sm text-current/60",
+              centered && "justify-center",
+            )}
+          >
+            <GoogleMark className="size-3 shrink-0" />
+            <span>Google-Rezension</span>
+            <span aria-hidden="true">·</span>
+            <span className="whitespace-nowrap">{context}</span>
           </span>
         </span>
       </figcaption>
@@ -186,7 +228,11 @@ export async function Testimonials({
         >
           {testimonials.map((item) => (
             <li key={item.author} className="flex snap-center">
-              <QuoteCard {...item} className="w-[calc(100vw-3rem)]" />
+              <QuoteCard
+                {...item}
+                centered
+                className="w-[calc(100vw-3rem)]"
+              />
             </li>
           ))}
         </ul>

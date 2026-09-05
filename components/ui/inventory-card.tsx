@@ -3,64 +3,89 @@ import Link from "next/link";
 import { AlertTriangle, ArrowRight, Images } from "lucide-react";
 
 import type { InventoryItem } from "@/lib/inventory";
+import { cn } from "@/lib/utils";
 
 /**
- * Reihenfolge, in der Kennwerte auf die Karte kommen.
+ * Die drei Kennwerte, nach denen in einer Übersicht verglichen wird.
  *
- * Nicht die ersten beiden aus der Liste: Dort steht bei jedem Gerät zuerst
- * der Zustand und dann die Zulassung – beides Sätze, keine Zahlen, und in
- * einer Übersicht bei allen Geräten fast gleich. Wer dreizehn Roller
- * vergleicht, sucht Tempo und Reichweite. Fehlt eines davon, rückt der
- * nächste harte Wert nach.
+ * Immer dieselben drei Felder in derselben Reihenfolge, nicht „die ersten
+ * zwei, die es gibt": Vorher stand bei einem Gerät „20 km/h · bis 20 km je
+ * nach Fahrprofil", beim nächsten „20 km/h · 8,5 Zoll Honeycomb-Vollgummi"
+ * und beim Odys gar nichts – dreizehn Karten, dreizehn verschiedene Zeilen,
+ * und nichts davon ließ sich von Karte zu Karte lesen. Jetzt trägt jede Karte
+ * Tempo, Reichweite und Zulassung an derselben Stelle. Fehlt ein Wert in den
+ * Daten, steht ein Strich – das ist eine ehrliche Lücke und keine erfundene
+ * Zahl. Die Zulassung ist der Wert, der die Kaufentscheidung umdrehen kann;
+ * sie steht deshalb nicht im Kleingedruckten, sondern als dritte Zelle in
+ * Bernstein, wenn sie fehlt.
  */
-const KEY_SPECS = [
-  "Höchstgeschwindigkeit",
-  "Reichweite",
-  "Akku",
-  "Motor",
-  "Bereifung",
-];
+function speed(item: InventoryItem) {
+  const raw = item.specs.find((s) => s.label === "Höchstgeschwindigkeit")?.value;
+  return raw?.replace(/^ca\.\s*/, "") ?? null;
+}
 
-function keyFacts(item: InventoryItem) {
-  return KEY_SPECS.map((label) =>
-    item.specs.find((spec) => spec.label === label),
-  )
-    .filter((spec) => spec !== undefined)
-    .slice(0, 2)
-    .map((spec) => spec.value);
+function range(item: InventoryItem) {
+  const raw = item.specs.find((s) => s.label === "Reichweite")?.value;
+  if (!raw) return null;
+  /* „bis 20 km je nach Fahrprofil" → „bis 20 km". Der Zusatz steht auf der
+     Geräteseite; in einer Zelle von 100 px bricht er dreizeilig. */
+  return raw.match(/bis\s*\d+\s*km/)?.[0] ?? raw;
+}
+
+function Fact({
+  label,
+  value,
+  warn = false,
+  className,
+}: {
+  label: string;
+  value: string | null;
+  warn?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={cn("min-w-0 px-3 py-2.5 first:pl-0 last:pr-0", className)}>
+      <dt className="text-[0.6875rem] font-medium tracking-[0.08em] uppercase text-current/50">
+        {label}
+      </dt>
+      <dd
+        className={cn(
+          "tabular mt-1 flex items-center gap-1.5 font-display text-sm leading-tight font-semibold tracking-tight",
+          warn ? "text-amber-300" : "text-current/90",
+        )}
+      >
+        {warn ? (
+          <AlertTriangle
+            aria-hidden="true"
+            className="size-3.5 shrink-0"
+            strokeWidth={2}
+          />
+        ) : null}
+        {value ?? "–"}
+      </dd>
+    </div>
+  );
 }
 
 /**
  * Eine Karte im Bestandsraster – vollständig ein Link auf die Geräteseite.
  *
- * Vorher klappte hier ein Datenblatt in der Karte auf. Das hatte drei Fehler
- * auf einmal, und alle drei verschwinden mit der eigenen Seite:
+ * Bild, Modell und Preis auf einer Zeile, drei Kennwerte als Zeile mit
+ * Haarlinien, ein Verweis. Alles Weitere steht auf der Seite des Geräts.
  *
- * 1. **Das Raster brach auf.** Rasterfelder ziehen sich auf die Höhe des
- *    höchsten Feldes ihrer Reihe. Eine ausgeklappte Karte ließ ihren beiden
- *    Nachbarn also eine große leere Fläche – sichtbar in jedem Screenshot,
- *    und nicht durch Feinarbeit zu beheben, sondern nur durch Verzicht auf
- *    den Aufklapper.
- * 2. **Dieselben Angaben lagen zweimal unter einer Adresse.** Übersicht und
- *    Datenblatt auf `/e-scooter` – für eine Suchmaschine ist das eine Seite
- *    mit dreizehn Datenblättern, aus der sich kein einzelnes Gerät als
- *    Ergebnis ausspielen lässt.
- * 3. **Die Bilder blieben klein.** Genau das war die Bitte.
- *
- * Die Karte zeigt jetzt nur, wonach in einer Übersicht ausgewählt wird: ein
- * Bild, Modell, Preis, zwei Kennwerte – und die Warnung, wenn ein Gerät keine
- * deutsche Betriebserlaubnis hat. Die bleibt ausdrücklich auf der Karte: Sie
- * ist der einzige Wert, der die Kaufentscheidung umdrehen kann, und hinter
- * einem Klick wäre sie das Kleingedruckte, das sie nicht sein darf.
+ * Am Telefon steht die Karte allein in der Spalte. Zweispaltig war sie bei
+ * 390 px 163 px breit: Modell über zwei Zeilen, Preis darunter, dann eine
+ * Kennwertzeile, die je nach Gerät einzeilig oder dreizeilig war – zwei
+ * Karten nebeneinander waren nie gleich hoch, und die Reihe sah zerrissen
+ * aus. Einspaltig teilen sich Modell und Preis eine Zeile, und die drei
+ * Zellen haben je 100 px. Ab `sm` wieder zwei Spalten.
  *
  * Nur die erste Aufnahme, keine Galerie mit Pfeilen: Ein `<button>` in einem
  * `<a>` ist ungültiges HTML, und ein Pfeil, der die Auswahl weiterschaltet,
  * ohne die Karte zu öffnen, ist auf dem Telefon nicht von einem Fehlklick zu
- * unterscheiden. Wie viele Ansichten es gibt, steht als Zahl auf dem Bild –
- * das ist der Grund, weiterzuklicken, nicht der Weg dorthin.
+ * unterscheiden. Wie viele Ansichten es gibt, steht als Zahl auf dem Bild.
  *
- * Ohne Zustand ist die Karte wieder eine Server Component. Dreizehn Stück
- * JavaScript weniger auf der Bestandsseite.
+ * Ohne Zustand ist die Karte eine Server Component.
  */
 export function InventoryCard({ item }: { item: InventoryItem }) {
   const cover = item.images[0];
@@ -68,23 +93,20 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
   return (
     <Link
       href={`/e-scooter/${item.id}`}
-      aria-label={`${item.model}, ${item.price}, alle Daten und Bilder`}
-      className="press group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-4 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
+      className="press group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4"
     >
-      {/* Quadrat statt 3:4: Die Aufnahmen sind hochkant (720 x 960), der
-          Roller steht darin waagerecht in der Mitte – ein Quadrat schneidet
-          oben und unten Wand und Boden weg, nicht das Gerät. */}
+      {/* Quadrat, auch in der einzelnen Spalte. Ein Versuch mit 4:3 am
+          Telefon sparte 86 px Höhe, schnitt aber bei jedem zweiten Gerät die
+          Räder oder den Lenker ab: Die Aufnahmen sind hochkant (720 × 960)
+          und der Roller füllt sie von oben bis unten. Das Quadrat nimmt nur
+          Wand und Boden weg. */}
       <div className="relative aspect-square overflow-hidden rounded-md bg-ink-700">
         <Image
           src={cover.src}
           alt={cover.alt}
           fill
-          /* Die Schwellen standen an anderen Stellen als die des Rasters
-             (640/1280 gegen 380/640/1280) und behaupteten durchgehend zu
-             viel: Bei 640 px Fenster ist die Karte gemessen 250 px breit,
-             `92vw` versprach 589 – geholt wurde ein 1200er Bild für einen
-             500-px-Bedarf. Jetzt folgen die Schwellen dem Raster. */
-          sizes="(min-width: 1280px) 30vw, (min-width: 380px) 46vw, calc(100vw - 3rem)"
+          sizes="(min-width: 1280px) 30vw, (min-width: 640px) 46vw, calc(100vw - 3rem)"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
@@ -96,71 +118,46 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
         ) : null}
       </div>
 
-      {/* Modell und Preis auf einer Grundlinie: In einer Rasterspalte ist der
-          Preis das zweite, was gelesen wird, und untereinander kostet er eine
-          eigene Zeile pro Karte. */}
-      {/* In zwei Spalten ist die Karte am Telefon 163 px breit. Modell und
-          Preis nebeneinander gehen dort nicht auf – „199,99 €" braucht allein
-          85 px, für den Modellnamen blieben 60. Deshalb untereinander, bis
-          die Karte wieder Platz hat. */}
-      <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-        {/* 1,0625 rem ist der Grundschriftgrad der Seite (`body` in
-            globals.css), nicht 1 rem. Die Überschrift der Karte stand mit
-            16 px darunter – in der zweispaltigen Ansicht war sie damit die
-            kleinste Überschrift des ganzen Auftritts und lag nur 3 px über
-            dem Kennwert darunter. Jetzt schließt sie mit dem Fließtext der
-            Seite ab, und der Abstand zum Kartentext (14 px) ist eine
-            sichtbare Stufe statt einer gemessenen. */}
-        <h3 className="text-[1.0625rem] leading-snug font-semibold sm:text-lg">
+      {/* Modell links, Preis rechts auf einer Grundlinie. In der einzelnen
+          Spalte (342 px) geht das auf; in zwei Spalten ab `sm` ist die Karte
+          mindestens 280 px breit, „Audi Electric Kick Scooter powered by
+          Egret Pro" läuft dann über zwei Zeilen, der Preis bleibt oben. */}
+      <div className="mt-4 flex items-start justify-between gap-4">
+        <h3 className="text-[1.0625rem] leading-snug font-semibold text-balance">
           {item.model}
         </h3>
-        <p className="tabular font-display text-lg leading-none font-bold tracking-tight text-accent sm:shrink-0 sm:text-xl">
+        <p className="tabular shrink-0 font-display text-lg leading-none font-bold tracking-tight text-accent sm:text-xl">
           {item.price}
         </p>
       </div>
 
-      <p className="mt-2 text-sm text-current/65">
-        {keyFacts(item).join(" · ")}
-      </p>
+      <dl className="mt-4 grid grid-cols-3 divide-x divide-current/12 border-y border-current/12">
+        <Fact label="Tempo" value={speed(item)} />
+        <Fact label="Reichweite" value={range(item)} />
+        <Fact
+          label="Zulassung"
+          value={item.streetLegal ? "ABE" : "Keine ABE"}
+          warn={!item.streetLegal}
+        />
+      </dl>
 
       {!item.streetLegal ? (
-        /* Der Text muss im Kasten umbrechen, nicht daneben. In einer
-           Flex-Zeile ist ein bloßer Textknoten ein anonymes Element mit
-           `min-width: auto` und schrumpft nicht: In der zweispaltigen Karte
-           (163 px) war der Kasten gemessen 129 px breit bei 160 px Inhalt,
-           „Betriebserlaubnis" stand also 31 px außerhalb der gelben Fläche. */
-        <p className="mt-3 flex items-start gap-2 rounded-md bg-amber-400/10 px-3 py-2 text-xs text-amber-200 sm:text-sm">
-          <AlertTriangle
-            aria-hidden="true"
-            className="mt-0.5 size-4 shrink-0"
-            strokeWidth={2}
-          />
-          {/* Silbentrennung, weil das Wort allein nicht passt: In der
-              schmalen Karte bleiben 105 px Satz, „Betriebserlaubnis" misst
-              bei 13 px 118. Dieselbe Ausnahme wie in der Tarif-Tabelle. */}
-          <span className="min-w-0 [hyphens:auto] break-words">
-            Ohne deutsche Betriebserlaubnis
-          </span>
+        /* Die Zelle sagt „Keine ABE", der Satz sagt, was das heißt. Die
+           Warnung bleibt ausgeschrieben auf der Karte – hinter einem Klick
+           wäre sie das Kleingedruckte, das sie nicht sein darf. */
+        <p className="mt-3 text-xs leading-snug text-amber-200/90">
+          Ohne deutsche Betriebserlaubnis – nicht für den öffentlichen
+          Straßenverkehr.
         </p>
       ) : null}
 
       {/* `mt-auto` zieht die Zeile auf die Unterkante: In einer Rasterreihe
           sind die Karten unterschiedlich hoch, und Abschlusszeilen auf
-          verschiedenen Höhen lesen sich als Fehler.
-
-          Kein Knopf, sondern eine Zeile mit Pfeil. Ein Knopf in einer Karte,
-          die selbst ein Link ist, verspricht eine zweite Aktion, die es nicht
-          gibt – und wäre als `<button>` im `<a>` ungültig. */}
-      {/* In der schmalen Spalte (163 px am Telefon, davon 129 px Satz) brach
-          „Alle Daten und Bilder" auf zwei Zeilen. Kürzere Beschriftung und
-          ein Grad kleiner: 85 px Text plus Abstand und Pfeil sind 109 px. Der
-          vollständige Satz steht weiterhin im `aria-label` der Karte. */}
-      {/* Kein Neon: Der Verweis ist weder Hauptaktion noch harte Zahl. Mit
-          Neon trug jede Karte zwei Signale, und der Preis – die eine harte
-          Zahl je Karte – verlor seine Auszeichnung. Unterstrichen wie der
-          `quiet`-Knopf. */}
-      <span className="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-semibold tracking-tight text-current underline decoration-current/40 underline-offset-4 group-hover:decoration-current sm:text-sm">
-        Daten &amp; Bilder
+          verschiedenen Höhen lesen sich als Fehler. Kein Knopf, sondern eine
+          Zeile mit Pfeil – die Karte ist selbst der Link. Kein Neon: Der
+          Verweis ist weder Hauptaktion noch harte Zahl. */}
+      <span className="mt-auto flex items-center gap-2 pt-4 font-display text-sm font-semibold tracking-tight text-current underline decoration-current/40 underline-offset-4 group-hover:decoration-current">
+        Mehr Daten
         <ArrowRight
           aria-hidden="true"
           className="size-4 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-1 motion-reduce:transition-none"

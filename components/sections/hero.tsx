@@ -33,8 +33,16 @@ import { Mark } from "@/components/ui/mark";
  */
 const facts = inventoryFacts();
 
+/* `short` ist die Beschriftung unter `sm`. Dort standen die vollen Sätze
+   zwei- bis dreizeilig unter jeder Zahl („Einstiegspreis bis 599,99 €,
+   Endpreis ohne USt."), und das Band war mit 380 px der schwerste Block des
+   Kopfbereichs. Am Telefon reicht das Stichwort; der Satz steht ab `sm`. */
 const stats = [
-  { value: `${facts.count}`, label: "geprüfte Geräte vorrätig" },
+  {
+    value: `${facts.count}`,
+    label: "geprüfte Geräte vorrätig",
+    short: "Geräte vorrätig",
+  },
   /* Die Obergrenze steht in der Zeile darunter und nicht mehr in einer
      zweiten Kachel eine Bildschirmhöhe tiefer – siehe den Kommentar am
      Kennzahlenband in `inventory-teaser.tsx`. */
@@ -44,16 +52,19 @@ const stats = [
         {
           value: facts.priceFrom,
           label: `Einstiegspreis bis ${facts.priceTo}, Endpreis ohne USt.`,
+          short: "Einstiegspreis",
         },
       ]
     : []),
   {
     value: `${proof.warrantyYears} Jahr`,
     label: "Gewährleistung auf jedes Gerät",
+    short: "Gewährleistung",
   },
   {
     value: `${proof.repairs}+`,
     label: "reparierte E-Scooter in eigener Werkstatt",
+    short: "reparierte E-Scooter",
   },
 ];
 
@@ -351,60 +362,11 @@ export async function Hero() {
                 </p>
               </Reveal>
 
-              <Reveal immediate>
-                {/* Hier standen zwei Knöpfe: die Telefonnummer im Vollton
-                    und „13 Geräte ansehen" als Umriss.
-
-                    Sie sind weg, und der Kopfbereich verliert dadurch keinen
-                    Weg: Dieselbe Nummer steht ab 1280 px in der Kopfzeile, auf
-                    jeder schmaleren Breite als Symbolknopf bzw. in der unteren
-                    Aktionsleiste, und „Anfrage senden" wie „E-Scooter kaufen"
-                    stehen ebenfalls oben. Zwei Knöpfe in einem Bereich, dessen
-                    Aufgabe die Ansage ist, wiederholten also nur, was die
-                    Kopfzeile ohnehin dauerhaft trägt.
-
-                    Was sie kosteten, war die Höhe: Mit ihnen begann das
-                    Kennzahlenband bei 1512 × 900 erst unterhalb der Falz, die
-                    vier Werte waren im ersten Bild angeschnitten. Der Rest der
-                    Sektion rückt an ihre Stelle nach oben. */}
-                {/* Die Zusage neben den Aktionen, nicht als Fußnote darunter.
-                  Vorher stand sie in 14 px bei 65 % Deckkraft unter zwei
-                  Buttons – die einzige Stelle im Kopfbereich, an der etwas
-                  Konkretes über die Wartezeit steht, und optisch die
-                  schwächste. Jetzt trägt sie eine eigene Fläche und den
-                  Neonpunkt, der auf der ganzen Seite „verfügbar" meint. */}
-                {/* Dasselbe umlaufende Licht wie an den Prüfpositionen der
-                  Geräteseite: Es meint an beiden Stellen dasselbe – hier
-                  wird geprüft, hier ist etwas verfügbar. Der Kern der Spur
-                  läuft in `currentColor`, deshalb ist er auf Tinte hell und
-                  auf Silber dunkel, ohne zweite Regel. */}
-                {/* Am Telefon keine Fläche, ab `sm` die Pille.
-
-                  Mit Fläche und Kachelradius stand hier ein drittes Rechteck
-                  in der Größe der beiden Knöpfe darüber – gleiche Breite,
-                  gleiche Höhe, gleiche Rundung. Wer den Block überfliegt,
-                  liest drei Aktionen und tippt auf eine, die keine ist. Ohne
-                  Fläche ist es das, was es sein soll: eine Zustandszeile mit
-                  dem Neonpunkt, der auf der ganzen Seite „verfügbar" meint.
-
-                  Ab `sm` ist der Satz einzeilig, dort trägt die Pille wieder
-                  – ein Stadionradius um zwei Zeilen liest sich als Fehler. */}
-                {/* Seit dem Wegfall der beiden Knöpfe (02.09.2026) war der
-                    Kopfbereich ohne Handlung. Die Zustandszeile ist jetzt der
-                    Verweis in den Bestand – ohne Höhe zu kosten. Die Anzahl
-                    kommt aus `inventoryFacts()` wie im Band darunter. */}
-                <a
-                  href="#bestand"
-                  className="trace trace-from-sm mt-7 flex min-h-11 items-start gap-3 font-display text-[0.9375rem] leading-snug font-semibold tracking-tight text-current/80 underline-offset-4 hover:text-current hover:underline sm:mt-7 sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:bg-current/8 sm:py-2.5 sm:pr-6 sm:pl-4.5 sm:text-current sm:hover:bg-current/12 sm:hover:no-underline"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="mt-2 size-2.5 shrink-0 rounded-full bg-neon sm:mt-0"
-                  />
-                  Alle {facts.count} Geräte vor Ort, Probefahrt möglich – zum
-                  Bestand
-                </a>
-              </Reveal>
+              {/* Hier stand bis zum 05.09.2026 die Bestandszeile („Alle 13
+                  Geräte vor Ort, Probefahrt möglich – zum Bestand") als
+                  Pille mit Neonpunkt. Auf Ansage entfernt: Die Zahl steht im
+                  Band darunter, der Weg in den Bestand in der Kopfzeile und
+                  im Teaser. Nicht zurückbauen. */}
 
               {/* Referenzen im Kopfbereich, nicht erst in der vierten Sektion.
                   Die Rezensionen standen bisher unterhalb von Ablauf und
@@ -451,10 +413,15 @@ export async function Hero() {
                   hinaus und wirkte wie ein Fremdkörper neben der Zeile. Es
                   hängt jetzt direkt am Wort, das es belegt. */}
               <Reveal immediate delay={60}>
-                <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2.5 sm:gap-x-5">
+                <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2.5 sm:gap-x-5">
+                  {/* Die Gesichter erst ab `sm`. Am Telefon ist der Beleg eine
+                      Zeile: Sterne, Note, Anzahl – der Kopfbereich trug dort
+                      sieben Blöcke gleicher Schwere übereinander, und die drei
+                      Kreise waren der einzige, der nichts sagt, was die Zeile
+                      daneben nicht schon sagt. */}
                   <div
                     aria-hidden="true"
-                    className="flex items-center -space-x-1.5 sm:-space-x-2.5"
+                    className="hidden items-center -space-x-1.5 sm:flex sm:-space-x-2.5"
                   >
                     {testimonials.map((item) => (
                       <span
@@ -508,7 +475,7 @@ export async function Hero() {
             abzuschließen. */}
         <Reveal
           delay={80}
-          className="grid grid-cols-2 gap-x-8 gap-y-10 pt-6 pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-4 lg:pb-14"
+          className="grid grid-cols-2 gap-x-6 gap-y-7 pt-6 pb-10 sm:gap-x-8 sm:gap-y-10 sm:pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-4 lg:pb-14"
         >
           {/* Ab `lg` mittig in der eigenen Spalte, darunter linksbündig.
 
@@ -535,8 +502,9 @@ export async function Hero() {
               <p className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
                 {stat.value}
               </p>
-              <p className="mt-3 text-sm leading-snug text-current/70 lg:mx-auto lg:max-w-[26ch]">
-                {stat.label}
+              <p className="mt-2 text-sm leading-snug text-current/70 sm:mt-3 lg:mx-auto lg:max-w-[26ch]">
+                <span className="sm:hidden">{stat.short}</span>
+                <span className="hidden sm:inline">{stat.label}</span>
               </p>
             </div>
           ))}

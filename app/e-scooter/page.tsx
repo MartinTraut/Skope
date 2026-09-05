@@ -223,14 +223,16 @@ export default function ScooterPage() {
                Bremsen – aber diese Fragen stellt man an einem Gerät, nicht an
                dreizehn gleichzeitig.
 
-               Zwei Spalten schon am Telefon, ab 380 px: Einspaltig war die
-               Liste bei 390 px 483 px je Karte hoch – dreizehn Geräte ergaben
-               7,5 Bildschirmhöhen ohne jede Formvariation, und wer das vierte
-               Gerät sehen wollte, wischte viermal. Zweispaltig sind es 3,8.
-               Unter 380 px bleibt es bei einer Spalte: Dort wäre die Karte
-               160 px breit, und der längste Modellname (Audi Electric Kick
-               Scooter powered by Egret Pro) läuft darin über sechs Zeilen. */
-            <div className="mt-14 grid gap-4 min-[380px]:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+               Eine Spalte am Telefon, zwei ab `sm`, drei ab `xl`. Zwei
+               Spalten ab 380 px waren kürzer (3,8 statt 7,5 Bildschirmhöhen),
+               aber in 163 px Kartenbreite brach jedes Modell zweizeilig, der
+               Preis rutschte darunter, und die Kennwertzeile war je nach
+               Gerät ein- bis dreizeilig – zwei Karten nebeneinander waren
+               nie gleich hoch. Die Karte trägt jetzt drei feste Zellen
+               (Tempo, Reichweite, Zulassung) mit je 100 px; dafür braucht
+               sie die ganze Spalte. Ein Gerät je Bildschirm ist bei einem
+               Kauf ab 170 € kein Nachteil. */
+            <div className="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
               {inventory.map((item, i) => (
                 <Reveal key={item.id} delay={(i % 3) * 70}>
                   <InventoryCard item={item} />

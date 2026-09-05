@@ -42,7 +42,10 @@ export const testimonials: Testimonial[] = [
     quote:
       "Wir haben dort 2 E-Scooter gekauft. Die Beratung war sehr nett. Auch nach dem Kauf war Thomas immer für uns da. Vielen Dank!",
     author: "Aus zwei mach eins",
-    context: "Käufer, 2 Scooter",
+    /* Nur die Rolle. „Käufer, 2 Scooter" brach am Telefon hinter dem
+       Google-Zeichen um; dass es zwei Geräte waren, steht im ersten Satz
+       des Zitats. */
+    context: "Käufer",
     rating: 5,
   },
   {
