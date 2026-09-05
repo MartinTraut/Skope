@@ -92,5 +92,21 @@ export function ScrollManager() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
+  /* Kein Zoom auf dem iPhone. Safari beachtet weder `user-scalable=no` noch
+     `maximum-scale` (seit iOS 10), wohl aber `preventDefault` auf seinen
+     eigenen `gesture*`-Ereignissen, die nur bei zwei Fingern feuern. Ein
+     Wischen mit einem Finger läuft unverändert. `passive: false` ist nötig,
+     sonst wirkt `preventDefault` nicht. */
+  React.useEffect(() => {
+    const block = (event: Event) => event.preventDefault();
+    const opts: AddEventListenerOptions = { passive: false };
+    document.addEventListener("gesturestart", block, opts);
+    document.addEventListener("gesturechange", block, opts);
+    return () => {
+      document.removeEventListener("gesturestart", block, opts);
+      document.removeEventListener("gesturechange", block, opts);
+    };
+  }, []);
+
   return null;
 }

@@ -320,6 +320,11 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    /* Nur Rollen, kein Zoom: `pan-x pan-y` lässt jede Wischbewegung durch
+       und nimmt dem Browser das Aufziehen mit zwei Fingern und den
+       Doppeltipp. Ergänzt die Viewport-Angabe in layout.tsx, die Safari
+       auf dem iPhone allein nicht beachtet. */
+    touch-action: pan-x pan-y;
     /* Letzte Verteidigungslinie gegen horizontales Scrollen auf Mobile.
        Kein Ersatz für sauberes Layout — nur ein Sicherheitsnetz. */
     overflow-x: clip;

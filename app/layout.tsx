@@ -88,12 +88,22 @@ export const metadata: Metadata = {
  * und füllt den Streifen selbst – bei dieser Seite mit grauen Balken links und
  * rechts. Die Sperrzone der Kamera trägt dafür `.gutter` in globals.css; ohne
  * diesen Rand wäre „cover" ein Fehler, nicht eine Verbesserung.
+ *
+ * `maximumScale: 1` und `userScalable: false` halten die Seite auf dem
+ * Telefon fest: kein Aufziehen mit zwei Fingern, kein Doppeltipp-Zoom, kein
+ * seitliches Verschieben der vergrößerten Fläche. Chrome und Firefox halten
+ * sich an die Angabe; Safari auf dem iPhone ignoriert sie seit iOS 10 – dort
+ * greift zusätzlich `touch-action: pan-x pan-y` am `html` und der
+ * `gesturestart`-Riegel in `ScrollManager`. Bewusste Entscheidung gegen
+ * WCAG 1.4.4; die Schriftgrade liegen überall bei mindestens 11 px.
  */
 export const viewport: Viewport = {
   themeColor: "#08090b",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
 };
 
