@@ -120,11 +120,19 @@ export function Pillars() {
                   <GeneratedMark src={pillar.image} />
                 </div>
 
+                {/* Unter `lg` steht der Pfeil nicht neben der Überschrift,
+                    sondern in der Kennzahlzeile. Gemessen bei 390 px: Der
+                    Satz ist 342 px breit, Pfeil und Abstand nahmen 40 davon,
+                    und „Erst messen, dann tauschen" braucht im Titelgrad
+                    313 px – mit dem Pfeil daneben zwei Zeilen, ohne ihn eine.
+                    Der frühere Deckel `max-w-[16ch]` zwang außerdem
+                    „Versicherung und Kennzeichen über ERGO" auf drei Zeilen;
+                    er gilt nur noch in den drei Spalten ab `lg`. */}
                 <h3 className="mt-7 flex items-start justify-between gap-4 text-[length:var(--text-title)]">
-                  <span className="max-w-[16ch]">{pillar.title}</span>
+                  <span className="lg:max-w-[16ch]">{pillar.title}</span>
                   <ArrowUpRight
                     aria-hidden="true"
-                    className="mt-1.5 size-6 shrink-0 text-current/30 transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
+                    className="mt-1.5 hidden size-6 shrink-0 text-current/30 transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent lg:block"
                   />
                 </h3>
 
@@ -135,8 +143,12 @@ export function Pillars() {
                 {/* `mt-auto` zieht die Kennzahl auf die Unterkante. Die drei
                     Texte sind unterschiedlich lang; ohne das stehen die drei
                     Zeilen auf drei Höhen und die Reihe franst unten aus. */}
-                <p className="mt-auto border-t border-current/8 pt-4 font-display text-sm font-semibold tracking-tight text-current/85">
+                <p className="mt-auto flex items-center justify-between gap-4 border-t border-current/8 pt-4 font-display text-sm font-semibold tracking-tight text-current/85">
                   {pillar.meta}
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    className="size-5 shrink-0 text-current/30 lg:hidden"
+                  />
                 </p>
               </Link>
             </Reveal>

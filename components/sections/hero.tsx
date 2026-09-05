@@ -207,7 +207,7 @@ export async function Hero() {
             Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
             damit die Überschrift darauf steht und die Zone ohne Kante in die
             Tinte übergeht. */}
-        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58vh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden">
+        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58svh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden">
           <Image
             src="/img/hero-werkstatt.jpg"
             alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
@@ -253,7 +253,7 @@ export async function Hero() {
           115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
           dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
           ändert sich also nichts. */}
-        <Container className="relative pt-[clamp(6.5rem,4rem+10vh,10rem)] pb-6 lg:pt-[clamp(4rem,2rem+6vh,6.5rem)] md:pb-8">
+        <Container className="relative pt-[clamp(6.5rem,4rem+10svh,10rem)] pb-6 lg:pt-[clamp(4rem,2rem+6svh,6.5rem)] md:pb-8">
           {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der
@@ -436,8 +436,22 @@ export async function Hero() {
                   ist als Zitat sofort erkennbar und braucht keinen Rahmen,
                   der es als Karte ausweist. Die Gesichter stehen in derselben
                   Zeile wie die Note, weil sie ihre Herkunft sind. */}
+              {/* Zwei Zeilen am Telefon, eine ab `sm` – und keine Spalte
+                  neben den Gesichtern. Vorher hing rechts neben den drei
+                  36-px-Kreisen ein 48 px hoher Zweizeiler, mittig dazu
+                  gesetzt: Die Note ragte oben über die Kreise hinaus, die
+                  Quellenzeile unten darunter, und der ganze Block las sich
+                  gegen den linken Rand der Überschrift als verschoben. Jetzt
+                  stehen Gesichter, Note und Sterne auf einer Zeile mit
+                  gleicher Mitte (36 px), die Quelle als eigene Zeile darunter
+                  an derselben linken Kante wie alles andere in der Spalte.
+
+                  Das Google-Zeichen misst 12 px statt 14: Neben 14-px-Text
+                  ist die Versalhöhe rund 10 px, ein 14-px-„G" stand darüber
+                  hinaus und wirkte wie ein Fremdkörper neben der Zeile. Es
+                  hängt jetzt direkt am Wort, das es belegt. */}
               <Reveal immediate delay={60}>
-                <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
+                <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2.5 sm:gap-x-5">
                   <div
                     aria-hidden="true"
                     className="flex items-center -space-x-1.5 sm:-space-x-2.5"
@@ -452,22 +466,24 @@ export async function Hero() {
                     ))}
                   </div>
 
-                  <div className="min-w-0">
-                    <p className="flex items-center gap-2.5">
-                      <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
-                        {googleRating.value}
-                      </span>
-                      <Stars
-                        rating={googleRating.stars}
-                        className="size-4"
-                        label={`${googleRating.value} von 5 Sternen bei Google`}
-                      />
-                    </p>
-                    <p className="mt-1.5 flex items-center gap-2 text-sm text-current/70">
-                      <GoogleMark className="size-3.5 shrink-0" />
-                      {googleRating.count} Rezensionen bei Google
-                    </p>
-                  </div>
+                  <p className="flex items-center gap-2.5">
+                    <span className="tabular font-display text-lg leading-none font-bold tracking-tight">
+                      {googleRating.value}
+                    </span>
+                    <Stars
+                      rating={googleRating.stars}
+                      className="size-4"
+                      label={`${googleRating.value} von 5 Sternen bei Google`}
+                    />
+                  </p>
+
+                  <p className="flex basis-full items-center gap-2 text-sm leading-none text-current/70 sm:basis-auto sm:border-l sm:border-current/15 sm:pl-5">
+                    {googleRating.count} Rezensionen bei
+                    <span className="inline-flex items-center gap-1.5">
+                      <GoogleMark className="size-3 shrink-0" />
+                      Google
+                    </span>
+                  </p>
                 </div>
               </Reveal>
             </div>

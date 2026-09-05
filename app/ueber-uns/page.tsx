@@ -6,7 +6,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
 import { ExplainerVideo } from "@/components/ui/explainer-video";
-import { GeneratedMark, GeneratedNote } from "@/components/ui/generated-mark";
+import { GeneratedMark } from "@/components/ui/generated-mark";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { brands } from "@/lib/data/services";
@@ -88,10 +88,8 @@ export default function AboutPage() {
                   Offenlegung allein. Wer hier später doch ein echtes Foto
                   einsetzt, nimmt den Pfad aus `generatedImages` und darf den
                   Namen zurückschreiben. */}
-              <p className="mt-4 text-sm text-current/60">
-                Kapazitätsmessung an einem E-Scooter-Akku.{" "}
-                <GeneratedNote src="/img/akku-diagnose.jpg" />
-              </p>
+              {/* Keine Bildunterschrift – die Offenlegung trägt der Chip im
+                  Bild, das Motiv erklärt sich selbst. */}
 
               {/* Füllt die kurze linke Spalte mit echtem Nutzen statt Leerraum */}
               <dl className="mt-8 rounded-lg border border-current/12 p-7">

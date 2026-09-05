@@ -299,12 +299,18 @@ export function Velaris({ className }: { className?: string }) {
     let frozenAt = 0;
 
     resize();
-    // Beim Umbau der Fläche steht kein neues Bild an, solange die Schleife
-    // pausiert oder gar nicht erst läuft. Dann muss der letzte Zeitpunkt von
-    // Hand nachgezeichnet werden, sonst bleibt die Fläche schwarz.
+    /* Nach jedem Umbau sofort zeichnen, nicht erst im nächsten Bild.
+
+       `canvas.width = …` leert den Zeichenpuffer. Läuft die Schleife, kam
+       das nächste Bild zwar einen Frame später – aber der Compositor hatte
+       den leeren Puffer da schon gezeigt: ein schwarzer Blitz über die ganze
+       Fläche. Auf dem iPhone passiert das bei jedem Ein- und Ausfahren der
+       Adressleiste, weil die Kopfhöhe an `svh`/`vh` hängt und der Beobachter
+       dann feuert – „die grüne Animation flackert beim Scrollen". Pausiert
+       die Schleife, bliebe die Fläche ohne diesen Aufruf ganz schwarz. */
     const ro = new ResizeObserver(() => {
       resize();
-      if (paused) draw(frozenAt);
+      draw(frozenAt);
     });
     ro.observe(canvas);
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
-import { GeneratedMark, GeneratedNote } from "@/components/ui/generated-mark";
+import { GeneratedMark } from "@/components/ui/generated-mark";
 import { Container, Section } from "@/components/ui/section";
 import { checkupIncludes, turnaround } from "@/lib/data/services";
 
@@ -33,16 +33,12 @@ export function Workshop() {
               />
               <GeneratedMark src="/img/werkstatt-service.jpg" />
             </div>
-            {/* Die Zeile nannte den Ort: „Werkstatt Im Kampfrad 3, Neuenstadt
-                am Kocher." Unter einem erzeugten Motiv ist das keine
-                Bildunterschrift mehr, sondern eine Tatsachenbehauptung über
-                den eigenen Betrieb – genau der Fall, den § 5 UWG meint. Sie
-                benennt jetzt den Vorgang, nicht den Ort. Die Adresse steht
-                unverändert im Fußbereich, auf /kontakt und im Schema. */}
-            <p className="mt-4 text-sm text-current/65">
-              Sicherheits-Checkup an einem Klappscharnier.{" "}
-              <GeneratedNote src="/img/werkstatt-service.jpg" />
-            </p>
+            {/* Keine Bildunterschrift: Sie beschrieb, was man ohnehin sieht,
+                und die KI-Offenlegung trägt der Chip im Bild (`GeneratedMark`),
+                Kurzform sichtbar, Wortlaut in `title` und `sr-only`. Eine
+                frühere Fassung nannte hier den Ort – unter einem erzeugten
+                Motiv eine Tatsachenbehauptung (§ 5 UWG), deshalb nicht
+                zurückschreiben. */}
           </Reveal>
 
           <div className="lg:col-span-7">

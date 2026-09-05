@@ -49,9 +49,14 @@ export function PageHeader({
      Jetzt 91 px am Telefon, der Anstieg über `vh` bleibt: Ab 1000 px
      Fensterhöhe steht wieder der alte Wert. Die beiden Innenabstände sind
      mitgezogen (`mt-7` / `mt-4`), sonst hätte der gewonnene Platz nur die
-     Stelle gewechselt. */
+     Stelle gewechselt.
+
+     `svh` statt `vh`: Auf dem iPhone ändert sich `vh` mit dem Ein- und
+     Ausfahren der Adressleiste, und mit ihm die Höhe dieser Sektion – der
+     bewegte Grund wurde bei jedem Scrollen neu aufgezogen und blitzte
+     schwarz. `svh` ist die kleine, stabile Höhe. */
   return (
-    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(4.5rem,2rem+7vh,10rem)] pb-[clamp(3.5rem,2rem+5vh,6rem)] text-silver on-dark">
+    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(4.5rem,2rem+7svh,10rem)] pb-[clamp(3.5rem,2rem+5svh,6rem)] text-silver on-dark">
       {/* Derselbe bewegte Grund wie im Hero der Startseite, nicht ein zweiter.
           Vorher lag hier ein statischer radialer Neonfleck – zwei Verfahren
           für dieselbe Aufgabe, und der Unterschied fiel beim Wechsel von der

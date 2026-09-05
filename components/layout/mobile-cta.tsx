@@ -79,26 +79,33 @@ export function MobileCta() {
           plus 3 rem Knopfhöhe), der Rest ist Luft. */}
       <div
         aria-hidden="true"
-        className="h-[calc(4.75rem+env(safe-area-inset-bottom))] lg:hidden"
+        className="h-[calc(5.5rem+env(safe-area-inset-bottom))] lg:hidden"
       />
 
+      {/* Ein Dock mit Rand, keine Leiste bis an die Gehäusekante. Der
+          Rollbalken des Systems läuft am rechten Fensterrand über alles, was
+          dort fest steht – über eine randlose Leiste also mitten durch den
+          Anfrage-Knopf. Mit 0,75 rem Luft an beiden Seiten und unten liegt er
+          neben dem Dock statt darauf. Unten gilt die Aussparung des Geräts,
+          wenn sie größer ist. */}
       <div
         id="mobile-cta"
         className={cn(
-          "liquid-glass fixed inset-x-0 bottom-0 z-40 text-silver lg:hidden on-dark",
-          "pb-[env(safe-area-inset-bottom)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
+          "liquid-glass fixed right-[max(0.75rem,env(safe-area-inset-right))] bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-40 overflow-hidden rounded-[1.5rem] border border-current/12 text-silver lg:hidden on-dark",
+          "transition-[opacity,transform] duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
           shown
             ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-full opacity-0",
+            : "pointer-events-none translate-y-[calc(100%+1.5rem)] opacity-0",
         )}
       >
-        {/* Die seitliche Polsterung geht über `.gutter`, damit die beiden
-            Knöpfe im Querformat nicht unter der Kameraaussparung liegen –
-            dieselbe Regel wie im Satzspiegel der Seite. Die Rundung ist die
+        {/* Der Abstand zur Kameraaussparung liegt am Dock selbst (`left`/
+            `right` mit `max(…, env(safe-area-inset-*))`), nicht mehr als
+            `.gutter` an der Polsterung – dieselbe Regel wie im Satzspiegel
+            der Seite, nur eine Ebene höher. Die Rundung ist die
             der Knöpfe (`rounded-full`, siehe button.tsx): Diese Leiste ist
             die Hauptaktion auf dem Telefon und darf nicht wie eine zweite
             Bauart daherkommen. */}
-        <div className="gutter flex items-stretch gap-2.5 py-3">
+        <div className="flex items-stretch gap-2.5 px-3 py-3">
           <a
             href={site.phone.href}
             className="press flex h-12 flex-1 items-center justify-center gap-2.5 rounded-full bg-accent font-display font-semibold tracking-tight text-ink"
