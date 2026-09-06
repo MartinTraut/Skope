@@ -72,7 +72,7 @@ export async function Hero() {
   const googleRating = await getGoogleRating();
 
   return (
-    <section className="relative isolate flex flex-col overflow-hidden bg-ink pb-0 text-silver on-dark lg:min-h-svh">
+    <section className="relative isolate flex min-h-svh flex-col overflow-hidden bg-ink pb-0 text-silver on-dark sm:min-h-0 lg:min-h-svh">
       {/* Zwei Zonen, nicht eine: Oben die Bildzone mit Text darauf, darunter
           das Beweisband auf reiner Tinte.
 
@@ -96,7 +96,7 @@ export async function Hero() {
           Nur ab `lg`. Am Telefon ist die Sektion ohnehin höher als das
           Fenster, dort würde `min-h-svh` nichts festlegen und `flex-1` nichts
           verteilen. */}
-      <div className="relative lg:flex-1">
+      <div className="relative flex-1 sm:flex-initial lg:flex-1">
         {/* Die Werkstatt selbst als Grund, über die volle Breite.
           Vorher stand hier der Shader und rechts daneben ein Hochformat im
           Rahmen – zwei Gegenstände, die um dieselbe Fläche konkurrierten.
@@ -218,7 +218,7 @@ export async function Hero() {
             Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
             damit die Überschrift darauf steht und die Zone ohne Kante in die
             Tinte übergeht. */}
-        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(64svh,30rem),min(56vw,30rem))] w-screen -translate-x-1/2 overflow-hidden sm:h-[max(min(58svh,26rem),min(56vw,26rem))] lg:hidden">
+        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 bottom-0 w-screen -translate-x-1/2 overflow-hidden sm:bottom-auto sm:h-[max(min(58svh,26rem),min(56vw,26rem))] lg:hidden">
           {/* Die Aufnahme beginnt unter der Kopfzeile, nicht am oberen Rand
               der Bühne.
 

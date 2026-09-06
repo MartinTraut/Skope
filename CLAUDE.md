@@ -520,48 +520,87 @@ unverändert:
 
 ## Kopfbereich am Telefon neu komponiert — 06.09.2026
 
-Auf Ansage: „sehr überladen, man sieht den Roller und den Hintergrund nicht".
-Alles unter `sm`; ab 640 px steht der Kopfbereich unverändert. Gemessen bei
-390 × 844 ist die Sektion von 726 auf 561 px gefallen, und die Aufnahme zeigt
-den Roller zum ersten Mal vollständig.
+Auf Ansage, in zwei Runden. Zuerst: „sehr überladen, man sieht den Roller und
+den Hintergrund nicht". Dann, nachdem der Kopfbereich dadurch auf 561 px
+geschrumpft war: „wenn man auf die Website kommt, soll man nur den Hero
+sehen … die Zahlen perfekt unten am Displayrand, alles mit Luft". Beides ist
+umgesetzt, alles unter `sm`; ab 640 px steht der Kopfbereich unverändert
+(gemessen 796 / 813 / 751 / 900 px bei 640, 768, Querformat und 1512 – wie
+vorher).
+
+**Text:**
 
 - **Die Auszeichnungszeile steht nicht mehr über der Überschrift, sondern
   über den Sternen** – und dort nur noch als „Generalüberholt". Der
   Kopfbereich beginnt damit mit dem Satz, für den die Seite gefunden werden
-  soll, und die Zeile gibt den oberen Rand der Aufnahme frei. „· Neuenstadt"
-  fällt am Telefon weg: über den Sternen wäre der Ort eine zweite Herkunft
-  neben „Rezensionen bei Google". Er steht weiterhin im Seitentitel, in
-  `Region` und im Fußbereich.
+  soll. „· Neuenstadt" fällt am Telefon weg: über den Sternen wäre der Ort
+  eine zweite Herkunft neben „Rezensionen bei Google". Er steht weiterhin im
+  Seitentitel, in `Region` und im Fußbereich.
 - **Der Lead ist am Telefon weg.** Vier Zeilen Fließtext zwischen Überschrift
   und Beleg waren dort der längste Block und lagen genau auf dem Roller. Was
   er sagt, sagt die Seite unmittelbar darunter noch einmal: die Prüfung im
   Kennzahlenband, die Werkstatt in den Säulen, die Region in `Region`.
-- **Die H1 beginnt dadurch bei 148 statt 194 px** (390 px Breite). Das ist
-  reiner Wegfall, kein neuer Wert: `--hero-head` ist unverändert.
-- **Die Bühne ist höher** – `max(min(64svh,30rem),min(56vw,30rem))` statt
-  26 rem, ab `sm` der alte Wert. Bei 390 px sind das 480 statt 416, die
-  Bildfläche darunter 416 statt 352: Der Roller steht 18 % größer und mit
-  Werkzeugwand und Leuchtstoffröhre im Bild.
-- **Der Verlauf ist eine eigene Klasse** (`.hero-stage-scrim`), keine
-  Tailwind-Angabe mehr, und **seine Stopps stehen in Längen statt in
-  Prozent**. Die Bühne ist je nach Fensterhöhe 363 bis 480 px hoch, die
-  Überschrift beginnt aber immer bei `--hero-head` – in Prozent gerechnet
-  wandert die dichte Kante unter der Überschrift weg. Genau das war beim
-  ersten Versuch passiert: Hinter der ersten Zeile lag die Leuchtstoffröhre
-  mit 35 % Tinte bei 186 von 255, Weiß darauf **1,9:1**. Jetzt 56 % Tinte an
-  `--hero-head` und 86 % 5 rem darunter, gemessen 4,5 (390), 4,9 (360),
-  6,3 (430) und 9,5:1 (320).
+- **Die H1 beginnt dadurch bei 148 statt 194 px** (390 px Breite). Reiner
+  Wegfall, kein neuer Wert: `--hero-head` ist unverändert.
+
+**Höhe – die Sektion ist genau ein Bildschirm:**
+
+- **`min-h-svh` und `flex-1` gelten jetzt auch am Telefon** (`sm:min-h-0
+  lg:min-h-svh` bzw. `sm:flex-initial lg:flex-1`), bisher nur ab `lg`. Ohne
+  das war der Kopfbereich nach dem Textabbau 561 von 844 px hoch: Man kam auf
+  die Seite und sah sofort das Silber der nächsten Sektion. Gemessen sitzt
+  die Unterkante der Sektion jetzt bei 780 (360), 844 (390), 915 (412) und
+  932 px (430) – also exakt auf der Fensterkante, das Kennzahlenband mit
+  seinen 40 px Auslauf davor. **Nicht ab `sm` einschalten:** Bei 640 × 900
+  und 768 × 1024 wächst dort nur die Bühne nicht mit, und zwischen Beleg und
+  Band stünden 104 bzw. 211 px leere Tinte.
+- **Bei 320 × 568 geht es nicht auf** (Inhalt 627 px). Dort läuft die H1 über
+  vier Zeilen; die letzte Kennzahlenreihe steht unter der Falz. Das ist die
+  einzige gemessene Breite, auf der das so ist.
+- **Die Bühne füllt die Bildzone** (`top-0 bottom-0` statt fester Höhe, ab
+  `sm` wieder 26 rem). Die freie Höhe bekommt damit die Aufnahme und nicht
+  ein Loch: Bei 390 px ist die Bühne 644 statt 416 px hoch, die Bildfläche
+  580 statt 352. Der Roller steht vollständig im Bild, mit Reifen, Trittfläche
+  und Werkstattboden. Der Ausschnitt wird dabei schmaler (42 % der Bildbreite
+  statt 59) – das ist der Preis und er ist richtig herum bezahlt.
+
+**Verlauf:**
+
+- **Der Verlauf ist eine eigene Klasse** (`.hero-stage-scrim`) aus zwei
+  Ebenen, keine Tailwind-Angabe mehr.
+- **Seine Stopps stehen in Längen, nicht in Prozent.** Die Bühne ist je nach
+  Fensterhöhe 410 bis 730 px hoch, die Überschrift beginnt aber immer bei
+  `--hero-head` – in Prozent gerechnet wandert die dichte Kante unter der
+  Überschrift weg. Genau das war beim ersten Versuch passiert: Hinter der
+  ersten Zeile lag die Leuchtstoffröhre mit 35 % Tinte bei 186 von 255, Weiß
+  darauf **1,9:1**.
+- **Die erste Ebene ist der Schleier über dem Text**: 45 % oben, 6 % bei
+  `--hero-head − 4rem` (das Fenster für den Lenker), 56 % an `--hero-head`,
+  86 % ab `+5rem` und über die ganze Textstrecke bis `+17rem`, dann auf 8 %
+  bei `+21rem`. Die 17 rem sind kein runder Wert: Bei 320 px läuft die H1
+  vier Zeilen und der Beleg endet bei `--hero-head + 16,5 rem`.
+- **Die zweite Ebene ist der Auslauf in die Tinte** (`transparent 68%` →
+  Tinte). Sie hängt an der Höhe der Bühne, weil der Übergang ins
+  Kennzahlenband keine Kante haben darf – gleich wie hoch das Fenster ist.
+  Auf einem kurzen Telefon überlagert sie den Schleier und hält die Aufnahme
+  unter dem Text dunkel; dort ist ohnehin kein Platz für ein zweites Fenster.
+- **Gemessen unter den Zeilenkästen** (Text ausgeblendet, hellster Punkt):
+  Überschrift 8,3 / 6,0 / 6,6 / 5,2:1 bei 320 / 360 / 390 / 430 px, jede
+  Kleinschrift über 15:1.
 - **`--hero-head` ist das eine Token für den oberen Rand des Kopfbereichs.**
   Es steht am Satzspiegel *und* im Verlauf. Zwei getrennte Werte laufen beim
   ersten Eingriff an einem von beiden auseinander, und das sieht man erst als
   Kontrastfehler.
-- **Die KI-Marke steht unten rechts auf 25 % Höhe der Bühne** (`bottom-[25%]`,
-  ab `sm` wieder oben rechts). Am Boden der Bühne wäre sie es nicht: Die
-  Bühne endet bei 390 px erst auf 480 px und damit mitten im Kennzahlenband –
-  die Marke stand zwischen „169,99 €" und „500+". Auf 25 % liegt sie neben
-  dem Hinterrad, auf der Aufnahme und in jeder gemessenen Breite frei von
-  Text (die Zeilen enden links bei 253 px, die Marke beginnt bei 300).
-  **Nicht weiter nach unten und nicht schwächer:** Sie muss auf dem Bild
+
+**KI-Marke:**
+
+- **Sie steht unten rechts auf 25 % Höhe der Bühne** (`bottom-[25%]`, ab `sm`
+  wieder oben rechts) – am Telefon also neben dem Hinterrad, auf der
+  Aufnahme, in jeder gemessenen Breite frei von Text (die Zeilen enden links
+  bei 253 px, die Marke beginnt bei 300). Am Boden der Bühne wäre sie es
+  nicht: Die Bühne endet dort, wo das Kennzahlenband beginnt, und die Marke
+  stand zwischen „169,99 €" und „500+".
+- **Nicht weiter nach unten und nicht schwächer.** Sie muss auf dem Bild
   liegen, nicht darunter – die Begründung steht unter „KI-Kennzeichnung".
 
 ## Telefonknöpfe — 03.09.2026

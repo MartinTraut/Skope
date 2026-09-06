@@ -1037,16 +1037,34 @@
    * darauf 1,9:1. Ab 56 % sind es 4,7:1.
    */
   .hero-stage-scrim {
-    background-image: linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--color-ink) 45%, transparent) 0,
-      color-mix(in oklab, var(--color-ink) 8%, transparent)
-        calc(var(--hero-head) - 4rem),
-      color-mix(in oklab, var(--color-ink) 56%, transparent) var(--hero-head),
-      color-mix(in oklab, var(--color-ink) 86%, transparent)
-        calc(var(--hero-head) + 5rem),
-      var(--color-ink) 100%
-    );
+    background-image:
+      /* Der Schleier über dem Text. Er ist oben leicht (Auszeichnung im
+         Bild), gibt in der Mitte den Roller frei, wird an `--hero-head`
+         dicht und bleibt es über die ganze Textstrecke – 17 rem, weil die
+         Überschrift bei 320 px vier Zeilen läuft und der Beleg dort bis
+         `--hero-head + 16,5 rem` reicht. Danach löst er sich auf: Unter dem
+         letzten Text steht auf einem 844-px-Telefon noch eine Viertel
+         Bildhöhe Bühne, und die soll die Aufnahme zeigen, nicht Tinte. */
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ink) 45%, transparent) 0,
+        color-mix(in oklab, var(--color-ink) 6%, transparent)
+          calc(var(--hero-head) - 4rem),
+        color-mix(in oklab, var(--color-ink) 56%, transparent) var(--hero-head),
+        color-mix(in oklab, var(--color-ink) 86%, transparent)
+          calc(var(--hero-head) + 5rem),
+        color-mix(in oklab, var(--color-ink) 86%, transparent)
+          calc(var(--hero-head) + 17rem),
+        color-mix(in oklab, var(--color-ink) 8%, transparent)
+          calc(var(--hero-head) + 21rem)
+      ),
+      /* Der Auslauf in die Tinte. Er hängt an der Höhe der Bühne, nicht an
+         einer Länge: Die Bühne endet dort, wo das Kennzahlenband beginnt,
+         und dieser Übergang darf keine Kante haben – gleich wie hoch das
+         Fenster ist. Auf einem kurzen Telefon überlagert er den Schleier
+         darüber und hält die Aufnahme unter dem Text dunkel; dort ist
+         ohnehin kein Platz für ein zweites Fenster. */
+      linear-gradient(to bottom, transparent 68%, var(--color-ink) 100%);
   }
 
   .hero-scrim {
