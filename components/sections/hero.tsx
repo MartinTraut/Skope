@@ -219,14 +219,36 @@ export async function Hero() {
             damit die Überschrift darauf steht und die Zone ohne Kante in die
             Tinte übergeht. */}
         <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58svh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden">
-          <Image
-            src="/img/hero-werkstatt.jpg"
-            alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[82%_center] brightness-115"
-          />
+          {/* Die Aufnahme beginnt unter der Kopfzeile, nicht am oberen Rand
+              der Bühne.
+
+              Der Grund ist die Deckung: `object-cover` skaliert hier über die
+              Höhe (Bühne 390 × 416, Aufnahme 2400 × 1507), der Roller füllt
+              also immer die volle Höhe der Fläche, in der er liegt – sein
+              Lenker klebte damit an der Oberkante und lief quer durch das
+              Wortzeichen der Kopfzeile. Kein Bildausschnitt behebt das:
+              `object-position` in der Senkrechten ist wirkungslos, solange die
+              Aufnahme in der Höhe hineinpasst.
+
+              Deshalb eine eigene Fläche, die 4 rem tiefer anfängt. Der Roller
+              wird dadurch rund 15 % kleiner und sitzt mit seinem Lenker gut
+              20 px unter der Kopfzeile. Der Verlauf darüber bleibt an der
+              Bühne und damit unverändert – die gemessenen Kontraste hinter
+              Überschrift und Fließtext hängen an seinen Stopps.
+
+              Die Maske nimmt der neuen Oberkante die Kante: Ohne sie stünde
+              bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem zu
+              62 % durchscheinenden Bild. */}
+          <div className="absolute inset-x-0 top-16 bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+            <Image
+              src="/img/hero-werkstatt.jpg"
+              alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[82%_center] brightness-115"
+            />
+          </div>
           {/* Rechts, und so tief wie die Bühne es zulässt.
 
               Die untere Hälfte der Bühne ist besetzt: Gemessen bei 320 px
@@ -238,13 +260,18 @@ export async function Hero() {
               Kennzeichnung mehr.
 
               Frei ist genau der Streifen zwischen Kopfzeile und
-              Auszeichnungszeile. Dort steht sie jetzt rechts statt links und
-              2,75 rem unter der Kopfzeile statt 0,5 – weit genug vom Menüknopf
-              (44 px), damit sie nicht wieder als dessen Beschriftung gelesen
-              wird, und 19 px über der Auszeichnungszeile. */}
+              Auszeichnungszeile. Dort steht sie rechts statt links und 1 rem
+              unter der Kopfzeile – 30 px unter dem Menüknopf (44 px), damit
+              sie nicht als dessen Beschriftung gelesen wird.
+
+              Der Abstand stand auf 2,75 rem und war seit der Straffung des
+              Kopfbereichs am 05.09. zu groß: Bei 320 px bricht die
+              Auszeichnungszeile zweizeilig um und begann bei 121 px, die
+              Marke lag von 116 bis 135 px – sie stand quer über der Zeile.
+              Jetzt 88 bis 107 px, gemessen 14 px darüber. */}
           <GeneratedMark
             src="/img/hero-werkstatt.jpg"
-            className="top-[calc(var(--header-h)+2.75rem)] right-[max(1.5rem,env(safe-area-inset-right))] bottom-auto left-auto"
+            className="top-[calc(var(--header-h)+1rem)] right-[max(1.5rem,env(safe-area-inset-right))] bottom-auto left-auto"
           />
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
         </div>

@@ -452,6 +452,38 @@ Sorte Fehler war wie bei den Reparaturbereichen:
   als Bedienelement liest. Das Gold der Sterne und das Google-Zeichen weisen
   den Beleg auch ohne Rahmen als Zitat aus.
 
+## Roller im Kopfbereich am Telefon — 06.09.2026
+
+Der Lenker lief quer durch das Wortzeichen der Kopfzeile. Kein
+Bildausschnitt behebt das: Die Bühne ist bei 390 px 390 × 416, die Aufnahme
+2400 × 1507 – `object-cover` skaliert über die **Höhe**, die Aufnahme passt
+senkrecht vollständig hinein, und damit ist `object-position` in der
+Senkrechten wirkungslos. Der Roller füllt immer die volle Höhe der Fläche,
+in der er liegt, sein Lenker klebt also immer an deren Oberkante.
+
+- **Die Aufnahme liegt jetzt in einer eigenen Fläche, die 4 rem tiefer
+  beginnt** (`absolute inset-x-0 top-16 bottom-0` innerhalb der Bühne). Der
+  Roller wird dadurch rund 15 % kleiner und sein Lenker sitzt gut 20 px
+  unter der Kopfzeile. **Nicht** über die Bühne selbst lösen: Der Verlauf
+  liegt an der Bühne, und seine Stopps tragen die gemessenen Kontraste
+  hinter Überschrift und Fließtext. Verschiebt man die Bühne, verschiebt man
+  den Verlauf mit, und die Überschrift steht im offenen Teil.
+- **`fill`-Bilder von Next tragen `inset: 0` als Inline-Stil.** Eine
+  Tailwind-Klasse am `<Image>` selbst (`top-16`) verliert dagegen. Der
+  Versatz muss deshalb an einer eigenen Fläche darum hängen.
+- **Die Maske nimmt der neuen Oberkante die Kante**
+  (`mask-image: linear-gradient(to bottom, transparent, black 2rem)`). Ohne
+  sie stünde bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem
+  zu 62 % durchscheinenden Bild.
+- **Die KI-Marke steht 1 rem unter der Kopfzeile, nicht 2,75.** Seit der
+  Straffung vom 05.09. bricht die Auszeichnungszeile bei 320 px zweizeilig
+  um und beginnt bei 121 px – die Marke lag von 116 bis 135 px quer darüber.
+  Jetzt 88 bis 107 px, 14 px über der Zeile und 30 px unter dem Menüknopf.
+
+Gemessen unter den Zeilenkästen von Überschrift und Lead (Text ausgeblendet):
+hellste Stelle 65 (320), 106 (390), 61 px im Querformat – Weiß darauf 10,2 /
+5,4 / 10,9:1. Vorher standen dort 116 (4,7:1) und im Querformat 135 (3,6:1).
+
 ## Telefon-Durchgang — 05.09.2026
 
 Auf Ansage des Betreibers, alles nur unter `sm` bzw. `lg`, am Schreibtisch
