@@ -594,14 +594,24 @@ vorher).
 
 **KI-Marke:**
 
-- **Sie steht unten rechts auf 25 % Höhe der Bühne** (`bottom-[25%]`, ab `sm`
-  wieder oben rechts) – am Telefon also neben dem Hinterrad, auf der
-  Aufnahme, in jeder gemessenen Breite frei von Text (die Zeilen enden links
-  bei 253 px, die Marke beginnt bei 300). Am Boden der Bühne wäre sie es
-  nicht: Die Bühne endet dort, wo das Kennzahlenband beginnt, und die Marke
-  stand zwischen „169,99 €" und „500+".
-- **Nicht weiter nach unten und nicht schwächer.** Sie muss auf dem Bild
-  liegen, nicht darunter – die Begründung steht unter „KI-Kennzeichnung".
+- **Sie steht in der unteren rechten Ecke der Aufnahme** (`bottom-6`, ab
+  `sm` wieder oben rechts) – auf Höhe des Werkstattbodens unter dem
+  Hinterrad. Am Boden der *Bühne* wäre sie es nicht: Die Bühne reicht bis zum
+  Kennzahlenband, und die Marke stand dort zwischen „169,99 €" und „500+".
+- **Unter 360 px steht sie höher** (`bottom-[25%]`, Umschaltpunkt
+  `min-[360px]`). Bei 320 px liegt die Unterkante der Bühne nur 24 px unter
+  der Zeile „37 Rezensionen bei Google", und deren Text endet 7 px vor der
+  Marke – beides stünde nebeneinander auf einer Zeile. Auf 25 % liegt sie
+  zwischen Überschrift und Auszeichnung und ist frei.
+- **Nicht schwächer und nicht unter das Bild.** Sie muss auf der Aufnahme
+  liegen – die Begründung steht unter „KI-Kennzeichnung".
+- **Das Kennzahlenband steht am Telefon mittig** (`text-center sm:text-left
+  lg:text-center`). Zwei linksbündige Spalten hatten rechts von „13" und
+  „169,99 €" einen jeweils anderen Rest, und die ganze Reihe hing sichtbar an
+  der linken Kante. Der frühere Einwand gegen Zentrierung – Flattersatz über
+  drei Zeilen – gilt unter `sm` nicht mehr, weil dort die Kurzform (`short`)
+  steht und die einzeilig ist. Zwischen `sm` und `lg` bleibt es linksbündig:
+  Dort steht die lange Beschriftung über zwei bis drei Zeilen.
 
 ## Telefonknöpfe — 03.09.2026
 
@@ -647,6 +657,31 @@ Regeln, beide aus der Beschwerde „ich lande irgendwo mitten auf der Seite":
   In beiden Fällen ist von der Sektion darüber nichts zu sehen. Gemessen:
   Kundenstimmen bei 1512 × 900 → Oberkante 80 px, Bestand → 80 px,
   Navigation aus 1500 px Tiefe → 0.
+
+- **Der Zuhörer für Raute-Verweise hängt in der Einfangphase — 06.09.2026.**
+  `next/link` bricht seinen eigenen Klick nur ab, wenn `defaultPrevented`
+  gesetzt ist. React hängt seine Zuhörer beim Aufhängen der Anwendung ans
+  Dokument, also *vor* dem hier – in der Blasenphase lief der Verweis damit
+  zuerst durch `Link`, wurde dort abgebrochen und an den Router
+  weitergereicht, und für eine Adresse, die schon in der Zeile steht, tut der
+  Router nichts. Gemessen auf `/kontakt` am Telefon: Der erste Druck auf
+  „Anfrage" kam von der Startseite und lief über den Seitenwechsel – Formular
+  bei 289 px. Nach oben gewischt und noch einmal gedrückt passierte nichts,
+  die Seite blieb stehen und das Formular lag 1427 px tiefer. Betroffen war
+  jeder Verweis mit Raute, der als `Link` gebaut ist. `stopPropagation` steht
+  bewusst nicht dabei: Der Verweis soll weiter bei den Zuhörern ankommen, die
+  an ihm selbst hängen – im Telefonmenü schließt einer davon die Tafel.
+
+- **Aus dem offenen Telefonmenü wird erst gesprungen, wenn die Sperre
+  gelöst ist — 06.09.2026.** Die Scrollsperre des Menüs hängt am `<body>`
+  (`position: fixed`) und setzt die gemerkte Position beim Schließen zurück.
+  Wer währenddessen springt, springt gegen eine festgestellte Seite und wird
+  eine Lidschlagbreite später vom Rücksprung wieder eingesammelt; außerdem
+  misst `getBoundingClientRect` dort den Abstand zur Fensterkante statt zum
+  Dokumentanfang. Gemessen auf `/kontakt`: Menü auf, „Anfrage senden" – Tafel
+  zu, Position 0, das Formular 1885 px tiefer. Der Sprung wartet jetzt in
+  `requestAnimationFrame`, bis `position` nicht mehr `fixed` ist (Riegel bei
+  zwanzig Bildern), und läuft ein Bild danach.
 
 - **Der erste Aufruf eines Dokuments beginnt oben — 05.09.2026.** Der
   Effekt oben läuft beim Einhängen zwar mit, kommt aber zu früh: Der

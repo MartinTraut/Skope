@@ -271,7 +271,7 @@ export async function Hero() {
               Jetzt 88 bis 107 px, gemessen 14 px darüber. */}
           <GeneratedMark
             src="/img/hero-werkstatt.jpg"
-            className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
+            className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] min-[360px]:bottom-6 sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
           />
           <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
         </div>
@@ -542,12 +542,19 @@ export async function Hero() {
               kürzeste über ein Drittel – nebeneinander wieder derselbe Effekt,
               nur eine Zeile tiefer.
 
-              Am Telefon bleibt es linksbündig. Dort stehen zwei Spalten, die
-              Beschriftungen laufen ohnehin über zwei bis drei Zeilen, und
-              zentrierter Flattersatz über drei Zeilen liest sich schlechter
-              als linksbündiger. */}
+              Am Telefon steht es seit dem 06.09.2026 ebenfalls mittig, und
+              zwar aus demselben Grund wie ab `lg`: Zwei linksbündige Spalten
+              mit „13" und „169,99 €" haben rechts von jeder Zahl einen
+              anderen Rest, und die ganze Reihe hängt sichtbar an der linken
+              Kante. Der frühere Einwand – zentrierter Flattersatz über drei
+              Zeilen liest sich schlechter – gilt dort nicht mehr: Unter `sm`
+              steht die Kurzform (`short`), und die ist einzeilig.
+
+              Zwischen `sm` und `lg` bleibt es linksbündig. Dort steht die
+              lange Beschriftung („Einstiegspreis bis 599,99 €, Endpreis ohne
+              USt."), und die läuft über zwei bis drei Zeilen. */}
           {stats.map((stat) => (
-            <div key={stat.label} className="min-w-0 lg:text-center">
+            <div key={stat.label} className="min-w-0 text-center sm:text-left lg:text-center">
               <p className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
                 {stat.value}
               </p>

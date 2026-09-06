@@ -133,7 +133,27 @@ export function ScrollManager() {
        Effekt darüber, dieser hier gilt nur dem ersten Aufruf des Dokuments. */
   }, []);
 
-  /* Regel 2 für Verweise auf derselben Seite. */
+  /* Regel 2 für Verweise auf derselben Seite.
+
+     Der Zuhörer hängt in der **Einfangphase** am Dokument, und das ist kein
+     Detail: `next/link` bricht seinen eigenen Klick ab, sobald
+     `defaultPrevented` gesetzt ist – aber nur dann. React hängt seine
+     Zuhörer beim Aufhängen der Anwendung ans Dokument, also *vor* diesem
+     hier; in der Blasenphase liefe der Verweis damit zuerst durch `Link`,
+     würde dort abgebrochen und an den Router weitergereicht. Für eine
+     Adresse, die schon in der Zeile steht, tut der Router nichts.
+
+     Gemessen auf `/kontakt` am Telefon: Der erste Druck auf „Anfrage" kam
+     von der Startseite und lief über den Seitenwechsel – Formular bei
+     289 px. Nach oben gewischt und noch einmal gedrückt passierte nichts,
+     die Seite blieb bei 675 px stehen, das Formular lag 1427 px tiefer.
+     Betroffen war jeder Verweis mit Raute, der als `Link` gebaut ist: die
+     Aktionsleiste am Telefon, „Anfrage senden" im Kopf und im Abschlussband,
+     „Kundenstimmen" im Menü.
+
+     `stopPropagation` steht bewusst nicht dabei. Der Verweis soll weiter bei
+     den Zuhörern ankommen, die an ihm selbst hängen – im Telefonmenü
+     schließt einer davon die Tafel. */
   React.useEffect(() => {
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0) return;
@@ -154,11 +174,42 @@ export function ScrollManager() {
       const reduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
-      scrollToId(id, reduced ? "instant" : "smooth");
+      const go = () => scrollToId(id, reduced ? "instant" : "smooth");
+
+      /* Steht der Verweis im offenen Telefonmenü, darf hier noch nicht
+         gesprungen werden.
+
+         Die Scrollsperre des Menüs hängt am `<body>` (`position: fixed`) und
+         setzt die gemerkte Position beim Schließen zurück. Wer währenddessen
+         springt, springt gegen eine festgestellte Seite und wird eine
+         Lidschlagbreite später vom Rücksprung wieder eingesammelt. Gemessen
+         auf `/kontakt`: Menü auf, „Anfrage senden" – Tafel zu, Position 0,
+         das Formular 1885 px tiefer. Außerdem misst `getBoundingClientRect`
+         an einer festgestellten Seite den Abstand zur *Fensterkante*, nicht
+         zum Dokumentanfang; die Rechnung stimmte also ohnehin nicht.
+
+         Deshalb warten, bis die Sperre gelöst ist, und erst im Bild danach
+         springen. Der Riegel bei zwanzig Bildern ist für den Fall, dass die
+         Sperre gar nicht von einem Menü kommt. */
+      const locked = () => getComputedStyle(document.body).position === "fixed";
+      if (locked()) {
+        let frames = 0;
+        const wait = () => {
+          if (!locked() || ++frames > 20) {
+            requestAnimationFrame(go);
+            return;
+          }
+          requestAnimationFrame(wait);
+        };
+        requestAnimationFrame(wait);
+      } else {
+        go();
+      }
       history.pushState(null, "", url.hash);
     };
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    document.addEventListener("click", onClick, { capture: true });
+    return () =>
+      document.removeEventListener("click", onClick, { capture: true });
   }, []);
 
   /* Kein Zoom auf dem iPhone. Safari beachtet weder `user-scalable=no` noch
