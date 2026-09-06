@@ -321,8 +321,16 @@
      *
      * Er hängt an der Fensterhöhe, nicht an der Breite: Im Querformat eines
      * iPhone (844 × 390) sind 112 px fester Kopfabstand 29 % der Bildhöhe.
+     *
+     * Der Sicherheitsabstand oben kommt dazu, weil die Kopfzeile ihn selbst
+     * trägt (`pt-[env(safe-area-inset-top)]`) und damit um die Statusleiste
+     * wächst. Im Browser ist er null; läuft die Seite vom Startbildschirm als
+     * eigenes Fenster, ist die Leiste 59 px hoch – ohne den Zuschlag stünde
+     * die Überschrift 17 px unter der Kopfzeile statt 76.
      */
-    --hero-head: clamp(6.5rem, 4rem + 10svh, 10rem);
+    --hero-head: calc(
+      env(safe-area-inset-top, 0px) + clamp(6.5rem, 4rem + 10svh, 10rem)
+    );
   }
 
   @media (width >= 48rem) {
