@@ -112,21 +112,28 @@ function QuoteCard({
     >
       <div
         className={cn(
-          "flex items-center gap-4",
-          centered ? "justify-center" : "justify-between",
+          "flex gap-4",
+          centered ? "items-end justify-center gap-3" : "items-center justify-between",
         )}
       >
-        <Stars rating={rating} />
+        <Stars rating={rating} cascade />
         {/* Das Anführungszeichen in derselben Farbe wie die Sterne: Beides
-            gehört zur Herkunft der Aussage, nicht zur Seite. */}
-        {centered ? null : (
-          <span
-            aria-hidden="true"
-            className="font-display text-5xl leading-none font-bold text-[#fbbc04]"
-          >
-            &bdquo;
-          </span>
-        )}
+            gehört zur Herkunft der Aussage, nicht zur Seite.
+
+            Auf der Achse steht es direkt neben der Sternreihe statt an der
+            rechten Kante – es gibt dort keine rechte Kante, an der etwas
+            stehen könnte. Die Zeile richtet sich deshalb an der Grundlinie
+            aus (`items-end`): Das Zeichen sitzt unten in seinem Kegel, mit
+            `items-center` hinge es eine halbe Zeile unter den Sternen. */}
+        <span
+          aria-hidden="true"
+          className={cn(
+            "font-display leading-none font-bold text-[#fbbc04]",
+            centered ? "text-4xl" : "text-5xl",
+          )}
+        >
+          &bdquo;
+        </span>
       </div>
 
       <blockquote
@@ -143,7 +150,13 @@ function QuoteCard({
       <figcaption
         className={cn(
           "mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5",
-          centered && "w-full flex-col items-center gap-2 pt-5",
+          /* Kein Trennstrich auf der Achse: Die Karte ist dort mittig
+             gesetzt, und die Linie zog quer durch eine Komposition, die
+             ohnehin schon von der Mitte her gelesen wird – sie trennte
+             nicht, sie zerschnitt. Am Schreibtisch bleibt sie: Dort steht
+             die Unterschrift links unter einem linksbündigen Zitat, und die
+             Linie ist die einzige Kante zwischen beiden. */
+          centered && "w-full flex-col items-center gap-2 border-t-0 pt-4",
         )}
       >
         {/* Auf der Mittelachse stehen Kreis und Name in *einer* Zeile, nicht
@@ -273,7 +286,7 @@ export async function Testimonials({
               <QuoteCard
                 {...item}
                 centered
-                className="w-[calc(100vw-3rem)]"
+                className="snap-focus w-[calc(100vw-4.5rem)]"
               />
             </li>
           ))}

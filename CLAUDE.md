@@ -615,6 +615,51 @@ Jetzt 733 px, Karte 307. Was dafür geändert wurde:
 - **Kartenfüllung unter `sm` von `p-7` auf `p-6`**, Abstand vom Kopf zur
   Wischbahn von `mt-14` auf `mt-10`. Ab `sm` unverändert.
 
+**Strich, Zitatzeichen, Bewegung — 06.09.2026.** Auf Ansage:
+
+- **Kein Trennstrich über der Unterschrift auf der Achse** (`border-t-0`).
+  Die Karte ist dort mittig gesetzt; die Linie zog quer durch eine
+  Komposition, die ohnehin von der Mitte her gelesen wird. Am Schreibtisch
+  bleibt sie: Dort steht die Unterschrift links unter einem linksbündigen
+  Zitat, und die Linie ist die einzige Kante zwischen beiden.
+- **Das goldene Anführungszeichen steht auch am Telefon**, neben der
+  Sternreihe statt an der rechten Kante – die gibt es auf der Achse nicht.
+  Die Zeile richtet sich an der Grundlinie aus (`items-end`), sonst hinge
+  das Zeichen eine halbe Zeile unter den Sternen. Grad `text-4xl` statt
+  `text-5xl`.
+- **Die Sterne setzen sich einzeln** (`.star-cascade`, 80 ms Versatz).
+  Ausgelöst vom `data-shown` des umgebenden `Reveal`, nicht von der
+  Ladezeit: Die Animation steht auf `paused`, bis der Block im Bild ist.
+  Zwei Rückfälle sind Pflicht, weil `both` sonst den Anfangszustand für
+  immer hält – ohne JavaScript und bei reduzierter Bewegung steht
+  `animation: none`. Gemessen: bei `reduce` alle Sterne auf Deckkraft 1.
+- **Die Karte in der Mitte der Wischbahn ist die volle** (`.snap-focus`,
+  `view(inline)`): Nachbarn auf 0,55 Deckkraft und 0,94 Größe. Nicht
+  dunkler – bei 0,4 verschwand die halb sichtbare Nachbarkarte auf Silber
+  ganz, und die Bahn sah aus wie eine einzelne Karte. Die Karte ist dafür
+  `calc(100vw-4.5rem)` statt `-3rem` breit: Mit 342 px blieben nach der
+  Skalierung 8 px Ausblick, und der war weg.
+
+**Zwei Fallen, die dabei aufgeflogen sind — beide betrafen auch ältere
+Bewegungen:**
+
+- **`animation: name linear both` setzt die Dauer auf 0 s.** Auf einer
+  Fortschritts-Zeitleiste (`animation-timeline: view()`) steht die
+  Animation damit sofort auf ihrem Endbild und rührt sich nie. Betroffen
+  waren `.parallax`, `.chain-draw` und `.seal-stamp` – seit sie gebaut
+  wurden. `animation-duration: auto` muss als **eigene Zeile** dahinter
+  stehen; im Kurzschreibweise-Slot ist `auto` kein gültiger Zeitwert.
+- **Lightning CSS zieht `animation-range` falsch zusammen.**
+  `entry 0% exit 100%` wird beim Bauen zu `entry exit 0%` – also Ende bei
+  `exit 0%` statt `exit 100%`, und die Spanne liegt außerhalb des
+  erreichbaren Scrollwegs. Die Langformen werden genauso zusammengezogen.
+  Ausweg: Wo die Spanne dem Standard entspricht (`cover 0%` bis
+  `cover 100%`), die Angabe **weglassen**; wo sie abweicht
+  (`.seal-stamp`, `.chain-draw`), über eigene Eigenschaften gehen
+  (`--range-start` / `--range-end` und `animation-range-start: var(…)`).
+  Wer hier etwas ändert, prüft danach im Build:
+  `grep -o "\.snap-focus{[^}]*}" .next/static/chunks/*.css`.
+
 ## Datumssignal und Alt-Texte
 
 Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):

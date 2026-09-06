@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ export function Stars({
   className,
   label,
   decorative = false,
+  cascade = false,
 }: {
   rating: number;
   className?: string;
@@ -27,10 +29,21 @@ export function Stars({
    * ausspricht – sonst liest der Screenreader sie zweimal.
    */
   decorative?: boolean;
+  /**
+   * Die Sterne setzen sich einzeln von links nach rechts, sobald der Block
+   * ins Bild kommt. Eine Bewertung *füllt sich* – das ist die Bewegung, die
+   * der Inhalt selbst hergibt, und deshalb die einzige an dieser Stelle.
+   *
+   * Der Auslöser ist das `data-shown` des umgebenden `Reveal`; die Regeln
+   * stehen an `.star-cascade` in `globals.css`. Nur dort einsetzen, wo ein
+   * `Reveal` darüber liegt – ohne das bleiben die Sterne stehen, wo sie
+   * sind, und das ist der richtige Ausgangszustand.
+   */
+  cascade?: boolean;
 }) {
   return (
     <span
-      className="flex items-center gap-0.5"
+      className={cn("flex items-center gap-0.5", cascade && "star-cascade")}
       {...(decorative
         ? { "aria-hidden": true as const }
         : { role: "img", "aria-label": label ?? `${rating} von 5 Sternen` })}
@@ -39,6 +52,7 @@ export function Stars({
         <Star
           key={i}
           aria-hidden="true"
+          style={cascade ? ({ "--i": i } as React.CSSProperties) : undefined}
           className={cn(
             "size-4",
             i < rating ? "fill-[#fbbc04] text-[#fbbc04]" : "text-current/25",

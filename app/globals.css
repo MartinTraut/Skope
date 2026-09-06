@@ -1303,6 +1303,53 @@
     }
   }
 
+  /**
+   * Die Sterne setzen sich einzeln — Kundenstimmen.
+   *
+   * Eine Bewertung füllt sich, sie liegt nicht da. Das ist die einzige
+   * Bewegung, die der Inhalt an dieser Stelle selbst hergibt, und deshalb
+   * die einzige, die er bekommt: fünf Sterne, 80 ms auseinander, jeder aus
+   * einer Spur kleiner und leicht gedreht an seinen Platz.
+   *
+   * Der Auslöser ist das `data-shown` des umgebenden `Reveal`, nicht die
+   * Ladezeit: Die Animation steht auf `paused`, bis der Block im Bild ist.
+   * `both` hält dabei den Anfangszustand — ohne das blitzten die Sterne
+   * fertig auf und sprängen dann zurück.
+   *
+   * Zwei Rückfälle, beide zwingend, weil `both` sonst den Anfangszustand
+   * für immer festhält: ohne JavaScript feuert der Beobachter nie, und bei
+   * reduzierter Bewegung stutzt die globale Regel jede Dauer auf 0,01 ms —
+   * eine pausierte Animation bliebe dann unsichtbar stehen.
+   */
+  .star-cascade > svg {
+    animation: star-set 0.44s var(--ease-out-expo) both;
+    animation-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 80ms);
+    animation-play-state: paused;
+  }
+
+  [data-shown="true"] .star-cascade > svg {
+    animation-play-state: running;
+  }
+
+  @keyframes star-set {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 3px, 0) scale(0.5) rotate(-24deg);
+    }
+  }
+
+  @media (scripting: none) {
+    .star-cascade > svg {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star-cascade > svg {
+      animation: none;
+    }
+  }
+
   /* Scroll-Reveal — gesteuert von components/motion/reveal.tsx */
   .reveal {
     opacity: 0;
@@ -1380,8 +1427,13 @@
     @media (prefers-reduced-motion: no-preference) {
       .parallax {
         animation: parallax-shift linear both;
+        /* `auto` muss als eigene Zeile stehen: Die Kurzschreibweise ohne
+           Zeitwert setzt die Dauer auf 0 s, und eine Animation mit 0 s
+           Dauer steht auf einer Fortschritts-Zeitleiste sofort auf ihrem
+           Endbild – gemessen an der Wischbahn der Kundenstimmen, deren
+           Karten dadurch alle drei im Anfangszustand festhingen. */
+        animation-duration: auto;
         animation-timeline: view();
-        animation-range: entry 0% exit 100%;
       }
 
       @keyframes parallax-shift {
@@ -1399,8 +1451,15 @@
          auf jedem Element und sähe bei der feinen Umschrift nach Zappeln aus. */
       .seal-stamp {
         animation: seal-set 1s var(--ease-out-expo) both;
+        /* Auf einer Fortschritts-Zeitleiste zählt keine Zeit, sondern der
+           Scrollweg – die 1 s aus der Kurzschreibweise blieben sonst als
+           feste Dauer stehen. */
+        animation-duration: auto;
         animation-timeline: view();
-        animation-range: entry 5% entry 70%;
+        --range-start: entry 5%;
+        --range-end: entry 70%;
+        animation-range-start: var(--range-start);
+        animation-range-end: var(--range-end);
       }
 
       @keyframes seal-set {
@@ -1425,8 +1484,12 @@
          richtige Ausgangszustand, kein Sonderfall. */
       .chain-draw {
         animation: chain-draw linear both;
+        animation-duration: auto;
         animation-timeline: view();
-        animation-range: entry 45% cover 55%;
+        --range-start: entry 45%;
+        --range-end: cover 55%;
+        animation-range-start: var(--range-start);
+        animation-range-end: var(--range-end);
         transform-origin: top center;
       }
 
@@ -1436,6 +1499,47 @@
         }
         to {
           transform: scaleY(1);
+        }
+      }
+
+      /**
+       * Die Karte in der Mitte ist die, die man liest — Wischbahn der
+       * Kundenstimmen am Telefon.
+       *
+       * Gebunden an die waagerechte Bahn (`view(inline)`), nicht an die
+       * Seite: Die Karte wächst und klart auf, während sie in die Mitte des
+       * Ausschnitts läuft, und tritt zur anderen Seite wieder zurück. Damit
+       * zeigt der Rand von selbst, dass dort noch etwas liegt — die halb
+       * sichtbare Nachbarkarte ist nicht mehr ein angeschnittener Rest,
+       * sondern der nächste Halt.
+       *
+       * 50 % der Strecke ist genau die Mitte des Ausschnitts, und jede der
+       * drei Karten lässt sich dort einrasten (`snap-center`). Die
+       * Bewegung rechnet der Compositor mit; es hängt kein Scroll-Listener
+       * daran.
+       */
+      .snap-focus {
+        animation: snap-focus linear both;
+        animation-duration: auto;
+        animation-timeline: view(inline);
+      }
+
+      /* Nicht dunkler als 0,55: Die halb sichtbare Nachbarkarte am rechten
+         Rand ist der einzige Hinweis, dass dort noch etwas liegt. Bei 0,4
+         verschwand sie auf Silber ganz, und die Bahn sah aus wie eine
+         einzelne Karte. */
+      @keyframes snap-focus {
+        0% {
+          opacity: 0.55;
+          transform: scale(0.94);
+        }
+        50% {
+          opacity: 1;
+          transform: none;
+        }
+        100% {
+          opacity: 0.55;
+          transform: scale(0.94);
         }
       }
     }
