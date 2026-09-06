@@ -530,6 +530,20 @@ Regeln, beide aus der Beschwerde „ich lande irgendwo mitten auf der Seite":
   Kundenstimmen bei 1512 × 900 → Oberkante 80 px, Bestand → 80 px,
   Navigation aus 1500 px Tiefe → 0.
 
+- **Der erste Aufruf eines Dokuments beginnt oben — 05.09.2026.** Der
+  Effekt oben läuft beim Einhängen zwar mit, kommt aber zu früh: Der
+  Browser stellt die gemerkte Position eines neu geladenen Dokuments erst um
+  `load` herum wieder her. Am Telefon ist das der Regelfall, weil Safari die
+  Seite neu aufbaut, sobald der Tab zwischendurch weg war — man kommt auf die
+  Seite und steht mitten im Kopfbereich. `scrollRestoration` steht deshalb für
+  die Dauer des Ladens auf `manual`, die Position wird dreimal gesetzt
+  (Einhängen, nächster Frame, `load`) und danach steht `scrollRestoration`
+  wieder auf dem alten Wert — Vor und Zurück im selben Dokument sollen weiter
+  dort landen, wo man war. Der Anlauf nach `load` rechnet dieselbe Regel noch
+  einmal statt stumpf auf 0 zu springen, sonst räumt er eine Adresse mit Raute
+  von ihrem Ziel. Wischt der Nutzer während des Ladens schon selbst
+  (`wheel`, `touchmove`, `keydown`), unterbleibt die Korrektur.
+
 ## Versicherungsseite — 02.09.2026
 
 Neu komponiert, weil ab `lg` die rechte Hälfte auf der ganzen oberen Seite

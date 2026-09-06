@@ -64,6 +64,75 @@ export function ScrollManager() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
 
+  /* Regel 1 auch beim *ersten* Aufruf, nicht nur beim Routenwechsel.
+
+     Der Effekt oben läuft zwar beim Einhängen mit, kommt aber zu früh: Der
+     Browser stellt die gemerkte Position eines neu geladenen Dokuments erst
+     um das `load`-Ereignis herum wieder her – auf dem Telefon der Regelfall,
+     weil Safari eine Seite aus dem Speicher neu aufbaut, sobald der Tab
+     zwischendurch weg war. Sichtbare Folge: Man tippt den Verweis an und
+     landet mitten im Kopfbereich, mit der Auszeichnungszeile schon über der
+     Fensterkante.
+
+     Deshalb `scrollRestoration` für die Dauer des Ladens auf „manual" und
+     die Position an drei Stellen gesetzt – beim Einhängen, einen Frame später
+     und nach `load`. Danach zurück auf den vorherigen Wert: Vor und Zurück
+     innerhalb des Dokuments soll weiter dort landen, wo man war.
+
+     Der Anlauf nach `load` rechnet dieselbe Regel noch einmal, statt stumpf
+     auf 0 zu springen – sonst risse eine Adresse mit Raute von ihrem Ziel weg.
+
+     Ein Riegel gegen den eigenen Willen des Nutzers: Wer während des Ladens
+     schon wischt, wird nicht mehr zurückgeholt. Ein Sprung nach oben unter
+     dem laufenden Finger ist schlimmer als eine falsche Anfangsposition. */
+  React.useLayoutEffect(() => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+
+    const previous = history.scrollRestoration;
+    history.scrollRestoration = "manual";
+
+    const settle = () => {
+      if (hash && scrollToId(hash, "instant")) return;
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+    settle();
+    const frame = requestAnimationFrame(settle);
+
+    let touched = false;
+    const stop = () => {
+      touched = true;
+    };
+    const moves: [string, AddEventListenerOptions][] = [
+      ["wheel", { passive: true }],
+      ["touchmove", { passive: true }],
+      ["keydown", {}],
+    ];
+    for (const [type, opts] of moves)
+      window.addEventListener(type, stop, opts);
+
+    const done = () => {
+      if (!touched) settle();
+      history.scrollRestoration = previous;
+      for (const [type, opts] of moves)
+        window.removeEventListener(type, stop, opts);
+    };
+    if (document.readyState === "complete") {
+      done();
+    } else {
+      window.addEventListener("load", done, { once: true });
+    }
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("load", done);
+      for (const [type, opts] of moves)
+        window.removeEventListener(type, stop, opts);
+      history.scrollRestoration = previous;
+    };
+    /* Leere Abhängigkeiten mit Absicht: Der Routenwechsel läuft über den
+       Effekt darüber, dieser hier gilt nur dem ersten Aufruf des Dokuments. */
+  }, []);
+
   /* Regel 2 für Verweise auf derselben Seite. */
   React.useEffect(() => {
     const onClick = (event: MouseEvent) => {
