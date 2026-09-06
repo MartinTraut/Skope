@@ -475,10 +475,11 @@ in der er liegt, sein Lenker klebt also immer an deren Oberkante.
   (`mask-image: linear-gradient(to bottom, transparent, black 2rem)`). Ohne
   sie stünde bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem
   zu 62 % durchscheinenden Bild.
-- **Die KI-Marke steht 1 rem unter der Kopfzeile, nicht 2,75.** Seit der
-  Straffung vom 05.09. bricht die Auszeichnungszeile bei 320 px zweizeilig
-  um und beginnt bei 121 px – die Marke lag von 116 bis 135 px quer darüber.
-  Jetzt 88 bis 107 px, 14 px über der Zeile und 30 px unter dem Menüknopf.
+- **Die KI-Marke steht ab `sm` 1 rem unter der Kopfzeile, nicht 2,75.** Seit
+  der Straffung vom 05.09. bricht die Auszeichnungszeile bei 320 px
+  zweizeilig um und beginnt bei 121 px – die Marke lag von 116 bis 135 px
+  quer darüber. Unter `sm` steht sie seit dem Umbau desselben Tages unten
+  rechts, siehe den nächsten Abschnitt.
 
 Gemessen unter den Zeilenkästen von Überschrift und Lead (Text ausgeblendet):
 hellste Stelle 65 (320), 106 (390), 61 px im Querformat – Weiß darauf 10,2 /
@@ -516,6 +517,52 @@ unverändert:
 - **Pfeil der Säulenkarten** steht unter `lg` in der Kennzahlzeile, der
   `max-w-[16ch]`-Deckel der Überschrift gilt nur ab `lg` – sonst brach
   „Erst messen, dann tauschen“ zweizeilig.
+
+## Kopfbereich am Telefon neu komponiert — 06.09.2026
+
+Auf Ansage: „sehr überladen, man sieht den Roller und den Hintergrund nicht".
+Alles unter `sm`; ab 640 px steht der Kopfbereich unverändert. Gemessen bei
+390 × 844 ist die Sektion von 726 auf 561 px gefallen, und die Aufnahme zeigt
+den Roller zum ersten Mal vollständig.
+
+- **Die Auszeichnungszeile steht nicht mehr über der Überschrift, sondern
+  über den Sternen** – und dort nur noch als „Generalüberholt". Der
+  Kopfbereich beginnt damit mit dem Satz, für den die Seite gefunden werden
+  soll, und die Zeile gibt den oberen Rand der Aufnahme frei. „· Neuenstadt"
+  fällt am Telefon weg: über den Sternen wäre der Ort eine zweite Herkunft
+  neben „Rezensionen bei Google". Er steht weiterhin im Seitentitel, in
+  `Region` und im Fußbereich.
+- **Der Lead ist am Telefon weg.** Vier Zeilen Fließtext zwischen Überschrift
+  und Beleg waren dort der längste Block und lagen genau auf dem Roller. Was
+  er sagt, sagt die Seite unmittelbar darunter noch einmal: die Prüfung im
+  Kennzahlenband, die Werkstatt in den Säulen, die Region in `Region`.
+- **Die H1 beginnt dadurch bei 148 statt 194 px** (390 px Breite). Das ist
+  reiner Wegfall, kein neuer Wert: `--hero-head` ist unverändert.
+- **Die Bühne ist höher** – `max(min(64svh,30rem),min(56vw,30rem))` statt
+  26 rem, ab `sm` der alte Wert. Bei 390 px sind das 480 statt 416, die
+  Bildfläche darunter 416 statt 352: Der Roller steht 18 % größer und mit
+  Werkzeugwand und Leuchtstoffröhre im Bild.
+- **Der Verlauf ist eine eigene Klasse** (`.hero-stage-scrim`), keine
+  Tailwind-Angabe mehr, und **seine Stopps stehen in Längen statt in
+  Prozent**. Die Bühne ist je nach Fensterhöhe 363 bis 480 px hoch, die
+  Überschrift beginnt aber immer bei `--hero-head` – in Prozent gerechnet
+  wandert die dichte Kante unter der Überschrift weg. Genau das war beim
+  ersten Versuch passiert: Hinter der ersten Zeile lag die Leuchtstoffröhre
+  mit 35 % Tinte bei 186 von 255, Weiß darauf **1,9:1**. Jetzt 56 % Tinte an
+  `--hero-head` und 86 % 5 rem darunter, gemessen 4,5 (390), 4,9 (360),
+  6,3 (430) und 9,5:1 (320).
+- **`--hero-head` ist das eine Token für den oberen Rand des Kopfbereichs.**
+  Es steht am Satzspiegel *und* im Verlauf. Zwei getrennte Werte laufen beim
+  ersten Eingriff an einem von beiden auseinander, und das sieht man erst als
+  Kontrastfehler.
+- **Die KI-Marke steht unten rechts auf 25 % Höhe der Bühne** (`bottom-[25%]`,
+  ab `sm` wieder oben rechts). Am Boden der Bühne wäre sie es nicht: Die
+  Bühne endet bei 390 px erst auf 480 px und damit mitten im Kennzahlenband –
+  die Marke stand zwischen „169,99 €" und „500+". Auf 25 % liegt sie neben
+  dem Hinterrad, auf der Aufnahme und in jeder gemessenen Breite frei von
+  Text (die Zeilen enden links bei 253 px, die Marke beginnt bei 300).
+  **Nicht weiter nach unten und nicht schwächer:** Sie muss auf dem Bild
+  liegen, nicht darunter – die Begründung steht unter „KI-Kennzeichnung".
 
 ## Telefonknöpfe — 03.09.2026
 

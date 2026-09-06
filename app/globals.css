@@ -309,6 +309,20 @@
      * 1279 px, in der das Menü sichtbar ist.
      */
     --header-h: 4.5rem;
+
+    /**
+     * Oberer Rand des Kopfbereichs der Startseite, an einer Stelle.
+     *
+     * Der Wert steht am Satzspiegel des Heros (`pt-[var(--hero-head)]`) und
+     * im Verlauf über der Telefonbühne (`.hero-stage-scrim`): Dort muss die
+     * Tinte genau dort dicht werden, wo die Überschrift beginnt. Zwei
+     * getrennte Werte laufen beim ersten Eingriff an einem von beiden
+     * auseinander, und das sieht man erst als Kontrastfehler.
+     *
+     * Er hängt an der Fensterhöhe, nicht an der Breite: Im Querformat eines
+     * iPhone (844 × 390) sind 112 px fester Kopfabstand 29 % der Bildhöhe.
+     */
+    --hero-head: clamp(6.5rem, 4rem + 10svh, 10rem);
   }
 
   @media (width >= 48rem) {
@@ -1005,6 +1019,34 @@
         transparent 78%
       ),
       radial-gradient(ellipse 90% 70% at 8% 86%, #22380f 0%, transparent 70%);
+  }
+
+  /**
+   * Verlauf über der Bühne am Telefon (unter `sm`).
+   *
+   * Drei Aufgaben in einem Verlauf, und die mittlere entscheidet: oben ein
+   * leichter Schleier, in der Mitte das offene Fenster, in dem der Roller
+   * steht, darunter Tinte, auf der die Überschrift liegt und mit der die
+   * Bühne ohne Kante in die Sektion übergeht.
+   *
+   * Die Stopps stehen in Längen, nicht in Prozent. Die Bühne ist je nach
+   * Fensterhöhe 363 bis 480 px hoch, die Überschrift beginnt aber immer bei
+   * `--hero-head` – in Prozent gerechnet wandert die dichte Kante unter der
+   * Überschrift weg. Gemessen bei 390 px lag hinter ihrer ersten Zeile die
+   * Leuchtstoffröhre der Werkzeugwand: mit 35 % Tinte 186 von 255, Weiß
+   * darauf 1,9:1. Ab 56 % sind es 4,7:1.
+   */
+  .hero-stage-scrim {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-ink) 45%, transparent) 0,
+      color-mix(in oklab, var(--color-ink) 8%, transparent)
+        calc(var(--hero-head) - 4rem),
+      color-mix(in oklab, var(--color-ink) 56%, transparent) var(--hero-head),
+      color-mix(in oklab, var(--color-ink) 86%, transparent)
+        calc(var(--hero-head) + 5rem),
+      var(--color-ink) 100%
+    );
   }
 
   .hero-scrim {

@@ -218,7 +218,7 @@ export async function Hero() {
             Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
             damit die Überschrift darauf steht und die Zone ohne Kante in die
             Tinte übergeht. */}
-        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(58svh,26rem),min(56vw,26rem))] w-screen -translate-x-1/2 overflow-hidden lg:hidden">
+        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[max(min(64svh,30rem),min(56vw,30rem))] w-screen -translate-x-1/2 overflow-hidden sm:h-[max(min(58svh,26rem),min(56vw,26rem))] lg:hidden">
           {/* Die Aufnahme beginnt unter der Kopfzeile, nicht am oberen Rand
               der Bühne.
 
@@ -271,9 +271,9 @@ export async function Hero() {
               Jetzt 88 bis 107 px, gemessen 14 px darüber. */}
           <GeneratedMark
             src="/img/hero-werkstatt.jpg"
-            className="top-[calc(var(--header-h)+1rem)] right-[max(1.5rem,env(safe-area-inset-right))] bottom-auto left-auto"
+            className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
+          <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
         </div>
 
         {/* Der Kopfabstand hängt an der Höhe des Fensters, nicht an seiner
@@ -291,7 +291,7 @@ export async function Hero() {
           115 px auf einem Telefon im Hochformat, gedeckelt bei 128 px – genau
           dem Wert, der vorher ab `md` stand. Auf jedem Schirm ab 800 px Höhe
           ändert sich also nichts. */}
-        <Container className="relative pt-[clamp(6.5rem,4rem+10svh,10rem)] pb-6 lg:pt-[clamp(4rem,2rem+6svh,6.5rem)] md:pb-8">
+        <Container className="relative pt-[var(--hero-head)] pb-6 lg:pt-[clamp(4rem,2rem+6svh,6.5rem)] md:pb-8">
           {/* Sieben Spalten Text, fünf für das Motiv – auch wenn die Aufnahme
             als Grund über die volle Breite läuft. Die fünf freien Spalten
             sind kein leerer Platz, sondern der Teil des Bildes, den der
@@ -305,7 +305,9 @@ export async function Hero() {
             Spalten gerechnet. */}
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-10">
             <div className="lg:col-span-7">
-              <Reveal immediate>
+              {/* Am Telefon steht diese Zeile nicht mehr hier, sondern
+                  gekürzt über den Sternen – siehe den Kommentar dort. */}
+              <Reveal immediate className="hidden sm:block">
                 {/* Die Auszeichnungszeile nennt das Angebot, nicht den
                   Betriebstyp: „Fachwerkstatt" beschreibt, was hier steht,
                   „generalüberholt" beschreibt, was verkauft wird. Der Ort
@@ -354,7 +356,7 @@ export async function Hero() {
                 115 % sind gemessen genau die achte Spalte samt Rasterabstand
                 (800 → 920 px bei 1512 px); der Fließtext bleibt bei sieben,
                 weil eine Lesestrecke nicht breiter werden soll. */}
-              <h1 className="rise-line mt-4 text-[length:var(--text-hero)] sm:mt-6 lg:w-[115%]">
+              <h1 className="rise-line text-[length:var(--text-hero)] sm:mt-6 lg:w-[115%]">
                 <span>
                   <span className="block">
                     <Mark>Geprüfte</Mark> E-Scooter
@@ -363,7 +365,13 @@ export async function Hero() {
                 </span>
               </h1>
 
-              <Reveal immediate>
+              {/* Am Telefon steht der Lead nicht. Vier Zeilen Fließtext
+                  zwischen Überschrift und Beleg waren dort der längste Block
+                  des Kopfbereichs und lagen genau auf dem Roller – und was
+                  sie sagt, sagt die Seite unmittelbar darunter noch einmal:
+                  die Prüfung im Kennzahlenband, die Werkstatt in den Säulen,
+                  die Region in `Region`. Ab `sm` bleibt sie. */}
+              <Reveal immediate className="hidden sm:block">
                 {/* Der Vorgänger war eine Leistungsaufzählung („Fehlerdiagnose,
                   Wartung und geprüfte Gebrauchtgeräte"). Sie beantwortete die
                   Frage, die jemand mit einem defekten Gerät im Kopf hat, an
@@ -440,7 +448,21 @@ export async function Hero() {
                   hinaus und wirkte wie ein Fremdkörper neben der Zeile. Es
                   hängt jetzt direkt am Wort, das es belegt. */}
               <Reveal immediate delay={60}>
-                <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2.5 sm:gap-x-5">
+                {/* Am Telefon steht die Auszeichnung hier statt über der
+                    Überschrift: Der Kopfbereich beginnt dann mit dem Satz,
+                    für den die Seite gefunden werden soll, und die Zeile
+                    darüber gibt den oberen Rand der Aufnahme frei.
+
+                    Gekürzt auf ein Wort. „· Neuenstadt" stand über der
+                    Überschrift, weil dort der Ort die halbe Suchanfrage
+                    trägt; über den Sternen wäre es eine zweite Herkunft
+                    neben „Rezensionen bei Google" in derselben Gruppe. Der
+                    Ort steht am Telefon weiterhin im Seitentitel, in
+                    `Region` und im Fußbereich. */}
+                <p className="eyebrow mt-9 text-current/90 sm:hidden">
+                  Generalüberholt
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2.5 sm:mt-7 sm:gap-x-5">
                   {/* Die Gesichter erst ab `sm`. Am Telefon ist der Beleg eine
                       Zeile: Sterne, Note, Anzahl – der Kopfbereich trug dort
                       sieben Blöcke gleicher Schwere übereinander, und die drei
