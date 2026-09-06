@@ -595,6 +595,26 @@ Das Laufband bleibt auf jeder Breite ab `sm` – ein Versuch, es ab `lg`
 durch drei feste Karten zu ersetzen, wurde am 02.09.2026 auf Ansage
 zurückgenommen. Am Telefon die Wischbahn.
 
+**Am Telefon neu komponiert — 06.09.2026.** Der Block war bei 390 px 830 px
+hoch, davon 397 Kopf; die Karte begann unter der Falz und war 361 px hoch.
+Jetzt 733 px, Karte 307. Was dafür geändert wurde:
+
+- **Kreis und Name stehen in einer Zeile**, nicht übereinander. Gestapelt
+  waren unter fünf Zeilen Zitat drei Reihen Möbel – Kreis, Name, Quelle –,
+  und die Karte las sich nach unten hin als Liste. Der Kreis ist auf der
+  Achse `size-9` statt `size-11`, weil er dort neben dem Namen steht.
+  Im Laufband bleibt alles wie es war.
+- **Der Lead nennt die Zahl nicht mehr.** „3 von 37 Rezensionen aus dem
+  Google-Profil" stand eine Zeile über „Alle 37 Rezensionen im
+  Google-Profil" – dieselbe Zahl und dasselbe Wort zweimal untereinander.
+  Die Zahl trägt der Verweis, der Lead nur noch die Herkunft.
+- **Zeichen und Pfeil des Verweises stehen im Satz**, nicht als eigene
+  Zellen daneben. Bei 320 px bricht die Zeile, und als Flex-Zellen hingen
+  beide auf halber Höhe an den Kanten. „Google-Profil" bricht dort nicht
+  am Bindestrich auf.
+- **Kartenfüllung unter `sm` von `p-7` auf `p-6`**, Abstand vom Kopf zur
+  Wischbahn von `mt-14` auf `mt-10`. Ab `sm` unverändert.
+
 ## Datumssignal und Alt-Texte
 
 Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
