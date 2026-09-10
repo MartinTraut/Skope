@@ -452,6 +452,30 @@ Sorte Fehler war wie bei den Reparaturbereichen:
   als Bedienelement liest. Das Gold der Sterne und das Google-Zeichen weisen
   den Beleg auch ohne Rahmen als Zitat aus.
 
+## Roller im Kopfbereich am Schreibtisch — 10.09.2026
+
+Derselbe Fehler wie am Telefon am 06.09., nur vier Tage später bemerkt: Der
+Lenker lief durch Navigation und Telefonpille. Die Absenkung von damals galt
+ausdrücklich nur unter `lg`; am Schreibtisch stand die Aufnahme unverändert
+seit dem 02.09. **Es hat sich nichts von selbst verschoben** — die Stelle war
+nie angefasst worden.
+
+- **Gemessen vorher:** Die Aufnahme liegt `contain` und unten verankert, füllt
+  die Bildzone also über die Höhe (1465 × 964: Bild 1321 × 829 in einer Zone
+  von 1465 × 829). Ihre Oberkante lag bei 0 und damit **80 px über** der
+  Unterkante der Kopfzeile.
+- **Jetzt** beginnt die Bildfläche bei `calc(var(--header-h) + 1.5rem)`:
+  Oberkante 104 px, also 24 px unter der Kopfzeile — auf 1465, 1512 und 1920
+  derselbe Wert, weil er an der Kopfhöhe hängt und nicht an der Fensterhöhe.
+  Der Roller wird rund 12 % kleiner und steht weiter auf demselben Boden
+  (unten verankert, Fläche endet mit der Zone).
+- **Der Versatz hängt an einer eigenen Fläche**, nicht am `<Image>` (`fill`
+  schreibt `inset: 0` inline) und nicht an der Zone (an ihr hängen `.hero-scrim`
+  und der Auslauf in die Tinte, deren Stopps auf gemessene Kontraste gerechnet
+  sind). Maske wie am Telefon gegen die neue Oberkante.
+- Sektionshöhen und H1-Positionen auf neun Breiten unverändert, kein Überlauf,
+  keine Konsolenfehler.
+
 ## Roller im Kopfbereich am Telefon — 06.09.2026
 
 Der Lenker lief quer durch das Wortzeichen der Kopfzeile. Kein
@@ -837,6 +861,55 @@ Aus einem AEO-Bericht vom 18.08.2026 (92/100, zwei Lücken):
   „Handy-Qualitätsprüfung".
   Offen bleiben die positionsbeschreibenden Alt-Texte der importierten Geräte
   (siehe unten).
+
+## Animations-Audit — 10.09.2026
+
+Durchgang über jede Bewegung im Projekt: `globals.css`, `Reveal`, alle
+`transition-*`-Angaben in den Bauteilen. Gefunden wurden keine kaputten
+Animationen, sondern ein fehlendes System — jede Stelle war für sich richtig
+gebaut und keine sprach dieselbe Sprache wie die nächste.
+
+**Was auseinanderlief:**
+
+- **Dieselbe Kurve in vier Schreibweisen:** `ease-[cubic-bezier(.22,1,.36,1)]`
+  elfmal, `ease-[cubic-bezier(0.22,1,0.36,1)]` einmal,
+  `ease-[var(--ease-out-expo)]` einmal, dazu `var(--ease-out-expo)` im CSS.
+  Das Token lag die ganze Zeit in `@theme` — die Utility `ease-out-expo` gab
+  es also, sie stand nur in keiner Datei. Jetzt überall die Utility.
+- **Sechs Dauerstufen ohne Leiter:** 150, 200, 300, 400, 500, 600 ms. Jetzt
+  vier: **200 Mikro / 300 Fläche / 450 Tafel / 650 Bildfahrt.** Alles
+  dazwischen ist ein Unterschied, den man misst statt sieht.
+- **Eine Kurve für alles, und für die Hälfte die falsche.** `out-expo` legt
+  neun Zehntel des Weges in den ersten 25 % der Zeit zurück. Über 500 ms
+  gelesen ist das ein Auftritt; über 200 ms an einem Hover ist es ein
+  Nachwippen — die Fläche springt und kriecht dann hinterher. Zweite Kurve
+  **`--ease-out-quart`** für alles unter 300 ms, inklusive `.press`
+  (dort lief der Rückweg von 260 ms auf Expo).
+- **Tailwinds Voreinstellung stand ungenutzt daneben:** Jedes
+  `transition-*` ohne eigene Angabe — die Mehrheit — lief auf `ease-in-out`
+  über 150 ms, einer Kurve, die am *Anfang* bremst. Für eine Rückmeldung auf
+  einen Finger ist das falsch herum. `--default-transition-timing-function`
+  und `--default-transition-duration` stehen jetzt in `@theme`.
+
+**Kopfbereich — es gab keine Choreografie, nur gleichzeitige Starts.**
+Auszeichnung, Überschrift und Lead begannen alle bei 0 ms, Beleg bei 60,
+Band bei 80. Vier Elemente, die zusammen aufblitzen, lesen sich als ein
+Ruck. Jetzt eine Folge: Auszeichnung 0 → H1 Zeile 1 bei 0 und Zeile 2 bei
+90 → Lead 300 → Beleg 400 → Kennzahlenband 500.
+
+- **Die H1 stieg als Block.** `.rise-line` lag um *beide* Zeilen; die Maske
+  klammerte den ganzen Satz und schob ihn hoch. Jetzt trägt jede Zeile ihre
+  eigene Maske und ihren eigenen Einsatz (90 ms Versatz) — das ist der Sinn
+  der Klasse, sie heißt nach der Zeile.
+- **Das Motiv stand still, während alles davor lief.** Neu `.hero-figure`:
+  3,5 % Skalierung über 1,1 s, Ursprung unten, damit der Roller auf seiner
+  Standfläche zur Ruhe kommt. **Nur `transform`** — die Aufnahme ist auf
+  jeder Breite der LCP-Kandidat, und ein Einblenden über `opacity` zählt
+  erst am Ende der Animation als gezeichnet.
+- **Gemessen, ob das etwas kostet** (1,6 Mbit/s, CPU vierfach gedrosselt, je
+  drei Läufe): mit Bewegung 1044/1068/1040 ms bei 390 px und
+  2152/2164/2148 bei 1512, ohne Bewegung 1052/1016/1020 und
+  2160/2152/2152. Kein Unterschied außerhalb des Rauschens, CLS 0.
 
 ## Designsystem
 

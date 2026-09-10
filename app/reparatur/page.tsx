@@ -139,7 +139,7 @@ export default function RepairPage() {
                   {/* Der Neonschimmer oben links (`.tint-neon`) bleibt –
                       am 02.09.2026 entfernt, am 03.09. auf Ansage des
                       Nutzers zurückgeholt: „die sahen davor schöner aus". */}
-                  <div className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-silver p-7 lift transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:p-9">
+                  <div className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-silver p-7 lift transition-transform duration-300 ease-out-quart hover:-translate-y-1 md:p-9">
                     <span
                       aria-hidden="true"
                       className="tint-neon pointer-events-none absolute inset-0"

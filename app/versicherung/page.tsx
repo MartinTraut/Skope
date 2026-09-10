@@ -148,7 +148,7 @@ export default function InsurancePage() {
                      genau die Zeile, die man vergleicht. */
                     <tr
                       key={row.period}
-                      className="border-b border-current/10 transition-colors duration-150 hover:bg-current/5"
+                      className="border-b border-current/10 transition-colors duration-200 hover:bg-current/5"
                     >
                       <th
                         scope="row"

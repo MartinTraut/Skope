@@ -226,7 +226,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
                     {item.label}
                     <span
                       className={cn(
-                        "absolute inset-x-2.5 bottom-1.5 h-px origin-left bg-accent transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
+                        "absolute inset-x-2.5 bottom-1.5 h-px origin-left bg-accent transition-transform duration-300 ease-out-quart",
                         active ? "scale-x-100" : "scale-x-0",
                       )}
                     />
@@ -341,7 +341,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
            bewegt die Seite dahinter – sichtbar, sobald das Menü wieder zugeht. */
         className={cn(
           "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-h))] min-h-[calc(100svh-var(--header-h))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
-          "transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none",
+          "transition-[opacity,transform,visibility] duration-300 ease-out-quart motion-reduce:transition-none",
           open
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-4 opacity-0",
@@ -369,7 +369,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
                 key={item.href}
                 style={{ transitionDelay: open ? `${90 + i * 40}ms` : "0ms" }}
                 className={cn(
-                  "border-b border-current/8 transition-[opacity,transform] duration-400 ease-[cubic-bezier(.22,1,.36,1)]",
+                  "border-b border-current/8 transition-[opacity,transform] duration-[450ms] ease-out-expo",
                   "motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
                   open
                     ? "translate-y-0 opacity-100"
@@ -412,7 +412,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
           <div
             style={{ transitionDelay: open ? "330ms" : "0ms" }}
             className={cn(
-              "mt-7 flex flex-col gap-3 transition-[opacity,transform] duration-400 ease-[cubic-bezier(.22,1,.36,1)]",
+              "mt-7 flex flex-col gap-3 transition-[opacity,transform] duration-[450ms] ease-out-expo",
               "motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
               open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
             )}

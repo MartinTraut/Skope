@@ -208,8 +208,41 @@
   --radius-lg: 28px;
   --radius-xl: 36px;
 
-  /* --- Motion --------------------------------------------------------- */
+  /* --- Motion ---------------------------------------------------------
+   *
+   * Zwei Kurven, und sie haben verschiedene Aufgaben.
+   *
+   * `out-expo` steigt fast senkrecht an und läuft lange aus. Das ist die
+   * Kurve für **Auftritte**: Etwas kommt von außen ins Bild, ist sofort da
+   * und legt sich hin. Über 500 ms gelesen wirkt sie ruhig.
+   *
+   * Dieselbe Kurve unter 250 ms ist ein Fehler, und genau so stand sie hier
+   * an jedem Hover: Bei 200 ms liegen 90 % des Weges in den ersten 60 ms,
+   * der Rest kriecht. Das liest sich als Nachschwingen – der Zeiger steht
+   * still, die Fläche zappelt nach. `out-quart` legt denselben Weg
+   * gleichmäßiger zurück und fühlt sich am Finger fest an.
+   *
+   * Die Regel: **Auftritt und Scrollweg `out-expo`, alles unter 300 ms
+   * `out-quart`.**
+   *
+   * Die Dauern sind eine Leiter mit vier Stufen, keine freie Wahl:
+   *   200 ms  Mikro – Hover, Druckpunkt, Farbe, Pfeil
+   *   300 ms  Fläche – Deckkraft, Schleier, Kanten
+   *   450 ms  Tafel – Menü, Aufklapper, ganze Blöcke
+   *   650 ms  Bildfahrt – langsames Heranfahren einer Aufnahme
+   * Alles dazwischen ist ein Unterschied, den man misst statt sieht.
+   */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Was ohne eigene Angabe läuft, läuft trotzdem in dieser Sprache.
+     Tailwinds Voreinstellung ist `ease-in-out` über 150 ms – eine Kurve, die
+     am Anfang *und* am Ende bremst. Für eine Rückmeldung auf einen Finger ist
+     der träge Anfang falsch: Sie soll sofort losgehen und weich ankommen.
+     Gemessen betrifft das jedes `transition-*` ohne `ease-`/`duration-` im
+     Projekt – die Mehrheit. */
+  --default-transition-timing-function: var(--ease-out-quart);
+  --default-transition-duration: 200ms;
 }
 
 @layer base {
@@ -920,6 +953,11 @@
    * Die Skalierung ist mit 0,972 bewusst klein. Sichtbar wird sie über die
    * Dauer, nicht über den Weg: 120 ms hinein, 260 ms zurück. Ein Druckpunkt
    * darf sofort da sein und muss langsam loslassen, sonst schnappt er.
+   *
+   * Die Kurve ist `out-quart` und nicht `out-expo`. Über 260 ms legt Expo
+   * neun Zehntel des Weges in den ersten 70 ms zurück; die Fläche springt
+   * damit fast unter dem Finger zurück und kriecht die letzten Prozent
+   * hinterher – man liest ein Nachwippen, keine Rückkehr.
    * Kartenflächen setzen `--press-scale` höher, weil derselbe Faktor auf
    * 600 px Breite als Verrutschen liest, nicht als Druck.
    */
@@ -931,7 +969,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .press {
-      transition: transform 260ms var(--ease-out-expo);
+      transition: transform 260ms var(--ease-out-quart);
     }
 
     .press:active {
@@ -1265,6 +1303,41 @@
 
   @media (prefers-reduced-motion: reduce) {
     .settle {
+      animation: none;
+    }
+  }
+
+  /**
+   * Die Aufnahme im Kopfbereich kommt zur Ruhe.
+   *
+   * Der Text stieg auf, die Kennzahlen blendeten ein – und das Motiv dahinter
+   * stand von der ersten Millisekunde bewegungslos. Genau daran erkennt man
+   * eine Seite, auf der Bewegung nachträglich an einzelne Elemente geheftet
+   * wurde: Der Grund gehört nicht dazu.
+   *
+   * Animiert wird **ausschließlich `transform`**, und das ist keine Marotte.
+   * Die Aufnahme ist auf jeder Breite der wahrscheinlichste LCP-Kandidat; ein
+   * Einblenden über `opacity` zählt erst am Ende der Animation als gezeichnet
+   * und verschöbe die Messung um die volle Dauer. Eine Skalierung malt vom
+   * ersten Bild an.
+   *
+   * 3,5 % über 1,1 s sind absichtlich kaum zu benennen. Der Ursprung liegt
+   * unten: Der Roller steht auf seiner Standfläche und kommt darauf zur Ruhe,
+   * statt aus der Bildmitte zu wachsen.
+   */
+  .hero-figure {
+    animation: hero-figure 1.1s var(--ease-out-expo) both;
+    transform-origin: 50% 100%;
+  }
+
+  @keyframes hero-figure {
+    from {
+      transform: scale(1.035);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-figure {
       animation: none;
     }
   }

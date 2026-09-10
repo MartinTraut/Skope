@@ -53,7 +53,7 @@ export function LocationMap({
         alt={`Kartenausschnitt mit der Lage der Werkstatt ${location}`}
         fill
         sizes="(min-width: 1024px) 45vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
-        className="object-cover transition-transform duration-[600ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
+        className="object-cover transition-transform duration-[650ms] ease-out-expo group-hover:scale-[1.03]"
       />
 
       {/* Die Nadel sitzt in der Bildmitte, weil der Ausschnitt beim Erzeugen

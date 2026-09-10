@@ -94,7 +94,7 @@ export function Faq({
               </h3>
               <span
                 aria-hidden="true"
-                className="mt-1 grid size-8 shrink-0 place-items-center rounded-full border border-current/25 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-open:rotate-45 group-open:border-accent group-open:text-accent"
+                className="mt-1 grid size-8 shrink-0 place-items-center rounded-full border border-current/25 transition-transform duration-300 ease-out-quart group-open:rotate-45 group-open:border-accent group-open:text-accent"
               >
                 <Plus className="size-4" />
               </span>

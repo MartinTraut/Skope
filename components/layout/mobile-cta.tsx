@@ -92,7 +92,7 @@ export function MobileCta() {
         id="mobile-cta"
         className={cn(
           "liquid-glass fixed right-[max(0.75rem,env(safe-area-inset-right))] bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-40 overflow-hidden rounded-[1.5rem] border border-current/12 text-silver lg:hidden on-dark",
-          "transition-[opacity,transform] duration-300 ease-[cubic-bezier(.22,1,.36,1)]",
+          "transition-[opacity,transform] duration-300 ease-out-quart",
           shown
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-[calc(100%+1.5rem)] opacity-0",

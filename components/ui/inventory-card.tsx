@@ -94,7 +94,7 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
     <Link
       href={`/e-scooter/${item.id}`}
       aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
-      className="press group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4"
+      className="press group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4"
     >
       {/* Quadrat, auch in der einzelnen Spalte. Ein Versuch mit 4:3 am
           Telefon sparte 86 px Höhe, schnitt aber bei jedem zweiten Gerät die
@@ -107,7 +107,7 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
           alt={cover.alt}
           fill
           sizes="(min-width: 1280px) 30vw, (min-width: 640px) 46vw, calc(100vw - 3rem)"
-          className="object-cover transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="object-cover transition-transform duration-[650ms] ease-out-expo group-hover:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
         {item.images.length > 1 ? (
@@ -160,7 +160,7 @@ export function InventoryCard({ item }: { item: InventoryItem }) {
         Mehr Daten
         <ArrowRight
           aria-hidden="true"
-          className="size-4 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-1 motion-reduce:transition-none"
+          className="size-4 transition-transform duration-300 ease-out-quart group-hover:translate-x-1 motion-reduce:transition-none"
         />
       </span>
     </Link>

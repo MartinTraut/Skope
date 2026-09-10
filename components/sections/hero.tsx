@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
 import { Reveal } from "@/components/motion/reveal";
@@ -166,14 +167,35 @@ export async function Hero() {
             obwohl beide Flächen einen ausformulierten `alt` tragen.
             `pointer-events-none` und `-z-10` halten die Fläche weiterhin aus
             jeder Bedienung heraus. */}
-          <Image
-            src="/img/hero-werkstatt.jpg"
-            alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
-            fill
-            priority
-            sizes="min(100vw, 104rem)"
-            className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
-          />
+          {/* Dieselbe Absenkung wie am Telefon, aus demselben Grund.
+
+              Die Aufnahme liegt `contain` und unten verankert; gemessen füllt
+              sie die Bildzone über die Höhe (1465 × 964: Bild 1321 × 829 in
+              einer Zone von 1465 × 829). Ihre Oberkante lag damit bei 0 –
+              80 px *über* der Unterkante der Kopfzeile –, und weil der Lenker
+              im Motiv oben steht, lief er quer durch Navigation und
+              Telefonpille.
+
+              Die Zone bleibt, wo sie ist; nur die Bildfläche beginnt
+              unterhalb der Kopfzeile. Der Roller wird dadurch rund 12 %
+              kleiner, steht aber weiterhin auf demselben Boden – die Fläche
+              endet unten mit der Zone, und `contain` verankert unten.
+
+              Der Versatz gehört an eine eigene Fläche und nicht an das
+              `<Image>`: `fill` schreibt `inset: 0` als Inline-Stil, gegen den
+              eine Tailwind-Klasse am Bild selbst verliert. Und nicht an die
+              Zone: An ihr hängen Schleier und Auslauf in die Tinte, deren
+              Stopps auf die gemessenen Kontraste gerechnet sind. */}
+          <div className="hero-figure absolute inset-x-0 top-[calc(var(--header-h)+1.5rem)] bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+            <Image
+              src="/img/hero-werkstatt.jpg"
+              alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+              fill
+              priority
+              sizes="min(100vw, 104rem)"
+              className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
+            />
+          </div>
           {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
           <div className="hero-scrim absolute inset-0" />
           {/* Die Kennzeichnung liegt über dem Schleier, nicht darunter: Der
@@ -239,7 +261,7 @@ export async function Hero() {
               Die Maske nimmt der neuen Oberkante die Kante: Ohne sie stünde
               bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem zu
               62 % durchscheinenden Bild. */}
-          <div className="absolute inset-x-0 top-16 bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+          <div className="hero-figure absolute inset-x-0 top-16 bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
             <Image
               src="/img/hero-werkstatt.jpg"
               alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
@@ -356,12 +378,26 @@ export async function Hero() {
                 115 % sind gemessen genau die achte Spalte samt Rasterabstand
                 (800 → 920 px bei 1512 px); der Fließtext bleibt bei sieben,
                 weil eine Lesestrecke nicht breiter werden soll. */}
-              <h1 className="rise-line text-[length:var(--text-hero)] sm:mt-6 lg:w-[115%]">
-                <span>
-                  <span className="block">
+              {/* Jede Zeile hat ihre eigene Maske und ihren eigenen Einsatz.
+                  Vorher lagen beide Zeilen in *einer* Maske: Sie stiegen als
+                  Block, und der Auftritt war ein Schieben. Zwei Masken mit
+                  90 ms Versatz lesen sich als Satz, der sich setzt – das ist
+                  der Sinn der Klasse, sie heißt nach der Zeile.
+
+                  Der Versatz ist derselbe Wert wie die Staffelung der
+                  Kennzahlen darunter (`--stagger`); der ganze Kopfbereich
+                  läuft auf einem Takt. */}
+              <h1 className="text-[length:var(--text-hero)] sm:mt-6 lg:w-[115%]">
+                <span className="rise-line">
+                  <span>
                     <Mark>Geprüfte</Mark> E-Scooter
                   </span>
-                  <span className="block">gebraucht kaufen</span>
+                </span>
+                <span
+                  className="rise-line"
+                  style={{ "--rise-delay": "90ms" } as CSSProperties}
+                >
+                  <span>gebraucht kaufen</span>
                 </span>
               </h1>
 
@@ -371,7 +407,7 @@ export async function Hero() {
                   sie sagt, sagt die Seite unmittelbar darunter noch einmal:
                   die Prüfung im Kennzahlenband, die Werkstatt in den Säulen,
                   die Region in `Region`. Ab `sm` bleibt sie. */}
-              <Reveal immediate className="hidden sm:block">
+              <Reveal immediate delay={300} className="hidden sm:block">
                 {/* Der Vorgänger war eine Leistungsaufzählung („Fehlerdiagnose,
                   Wartung und geprüfte Gebrauchtgeräte"). Sie beantwortete die
                   Frage, die jemand mit einem defekten Gerät im Kopf hat, an
@@ -447,7 +483,7 @@ export async function Hero() {
                   ist die Versalhöhe rund 10 px, ein 14-px-„G" stand darüber
                   hinaus und wirkte wie ein Fremdkörper neben der Zeile. Es
                   hängt jetzt direkt am Wort, das es belegt. */}
-              <Reveal immediate delay={60}>
+              <Reveal immediate delay={400}>
                 {/* Am Telefon steht die Auszeichnung hier statt über der
                     Überschrift: Der Kopfbereich beginnt dann mit dem Satz,
                     für den die Seite gefunden werden soll, und die Zeile
@@ -523,7 +559,8 @@ export async function Hero() {
             Leerzeilen Abstand riss das Band von der Aufnahme ab, statt sie
             abzuschließen. */}
         <Reveal
-          delay={80}
+          immediate
+          delay={500}
           className="grid grid-cols-2 gap-x-6 gap-y-7 pt-6 pb-10 sm:gap-x-8 sm:gap-y-10 sm:pb-12 lg:grid-cols-4 lg:gap-x-10 lg:pt-4 lg:pb-14"
         >
           {/* Ab `lg` mittig in der eigenen Spalte, darunter linksbündig.
