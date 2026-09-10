@@ -52,7 +52,7 @@ export default function InsurancePage() {
            Tabelle steht eine Wischlänge tiefer. */
         asideClassName="hidden lg:col-span-6 lg:col-start-7 lg:block lg:self-end"
         aside={
-          <dl className="flex flex-wrap gap-x-12 gap-y-6 lg:justify-end">
+          <dl className="grid grid-cols-3 items-end gap-x-6 gap-y-6 xl:gap-x-8">
             {[
               { label: "Haftpflicht, Saison", value: season.liability },
               {
@@ -61,9 +61,23 @@ export default function InsurancePage() {
               },
               { label: "Werktage bis zum Kennzeichen", value: "5–10" },
             ].map((fact) => (
-              <div key={fact.label}>
-                <dt className="text-sm text-current/60">{fact.label}</dt>
-                <dd className="tabular mt-1 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
+              /* Dieselbe Figur wie im Kopf von /reparatur und
+                 /wartungsvertrag: Auszeichnungsgrad für die Beschriftung,
+                 `text-4xl` für den Wert. Hier stand die Beschriftung im
+                 Fließtextgrad und der Wert auf `--text-stat` – gegenüber den
+                 Schwesterseiten eine kleinere, blassere Beschriftung unter
+                 einer größeren Zahl, also zweimal derselbe Block in zwei
+                 Maßstäben.
+
+                 Drei gleich breite Spalten mit Mittelachse statt einer
+                 Flex-Zeile: Die Beschriftungen sind unterschiedlich lang,
+                 und linksbündig hing unter jeder ein anderer Rest – bei
+                 „Werktage bis zum Kennzeichen" gut 100 px. `items-end`
+                 hält die Werte auf einer Linie, auch wenn die längste
+                 Beschriftung zweizeilig umbricht. */
+              <div key={fact.label} className="text-center">
+                <dt className="eyebrow-plain text-current/60">{fact.label}</dt>
+                <dd className="tabular mt-2 font-display text-3xl font-bold tracking-tight text-accent xl:text-4xl">
                   {fact.value}
                 </dd>
               </div>

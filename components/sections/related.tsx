@@ -73,8 +73,16 @@ export function Related({
                  320 px eine feste Mindestbreite von 349 px – die Karte lief
                  rechts aus dem Satzspiegel, ohne dass die Seite Überlauf
                  meldete (die Sektion schneidet ab). Das Wort darf jetzt
-                 trennen. */
-              <li key={item.href} className="min-w-0">
+                 trennen.
+
+                 `max-w-none` hebt das Lesemaß auf: `globals.css` deckelt
+                 jedes `li` in `main` bei 58ch, und das gilt auch für ein
+                 Rasterfeld, in dem gar keine Lesestrecke steht. Gemessen bei
+                 1512 px – Spalte 700 px, Karte 622 px: Beide Karten standen
+                 links in ihrer Spalte, zwischen ihnen klaffte statt der
+                 16 px Rasterlücke 94 px, und rechts blieben 126 px gegen
+                 48 px links. Das Paar hing sichtbar schief im Satz. */
+              <li key={item.href} className="min-w-0 max-w-none">
                 <Link
                   href={item.href}
                   className={cn(
