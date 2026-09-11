@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKOPE · Contentplan Woche 1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#08090b;--neon:#9ef605;--pap:#eef1f4;--line:rgba(238,241,244,.14)}
+body{background:var(--ink);color:var(--pap);font:400 16px/1.6 Inter,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;padding:0 0 120px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+h1,h2,h3,h4{font-family:'Instrument Sans',sans-serif;letter-spacing:-.02em}
+header.top{padding:72px 0 48px;border-bottom:1px solid var(--line);margin-bottom:56px}
+h1{font-size:clamp(2.2rem,3vw + 1rem,3.4rem);font-weight:700;line-height:1.05}
+h1 em{font-style:normal;color:var(--neon)}
+.lead{margin-top:20px;font-size:1.0625rem;color:rgba(238,241,244,.7);max-width:62ch}
+h2{font-size:clamp(1.5rem,1.6vw + .9rem,2.1rem);font-weight:700;margin:72px 0 8px}
+.h2sub{color:rgba(238,241,244,.55);margin-bottom:32px;max-width:62ch}
+.post{border:1px solid var(--line);border-radius:20px;padding:28px;margin-bottom:28px;background:rgba(238,241,244,.02)}
+.post h3{font-size:1.75rem;font-weight:700;margin:14px 0 6px;line-height:1.15}
+.tag{display:inline-block;font:600 12px/1 'Instrument Sans',sans-serif;letter-spacing:.14em;
+  text-transform:uppercase;background:var(--neon);color:var(--ink);padding:7px 12px;border-radius:99px;margin-right:8px}
+.tag.alt{background:transparent;color:rgba(238,241,244,.6);border:1px solid var(--line)}
+.goal{font-size:.9375rem;color:rgba(238,241,244,.6)}
+.thumbs{display:flex;gap:14px;overflow-x:auto;padding:24px 0 8px;scroll-snap-type:x proximity}
+.th{flex:0 0 168px;scroll-snap-align:start}
+.th img{width:100%;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;display:block;background:#000}
+.th figcaption{font-size:12px;color:rgba(238,241,244,.45);margin-top:8px;display:flex;justify-content:space-between}
+.th a{color:var(--neon);text-decoration:none;border-bottom:1px solid currentColor}
+.tools{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 4px}
+button,.btn{font:600 14px/1 'Instrument Sans',sans-serif;padding:14px 20px;border-radius:99px;cursor:pointer;
+  border:1px solid var(--line);background:transparent;color:var(--pap);transition:.2s ease}
+button:hover,.btn:hover{border-color:var(--neon);color:var(--neon)}
+button.dl{background:var(--neon);color:var(--ink);border-color:var(--neon)}
+button.dl:hover{filter:brightness(1.1);color:var(--ink)}
+.btn{display:inline-block;text-decoration:none;margin-top:14px}
+.block{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+.block h4{font-size:.8125rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(238,241,244,.5);margin-bottom:14px}
+pre.cap{font:400 15px/1.65 Inter,sans-serif;white-space:pre-wrap;color:rgba(238,241,244,.85);max-width:70ch}
+.tags{margin-top:14px;font-size:14px;color:var(--neon);opacity:.75;max-width:70ch}
+.muted{color:rgba(238,241,244,.5)}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+table.szenen{width:100%;min-width:520px;border-collapse:collapse;font-size:14.5px}
+.szenen th{text-align:left;font:600 11px/1 'Instrument Sans',sans-serif;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(238,241,244,.45);padding:0 14px 12px 0;border-bottom:1px solid var(--line)}
+.szenen td{padding:14px 14px 14px 0;border-bottom:1px solid var(--line);vertical-align:top;color:rgba(238,241,244,.78)}
+.szenen td.t{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--neon);font-weight:600}
+.szenen td.ov{color:var(--pap);font-weight:500}
+.tech{margin-top:16px;font-size:14.5px;color:rgba(238,241,244,.6);max-width:70ch}
+.tech strong,.sticker strong{color:var(--pap)}
+.story{display:grid;grid-template-columns:132px 1fr;gap:24px;align-items:start;
+  border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px;background:rgba(238,241,244,.02)}
+.story img{width:100%;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;display:block}
+.story h4{font-size:1.25rem;font-weight:700;margin:12px 0 10px}
+.sticker{font-size:14.5px;color:rgba(238,241,244,.75);margin-bottom:8px}
+.story p.muted{font-size:14.5px}
+.note{border-left:2px solid var(--neon);padding:4px 0 4px 20px;margin:28px 0;color:rgba(238,241,244,.7);max-width:66ch}
+ul.check{list-style:none;max-width:66ch}
+ul.check li{padding:12px 0 12px 32px;border-bottom:1px solid var(--line);position:relative;color:rgba(238,241,244,.78)}
+ul.check li::before{content:"";position:absolute;left:0;top:19px;width:14px;height:2px;background:var(--neon)}
+#lb{position:fixed;inset:0;background:rgba(8,9,11,.94);display:none;align-items:center;justify-content:center;
+  z-index:99;cursor:zoom-out;padding:40px}
+#lb img{max-width:100%;max-height:100%;border-radius:12px}
+#toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(140%);background:var(--neon);
+  color:var(--ink);font:600 14px 'Instrument Sans',sans-serif;padding:14px 24px;border-radius:99px;
+  transition:transform .25s cubic-bezier(.22,1,.36,1);z-index:100}
+#toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:700px){.wrap{padding:0 20px}.story{grid-template-columns:1fr}.story img{max-width:180px}}
+</style></head><body>
+<div class="wrap">
+<header class="top">
+  <h1>Contentplan <em>Woche 1</em></h1>
+  <p class="lead">Sieben Beiträge, sechs Stories, zwei Reel-Drehbücher. Alle Bilder liegen
+  fertig als PNG in <code>woche-01/</code> und sind hier einzeln oder gesammelt zu laden.
+  Die Strategie dahinter steht in <strong>PLAN.md</strong>.</p>
+  <p class="lead">Format Feed 1080 × 1350 (4:5), Story und Reel-Titelbild 1080 × 1920 (9:16),
+  gerendert in doppelter Auflösung. Bei den 9:16-Bildern ist die untere Hälfte frei —
+  dorthin gehört der Sticker aus der Instagram-App.</p>
+</header>
+
+<div class="note"><strong>Vor dem ersten Posten:</strong> Die Rechtsangaben im Montagsbeitrag
+und die Bewertung „5,0 aus 37“ sind nicht aus dem Repo belegt, sondern allgemeiner Stand
+bzw. Stand vom 18.08.2026. Beides einmal gegenlesen — Abschnitt 8 in PLAN.md.</div>
+
+<h2>Die sieben Beiträge</h2>
+<p class="h2sub">Reihenfolge ist die Woche. Freitag ist der einzige Tag, an dem direkt
+gefragt wird — das ist Absicht und keine Lücke.</p>
+
+  <article class="post" id="mo-regeln">
+    <header>
+      <div>
+        <span class="tag">Montag</span>
+        <span class="tag alt">Wissen</span>
+        <span class="tag alt">Karussell</span>
+      </div>
+      <h3>Darf mein Kind damit überhaupt fahren?</h3>
+      <p class="goal"><strong>Ziel:</strong> Speichern &amp; Teilen. Der Post, den Eltern ihrem Kind schicken. &nbsp;·&nbsp; <strong>Für:</strong> Eltern, die für ihr Kind kaufen</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 1
+        <a href="woche-01/mo-regeln/mo-regeln-01.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 2
+        <a href="woche-01/mo-regeln/mo-regeln-02.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 3
+        <a href="woche-01/mo-regeln/mo-regeln-03.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 4
+        <a href="woche-01/mo-regeln/mo-regeln-04.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 5
+        <a href="woche-01/mo-regeln/mo-regeln-05.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-06.png" alt="Folie 6" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 6
+        <a href="woche-01/mo-regeln/mo-regeln-06.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-07.png" alt="Folie 7" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 7
+        <a href="woche-01/mo-regeln/mo-regeln-07.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mo-regeln/mo-regeln-08.png" alt="Folie 8" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 8
+        <a href="woche-01/mo-regeln/mo-regeln-08.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/mo-regeln/mo-regeln-01.png|woche-01/mo-regeln/mo-regeln-02.png|woche-01/mo-regeln/mo-regeln-03.png|woche-01/mo-regeln/mo-regeln-04.png|woche-01/mo-regeln/mo-regeln-05.png|woche-01/mo-regeln/mo-regeln-06.png|woche-01/mo-regeln/mo-regeln-07.png|woche-01/mo-regeln/mo-regeln-08.png">Alle 8 Bilder laden</button>
+      <button class="copy" data-copy="Die häufigste Frage, die bei uns im Laden gestellt wird – meistens von Eltern, nicht von den Kindern.
+
+Sechs Regeln, die für jeden E-Scooter auf öffentlichen Wegen gelten. Danach weiß man, worauf man beim Kauf achtet: Betriebserlaubnis, Kennzeichen, und dass nachträgliches Tunen beides kostet.
+
+Speicher dir den Beitrag, bevor du das nächste Angebot anschaust.
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #familie #erstesfahrzeug #verkehrssicherheit #eltern #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Die häufigste Frage, die bei uns im Laden gestellt wird – meistens von Eltern, nicht von den Kindern.
+
+Sechs Regeln, die für jeden E-Scooter auf öffentlichen Wegen gelten. Danach weiß man, worauf man beim Kauf achtet: Betriebserlaubnis, Kennzeichen, und dass nachträgliches Tunen beides kostet.
+
+Speicher dir den Beitrag, bevor du das nächste Angebot anschaust.
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #familie #erstesfahrzeug #verkehrssicherheit #eltern #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+  </article>
+  <article class="post" id="di-akku">
+    <header>
+      <div>
+        <span class="tag">Dienstag</span>
+        <span class="tag alt">Werkstatt</span>
+        <span class="tag alt">Reel</span>
+      </div>
+      <h3>Der Akku sagt dir nicht die Wahrheit.</h3>
+      <p class="goal"><strong>Ziel:</strong> Watchtime &amp; Vertrauen. Zeigen, dass gemessen wird statt geraten. &nbsp;·&nbsp; <strong>Für:</strong> Alle – Kauf- und Reparaturinteressierte</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/di-akku/di-akku.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Bild
+        <a href="woche-01/di-akku/di-akku.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/di-akku/di-akku.png">Bild laden</button>
+      <button class="copy" data-copy="Die Restanzeige am Display zeigt die Spannung, nicht die Kapazität. Ein Akku kann 100 % anzeigen und nach acht Kilometern leer sein.
+
+Deshalb messen wir vor jedem Verkauf und bei jeder Diagnose die tatsächliche Restkapazität. Der vollständige Sicherheits-Checkup kostet 59,99 € und prüft sechs Positionen.
+
+Was war dein kürzester „voller“ Akku? Schreib's in die Kommentare.
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Die Restanzeige am Display zeigt die Spannung, nicht die Kapazität. Ein Akku kann 100 % anzeigen und nach acht Kilometern leer sein.
+
+Deshalb messen wir vor jedem Verkauf und bei jeder Diagnose die tatsächliche Restkapazität. Der vollständige Sicherheits-Checkup kostet 59,99 € und prüft sechs Positionen.
+
+Was war dein kürzester „voller“ Akku? Schreib's in die Kommentare.</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+    <div class="block">
+      <h4>Drehbuch <span class="muted">· 22–28 Sekunden, hochkant 9:16, ohne Sprache – Text im Bild</span></h4>
+      <div class="scroll-x"><table class="szenen">
+        <thead><tr><th>Zeit</th><th>Bild</th><th>Text im Bild</th></tr></thead>
+        <tbody><tr><td class="t">0:00–0:02</td><td>Display des Scooters, Akkuanzeige voll. Ganz nah, Hand hält den Lenker.</td><td class="ov">100 %.</td></tr><tr><td class="t">0:02–0:05</td><td>Schnitt: derselbe Scooter, Display nach acht Kilometern. Anzeige unten.</td><td class="ov">Nach 8 km.</td></tr><tr><td class="t">0:05–0:10</td><td>Werkstatt: Akku ausgebaut auf der Bank, Messgerät wird angeschlossen.</td><td class="ov">Die Anzeige zeigt Spannung. Nicht Kapazität.</td></tr><tr><td class="t">0:10–0:16</td><td>Nah auf das Display des Messgeräts, Zahl läuft hoch und steht.</td><td class="ov">Gemessen wird, was wirklich drin ist.</td></tr><tr><td class="t">0:16–0:22</td><td>Hände legen den Akku zurück, Gerät wird zugeklappt, Scooter steht fertig.</td><td class="ov">Sicherheits-Checkup: 59,99 € · sechs Positionen</td></tr><tr><td class="t">0:22–0:26</td><td>Ruhiger Schluss: Scooter frontal, Logo unten eingeblendet.</td><td class="ov">SKOPE · Im Kampfrad 3, Neuenstadt</td></tr></tbody>
+      </table></div>
+      <p class="tech"><strong>Aufnahme:</strong> Handy reicht. Stativ oder feste Auflage, kein Zoomen. Licht von vorn, nicht von hinten. Vertonung: ruhiger Trend-Sound aus der Instagram-Bibliothek, leise – der Text trägt.</p>
+      <button class="copy" data-copy="0:00–0:02  Display des Scooters, Akkuanzeige voll. Ganz nah, Hand hält den Lenker.
+Text: 100 %.
+
+0:02–0:05  Schnitt: derselbe Scooter, Display nach acht Kilometern. Anzeige unten.
+Text: Nach 8 km.
+
+0:05–0:10  Werkstatt: Akku ausgebaut auf der Bank, Messgerät wird angeschlossen.
+Text: Die Anzeige zeigt Spannung. Nicht Kapazität.
+
+0:10–0:16  Nah auf das Display des Messgeräts, Zahl läuft hoch und steht.
+Text: Gemessen wird, was wirklich drin ist.
+
+0:16–0:22  Hände legen den Akku zurück, Gerät wird zugeklappt, Scooter steht fertig.
+Text: Sicherheits-Checkup: 59,99 € · sechs Positionen
+
+0:22–0:26  Ruhiger Schluss: Scooter frontal, Logo unten eingeblendet.
+Text: SKOPE · Im Kampfrad 3, Neuenstadt">Drehbuch kopieren</button>
+    </div>
+  </article>
+  <article class="post" id="mi-kosten">
+    <header>
+      <div>
+        <span class="tag">Mittwoch</span>
+        <span class="tag alt">Rechnung</span>
+        <span class="tag alt">Karussell</span>
+      </div>
+      <h3>100 km für 53 Cent.</h3>
+      <p class="goal"><strong>Ziel:</strong> Reichweite über Nutzwert. Die Zahl, die man weitererzählt. &nbsp;·&nbsp; <strong>Für:</strong> Pendler, Preisbewusste</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 1
+        <a href="woche-01/mi-kosten/mi-kosten-01.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 2
+        <a href="woche-01/mi-kosten/mi-kosten-02.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 3
+        <a href="woche-01/mi-kosten/mi-kosten-03.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 4
+        <a href="woche-01/mi-kosten/mi-kosten-04.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 5
+        <a href="woche-01/mi-kosten/mi-kosten-05.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/mi-kosten/mi-kosten-06.png" alt="Folie 6" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 6
+        <a href="woche-01/mi-kosten/mi-kosten-06.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/mi-kosten/mi-kosten-01.png|woche-01/mi-kosten/mi-kosten-02.png|woche-01/mi-kosten/mi-kosten-03.png|woche-01/mi-kosten/mi-kosten-04.png|woche-01/mi-kosten/mi-kosten-05.png|woche-01/mi-kosten/mi-kosten-06.png">Alle 6 Bilder laden</button>
+      <button class="copy" data-copy="Der Arbeitsweg ist der ehrlichste Rechner: Ein E-Scooter zieht rund 1,5 kWh auf 100 Kilometer. Bei 35 Cent je Kilowattstunde sind das 53 Cent.
+
+Wir haben die Rechnung offengelegt, inklusive dem, was nicht drinsteht – Anschaffung, Verschleiß, Versicherung. Die Annahmen stehen auf den Folien, damit jeder mit seinen eigenen Zahlen nachrechnen kann.
+
+Wie weit ist dein Arbeitsweg?
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #spritpreise #pendeln #arbeitsweg #sparen #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Der Arbeitsweg ist der ehrlichste Rechner: Ein E-Scooter zieht rund 1,5 kWh auf 100 Kilometer. Bei 35 Cent je Kilowattstunde sind das 53 Cent.
+
+Wir haben die Rechnung offengelegt, inklusive dem, was nicht drinsteht – Anschaffung, Verschleiß, Versicherung. Die Annahmen stehen auf den Folien, damit jeder mit seinen eigenen Zahlen nachrechnen kann.
+
+Wie weit ist dein Arbeitsweg?
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #spritpreise #pendeln #arbeitsweg #sparen #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+  </article>
+  <article class="post" id="do-stimme">
+    <header>
+      <div>
+        <span class="tag">Donnerstag</span>
+        <span class="tag alt">Beweis</span>
+        <span class="tag alt">Einzelbild</span>
+      </div>
+      <h3>Auch nach dem Kauf war Thomas immer für uns da.</h3>
+      <p class="goal"><strong>Ziel:</strong> Vertrauen. Läuft auf ein Speichern hinaus, nicht auf Reichweite. &nbsp;·&nbsp; <strong>Für:</strong> Alle, die schon mal auf dem Profil waren</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/do-stimme/do-stimme.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Bild
+        <a href="woche-01/do-stimme/do-stimme.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/do-stimme/do-stimme.png">Bild laden</button>
+      <button class="copy" data-copy="Zwei Geräte, eine Familie, und die Betreuung hörte nicht an der Ladentür auf. Das ist eine von 37 Rezensionen im Google-Profil.
+
+Wir verkaufen keine Sendungen aus einem Lager, sondern Einzelstücke aus der eigenen Werkstatt. Wer hier kauft, weiß hinterher, wen er anruft.
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Zwei Geräte, eine Familie, und die Betreuung hörte nicht an der Ladentür auf. Das ist eine von 37 Rezensionen im Google-Profil.
+
+Wir verkaufen keine Sendungen aus einem Lager, sondern Einzelstücke aus der eigenen Werkstatt. Wer hier kauft, weiß hinterher, wen er anruft.
+
+📍 SKOPE · Im Kampfrad 3, 74196 Neuenstadt am Kocher</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+  </article>
+  <article class="post" id="fr-cta">
+    <header>
+      <div>
+        <span class="tag">Freitag</span>
+        <span class="tag alt">CTA</span>
+        <span class="tag alt">Karussell</span>
+      </div>
+      <h3>Wochenende. Zeit für einen Termin.</h3>
+      <p class="goal"><strong>Ziel:</strong> Anfragen. Der einzige Tag, an dem direkt gefragt wird. &nbsp;·&nbsp; <strong>Für:</strong> Alle, die die Woche über mitgelesen haben</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/fr-cta/fr-cta-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 1
+        <a href="woche-01/fr-cta/fr-cta-01.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/fr-cta/fr-cta-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 2
+        <a href="woche-01/fr-cta/fr-cta-02.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/fr-cta/fr-cta-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 3
+        <a href="woche-01/fr-cta/fr-cta-03.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/fr-cta/fr-cta-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 4
+        <a href="woche-01/fr-cta/fr-cta-04.png" download>laden</a></figcaption>
+    </figure>
+    <figure class="th">
+      <img src="woche-01/fr-cta/fr-cta-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Folie 5
+        <a href="woche-01/fr-cta/fr-cta-05.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/fr-cta/fr-cta-01.png|woche-01/fr-cta/fr-cta-02.png|woche-01/fr-cta/fr-cta-03.png|woche-01/fr-cta/fr-cta-04.png|woche-01/fr-cta/fr-cta-05.png">Alle 5 Bilder laden</button>
+      <button class="copy" data-copy="Wir arbeiten nach Vereinbarung – das heißt: kurz schreiben oder anrufen, dann steht das Gerät bereit und es wartet niemand.
+
+Was ein Termin bei uns beantwortet: welches Gerät zu deiner Strecke passt, was eine Reparatur kosten würde, und ob sich das Kennzeichen für diese Saison noch lohnt.
+
+Anfrage über die Website oder eine Nachricht hier – beides landet an derselben Stelle.
+
+📍 Im Kampfrad 3, 74196 Neuenstadt am Kocher
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Wir arbeiten nach Vereinbarung – das heißt: kurz schreiben oder anrufen, dann steht das Gerät bereit und es wartet niemand.
+
+Was ein Termin bei uns beantwortet: welches Gerät zu deiner Strecke passt, was eine Reparatur kosten würde, und ob sich das Kennzeichen für diese Saison noch lohnt.
+
+Anfrage über die Website oder eine Nachricht hier – beides landet an derselben Stelle.
+
+📍 Im Kampfrad 3, 74196 Neuenstadt am Kocher</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose</p>
+    </div>
+    
+  </article>
+  <article class="post" id="sa-camper">
+    <header>
+      <div>
+        <span class="tag">Samstag</span>
+        <span class="tag alt">Zielgruppe</span>
+        <span class="tag alt">Reel</span>
+      </div>
+      <h3>Passt der in die Heckgarage?</h3>
+      <p class="goal"><strong>Ziel:</strong> Neue Reichweite in einer Nische, die kaum bedient wird. &nbsp;·&nbsp; <strong>Für:</strong> Camper, Wohnmobil, ältere Paare</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/sa-camper/sa-camper.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Bild
+        <a href="woche-01/sa-camper/sa-camper.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/sa-camper/sa-camper.png">Bild laden</button>
+      <button class="copy" data-copy="Die Frage kommt jedes Frühjahr: Passt so ein Scooter ins Wohnmobil – und trägt ihn meine Frau alleine die Stufe hoch?
+
+Worauf es dabei ankommt, ist nicht die Reichweite, sondern Klappmaß und Gewicht. Beides messen wir am Gerät, bevor es mitgeht.
+
+Wo steht ihr dieses Jahr?
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #camping #wohnmobil #vanlife #faltbar #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Die Frage kommt jedes Frühjahr: Passt so ein Scooter ins Wohnmobil – und trägt ihn meine Frau alleine die Stufe hoch?
+
+Worauf es dabei ankommt, ist nicht die Reichweite, sondern Klappmaß und Gewicht. Beides messen wir am Gerät, bevor es mitgeht.
+
+Wo steht ihr dieses Jahr?</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #camping #wohnmobil #vanlife #faltbar #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+    <div class="block">
+      <h4>Drehbuch <span class="muted">· 18–24 Sekunden, hochkant 9:16, ohne Sprache</span></h4>
+      <div class="scroll-x"><table class="szenen">
+        <thead><tr><th>Zeit</th><th>Bild</th><th>Text im Bild</th></tr></thead>
+        <tbody><tr><td class="t">0:00–0:03</td><td>Scooter aufgeklappt neben einem Maßband auf dem Boden, Draufsicht.</td><td class="ov">Passt der in die Heckgarage?</td></tr><tr><td class="t">0:03–0:07</td><td>Eine Bewegung: Klappmechanik lösen, Lenker legt sich um. Nah, eine Einstellung.</td><td class="ov">Ein Griff.</td></tr><tr><td class="t">0:07–0:12</td><td>Maßband am zusammengeklappten Gerät, Länge und Höhe sichtbar.</td><td class="ov">Klappmaß messen wir am Gerät.</td></tr><tr><td class="t">0:12–0:17</td><td>Gerät wird einhändig angehoben, Personenwaage darunter oder Kofferwaage am Lenker.</td><td class="ov">Und das Gewicht. Das ist die Frage, die wirklich zählt.</td></tr><tr><td class="t">0:17–0:22</td><td>Scooter steht gefaltet, daneben ein Koffer als Größenvergleich. Logo eingeblendet.</td><td class="ov">Wir messen vor dem Kauf. SKOPE · Neuenstadt</td></tr></tbody>
+      </table></div>
+      <p class="tech"><strong>Aufnahme:</strong> Alles aus einer Höhe, Kamera auf einem Stuhl. Kein Schwenk. Wichtig: Maßband und Waage müssen lesbar sein – lieber einen Moment länger draufhalten.</p>
+      <button class="copy" data-copy="0:00–0:03  Scooter aufgeklappt neben einem Maßband auf dem Boden, Draufsicht.
+Text: Passt der in die Heckgarage?
+
+0:03–0:07  Eine Bewegung: Klappmechanik lösen, Lenker legt sich um. Nah, eine Einstellung.
+Text: Ein Griff.
+
+0:07–0:12  Maßband am zusammengeklappten Gerät, Länge und Höhe sichtbar.
+Text: Klappmaß messen wir am Gerät.
+
+0:12–0:17  Gerät wird einhändig angehoben, Personenwaage darunter oder Kofferwaage am Lenker.
+Text: Und das Gewicht. Das ist die Frage, die wirklich zählt.
+
+0:17–0:22  Scooter steht gefaltet, daneben ein Koffer als Größenvergleich. Logo eingeblendet.
+Text: Wir messen vor dem Kauf. SKOPE · Neuenstadt">Drehbuch kopieren</button>
+    </div>
+  </article>
+  <article class="post" id="so-haltung">
+    <header>
+      <div>
+        <span class="tag">Sonntag</span>
+        <span class="tag alt">Haltung</span>
+        <span class="tag alt">Einzelbild</span>
+      </div>
+      <h3>Ein defekter E-Scooter ist kein Sperrmüll.</h3>
+      <p class="goal"><strong>Ziel:</strong> Bindung. Der Post, unter dem diskutiert wird. &nbsp;·&nbsp; <strong>Für:</strong> Bestandsfollower</p>
+    </header>
+    <div class="thumbs">
+    <figure class="th">
+      <img src="woche-01/so-haltung/so-haltung.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+      <figcaption>Bild
+        <a href="woche-01/so-haltung/so-haltung.png" download>laden</a></figcaption>
+    </figure></div>
+    <div class="tools">
+      <button class="dl" data-files="woche-01/so-haltung/so-haltung.png">Bild laden</button>
+      <button class="copy" data-copy="Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Deshalb nehmen wir Altgeräte kostenlos zurück – auch die, die nicht bei uns gekauft wurden.
+
+Was daraus noch brauchbar ist, geht zurück in die Werkstatt. Der Rest geht den vorgeschriebenen Weg: Akkus getrennt, Aluminium in den Kreislauf.
+
+Ehrliche Frage in die Runde: Wie viele Geräte stehen bei euch im Keller, die seit Jahren nicht mehr laufen?
+
+#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe">Beitragstext + Hashtags kopieren</button>
+    </div>
+    <div class="block">
+      <h4>Beitragstext</h4>
+      <pre class="cap">Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Deshalb nehmen wir Altgeräte kostenlos zurück – auch die, die nicht bei uns gekauft wurden.
+
+Was daraus noch brauchbar ist, geht zurück in die Werkstatt. Der Rest geht den vorgeschriebenen Weg: Akkus getrennt, Aluminium in den Kreislauf.
+
+Ehrliche Frage in die Runde: Wie viele Geräte stehen bei euch im Keller, die seit Jahren nicht mehr laufen?</pre>
+      <p class="tags">#escooter #escootergebraucht #elektrokleinstfahrzeug #refurbished #escooterwerkstatt #reparierenstattwegwerfen #werkstatt #diagnose #neuenstadtamkocher #heilbronn #neckarsulm #badfriedrichshall #moeckmuehl #hohenlohe</p>
+    </div>
+    
+  </article>
+
+<h2>Stories</h2>
+<p class="h2sub">Die Grafik ist nur der Untergrund. Der Sticker – Umfrage, Quiz, Frage,
+Link – wird in der App daraufgesetzt, in die freie untere Hälfte.</p>
+
+  <article class="story">
+    <img src="woche-01/stories/st-01.png" alt="Story Montag" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Montag</span><span class="tag alt">Umfrage</span></div>
+      <h4>Wusstest du, dass Tunen die Zulassung kostet?</h4>
+      <p class="sticker"><strong>Sticker:</strong> Umfrage · Antworten: „Ja, wusste ich“ / „Nein, echt jetzt?“</p>
+      <p class="muted">Danach die Auflösung als zweite Story: Wer die bauartbedingte Höchstgeschwindigkeit verändert, verliert Betriebserlaubnis und Versicherungsschutz. Verweis auf den Montagsbeitrag.</p>
+      <a class="btn" href="woche-01/stories/st-01.png" download>Bild laden</a>
+    </div>
+  </article>
+  <article class="story">
+    <img src="woche-01/stories/st-02.png" alt="Story Dienstag" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Dienstag</span><span class="tag alt">Quiz</span></div>
+      <h4>Wie viel Strom zieht er auf 100 Kilometer?</h4>
+      <p class="sticker"><strong>Sticker:</strong> Quiz · „Wie viel Strom zieht ein E-Scooter auf 100 km?“ — 0,5 kWh / 1,5 kWh / 5 kWh (richtig: 1,5)</p>
+      <p class="muted">Auflösung mit dem Hinweis, dass die volle Rechnung am Mittwoch im Feed steht. Das zieht die Story-Zuschauer in den Beitrag.</p>
+      <a class="btn" href="woche-01/stories/st-02.png" download>Bild laden</a>
+    </div>
+  </article>
+  <article class="story">
+    <img src="woche-01/stories/st-03.png" alt="Story Mittwoch" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Mittwoch</span><span class="tag alt">Einblick</span></div>
+      <h4>Heute auf der Bank.</h4>
+      <p class="sticker"><strong>Sticker:</strong> Kein Sticker – reine Werkstattaufnahme mit dieser Grafik als erste Story davor</p>
+      <p class="muted">Danach zwei bis drei echte Aufnahmen vom laufenden Auftrag: zerlegtes Gerät, Messgerät, fertiger Zustand. Keine Kundennamen, keine Kennzeichen im Bild.</p>
+      <a class="btn" href="woche-01/stories/st-03.png" download>Bild laden</a>
+    </div>
+  </article>
+  <article class="story">
+    <img src="woche-01/stories/st-04.png" alt="Story Donnerstag" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Donnerstag</span><span class="tag alt">Fragesticker</span></div>
+      <h4>Frag uns irgendwas über Scooter.</h4>
+      <p class="sticker"><strong>Sticker:</strong> Frage-Sticker · „Was wolltest du über E-Scooter schon immer wissen?“</p>
+      <p class="muted">Die Antworten sind das Material für die nächsten Wochen. Jede Antwort als eigene Story, die beste Frage wird ein Karussell.</p>
+      <a class="btn" href="woche-01/stories/st-04.png" download>Bild laden</a>
+    </div>
+  </article>
+  <article class="story">
+    <img src="woche-01/stories/st-05.png" alt="Story Freitag" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Freitag</span><span class="tag alt">CTA</span></div>
+      <h4>Termin fürs Wochenende?</h4>
+      <p class="sticker"><strong>Sticker:</strong> Link-Sticker auf die Anfrageseite</p>
+      <p class="muted">Link-Sticker direkt auf /kontakt#anfrage. Dazu eine zweite Story mit der Adresse und dem Standort-Sticker Neuenstadt am Kocher.</p>
+      <a class="btn" href="woche-01/stories/st-05.png" download>Bild laden</a>
+    </div>
+  </article>
+  <article class="story">
+    <img src="woche-01/stories/st-06.png" alt="Story Samstag" loading="lazy" onclick="zoom(this.src)">
+    <div>
+      <div><span class="tag">Samstag</span><span class="tag alt">Persönlich</span></div>
+      <h4>Samstag. Aufräumtag.</h4>
+      <p class="sticker"><strong>Sticker:</strong> Kein Sticker</p>
+      <p class="muted">Eine ehrliche Aufnahme: volle Werkbank, sortierte Teile, Kaffeebecher. Menschen folgen Menschen – diese Story darf unperfekt sein.</p>
+      <a class="btn" href="woche-01/stories/st-06.png" download>Bild laden</a>
+    </div>
+  </article>
+
+<h2>Vorrat</h2>
+<p class="h2sub">Drei Karussells ohne Verfallsdatum. Sie springen ein, wenn ein Tag
+ausfällt oder eine Aufnahme nicht rechtzeitig fertig wird – dann fehlt kein Beitrag,
+nur ein Thema.</p>
+<article class="post"><header><div><span class="tag alt">Vorrat</span><span class="tag alt">Karussell</span></div>
+    <h3>Fünf Dinge, die vor dem Kauf geprüft gehören</h3><p class="goal">Ersatz für einen Montag (Wissen)</p></header>
+    <div class="thumbs"><figure class="th"><img src="kauf/kauf-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 1<a href="kauf/kauf-01.png" download>laden</a></figcaption></figure><figure class="th"><img src="kauf/kauf-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 2<a href="kauf/kauf-02.png" download>laden</a></figcaption></figure><figure class="th"><img src="kauf/kauf-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 3<a href="kauf/kauf-03.png" download>laden</a></figcaption></figure><figure class="th"><img src="kauf/kauf-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 4<a href="kauf/kauf-04.png" download>laden</a></figcaption></figure><figure class="th"><img src="kauf/kauf-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 5<a href="kauf/kauf-05.png" download>laden</a></figcaption></figure><figure class="th"><img src="kauf/kauf-06.png" alt="Folie 6" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 6<a href="kauf/kauf-06.png" download>laden</a></figcaption></figure></div>
+    <div class="tools"><button class="dl" data-files="kauf/kauf-01.png|kauf/kauf-02.png|kauf/kauf-03.png|kauf/kauf-04.png|kauf/kauf-05.png|kauf/kauf-06.png">Alle 6 Bilder laden</button></div>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Beitragstext steht in <code>BEITRAGSTEXTE.md</code>.</p></article><article class="post"><header><div><span class="tag alt">Vorrat</span><span class="tag alt">Karussell</span></div>
+    <h3>Defekt heißt selten Totalschaden</h3><p class="goal">Ersatz für einen Dienstag (Werkstatt)</p></header>
+    <div class="thumbs"><figure class="th"><img src="reparatur/reparatur-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 1<a href="reparatur/reparatur-01.png" download>laden</a></figcaption></figure><figure class="th"><img src="reparatur/reparatur-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 2<a href="reparatur/reparatur-02.png" download>laden</a></figcaption></figure><figure class="th"><img src="reparatur/reparatur-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 3<a href="reparatur/reparatur-03.png" download>laden</a></figcaption></figure><figure class="th"><img src="reparatur/reparatur-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 4<a href="reparatur/reparatur-04.png" download>laden</a></figcaption></figure><figure class="th"><img src="reparatur/reparatur-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 5<a href="reparatur/reparatur-05.png" download>laden</a></figcaption></figure><figure class="th"><img src="reparatur/reparatur-06.png" alt="Folie 6" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 6<a href="reparatur/reparatur-06.png" download>laden</a></figcaption></figure></div>
+    <div class="tools"><button class="dl" data-files="reparatur/reparatur-01.png|reparatur/reparatur-02.png|reparatur/reparatur-03.png|reparatur/reparatur-04.png|reparatur/reparatur-05.png|reparatur/reparatur-06.png">Alle 6 Bilder laden</button></div>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Beitragstext steht in <code>BEITRAGSTEXTE.md</code>.</p></article><article class="post"><header><div><span class="tag alt">Vorrat</span><span class="tag alt">Karussell</span></div>
+    <h3>Ab 6 km/h ist die Haftpflicht Pflicht</h3><p class="goal">Ersatz für einen Mittwoch, saisonal stark im Februar/März</p></header>
+    <div class="thumbs"><figure class="th"><img src="versicherung/versicherung-01.png" alt="Folie 1" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 1<a href="versicherung/versicherung-01.png" download>laden</a></figcaption></figure><figure class="th"><img src="versicherung/versicherung-02.png" alt="Folie 2" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 2<a href="versicherung/versicherung-02.png" download>laden</a></figcaption></figure><figure class="th"><img src="versicherung/versicherung-03.png" alt="Folie 3" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 3<a href="versicherung/versicherung-03.png" download>laden</a></figcaption></figure><figure class="th"><img src="versicherung/versicherung-04.png" alt="Folie 4" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 4<a href="versicherung/versicherung-04.png" download>laden</a></figcaption></figure><figure class="th"><img src="versicherung/versicherung-05.png" alt="Folie 5" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 5<a href="versicherung/versicherung-05.png" download>laden</a></figcaption></figure><figure class="th"><img src="versicherung/versicherung-06.png" alt="Folie 6" loading="lazy" onclick="zoom(this.src)">
+    <figcaption>Folie 6<a href="versicherung/versicherung-06.png" download>laden</a></figcaption></figure></div>
+    <div class="tools"><button class="dl" data-files="versicherung/versicherung-01.png|versicherung/versicherung-02.png|versicherung/versicherung-03.png|versicherung/versicherung-04.png|versicherung/versicherung-05.png|versicherung/versicherung-06.png">Alle 6 Bilder laden</button></div>
+    <p class="muted" style="margin-top:14px;font-size:14.5px">Beitragstext steht in <code>BEITRAGSTEXTE.md</code>.</p></article>
+
+<h2>Vor jedem Posten</h2>
+<ul class="check">
+  <li>Bild geladen und im Vorschau-Programm angesehen — nicht nur hier im Browser.</li>
+  <li>Beitragstext kopiert, erste Zeile prüfen: Sie ist die einzige, die ohne „mehr“ zu sehen ist.</li>
+  <li>Standort gesetzt: Neuenstadt am Kocher. Ohne Standort verliert ein lokaler Beitrag seine halbe Wirkung.</li>
+  <li>Bei Reels: Titelbild aus <code>woche-01/</code> hochladen, nicht das automatisch gewählte Einzelbild.</li>
+  <li>Nach 24 Stunden in die Insights schauen: Speicherungen und Geteilt, nicht Likes.</li>
+</ul>
+</div>
+
+<div id="lb" onclick="this.style.display='none'"><img alt=""></div>
+<div id="toast">Kopiert</div>
+<script>
+function zoom(src){const lb=document.getElementById('lb');lb.querySelector('img').src=src;lb.style.display='flex'}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),1800)}
+/* Zwischenablage: navigator.clipboard verlangt einen sicheren Kontext und
+   fehlt beim Aufruf über file://. Deshalb der alte Weg als Rückfall. */
+function copy(text){
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(()=>toast('Kopiert'));return}
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('Kopiert')}catch(e){toast('Kopieren ging nicht – Text markieren')}
+  ta.remove()}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('button.copy');if(c){copy(c.dataset.copy);return}
+  const d=e.target.closest('button.dl');if(!d)return;
+  /* Mehrere Downloads hintereinander: Browser verwerfen gleichzeitige
+     Klicks auf denselben Ursprung, deshalb 250 ms Abstand. */
+  const list=d.dataset.files.split('|').filter(Boolean);
+  list.forEach((src,i)=>setTimeout(()=>{
+    const a=document.createElement('a');a.href=src;a.download=src.split('/').pop();
+    document.body.appendChild(a);a.click();a.remove()},i*250));
+  toast(list.length+' Bilder werden geladen')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lb').style.display='none'});
+</script></body></html>
