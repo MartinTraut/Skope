@@ -11,7 +11,19 @@ import { InventoryCard } from "@/components/ui/inventory-card";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { checkupIncludes } from "@/lib/data/services";
-import { inventory, inventoryItem, relatedInventory } from "@/lib/inventory";
+import {
+  AVAILABILITY_LABEL,
+  deviceAction,
+  type Availability,
+} from "@/lib/commerce";
+import {
+  commerceMode,
+  condition,
+  getProduct,
+  listProducts,
+  productAvailability,
+  relatedProducts,
+} from "@/lib/commerce-source";
 import {
   JsonLd,
   breadcrumb,
@@ -21,6 +33,7 @@ import {
 } from "@/lib/schema";
 import { fitDescription, pageMeta } from "@/lib/seo";
 import { proof } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
 
 /**
@@ -64,7 +77,7 @@ const SHORT_LABEL: Record<string, string> = {
 };
 
 export function generateStaticParams() {
-  return inventory.map((item) => ({ slug: item.id }));
+  return listProducts().map((item) => ({ slug: item.id }));
 }
 
 export async function generateMetadata({
@@ -73,7 +86,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const item = inventoryItem(slug);
+  const item = getProduct(slug);
   if (!item) return {};
 
   return pageMeta({
@@ -96,17 +109,18 @@ export default async function ScooterDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const item = inventoryItem(slug);
+  const item = getProduct(slug);
   if (!item) notFound();
 
-  const related = relatedInventory(item.id);
+  const related = relatedProducts(item.id);
+  const availability: Availability = productAvailability(item);
+  const action = deviceAction(commerceMode(), availability, item.model);
   const specs = [
     ...LEAD_SPECS.map((label) =>
       item.specs.find((spec) => spec.label === label),
     ).filter((spec) => spec !== undefined),
     ...item.specs.filter((spec) => !LEAD_SPECS.includes(spec.label)),
   ];
-  const anfrage = `/kontakt?anliegen=geraet&geraet=${encodeURIComponent(item.model)}#anfrage`;
 
   return (
     <>
@@ -235,6 +249,45 @@ export default async function ScooterDetailPage({
                 {item.price}
               </p>
 
+              {/* Verfügbarkeit und Zustand stehen direkt am Preis, nicht erst
+                  im Datenblatt darunter.
+
+                  „Sofort verfügbar" ist keine neue Zusage, sondern die Regel
+                  dieser Liste: Verkaufte Geräte werden aus `lib/inventory`
+                  genommen, ein Eintrag heißt also, dass das Gerät in der
+                  Werkstatt steht. Das Wort kommt aus `AVAILABILITY_LABEL`
+                  und der Wert aus `productAvailability()`: Solange die Liste
+                  von Hand gepflegt wird, ist er für jedes Gerät „available" –
+                  „reserviert" und „verkauft" kann die Seite aber darstellen,
+                  sobald Shopify sie liefert, ohne dass hier etwas umgebaut
+                  wird.
+
+                  Der Zustand kommt aus dem Datenblatt (`Zustand`) und steht
+                  nur da, wo er dort auch steht – bei einem Einzelstück ist
+                  das nicht bei jedem Gerät der Fall. */}
+              <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-current/70">
+                <span className="inline-flex items-center gap-2 font-display font-semibold tracking-tight text-current/90">
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "size-2 rounded-full",
+                      availability === "available"
+                        ? "bg-accent"
+                        : "bg-current/40",
+                    )}
+                  />
+                  {AVAILABILITY_LABEL[availability]}
+                </span>
+                {condition(item) ? (
+                  <>
+                    <span aria-hidden="true" className="text-current/25">
+                      ·
+                    </span>
+                    <span>{condition(item)}</span>
+                  </>
+                ) : null}
+              </p>
+
               {/* Die Einordnung ist eine Lesestrecke, das Datenblatt darunter
                   nicht – deshalb greift die Zeichenbegrenzung nur hier. */}
               <p className="mt-4 max-w-[56ch] leading-relaxed text-current/75">
@@ -264,12 +317,48 @@ export default async function ScooterDetailPage({
                 </p>
               ) : null}
 
+              {/* Beschriftung und Ziel der Hauptaktion kommen aus
+                  `deviceAction()` – derselben Funktion, die auch die
+                  Aktionsleiste am Telefon liest. Ein verkauftes oder
+                  reserviertes Gerät bekommt keinen Knopf, der ins Leere
+                  zeigt, sondern eine abgeschaltete Fläche und daneben den
+                  Weg zu den Geräten, die es noch gibt. Die Seite selbst
+                  bleibt erreichbar: Sie ist indexiert, verlinkt und für
+                  Wiederkehrer der Beleg, dass es das Gerät gab. */}
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Link href={anfrage} className={buttonVariants({ size: "lg" })}>
-                  Zu diesem Gerät anfragen
-                </Link>
+                {action.href ? (
+                  <Link
+                    href={action.href}
+                    className={buttonVariants({ size: "lg" })}
+                  >
+                    {action.label}
+                  </Link>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "lg" }),
+                      "pointer-events-none opacity-55",
+                    )}
+                  >
+                    {action.label}
+                  </span>
+                )}
                 <PhoneButton variant="outline" />
               </div>
+
+              {availability !== "available" ? (
+                <p className="mt-4 text-sm leading-relaxed text-current/70">
+                  Dieses Gerät ist nicht mehr zu haben.{" "}
+                  <Link
+                    href="/e-scooter#bestand"
+                    className="font-semibold underline underline-offset-2"
+                  >
+                    Vergleichbare Geräte im Bestand
+                  </Link>{" "}
+                  – oder wir melden uns, sobald ein ähnliches hereinkommt.
+                </p>
+              ) : null}
 
               <p className="mt-4 text-sm text-current/60">
                 Abholung und Probefahrt in der Werkstatt in Neuenstadt am
@@ -407,7 +496,7 @@ export default async function ScooterDetailPage({
               }
               lead="Der Bestand wechselt laufend. Jedes Gerät ist ein Einzelstück, aufbereitet in der eigenen Werkstatt."
             />
-            <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-14 grid auto-rows-fr gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {related.map((other, i) => (
                 <Reveal key={other.id} delay={(i % 3) * 70}>
                   <InventoryCard item={other} />

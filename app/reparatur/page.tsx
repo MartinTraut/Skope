@@ -86,7 +86,16 @@ export default function RepairPage() {
         }
         lead="Ein defekter E-Scooter ist selten ein Totalschaden. In den meisten Fällen sind es Bremsen, Reifen, ein einzelner Sensor oder eine schwache Zelle im Akku. Alles reparierbar, zu einem Bruchteil des Neupreises."
         aside={
-          <dl className="grid grid-cols-2 gap-x-10 gap-y-6">
+          /* Zwei Spalten nur, wo die Bezeichnung in eine Zeile passt.
+             „Diagnose im Checkup" braucht im Etikettengrad 186 px; die
+             Spalte war ab `lg` 113 px (1024) und 156 px (1280) breit, also
+             stand jede der beiden Bezeichnungen zweizeilig über ihrer Zahl.
+             Unter 640 px gilt dasselbe: Dort sind zwei Spalten 116 bis
+             151 px breit. Auf dem Tablet liegt die Fläche über die volle
+             Breite und trägt zwei Spalten; in der schmalen Seitenspalte
+             stehen die beiden Angaben untereinander, ab 1440 px wieder
+             nebeneinander. */
+          <dl className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-1 lg:gap-y-8 min-[1440px]:grid-cols-2">
             <div>
               <dt className="eyebrow-plain text-current/60">
                 Reparierte Scooter
@@ -418,7 +427,7 @@ export default function RepairPage() {
       </Section>
 
       {/* FAQ */}
-      <Section tone="ink">
+      <Section id="faq" tone="ink">
         <FaqSection
           eyebrow="Häufige Fragen zur Reparatur"
           title={

@@ -62,7 +62,20 @@ export function Pillars() {
         {/* `lg:-mx-5` plus `lg:px-5` an jeder Kachel: gleiche Innenbreite in
             allen drei Spalten, und die Reihe schließt trotzdem bündig mit
             dem Abschnittskopf darüber ab. */}
-        <div className="mt-16 grid gap-y-10 lg:-mx-5 lg:grid-cols-3 lg:gap-y-0">
+        {/* Am Telefon eine Wischbahn, ab `sm` wieder gestapelt und ab `lg`
+            drei Spalten.
+
+            Gestapelt sind die drei Kacheln mit Bild, Überschrift, Absatz und
+            Kennzahl bei 390 px zusammen über zwei Bildschirmhöhen – die
+            dritte („Absichern") sieht nur, wer weiterscrollt, obwohl alle
+            drei gleichrangig sind. Nebeneinander steht eine im Bild und ein
+            Streifen der nächsten daneben.
+
+            Kein `tabIndex` an der Bahn: Jede Kachel ist selbst ein Verweis
+            und damit erreichbar; der Browser rollt sie beim Fokussieren ins
+            Bild. Ein zusätzlicher Halt wäre nur auf dem Schreibtisch einer
+            zu viel. */}
+        <div className="scroll-x -mx-6 mt-12 flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2 sm:mx-0 sm:mt-16 sm:grid sm:gap-y-10 sm:overflow-visible sm:px-0 sm:pb-0 lg:-mx-5 lg:grid-cols-3 lg:gap-y-0">
           {pillars.map((pillar, i) => (
             /* Trennlinien und Innenabstände liegen auf dem Rasterkind, nicht
                auf dem Link. Vorher standen sie am Link mit `lg:first:…` –
@@ -83,13 +96,13 @@ export function Pillars() {
             <Reveal
               key={pillar.href}
               className={cn(
-                "border-t border-current/10 pt-8 lg:border-t-0 lg:px-5 lg:pt-0",
+                "flex w-[calc(100vw-4.5rem)] shrink-0 snap-center sm:w-auto sm:block sm:border-t sm:border-current/10 sm:pt-8 lg:border-t-0 lg:px-5 lg:pt-0",
                 i > 0 && "lg:border-l lg:border-current/10",
               )}
             >
               <Link
                 href={pillar.href}
-                className="press group flex h-full flex-col [--press-scale:0.985]"
+                className="press group flex h-full w-full flex-col [--press-scale:0.985]"
               >
                 {/* 4:3 statt 16:10 – rund 130 px mehr Bildhöhe pro Kachel.
                     Bei 16:10 war der Roller in einer Drittelspalte kaum

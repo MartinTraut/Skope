@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { CtaBand } from "@/components/sections/cta-band";
 import { Hero } from "@/components/sections/hero";
@@ -10,7 +11,7 @@ import { Workshop } from "@/components/sections/workshop";
 import { FaqSection } from "@/components/ui/faq";
 import { Section } from "@/components/ui/section";
 import { faqHome } from "@/lib/data/faq";
-import { JsonLd, pageGraph, reviews, serviceRef } from "@/lib/schema";
+import { JsonLd, faqPage, pageGraph, reviews, serviceRef } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { fullAddress, nav, site } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
@@ -88,8 +89,8 @@ export default function HomePage() {
       <Hero />
       <InventoryTeaser />
       <Workshop />
-      <Testimonials />
       <Pillars />
+      <Testimonials />
       <Region />
 
       <Section id="faq" tone="silver">
@@ -102,6 +103,26 @@ export default function HomePage() {
           }
           lead="Die Fragen, die vor einem Gebrauchtkauf tatsächlich gestellt werden – und was eine Reparatur kostet. Ausführlichere Antworten zu Kauf, Reparatur, Wartung und Versicherung stehen auf den jeweiligen Leistungsseiten."
           items={faqHome}
+          mobileMax={3}
+          more={
+            <>
+              Die übrigen Fragen zu Kauf und Reparatur stehen auf{" "}
+              <Link
+                href="/e-scooter#faq"
+                className="font-semibold underline underline-offset-2"
+              >
+                E-Scooter kaufen
+              </Link>{" "}
+              und{" "}
+              <Link
+                href="/reparatur#faq"
+                className="font-semibold underline underline-offset-2"
+              >
+                Reparatur
+              </Link>
+              .
+            </>
+          }
         />
       </Section>
 
@@ -153,6 +174,14 @@ export default function HomePage() {
               })),
           },
           ...reviews("/"),
+          /* Die Startseite trägt seit dem 14.09.2026 einen FAQPage-Knoten.
+             Sie hatte die einzige sichtbare FAQ ohne Schema – die Regel des
+             Projekts lautet „FAQPage nur auf Seiten mit sichtbarer FAQ", und
+             das ist keine Erlaubnis, sondern eine Bedingung, die hier erfüllt
+             war. Alle fünf Fragen stehen im Dokument; `mobileMax` blendet
+             zwei davon am Telefon nur aus (`hidden`), es entfernt sie nicht.
+             Genau dafür war die Entscheidung so getroffen worden. */
+          faqPage(faqHome, "/"),
         ])}
       />
     </>

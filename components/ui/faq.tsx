@@ -27,11 +27,21 @@ export function FaqSection({
   title,
   lead,
   items,
+  mobileMax,
+  more,
 }: {
   eyebrow: string;
   title: React.ReactNode;
   lead: string;
   items: FaqItem[];
+  /**
+   * Wie viele Fragen unter `sm` sichtbar sind. Die übrigen bleiben im
+   * Dokument – sie gehören zum FAQPage-Schema der Seite und sollen für
+   * Vorleser und Suche vorhanden sein –, stehen dort aber nicht im Weg.
+   */
+  mobileMax?: number;
+  /** Zeile unter der Liste, nur unter `sm`: wo die übrigen Fragen stehen. */
+  more?: React.ReactNode;
 }) {
   return (
     <Container>
@@ -52,7 +62,12 @@ export function FaqSection({
           />
         </div>
         <div className="lg:col-span-7">
-          <Faq items={items} />
+          <Faq items={items} mobileMax={mobileMax} />
+          {more ? (
+            <p className="mt-6 text-sm leading-relaxed text-current/70 sm:hidden">
+              {more}
+            </p>
+          ) : null}
         </div>
       </div>
     </Container>
@@ -68,9 +83,11 @@ export function FaqSection({
 export function Faq({
   items,
   className,
+  mobileMax,
 }: {
   items: FaqItem[];
   className?: string;
+  mobileMax?: number;
 }) {
   return (
     <div
@@ -80,7 +97,11 @@ export function Faq({
       )}
     >
       {items.map((item, i) => (
-        <Reveal key={item.q} delay={Math.min(i * 55, 220)}>
+        <Reveal
+          key={item.q}
+          delay={Math.min(i * 55, 220)}
+          className={cn(mobileMax && i >= mobileMax && "hidden sm:block")}
+        >
           <details className="group">
             <summary className="press flex cursor-pointer list-none items-start justify-between gap-6 py-6 [--press-scale:0.99] [&::-webkit-details-marker]:hidden">
               {/* Keine eigene Breitengrenze mehr. Sie stammt aus der Zeit, in

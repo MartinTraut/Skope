@@ -7,6 +7,11 @@ import { ScrollManager } from "@/components/motion/scroll-manager";
 import { Footer } from "@/components/layout/footer";
 import { MobileCta } from "@/components/layout/mobile-cta";
 import { getGoogleRating } from "@/lib/google-rating";
+import {
+  commerceMode,
+  listProducts,
+  productAvailability,
+} from "@/lib/commerce-source";
 import { isPreview } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -112,6 +117,23 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const rating = await getGoogleRating();
 
+  /* Modell und Preis je Gerätekennung für die untere Aktionsleiste. Sie ist
+     ein Client-Bauteil und dürfte `lib/inventory` nicht selbst importieren –
+     das Modul zöge Bilder, Datenblätter und alle Beschreibungstexte ins
+     Browserbündel. Hier bleiben es dreizehn Sätze aus drei kurzen Werten –
+     der Modus kommt daneben, weil `commerceMode()` die Umgebung liest und
+     die im Browser nicht steht. */
+  const devices = Object.fromEntries(
+    listProducts().map((item) => [
+      item.id,
+      {
+        model: item.model,
+        price: item.price,
+        availability: productAvailability(item),
+      },
+    ]),
+  );
+
   return (
     <html
       lang="de"
@@ -145,7 +167,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer />
-        <MobileCta />
+        <MobileCta devices={devices} mode={commerceMode()} />
       </body>
     </html>
   );

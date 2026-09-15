@@ -10,7 +10,9 @@
  */
 
 import type { FaqItem } from "@/lib/data/faq";
-import { inventory, type InventoryItem } from "@/lib/inventory";
+import { listProducts } from "@/lib/commerce-source";
+import { AVAILABILITY_SCHEMA } from "@/lib/commerce";
+import { availabilityOf, type InventoryItem } from "@/lib/inventory";
 import { testimonials } from "@/lib/data/testimonials";
 import {
   fullAddress,
@@ -408,7 +410,7 @@ export function inventoryProduct(item: InventoryItem): Node {
       "@type": "Offer",
       price: item.priceValue,
       priceCurrency: "EUR",
-      availability: "https://schema.org/InStock",
+      availability: AVAILABILITY_SCHEMA[availabilityOf(item)],
       itemCondition: "https://schema.org/RefurbishedCondition",
       url,
       seller: { "@id": ORG_ID },
@@ -433,16 +435,16 @@ export function inventoryProduct(item: InventoryItem): Node {
  * Leerer Bestand, keine Liste: `itemListElement: []` ist kein gültiger Knoten.
  */
 export function inventoryList(): Node[] {
-  if (inventory.length === 0) return [];
+  if (listProducts().length === 0) return [];
 
   return [
     {
       "@type": "ItemList",
       "@id": `${site.url}/e-scooter#bestand`,
       name: "Verfügbare generalüberholte E-Scooter",
-      numberOfItems: inventory.length,
+      numberOfItems: listProducts().length,
       itemListOrder: "https://schema.org/ItemListOrderAscending",
-      itemListElement: inventory.map((item, i) => ({
+      itemListElement: listProducts().map((item, i) => ({
         "@type": "ListItem",
         position: i + 1,
         name: item.model,

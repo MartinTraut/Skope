@@ -330,6 +330,32 @@
     --focus-ring: #eef1f4;
   }
 
+  /**
+   * Wie stark die Staffelung der Einblendungen wirkt.
+   *
+   * Am Schreibtisch ist eine Staffelung eine Choreografie: Drei Karten, die
+   * nacheinander kommen, lesen sich als Reihe. Am Telefon steht dieselbe
+   * Reihe untereinander, und was dort gestaffelt ankommt, ist eine Karte, auf
+   * die man wartet – bei 120 ms je Kachel und vier Kacheln ist die letzte
+   * eine halbe Sekunde nach der ersten da, während der Daumen längst weiter
+   * gewischt hat. Zusätzlich laufen so vier Übergänge gleichzeitig, wo einer
+   * gereicht hätte.
+   *
+   * Der Faktor greift an allen Einblendungen zugleich, weil er nicht am
+   * einzelnen Wert hängt, sondern an der Rechnung in `.reveal`. Der Kopfbereich
+   * behält seine Reihenfolge – sie wird nur schneller abgespielt (aus
+   * 0/90/300/400/500 werden 0/36/120/160/200 ms).
+   */
+  :root {
+    --reveal-scale: 1;
+  }
+
+  @media (max-width: 47.999rem) {
+    :root {
+      --reveal-scale: 0.4;
+    }
+  }
+
   :root {
     /**
      * Höhe der Kopfzeile, an einer Stelle.
@@ -887,11 +913,27 @@
        als angeschnittene Fläche, nicht als Kante. Grün ist auf dieser
        Seite die Farbe der Handlung – ein Streifen unter der Navigation
        ist keine. */
+    /* Der Schlagschatten ist kurz, und das ist seit dem 15.09.2026 eine
+       gemessene Entscheidung.
+
+       Er stand auf `0 16px 40px -20px` bei 75 % Schwarz und lief damit rund
+       20 px unter die Leiste. Solange unter der Kopfzeile Silber oder eine
+       Textsektion lag, gab er ihr Tiefe. Seit der Kopfbereich den ganzen
+       ersten Bildschirm füllt, liegt dort aber eine **Aufnahme**, und die ist
+       selbst fast schwarz: Gemessen bei 440 px lag das Bild unter der Leiste
+       bei rund 10 von 255 und im Schatten bei 5 – eine Verdunkelung um 45 %
+       über die volle Breite. Auf einem dunklen Motiv liest sich das nicht als
+       Tiefe, sondern als schwarzer Balken quer durch das Bild.
+
+       Jetzt 10 px statt 20 und 55 % statt 75 %. Die harte Linie darüber
+       (1 px, 45 % Schwarz) bleibt: Sie ist die eigentliche Kante der Leiste
+       und kostet über dem Motiv nichts, weil sie eine Linie ist und keine
+       Fläche. */
     box-shadow:
       inset 0 1px 0 color-mix(in oklab, var(--color-silver) 18%, transparent),
       inset 0 -1px 0 color-mix(in oklab, var(--color-silver) 8%, transparent),
       0 1px 0 color-mix(in oklab, #000 45%, transparent),
-      0 16px 40px -20px rgb(0 0 0 / 0.75);
+      0 8px 22px -14px rgb(0 0 0 / 0.55);
   }
 
   /**
@@ -1110,7 +1152,7 @@
          Fenster ist. Auf einem kurzen Telefon überlagert er den Schleier
          darüber und hält die Aufnahme unter dem Text dunkel; dort ist
          ohnehin kein Platz für ein zweites Fenster. */
-      linear-gradient(to bottom, transparent 68%, var(--color-ink) 100%);
+        linear-gradient(to bottom, transparent 68%, var(--color-ink) 100%);
   }
 
   .hero-scrim {
@@ -1464,7 +1506,9 @@
    */
   .star-cascade > svg {
     animation: star-set 0.44s var(--ease-out-expo) both;
-    animation-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 80ms);
+    animation-delay: calc(
+      (var(--reveal-delay, 0ms) + var(--i, 0) * 80ms) * var(--reveal-scale, 1)
+    );
     animation-play-state: paused;
   }
 
@@ -1498,7 +1542,7 @@
     transition:
       opacity 0.5s var(--ease-out-expo),
       transform 0.5s var(--ease-out-expo);
-    transition-delay: var(--reveal-delay, 0ms);
+    transition-delay: calc(var(--reveal-delay, 0ms) * var(--reveal-scale, 1));
   }
 
   /* will-change nur, solange die Animation noch bevorsteht. Dauerhaft gesetzt
@@ -1539,7 +1583,7 @@
     transition:
       clip-path 0.62s var(--ease-out-expo),
       transform 0.62s var(--ease-out-expo);
-    transition-delay: var(--reveal-delay, 0ms);
+    transition-delay: calc(var(--reveal-delay, 0ms) * var(--reveal-scale, 1));
   }
 
   .reveal-mask[data-shown="true"] > .reveal-mask-inner {
@@ -1566,15 +1610,31 @@
    */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .parallax {
-        animation: parallax-shift linear both;
-        /* `auto` muss als eigene Zeile stehen: Die Kurzschreibweise ohne
-           Zeitwert setzt die Dauer auf 0 s, und eine Animation mit 0 s
-           Dauer steht auf einer Fortschritts-Zeitleiste sofort auf ihrem
-           Endbild – gemessen an der Wischbahn der Kundenstimmen, deren
-           Karten dadurch alle drei im Anfangszustand festhingen. */
-        animation-duration: auto;
-        animation-timeline: view();
+      /**
+       * Die Bildfahrt gilt erst ab 768 px.
+       *
+       * Sie skaliert das Bild auf 110 % und schiebt es über den ganzen
+       * Scrollweg – auf dem Telefon ist der sichtbare Ertrag ein Versatz von
+       * rund 7 % der Bildhöhe, bezahlt mit einer eigenen Compositor-Ebene je
+       * Bild, die über die volle Seitenlänge aktiv bleibt. Am Schreibtisch,
+       * wo die Bilder groß stehen und der Scrollweg lang ist, trägt die
+       * Bewegung; am Telefon ist sie Aufwand ohne Wirkung.
+       *
+       * Das Bild steht dann still — und das ist der korrekte Ausgangszustand,
+       * derselbe wie in Browsern ohne `animation-timeline`. Der `scale(1.1)`
+       * fällt mit weg, es gibt also auch keinen Beschnitt zu bedenken.
+       */
+      @media (min-width: 48rem) {
+        .parallax {
+          animation: parallax-shift linear both;
+          /* `auto` muss als eigene Zeile stehen: Die Kurzschreibweise ohne
+             Zeitwert setzt die Dauer auf 0 s, und eine Animation mit 0 s
+             Dauer steht auf einer Fortschritts-Zeitleiste sofort auf ihrem
+             Endbild – gemessen an der Wischbahn der Kundenstimmen, deren
+             Karten dadurch alle drei im Anfangszustand festhingen. */
+          animation-duration: auto;
+          animation-timeline: view();
+        }
       }
 
       @keyframes parallax-shift {

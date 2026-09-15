@@ -8,6 +8,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
 import { Testimonials } from "@/components/sections/testimonials";
 import { FaqSection } from "@/components/ui/faq";
+import { InventoryBrowser } from "@/components/sections/inventory-browser";
 import { InventoryCard } from "@/components/ui/inventory-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,7 +16,7 @@ import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
 import { checkupIncludes } from "@/lib/data/services";
-import { inventory, inventoryFacts } from "@/lib/inventory";
+import { listProducts, productFacts, rangeKm } from "@/lib/commerce-source";
 import {
   JsonLd,
   breadcrumb,
@@ -38,7 +39,8 @@ export const metadata: Metadata = pageMeta({
 export default function ScooterPage() {
   /* Stückzahl, Preisspanne und Marken einmal aus dem Bestand ableiten – die
      Begründung steht an `inventoryFacts()` in `lib/inventory.ts`. */
-  const facts = inventoryFacts();
+  const products = listProducts();
+  const facts = productFacts();
 
   return (
     <>
@@ -207,7 +209,7 @@ export default function ScooterPage() {
             </div>
           </Reveal>
 
-          {inventory.length > 0 ? (
+          {products.length > 0 ? (
             /* Raster statt gestapelter Vollbreite-Karten: Bei einem einzelnen
                Gerät hätte eine breite Karte Sinn, bei dreizehn wären das rund
                achttausend Pixel Scrollstrecke, und vergleichen liesse sich
@@ -232,13 +234,52 @@ export default function ScooterPage() {
                (Tempo, Reichweite, Zulassung) mit je 100 px; dafür braucht
                sie die ganze Spalte. Ein Gerät je Bildschirm ist bei einem
                Kauf ab 170 € kein Nachteil. */
-            <div className="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
-              {inventory.map((item, i) => (
-                <Reveal key={item.id} delay={(i % 3) * 70}>
-                  <InventoryCard item={item} />
-                </Reveal>
-              ))}
-            </div>
+            <>
+              <InventoryBrowser
+                items={products.map((item) => ({
+                  id: item.id,
+                  price: Number(item.priceValue),
+                  range: rangeKm(item),
+                  abe: item.streetLegal,
+                }))}
+              >
+                {products.map((item) => (
+                  /* Die Karten kommen fertig vom Server, der Filter bekommt nur
+                   drei Zahlen je Gerät – so bleiben Bilder, Datenblätter und
+                   Beschreibungstexte aus `lib/inventory` außerhalb des
+                   Browserbündels. `data-id` verbindet beide Seiten.
+
+                   Kein `Reveal` mehr um die Karten: Ein Eintrag, der beim
+                   Filtern aus `hidden` zurückkommt, hätte seinen Auftritt
+                   längst hinter sich und bliebe unsichtbar stehen. */
+                  /* `w-full` an der Karte, nicht nur `flex` am Eintrag: Der
+                     Listeneintrag ist eine Flex-Zeile, und ein Flex-Kind ohne
+                     Breitenangabe wird so breit wie sein Inhalt. Gemessen bei
+                     1512 px standen dadurch Karten mit kurzem Modellnamen
+                     338 px breit in einer 456 px breiten Spalte – samt
+                     entsprechend kleinerem Quadratbild, weshalb die Karten
+                     einer Reihe auch verschieden hoch waren. */
+                  <li key={item.id} data-id={item.id} className="flex">
+                    <InventoryCard
+                      item={item}
+                      layout="row"
+                      className="sm:hidden"
+                    />
+                    <InventoryCard item={item} className="hidden w-full sm:flex" />
+                  </li>
+                ))}
+              </InventoryBrowser>
+              <p className="mt-8 text-sm leading-relaxed text-current/70 sm:hidden">
+                Nichts Passendes dabei? Der Bestand wechselt laufend.{" "}
+                <a
+                  href="#suchauftrag"
+                  className="font-semibold underline underline-offset-2"
+                >
+                  Suchauftrag hinterlegen
+                </a>{" "}
+                – wir melden uns, sobald ein passendes Gerät hereinkommt.
+              </p>
+            </>
           ) : (
             /* Leerer Bestand: ehrlicher Anfrage-Weg statt Platzhalter-Produkten */
             <Reveal delay={60}>
@@ -316,7 +357,7 @@ export default function ScooterPage() {
       {/* Silber statt silber-200: Die Kundenstimmen darüber stehen selbst auf
           silber-200 – gemessen 2003 px in einem einzigen Ton, ohne dass eine
           Kante die beiden Themen trennt. */}
-      <Section tone="silver">
+      <Section id="faq" tone="silver">
         <FaqSection
           eyebrow="Häufige Fragen zum Kauf"
           title={

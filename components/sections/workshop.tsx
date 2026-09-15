@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { GeneratedMark } from "@/components/ui/generated-mark";
 import { Container, Section } from "@/components/ui/section";
 import { checkupIncludes, turnaround } from "@/lib/data/services";
+import { cn } from "@/lib/utils";
 
 /**
  * Die Vertrauens-Sektion: konkrete Prüfschritte und echte Bearbeitungszeiten
@@ -60,11 +62,23 @@ export function Workshop() {
             </Reveal>
 
             <Reveal delay={80}>
+              {/* Am Telefon drei Positionen statt sechs, dazu der Weg zur
+                  vollständigen Liste.
+
+                  Die sechs Positionen stehen ausgeschrieben auf `/reparatur`,
+                  auf `/e-scooter` und auf jeder Geräteseite – auf der
+                  Startseite sind sie der Beleg dafür, dass es eine Prüfung
+                  gibt, nicht ihre Dokumentation. Sechs Zeilen plus
+                  Bearbeitungszeiten waren dort gemessen der längste Block
+                  zwischen zwei Aktionen. */}
               <ul className="mt-8 grid gap-x-10 gap-y-0 sm:grid-cols-2">
                 {checkupIncludes.map((item, i) => (
                   <li
                     key={item}
-                    className="flex items-baseline gap-4 border-b border-silver/12 py-3"
+                    className={cn(
+                      "flex items-baseline gap-4 border-b border-silver/12 py-3",
+                      i > 2 && "hidden sm:flex",
+                    )}
                   >
                     <span className="tabular font-display text-xs font-semibold text-current/65">
                       {String(i + 1).padStart(2, "0")}
@@ -76,7 +90,7 @@ export function Workshop() {
             </Reveal>
 
             <Reveal delay={140}>
-              <div className="mt-9">
+              <div className="mt-9 hidden sm:block">
                 <p className="eyebrow-plain text-current/90">
                   Wie lange es dauert
                 </p>
@@ -104,6 +118,18 @@ export function Workshop() {
               {/* Eine Hauptaktion, ein Textlink daneben: Dasselbe Button-Paar
                   stand auf der Startseite vorher viermal. Der zweite Weg bleibt
                   erhalten, tritt aber nicht mehr als gleichwertig auf. */}
+              <p className="mt-6 text-sm leading-relaxed text-current/70 sm:hidden">
+                Alle {checkupIncludes.length} Positionen und die
+                Bearbeitungszeiten stehen auf der{" "}
+                <Link
+                  href="/reparatur"
+                  className="font-semibold underline underline-offset-2"
+                >
+                  Reparaturseite
+                </Link>
+                .
+              </p>
+
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <ButtonLink href="/reparatur#anfrage" size="lg">
                   Reparatur anfragen

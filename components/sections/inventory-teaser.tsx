@@ -5,7 +5,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { InventoryCard } from "@/components/ui/inventory-card";
 import { Container, Section, SectionHead } from "@/components/ui/section";
-import { inventoryFacts, inventoryHighlights } from "@/lib/inventory";
+import { highlightProducts, productFacts } from "@/lib/commerce-source";
 import { Mark } from "@/components/ui/mark";
 import { proof } from "@/lib/site";
 
@@ -22,12 +22,12 @@ import { proof } from "@/lib/site";
  * Bestandsseite. Zwei Darstellungen desselben Geräts wären zwei Bauteile, von
  * denen eines beim nächsten Mal anders aussieht.
  *
- * Die Auswahl kommt aus `inventoryHighlights()` und ist über die Preisspanne
+ * Die Auswahl kommt aus `highlightProducts()` und ist über die Preisspanne
  * verteilt – die Begründung steht dort.
  */
 export function InventoryTeaser() {
-  const items = inventoryHighlights(3);
-  const facts = inventoryFacts();
+  const items = highlightProducts(3);
+  const facts = productFacts();
 
   return (
     <Section id="bestand" tone="silver">
@@ -66,7 +66,7 @@ export function InventoryTeaser() {
             Regel ist dieselbe wie am Kennzahlenband des Kopfbereichs: Die
             Farbe hängt an der Gattung („das hier sind die Zahlen"), nicht am
             Einzelfall. */}
-        <Reveal delay={60}>
+        <Reveal delay={60} className="hidden sm:block">
           {/* Auf dem Telefon drei Zeilen, ab `sm` drei Spalten.
 
               Gestapelt trug jedes Feld denselben Aufbau wie auf dem
@@ -100,7 +100,7 @@ export function InventoryTeaser() {
               Der Abstand zwischen Bezeichnung und Wert kommt jetzt aus
               `gap-3` der Spalte, nicht mehr aus einem oberen Rand am Wert –
               sonst stünden dort 24 px statt 12. */}
-          <dl className="lift-lg mt-10 grid overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark lg:grid-cols-3">
+          <dl className="lift-lg mt-10 hidden overflow-hidden rounded-lg border border-silver/15 bg-ink text-silver on-dark sm:grid lg:grid-cols-3">
             <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 px-5 py-4 lg:flex-col lg:items-center lg:justify-start lg:border-r lg:border-b-0 lg:p-8 lg:text-center">
               <dt className="eyebrow-plain min-w-0 text-silver/55">
                 Geräte vorrätig
@@ -143,11 +143,42 @@ export function InventoryTeaser() {
             die auch die Schlagwortkapseln auf der Reparaturseite hatten – und
             drei Karten kosten einspaltig nur 1,7 Bildschirmhöhen. Auf der
             Bestandsseite wären dieselben Karten einspaltig 7,5. */}
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 hidden auto-rows-fr gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item, i) => (
             <Reveal key={item.id} delay={i * 80} as="li">
               <InventoryCard item={item} />
             </Reveal>
+          ))}
+        </ul>
+
+        {/* Am Telefon eine Wischbahn statt dreier gestapelter Karten –
+            derselbe Bauplan wie bei den Kundenstimmen, aus demselben Grund:
+            Drei Bestandskarten untereinander sind bei 390 px rund 1,7
+            Bildschirmhöhen, und wer die dritte sehen will, hat die Auslage
+            schon verlassen. Nebeneinander steht eine Karte im Bild, ein
+            Streifen der nächsten daneben zeigt, dass es weitergeht.
+
+            Volle Fensterbreite und außerhalb des Satzspiegels, sonst endet
+            die Bahn an einer Kante und liest sich als Kasten. Der
+            Einrastpunkt liegt in der Mitte, der Rand (`scroll-px-6`) hält die
+            Karte auf derselben Linie wie der Satzspiegel.
+
+            Fokussierbar wie dort: Die Karte ist zwar ein Verweis und damit
+            selbst erreichbar, die Bahn bekommt trotzdem `tabIndex`, weil sie
+            als Region angekündigt wird. */}
+        <ul
+          tabIndex={0}
+          role="region"
+          aria-label="Verfügbare Geräte"
+          className="scroll-x -mx-6 mt-10 flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2 sm:hidden"
+        >
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className="flex w-[calc(100vw-4.5rem)] shrink-0 snap-center"
+            >
+              <InventoryCard item={item} className="w-full" />
+            </li>
           ))}
         </ul>
 

@@ -62,7 +62,7 @@ const fieldClass =
 const labelClass =
   "font-display text-xs font-semibold tracking-[0.14em] uppercase opacity-75";
 
-export function InquiryForm({
+function InquiryFormInner({
   defaultTopic,
   topicFromQuery = false,
   className,
@@ -230,12 +230,31 @@ export function InquiryForm({
               ? "Bitte prüfen Sie eine Angabe:"
               : `Bitte prüfen Sie ${errorCount} Angaben:`}
           </p>
+          {/* Knöpfe, keine Rautenverweise.
+
+              `ScrollManager` fängt jeden Verweis auf dieselbe Seite in der
+              Einfangphase ab und bricht ihn mit `preventDefault` ab, um die
+              Sektion sauber unter die Kopfzeile zu setzen. Für eine Sektion
+              ist das richtig; für ein Formularfeld nimmt es genau das weg,
+              wofür die Zusammenfassung da ist – der Fokus wanderte nicht
+              mit, und wer mit der Tastatur arbeitet, stand nach dem Klick
+              vor dem Feld, aber nicht darin. Ein Knopf umgeht die Regel und
+              tut beides selbst. */}
           <ul className="mt-2 list-disc pl-5 text-sm">
             {Object.entries(state.errors ?? {}).map(([field, message]) => (
               <li key={field}>
-                <a href={`#${field}`} className="text-accent underline">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById(field);
+                    if (!(el instanceof HTMLElement)) return;
+                    el.scrollIntoView({ block: "center" });
+                    el.focus();
+                  }}
+                  className="text-left text-accent underline"
+                >
                   {message}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
@@ -307,6 +326,7 @@ export function InquiryForm({
           id="name"
           label="Name"
           required
+          maxLength={120}
           autoComplete="name"
           defaultValue={state.values?.name}
           error={state.errors?.name}
@@ -316,6 +336,7 @@ export function InquiryForm({
           label="E-Mail"
           type="email"
           required
+          maxLength={200}
           autoComplete="email"
           defaultValue={state.values?.email}
           error={state.errors?.email}
@@ -324,6 +345,7 @@ export function InquiryForm({
           id="phone"
           label="Telefon (optional, für Rückfragen)"
           type="tel"
+          maxLength={60}
           autoComplete="tel"
           defaultValue={state.values?.phone}
           error={state.errors?.phone}
@@ -336,6 +358,7 @@ export function InquiryForm({
           key={device}
           id="scooter"
           label="Marke & Modell (optional)"
+          maxLength={160}
           placeholder="z. B. Xiaomi Pro 2"
           defaultValue={state.values?.scooter ?? device}
           error={state.errors?.scooter}
@@ -356,6 +379,8 @@ export function InquiryForm({
           id="message"
           name="message"
           required
+          minLength={10}
+          maxLength={4000}
           rows={5}
           defaultValue={state.values?.message}
           aria-invalid={state.errors?.message ? true : undefined}
@@ -470,5 +495,91 @@ function Field({
         </p>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * Auffangnetz für einen abgebrochenen Absendeversuch.
+ *
+ * Gemessen am 14.09.2026: Wird die Verbindung während des Absendens getrennt
+ * (Funkloch, Tunnel, Wechsel WLAN → Mobilfunk), scheitert der Aufruf der
+ * Server Action im Browser mit „TypeError: Failed to fetch". Diese Ausnahme
+ * entsteht *vor* dem Server – `submitInquiry` läuft nie, kann sie also auch
+ * nicht abfangen. Sie stieg bis zur Fehlergrenze von Next durch, und die
+ * ersetzte die ganze Seite durch einen englischen Knopf „Reload": Formular
+ * weg, Eingaben weg, Telefonnummer weg. Genau in dem Moment, in dem jemand
+ * die Werkstatt erreichen will.
+ *
+ * Warum eine Grenze und kein `try/catch` um die Aktion: `useActionState`
+ * behält die Fortschreibung ohne JavaScript nur, solange ihm die Server
+ * Action **unmittelbar** übergeben wird. Eine Client-Funktion drumherum
+ * nähme dem Formular die verborgenen `$ACTION_*`-Felder – und damit die
+ * Fähigkeit, ganz ohne JavaScript abzusenden (geprüft, siehe QA.md).
+ * Die Grenze kostet die Eingaben, rettet aber den Weg.
+ */
+class SubmitBoundary extends React.Component<
+  { children: React.ReactNode; className?: string },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    // Nur die Fehlerart, keine Formularinhalte – dieselbe Regel wie im Server.
+    console.error(
+      "[anfrage] Absenden im Browser abgebrochen",
+      error instanceof Error ? error.name : "unknown",
+    );
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div
+        role="alert"
+        className={cn(
+          "rounded-lg border border-accent bg-accent/10 p-6 md:p-8",
+          this.props.className,
+        )}
+      >
+        <AlertCircle aria-hidden="true" className="size-6 text-accent" />
+        <h3 className="mt-4 font-display text-xl font-bold tracking-tight">
+          Die Verbindung ist abgerissen.
+        </h3>
+        <p className="mt-3 leading-relaxed opacity-80">
+          Ihre Anfrage wurde <strong>nicht</strong> übermittelt. Laden Sie die
+          Seite neu und versuchen Sie es noch einmal – oder melden Sie sich
+          direkt, das geht ohnehin schneller.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-display font-semibold">
+          <a
+            href={site.phone.href}
+            className="inline-flex items-center gap-2 text-accent hover:underline"
+          >
+            <Phone className="size-4" aria-hidden="true" />
+            <span className="tabular">{site.phone.display}</span>
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            className="break-all text-accent hover:underline"
+          >
+            {site.email}
+          </a>
+        </div>
+      </div>
+    );
+  }
+}
+
+export function InquiryForm(
+  props: React.ComponentProps<typeof InquiryFormInner>,
+) {
+  return (
+    <SubmitBoundary className={props.className}>
+      <InquiryFormInner {...props} />
+    </SubmitBoundary>
   );
 }

@@ -637,6 +637,337 @@ vorher).
   steht und die einzeilig ist. Zwischen `sm` und `lg` bleibt es linksbündig:
   Dort steht die lange Beschriftung über zwei bis drei Zeilen.
 
+## Untere Aktionsleiste nach Route — 12.09.2026
+
+Aus einem externen Review. Die Leiste trug auf jeder Route dieselben zwei
+Knöpfe, „Anrufen" und „Anfrage" – auf der Startseite dieselbe Aussage wie auf
+/recycling. Jetzt trägt sie links den Telefonknopf als Symbol (48 px) und
+rechts die eine Aktion, die auf dieser Seite dran ist: Startseite „Bestand
+ansehen" (`/e-scooter#bestand`), /e-scooter „Suchauftrag stellen", /reparatur
+„Reparatur anfragen", /wartungsvertrag „Vertrag anfragen", /versicherung
+„Kennzeichen anfragen", /recycling „Altgerät anmelden", sonst „Anfrage
+senden".
+
+- **Auf /kontakt gibt es keinen Anfrage-Knopf**, sondern „Anrufen" im Vollton
+  und „Route" im Umriss (`site.mapsUrl`). Das Formular steht auf derselben
+  Seite; ein Knopf, der auf den Abschnitt darunter zeigt, ist dort kein Weg.
+- **Auf der Geräteseite steht links der Preis statt des Telefonknopfs.** Er ist
+  die Angabe, wegen der man auf dieser Seite zurückscrollt; die Nummer trägt
+  unter `lg` ohnehin der Symbolknopf in der Kopfzeile. Das Modell reist wie im
+  Kopfbereich in der Adresse mit (`?anliegen=geraet&geraet=…`).
+- **Modell und Preis kommen als Eigenschaft aus dem Layout**, nicht aus einem
+  Import von `lib/inventory` im Client-Bauteil: Das Modul trägt Bilder,
+  Datenblätter und alle Beschreibungstexte. So sind es dreizehn Paare aus zwei
+  Zeichenketten.
+- **Nicht gebaut, weil es die Bedienung nicht gibt:** „Filter" auf /e-scooter
+  (die Seite hat keine Filterung) und „gewählter Tarif" auf /wartungsvertrag
+  (die Tarifkarten sind keine Auswahl, es gibt keinen Zustand zu lesen).
+- Gemessen über zwölf Routen × dreizehn Breiten (320 – 1512 px): kein
+  Überlauf, keine Konsolenfehler, jede Fläche 48 px, keine Beschriftung
+  abgeschnitten (engster Fall 320 px: „Kennzeichen anfragen" in 212 px).
+- **Die ausgefahrene Leiste geht über `visibility`, nicht über
+  `pointer-events-none`.** Mit `opacity-0` allein war sie unsichtbar und nicht
+  antippbar, stand aber weiter in der Tabreihenfolge – gemessen nahm der erste
+  Knopf `focus()` an. Wer oben auf einer Seite tabbt, landete auf zwei
+  Schaltflächen, die niemand sieht. `visibility` muss dafür in der
+  Übergangsliste stehen, sonst springt die Leiste statt zu laufen. Dieselbe
+  Lösung wie am Menü im Seitenkopf.
+- **Zoom bleibt gesperrt.** Das Review verlangt die Freigabe. Die Sperre steht
+  seit dem 05.09.2026 auf Ansage des Betreibers und wurde am 13.09.2026 nach
+  Vorlage des Reviews ausdrücklich bestätigt. Wer sie das nächste Mal
+  aufgeschrieben findet, hat sie zum zweiten Mal gefunden – sie ist kein
+  Versehen. Siehe „Telefon-Durchgang".
+
+## Externes Review Astra 6, Prompts 3–6 — 14.09.2026
+
+Auf Ansage („mach mal alles was das Feedback sagt und dann schauen wir")
+umgesetzt.
+
+> **Der Kopfbereich ist am 14.09.2026 wieder zurückgedreht** — Ansage: „der
+> hero sieht scheiße aus auf dem handy". Es gilt wieder die Fassung vom
+> 06.09.2026 (Roller über die volle Bühne, Text darauf, Kennzahlenband an der
+> Displaykante; gemessen 844 von 844 px bei 390 px Breite). Der folgende
+> Abschnitt „Kopfbereich am Telefon neu" beschreibt damit **nicht** den
+> aktuellen Stand, sondern nur, was verworfen wurde. Beide Fassungen liegen
+> unter `.backup/vor-astra-feedback/`. Die einzige Änderung gegenüber dem
+> Stand von HEAD ist der Import: `productFacts()` statt `inventoryFacts()`.
+
+**Kopfbereich am Telefon neu (Prompt 3, nur unter `sm`) — verworfen, siehe
+oben:**
+
+- **Der Text steht nicht mehr auf der Aufnahme, sondern darunter.** Die Bühne
+  ist eine Fläche im Fluss (`h-[max(42svh,min(46vw,18rem))]`), darunter auf
+  reiner Tinte: Auszeichnung, H1, ein zweizeiliges Nutzenversprechen, der
+  Vollton-Knopf „E-Scooter ansehen", der Textweg „Reparatur anfragen" und der
+  Google-Beleg. Damit hängt kein Textkontrast mehr an einem Bildinhalt.
+- **Die Bildfläche beginnt 4 rem *über* der Bühne** (`-top-16`), nicht mehr
+  4 rem darunter. Bei 42 % Höhe skaliert `object-cover` über die Höhe; ohne
+  den Zug nach oben stand der Roller klein in der Mitte und die dunkle Decke
+  füllte das obere Drittel. Dafür läuft der Lenker wieder in die Kopfzeile —
+  der Verlauf hält dort jetzt 78 % Tinte bis `--header-h`.
+- **Das Kennzahlenband steht unter der Falz.** Die Bildzone trägt am Telefon
+  `min-h-svh`, das Band ist ihr Nachbar. Gemessen 390 × 844: Bühne 380,
+  Beleg endet bei 740, Band ab 844.
+- **Bei 320 × 568 geht es nicht auf** (Beleg endet bei 723). Dort läuft die H1
+  über vier Zeilen. Einzige geprüfte Breite, auf der das so ist.
+
+**Startseite (Prompt 4):** Reihenfolge jetzt Hero → Kennzahlen → Bestand →
+Werkstatt → Säulen → Kundenstimmen → Region → FAQ → Abschluss. Gedreht wurde
+nur ein Paar: Die Kundenstimmen stehen hinter den drei Wegen statt davor.
+
+- **Drei Dopplungen sind am Telefon weg:** das Kennzahlenband im
+  `inventory-teaser` (wortgleich mit dem im Kopfbereich), drei der sechs
+  Checkup-Positionen samt Bearbeitungszeiten (stehen vollständig auf
+  `/reparatur`, `/e-scooter` und jeder Geräteseite) und zwei der fünf FAQ
+  (`mobileMax` an `FaqSection`; die übrigen bleiben im Dokument, weil sie zum
+  Schema gehören, und stehen nur nicht im Weg).
+- **Zwei neue Wischbahnen** nach dem Bauplan der Kundenstimmen: die drei
+  Geräte im Teaser und die drei Säulen. Kein `tabIndex` an der Säulenbahn —
+  die Kacheln sind selbst Verweise, ein zusätzlicher Halt wäre auf dem
+  Schreibtisch einer zu viel.
+- Seitenhöhe bei 390 px von 15,2 auf 11,8 Bildschirme.
+- `#faq` gibt es jetzt auch auf `/e-scooter` und `/reparatur` — die Verweise
+  unter der gekürzten FAQ zeigen dorthin.
+
+**Bestandsseite (Prompt 5):**
+
+- **Unter `sm` Zeilenkarten** (`InventoryCard layout="row"`): Bild 115 × 145
+  links, rechts Modell, Preis, Zustand, Reichweite und ABE. Liste bei 390 px
+  von rund 6000 auf 2397 px. Ab `sm` unverändert die quadratische Karte.
+- **Raster `sm:grid-cols-2 lg:grid-cols-3`** statt `xl:grid-cols-3`.
+- **`InventoryBrowser` ist ein Client-Bauteil, das keine Bestandsdaten
+  bekommt.** Die Karten kommen fertig vom Server als `children`; der Filter
+  erhält je Gerät drei Zahlen (`id`, Preis, Reichweite, ABE) und schaltet die
+  Einträge über `hidden` und `order`. `lib/inventory` bleibt damit außerhalb
+  des Browserbündels — dieselbe Regel wie bei der unteren Aktionsleiste.
+- **Nur Filter mit echtem Feld:** Alle, Mit ABE (`streetLegal`), Bis 250 €
+  (`priceValue`), Ab 30 km (`rangeKm()`, liest „bis N km" aus dem Datenblatt
+  und liefert sonst `null`). **Nicht gebaut:** „Neu / Gebraucht geprüft" (es
+  gibt kein Zustandsfeld) und die Zustände „reserviert" / „verkauft" (es gibt
+  keinen Status; verkaufte Geräte werden aus der Liste genommen).
+- **Filter und Sortierung stehen in der Adresse** (`?filter=`, `?sort=`,
+  `router.replace` mit `scroll:false`). Zurück-Navigation gemessen.
+- `useSearchParams` zwingt zu einer Suspense-Grenze, sonst bricht der
+  statische Bau. Der Rückfall ist dieselbe Liste ohne Bedienelemente — also
+  das, was auch ohne JavaScript steht. Die Bedienelemente selbst hängen an
+  `useSyncExternalStore` statt an einem `setState` im Effekt (Lint-Regel
+  `react-hooks/set-state-in-effect`).
+
+**Geräteseite (Prompt 6):** Verfügbarkeit und Zustand stehen jetzt direkt
+unter dem Preis. „Sofort verfügbar" ist keine neue Zusage, sondern die Regel
+der Liste; der Zustand kommt aus dem Datenblatt und steht nur da, wo er dort
+steht. **Die Galerie wurde nicht umgebaut** — Wischen (Pointer-Events, nur
+`pointerType !== "mouse"`), Pfeile, Vorschaubilder und Pfeiltasten halten
+Zustand, Beschriftung und Vorschau gemessen synchron.
+
+**Was aus dem Review nicht gebaut ist, und warum:**
+
+- **„Reservieren" in der unteren Leiste.** Es gibt keinen Reservierungsweg;
+  „Gerät anfragen" ist die Aktion, die es gibt. Eine Reservierung ist eine
+  Zusage, kein Etikett.
+- **„Neue & geprüfte gebrauchte E-Scooter" als Positionierung.** Kein
+  Zustandsfeld, alle dreizehn Geräte sind gebraucht. Der Prompt sieht für
+  diesen Fall selbst die wahrheitsgemäße Formulierung vor.
+- **Verkaufte Geräteseiten mit deaktivierter Aktion.** Ohne Statusfeld gibt
+  es keinen Zustand, den die Seite lesen könnte. Kommt mit Shopify.
+
+## Roller im Kopfbereich auf langen Telefonen — 15.09.2026
+
+Auf Ansage („positionier es besser", mit Aufnahme). Der Roller war auf einem
+langen Fenster fast nicht zu sehen: nur ein senkrechter Streifen Werkstattwand,
+der Lenker als Stange quer durch die Überschrift, das Vorderrad aus dem linken
+Rand gefallen.
+
+**Es war kein Positionsfehler, sondern ein Seitenverhältnis-Fehler.** Die
+Bildfläche hing allein an der Bühne, und die füllt seit dem 06.09. den ganzen
+ersten Bildschirm. Je länger das Fenster, desto schmaler und höher die Fläche —
+und `object-cover` skaliert dann über die Höhe. Gemessen, wie viel Bildbreite
+übrig blieb:
+
+| Fenster | sichtbare Bildbreite (vorher) |
+|---|---|
+| 360 × 780 | 46 % |
+| 390 × 844 | 42 % |
+| 412 × 915 | 40 % |
+| 440 × 1180 | **30 %** |
+| 390 × 1200 | **26 %** |
+
+Der Roller braucht **33,5 %** der Bildbreite (Vorderrad bei 49 %, Hinterrad bei
+82,5 % — am Original 2400 × 1507 abgelesen). Unter 34 % passt er nicht mehr
+hinein, ganz gleich, wohin man `object-position` setzt. Bei 82 % fiel genau
+sein Vorderrad heraus.
+
+- **Die Bildfläche ist auf `157vw` gedeckelt** (2400 / 1507 / 0,40) und hängt
+  **unten** (`bottom-0` plus Höhe statt `top-16 bottom-0`). Damit bleiben
+  überall mindestens 40 % Bildbreite stehen, der Roller steht weiter auf dem
+  Boden der Bühne, und die gewonnene Strecke wird oben zu Tinte — genau dort,
+  wo Überschrift und Beleg ohnehin einen dichten Grund brauchen. Gemessen
+  390 × 844 unverändert 580 px, 440 × 1180 jetzt 691 statt 914.
+- **Der Ausschnitt liegt bei 74 % statt 82 %.** Über die ganze Spanne von 40
+  bis 46 % sichtbarer Breite liegt die Mitte des Sichtfensters damit bei 0,63
+  bis 0,64; der Roller (0,49 – 0,825) hat auf beiden Seiten Luft, statt an
+  einer Kante zu kleben.
+- **Nicht über die Bühne gelöst.** An ihr hängen `.hero-stage-scrim` und der
+  Auslauf ins Kennzahlenband, und deren Stopps tragen die gemessenen
+  Kontraste. Dieselbe Regel wie am 06.09.
+- **Kontraste nachgemessen** (Text und Kopfzeile ausgeblendet, hellster Punkt
+  im Zeilenkasten): H1 mindestens 4,8:1 (412 × 915), auf den langen Fenstern
+  19,8:1, weil die Überschrift dort auf reiner Tinte steht. Beleg überall über
+  17:1. Die Sektion endet weiterhin exakt an der Fensterkante — 780 / 844 /
+  915 / 932 / 1180 / 1200 px —, am Schreibtisch unverändert 900 bei 1512.
+- **320 × 568 bleibt die Ausnahme** wie bisher: Dort läuft die H1 über vier
+  Zeilen, die Bühne ist nur 346 px hoch und zeigt einen waagerechten Ausschnitt.
+
+## Externes Review Astra 6, Prompts 8–11 — 14.09.2026
+
+Der ganze Durchgang steht als Messprotokoll in **`QA.md`** im Projektstamm —
+Routen, Breiten, Befunde, offene Punkte. Hier nur, was als Entscheidung
+bleibt.
+
+**Formulare (Prompt 8).** Der Aufbau war schon der geforderte: eine Server
+Action, serverseitige Prüfung, Honeypot, Drosselung, ehrlicher Rückfall statt
+stiller Erfolgsmeldung. Zwei echte Löcher waren trotzdem drin:
+
+- **Die Fehlerzusammenfassung sprang, ohne den Fokus mitzunehmen.** Ihre
+  Einträge waren Rautenverweise, und `ScrollManager` fängt jeden Verweis auf
+  dieselbe Seite in der Einfangphase ab (`preventDefault`), um die *Sektion*
+  sauber unter die Kopfzeile zu setzen. Für ein Formularfeld nimmt das genau
+  das weg, wofür die Zusammenfassung da ist. Jetzt Knöpfe, die selbst
+  scrollen und fokussieren.
+- **Ein Verbindungsabbruch beim Absenden ersetzte die ganze Seite.** Gemessen:
+  Wird die Verbindung während des Absendens getrennt, scheitert der Aufruf im
+  Browser mit „TypeError: Failed to fetch" — *vor* dem Server, `submitInquiry`
+  läuft nie und kann es nicht abfangen. Die Ausnahme stieg bis zur
+  Fehlergrenze von Next durch, und die zeigte einen englischen Knopf
+  „Reload": Formular weg, Eingaben weg, Telefonnummer weg. Jetzt fängt
+  `SubmitBoundary` im Formular selbst ab und zeigt Nummer und E-Mail.
+  **Kein `try/catch` um die Aktion:** `useActionState` behält die
+  Fortschreibung ohne JavaScript nur, solange ihm die Server Action
+  unmittelbar übergeben wird — eine Client-Funktion drumherum nähme dem
+  Formular die verborgenen `$ACTION_*`-Felder. Der Versand ohne JavaScript
+  ist mit einem rohen POST geprüft und funktioniert.
+- Dazu Längengrenzen am Feld, die denen des Servers entsprechen.
+- **Nicht geändert:** `inputmode`. `type="email"` und `type="tel"` setzen die
+  Tastatur bereits; ein zweites Attribut mit derselben Aussage ist eine
+  Stelle mehr, die auseinanderlaufen kann.
+- **Bekannte Grenze:** `?anliegen=` und `?geraet=` werden im Browser aus der
+  Adresszeile gelesen. Ohne JavaScript kommt die Vorbelegung nicht an. Die
+  Alternative wäre, `/kontakt` bei jedem Aufruf serverseitig zu rendern.
+
+**Verkaufsweg (Prompt 9).** Neu `lib/commerce.ts`, `lib/commerce-source.ts`,
+`lib/commerce-shopify.ts`.
+
+- **Der Modus wird geprüft, nicht geglaubt.** `COMMERCE_MODE` kennt `catalog`,
+  `reservation` und `checkout`; `commerceMode()` gibt `checkout` nur zurück,
+  wenn Storefront-Domain *und* Token wirklich gesetzt sind, und `reservation`
+  gar nicht, weil es keinen Speicher für diesen Zustand gibt. Gemessen:
+  `COMMERCE_MODE=checkout npm run build` fällt auf `catalog` zurück und
+  schreibt eine Zeile ins Protokoll. Es gibt keinen Zustand, in dem ein
+  Kaufknopf ohne Kaufweg steht.
+- **`InventoryItem` hat ein Feld `availability`**, und alle dreizehn Einträge
+  lassen es leer — `availabilityOf()` liefert dann „available", was die
+  Pflegeregel der Datei ist (verkaufte Geräte werden gelöscht). Das Feld
+  existiert trotzdem, weil die Oberfläche „reserviert" und „verkauft"
+  darstellen können muss, **bevor** Shopify sie liefert. Sonst wäre der
+  Anschluss nicht das Füllen eines Feldes, sondern ein zweiter Umbau von
+  Karte, Geräteseite, Aktionsleiste und Schema. Mit je einem versuchsweise
+  gesetzten Gerät geprüft: Zeile unter dem Preis, Plakette auf der Karte,
+  abgeschaltete Aktion samt Verweis auf Vergleichbares, `OutOfStock` bzw.
+  `SoldOut` im Schema — und die Geräteseite bleibt erreichbar.
+- **`deviceAction()` ist die eine Stelle für Beschriftung und Ziel.** Kopf der
+  Geräteseite und untere Aktionsleiste lesen dieselbe Funktion; zwei Knöpfe
+  mit getrennter Beschriftung laufen beim ersten Eingriff auseinander.
+- **`lib/commerce-source.ts` ist die einzige Stelle, an der die Seite ihre
+  Ware herbekommt.** Sitemap, Layout, Bestandsseite, Geräteseite, Teaser,
+  Kopfbereich und Schema lesen nicht mehr `lib/inventory` unmittelbar. Der
+  Rückgabetyp ist der Vertrag: Wer eine zweite Quelle baut, erfüllt ihn,
+  statt die Oberfläche zu ändern.
+- **Kein Adapter, der etwas vortäuscht.** `lib/commerce-shopify.ts` enthält
+  Typen, Fehlerfälle, den einen Netzaufruf und die fünf Voraussetzungen, die
+  fehlen — darunter eine, die keine Codefrage ist: ob über die Website
+  überhaupt gekauft werden soll. Bei Einzelstücken mit Differenzbesteuerung
+  hängen Rechnungslegung, Widerruf und Versand daran.
+
+**Bewegung (Prompt 10).** Der Bestand war in Ordnung — Laufband schon
+anhaltbar und bei reduzierter Bewegung aus, Kundenstimmen am Telefon schon
+eine Wischbahn, kein großflächiger `backdrop-filter` (die Kopfzeile ist seit
+dem Flacker-Befund deckend). Geändert wurden zwei Dinge, beide nur unter
+768 px:
+
+- **Die Bildfahrt (`.parallax`) gilt erst ab 48 rem.** Sie skaliert auf 110 %
+  und schiebt über den ganzen Scrollweg; am Telefon ist der sichtbare Ertrag
+  rund 7 % Bildhöhe, bezahlt mit einer Compositor-Ebene je Bild über die
+  volle Seitenlänge. Gemessen 390 px: aktive Bildfahrten 1 → **0**, bei
+  1512 px unverändert 1.
+- **`--reveal-scale` skaliert alle Staffelungen.** Der Faktor hängt an der
+  Rechnung in `.reveal`, nicht am einzelnen Wert — unter 768 px 0,4. Die
+  Choreografie des Kopfbereichs bleibt in ihrer Reihenfolge und wird nur
+  schneller abgespielt (0/90/300/400/500 → 0/36/120/160/200 ms). Gemessen
+  längste Staffelung am Telefon 220 → **88 ms**, am Schreibtisch unverändert.
+- **Was nicht messbar besser wurde, wird auch nicht so verkauft:** LCP, CLS
+  und die längste Aufgabe sind vorher wie nachher gleich (Zahlen in `QA.md`).
+  Wer hier das nächste Mal Bewegung reduziert, sollte das wissen — der Gewinn
+  liegt in der Wartezeit auf die dritte Kachel, nicht in einer Kennzahl.
+
+**Prüfung (Prompt 11).**
+
+- **130 Prüfungen** (13 Routen × 10 Breiten, 320 – 1440 px plus Querformat):
+  kein Überlauf, keine Kleinstschrift, keine Zielfläche unter 44 px, keine
+  Konsolenfehler. Genau eine H1 je Route, kein übersprungener
+  Überschriftengrad, kein Bild ohne `alt`.
+- **`VERCEL_ENV` muss beim Bauen gesetzt sein, nicht beim Starten.** Alle
+  Seiten sind statisch vorgebaut; ein zur Laufzeit gesetztes
+  `VERCEL_ENV=preview` ändert an der ausgelieferten Datei nichts. Gemessen:
+  mit `VERCEL_ENV=preview npm run build` trägt `robots.txt` `Disallow: /` und
+  jede Seite `noindex, nofollow`, ohne die Variable das Gegenteil. Auf Vercel
+  ist das der Normalfall, lokal eine Stolperstelle.
+- **Der Bestandsfilter benutzt jetzt `push` statt `replace`.** Mit `replace`
+  überschrieb jeder Filterklick den einzigen Verlaufseintrag; gemessen führte
+  der Zurück-Knopf nach zwei Filtern von der Bestandsseite **weg** statt
+  einen Schritt zurück. Auf dem Telefon ist Zurück die Hauptgeste. Jetzt
+  13 → 11 → 8 → 11 → 13.
+- **Die Startseite trägt einen `FAQPage`-Knoten.** Sie hatte als einzige eine
+  sichtbare FAQ ohne Schema. Alle fünf Fragen stehen im Dokument; `mobileMax`
+  blendet zwei am Telefon nur aus — genau dafür war die Entscheidung so
+  getroffen worden.
+- **Zoom bleibt gesperrt** und ist zum dritten Mal aufgeschrieben worden. Sie
+  ist kein Versehen, siehe „Telefon-Durchgang" und „Untere Aktionsleiste".
+- **`next` 16.3.4 → 16.3.5** plus `npm audit fix` wegen der nanoid-Meldung
+  GHSA-2v37-7h3g-55p8 (über postcss in der Toolchain). `npm audit --omit=dev`
+  ist danach leer. **Achtung beim Nacharbeiten:** `npm audit fix --omit=dev`
+  räumt die Entwicklungsabhängigkeiten aus `node_modules`; danach `npm install`
+  ohne `--omit`, sonst fehlt `tsc`.
+
+## Bestandskarten gleich groß — 15.09.2026
+
+Auf Ansage („schau, dass die alle gleich groß sind"). Es waren zwei Fehler
+übereinander, beide gemessen bei 640 – 1512 px:
+
+- **Die Karten waren verschieden breit.** Der Listeneintrag auf `/e-scooter`
+  ist `<li className="flex">`, die Karte darin ein Flex-Kind ohne
+  Breitenangabe – und das wird so breit wie sein Inhalt. Bei 1512 px stand
+  eine Karte mit kurzem Modellnamen 338 px breit in einer 456 px breiten
+  Spalte, mitsamt entsprechend kleinerem Quadratbild (304 statt 422 px).
+  Daher waren sie auch verschieden hoch. Die Karte trägt jetzt `w-full`.
+- **Jede Rasterreihe hatte ihre eigene Höhe.** Innerhalb einer Reihe sind
+  Rasterzellen gleich hoch, von Reihe zu Reihe nicht: 614 / 662 / 638 px bei
+  1512. Die Reihe mit den beiden Geräten ohne ABE trägt die ausgeschriebene
+  Warnung, eine andere einen zweizeiligen Modellnamen. Alle drei Raster
+  (Bestandsseite, Startseiten-Teaser, „Passt dazu" auf der Geräteseite)
+  tragen jetzt `auto-rows-fr`. Die gewonnene Strecke fällt über das
+  vorhandene `mt-auto` vor die Zeile „Mehr Daten" – also zwischen Inhalt und
+  Abschluss, nicht in den Text.
+- **Der Modellname hat zwei Zeilen Platz** (`min-h-[2lh]` an der H3). Drei
+  von dreizehn Namen laufen zweizeilig; ohne festen Kasten begann die
+  Kennwertzeile bei diesen Karten 24 px tiefer als bei den Nachbarn. `lh`
+  ist die Zeilenhöhe des Elements; kennt ein Browser die Einheit nicht,
+  fällt die Angabe weg.
+
+Gemessen danach: gleiche Breite **und** gleiche Höhe auf 390, 640, 768,
+1024, 1280 und 1512 px, auf allen drei Rastern. Kein Überlauf, keine
+Konsolenfehler. Preis am Telefon: Die Zeilenkarten sind 193 statt 171 px
+hoch, die Liste wächst um rund 250 px.
+
 ## Telefonknöpfe — 03.09.2026
 
 Auf Ansage entfernt: der Neon-Telefonknopf im Abschlussband (`CtaBand`, alle

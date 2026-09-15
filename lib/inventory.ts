@@ -19,6 +19,8 @@
  * hätte an dieser Stelle nur eine Zahl erfunden.
  */
 
+import type { Availability } from "@/lib/commerce";
+
 export type InventoryImage = {
   src: string;
   /** Beschreibt, was zu sehen ist – nicht, was verkauft werden soll. */
@@ -45,6 +47,20 @@ export type InventoryItem = {
   /** Rechtlicher oder werkstattseitiger Hinweis unter den Daten. */
   note?: string;
   images: InventoryImage[];
+  /**
+   * Zustand des Einzelstücks.
+   *
+   * Optional und ohne Wert in allen dreizehn Einträgen – das ist keine
+   * Nachlässigkeit, sondern die Pflegeregel dieser Datei: Was hier steht, ist
+   * da; ein verkauftes Gerät wird gelöscht. `availabilityOf()` liefert
+   * deshalb „available", solange nichts anderes eingetragen ist.
+   *
+   * Das Feld existiert trotzdem, weil die Oberfläche die anderen beiden
+   * Zustände darstellen können muss, bevor Shopify sie liefert: Sonst wäre
+   * der Anschluss nicht das Füllen eines Feldes, sondern ein zweiter Umbau
+   * von Karte, Geräteseite, Aktionsleiste und Schema.
+   */
+  availability?: Availability;
 };
 
 export const inventory: InventoryItem[] = [
@@ -686,6 +702,32 @@ export const inventory: InventoryItem[] = [
  * synchron gehalten werden muss, wäre bei dieser Größe nur eine weitere
  * Stelle, an der etwas auseinanderläuft.
  */
+/**
+ * Reichweite als Zahl, für Filter und Sortierung.
+ *
+ * Sie steht in den Daten als Satz („bis 25 km", „bis 20 km je nach
+ * Fahrprofil") und nicht als Feld – bei einem Einzelstück wird notiert, was
+ * gemessen oder vom Hersteller angegeben ist, nicht ein Pflichtfeld gefüllt.
+ * Hier wird genau dieses Muster gelesen und sonst `null` zurückgegeben:
+ * Ein Gerät ohne lesbare Angabe fällt aus einem Reichweitenfilter heraus,
+ * statt mit einer geschätzten Zahl darin zu stehen.
+ */
+export function rangeKm(item: InventoryItem): number | null {
+  const raw = item.specs.find((s) => s.label === "Reichweite")?.value;
+  const hit = raw?.match(/(\d+)\s*km/);
+  return hit ? Number(hit[1]) : null;
+}
+
+/** Verfügbarkeit mit der Pflegeregel dieser Datei als Voreinstellung. */
+export function availabilityOf(item: InventoryItem): Availability {
+  return item.availability ?? "available";
+}
+
+/** Der Zustand, wenn er in den Daten steht – sonst `null`. */
+export function condition(item: InventoryItem): string | null {
+  return item.specs.find((s) => s.label === "Zustand")?.value ?? null;
+}
+
 export function inventoryItem(id: string): InventoryItem | undefined {
   return inventory.find((item) => item.id === id);
 }

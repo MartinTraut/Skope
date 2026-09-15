@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { inventory } from "@/lib/inventory";
+import { listProducts } from "@/lib/commerce-source";
 import { legalNav, nav, site } from "@/lib/site";
 
 /**
@@ -24,7 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
      * eine Leistungsseite bleibt. Wer die Einzelstücke gleichrangig meldet,
      * schickt Crawler bevorzugt auf die Adressen mit der kürzesten Lebensdauer.
      */
-    ...inventory.map((item) => ({
+    ...listProducts().map((item) => ({
       url: `${site.url}/e-scooter/${item.id}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,

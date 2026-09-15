@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { Container } from "@/components/ui/section";
 import { initials, Stars } from "@/components/ui/stars";
 import { testimonials } from "@/lib/data/testimonials";
-import { inventoryFacts } from "@/lib/inventory";
+import { productFacts } from "@/lib/commerce-source";
 import { GeneratedMark } from "@/components/ui/generated-mark";
 import { getGoogleRating } from "@/lib/google-rating";
 import { proof } from "@/lib/site";
@@ -32,7 +32,7 @@ import { Mark } from "@/components/ui/mark";
  * Bei einer Liste, die laut eigener Ansage laufend wechselt, wäre eine von
  * Hand geschriebene Zahl der erste Satz, der unbemerkt falsch wird.
  */
-const facts = inventoryFacts();
+const facts = productFacts();
 
 /* `short` ist die Beschriftung unter `sm`. Dort standen die vollen Sätze
    zwei- bis dreizeilig unter jeder Zahl („Einstiegspreis bis 599,99 €,
@@ -260,15 +260,44 @@ export async function Hero() {
 
               Die Maske nimmt der neuen Oberkante die Kante: Ohne sie stünde
               bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem zu
-              62 % durchscheinenden Bild. */}
-          <div className="hero-figure absolute inset-x-0 top-16 bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+              62 % durchscheinenden Bild.
+
+              **Die Höhe dieser Fläche ist gedeckelt (15.09.2026).** Sie hing
+              vorher allein an der Bühne, und die füllt seit dem 06.09. den
+              ganzen ersten Bildschirm. Auf einem langen Telefon wird die
+              Fläche damit schmal und hoch – und `object-cover` skaliert über
+              die Höhe, zeigt also nur einen senkrechten Streifen der 2400 ×
+              1507 großen Aufnahme. Gemessen, wie viel Bildbreite übrig
+              bleibt: 46 % bei 360 × 780, 42 % bei 390 × 844, 30 % bei
+              440 × 1180, 26 % bei 390 × 1200. Der Roller selbst braucht
+              33,5 % der Bildbreite (Vorderrad bei 49 %, Hinterrad bei 82,5 %)
+              – unter 34 % passt er schlicht nicht mehr ins Bild, und bei
+              82 % Ausschnittlage fiel genau sein Vorderrad aus dem linken
+              Rand. Der Lenker stand dann als senkrechte Stange in der
+              Überschrift, vom Gerät war nichts zu erkennen.
+
+              Der Deckel `157vw` hält den Ausschnitt bei mindestens 40 % der
+              Bildbreite (2400 / 1507 / 0,40 = 1,57). Er greift erst, wenn das
+              Fenster länger ist, als die Aufnahme verträgt: bei 390 × 844
+              bleibt es bei 580 px, bei 440 × 1180 sind es 691 statt 914. Die
+              Fläche hängt dafür **unten** (`bottom-0`, Höhe statt `top`), der
+              Roller steht also weiter auf dem Boden der Bühne; die gewonnene
+              Strecke wird oben zu Tinte – genau dort, wo Überschrift und
+              Beleg ohnehin einen dichten Grund brauchen.
+
+              Der Ausschnitt liegt bei 74 % statt 82 %. Gerechnet steht die
+              Mitte des Sichtfensters damit über die ganze Spanne von 40 bis
+              46 % sichtbarer Breite bei 0,63 bis 0,64 – der Roller
+              (0,49 – 0,825) hat auf beiden Seiten Luft, statt an einer Kante
+              zu kleben. */}
+          <div className="hero-figure absolute inset-x-0 bottom-0 h-[min(calc(100%-4rem),157vw)] [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
             <Image
               src="/img/hero-werkstatt.jpg"
               alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
               fill
               priority
               sizes="100vw"
-              className="object-cover object-[82%_center] brightness-115"
+              className="object-cover object-[74%_center] brightness-115"
             />
           </div>
           {/* Rechts, und so tief wie die Bühne es zulässt.
@@ -591,7 +620,10 @@ export async function Hero() {
               lange Beschriftung („Einstiegspreis bis 599,99 €, Endpreis ohne
               USt."), und die läuft über zwei bis drei Zeilen. */}
           {stats.map((stat) => (
-            <div key={stat.label} className="min-w-0 text-center sm:text-left lg:text-center">
+            <div
+              key={stat.label}
+              className="min-w-0 text-center sm:text-left lg:text-center"
+            >
               <p className="tabular font-display text-[length:var(--text-stat)] leading-none font-bold text-accent">
                 {stat.value}
               </p>
