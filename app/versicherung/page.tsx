@@ -9,6 +9,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { Related } from "@/components/sections/related";
 import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
+import { StatBand } from "@/components/ui/stat-band";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqInsurance } from "@/lib/data/faq";
 import {
@@ -45,45 +46,22 @@ export default function InsurancePage() {
           </>
         }
         lead="Ab 6 km/h ist die Haftpflicht für jeden E-Scooter Pflicht. Wir vermitteln sie als ERGO-Partner, in der Werkstatt oder online – das Kennzeichen kommt in fünf bis zehn Werktagen per Post."
-        /* Die drei Antworten, wegen derer man die Seite aufruft, rechts
-           neben der Einordnung als Zeile. Erst ein Turm rechts (zu hoch),
-           dann eine Zeile unter dem Lead (zu weit weg vom Text) – jetzt sechs
-           Spalten neben dem Lead, unten bündig. Die Preise kommen aus der
-           Saisonzeile der Tariftabelle. Unter `lg` bleibt die Zeile weg: Die
-           Tabelle steht eine Wischlänge tiefer. */
-        asideClassName="hidden lg:col-span-6 lg:col-start-7 lg:block lg:self-end"
+        asideClassName="lg:col-span-12 xl:col-span-7 xl:col-start-6 xl:justify-self-end xl:self-end"
         aside={
-          <dl className="grid grid-cols-3 items-end gap-x-6 gap-y-6 xl:gap-x-8">
-            {[
+          <StatBand
+            items={[
               { label: "Haftpflicht, Saison", value: season.liability },
               {
                 label: "Teilkasko inkl. Diebstahl",
                 value: season.comprehensive,
               },
-              { label: "Werktage bis zum Kennzeichen", value: "5–10" },
-            ].map((fact) => (
-              /* Dieselbe Figur wie im Kopf von /reparatur und
-                 /wartungsvertrag: Auszeichnungsgrad für die Beschriftung,
-                 `text-4xl` für den Wert. Hier stand die Beschriftung im
-                 Fließtextgrad und der Wert auf `--text-stat` – gegenüber den
-                 Schwesterseiten eine kleinere, blassere Beschriftung unter
-                 einer größeren Zahl, also zweimal derselbe Block in zwei
-                 Maßstäben.
-
-                 Drei gleich breite Spalten mit Mittelachse statt einer
-                 Flex-Zeile: Die Beschriftungen sind unterschiedlich lang,
-                 und linksbündig hing unter jeder ein anderer Rest – bei
-                 „Werktage bis zum Kennzeichen" gut 100 px. `items-end`
-                 hält die Werte auf einer Linie, auch wenn die längste
-                 Beschriftung zweizeilig umbricht. */
-              <div key={fact.label} className="text-center">
-                <dt className="eyebrow-plain text-current/60">{fact.label}</dt>
-                <dd className="tabular mt-2 font-display text-3xl font-bold tracking-tight text-accent xl:text-4xl">
-                  {fact.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
+              /* „Werktage bis zum Kennzeichen" misst im Fließtextgrad
+                 250 px und lief als einzige Angabe des Bandes zweizeilig –
+                 die Zelle ist bei 1512 px 240 px breit. Gekürzt, nicht
+                 verkleinert: Der Satz sagt dasselbe. */
+              { label: "Werktage zum Kennzeichen", value: "5\u201310" },
+            ]}
+          />
         }
       />
 

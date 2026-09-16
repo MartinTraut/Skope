@@ -36,11 +36,16 @@ function scrollToId(id: string, behavior: ScrollBehavior) {
   if (!el) return false;
   const header = headerHeight();
   const rect = el.getBoundingClientRect();
-  const room = window.innerHeight - header;
-  const top =
-    rect.height <= room
-      ? rect.top + window.scrollY - header - (room - rect.height) / 2
-      : rect.top + window.scrollY - header;
+  /* Das Ziel beginnt direkt unter der Kopfzeile – immer, auch wenn es ganz
+     ins Fenster passt.
+
+     Vorher wurde eine Sektion, die kleiner ist als der freie Raum, in diesem
+     Raum *mittig* gesetzt. Gedacht war das als Bildkomposition; gelesen wird
+     es als Fehler: Man drückt „Anfrage senden" und landet mit dem Formular
+     in der Bildmitte, darüber ein Streifen der vorherigen Sektion. Auf
+     Ansage vom 16.09.2026 – „beim Knopf Anfragen soll man oben auf der Seite
+     landen, nicht irgendwo". Eine Kante ist vorhersehbar, eine Mitte nicht. */
+  const top = rect.top + window.scrollY - header;
   window.scrollTo({ top: Math.max(0, top), behavior });
   return true;
 }

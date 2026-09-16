@@ -73,7 +73,7 @@ export function Related({
               Untertitelgrad mehr. */}
           <ul
             className={cn(
-              "mt-7 grid gap-4",
+              "mt-7 grid auto-rows-fr gap-4",
               items.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2",
             )}
           >
@@ -97,7 +97,7 @@ export function Related({
                 <Link
                   href={item.href}
                   className={cn(
-                    "press lift group flex items-start justify-between gap-6 rounded-xl p-6 transition-[background-color,transform] duration-200 [--press-scale:0.985] md:p-7",
+                    "press lift group flex h-full items-start justify-between gap-6 rounded-xl p-6 transition-[background-color,transform] duration-200 [--press-scale:0.985] md:p-7",
                     surface[tone],
                   )}
                 >

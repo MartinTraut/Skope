@@ -186,7 +186,15 @@ export default function ScooterPage() {
                   : []),
                 { label: "Gewährleistung", value: "1 Jahr" },
               ].map((fact) => (
-                <div key={fact.label} className="py-6 sm:px-8 sm:first:pl-0">
+                /* Ab `sm` steht jede Angabe mittig in ihrer Zelle. Die drei
+                   Werte sind verschieden lang – „13" gegen
+                   „169,99 € – 599,99 €" –, und linksbündig hing unter jedem
+                   ein anderer Rest: drei Blöcke mit zufälligen Abständen
+                   statt einer Reihe. */
+                <div
+                  key={fact.label}
+                  className="py-6 sm:px-8 sm:text-center sm:first:pl-0"
+                >
                   <dt className="eyebrow-plain text-current/60">
                     {fact.label}
                   </dt>
