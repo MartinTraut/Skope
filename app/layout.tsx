@@ -3,6 +3,7 @@ import { Instrument_Sans, Inter } from "next/font/google";
 
 import "./globals.css";
 import { Header } from "@/components/layout/header";
+import { Counter } from "@/components/metrics/counter";
 import { ScrollManager } from "@/components/motion/scroll-manager";
 import { Footer } from "@/components/layout/footer";
 import { MobileCta } from "@/components/layout/mobile-cta";
@@ -12,6 +13,7 @@ import {
   listProducts,
   productAvailability,
 } from "@/lib/commerce-source";
+import { plans } from "@/lib/data/plans";
 import { isPreview } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -134,6 +136,16 @@ export default async function RootLayout({
     ]),
   );
 
+  /* Name und Beitrag je Wartungsvertrag für die untere Aktionsleiste –
+     dieselbe Regel wie bei den Geräten: zwei Zeichenketten statt des
+     Datenmoduls, das zusätzlich Leistungslisten und Ausschlüsse trägt. */
+  const planBar = Object.fromEntries(
+    plans.map((plan) => [
+      plan.id,
+      { name: plan.name, price: `${plan.price} € ${plan.period}` },
+    ]),
+  );
+
   return (
     <html
       lang="de"
@@ -155,6 +167,9 @@ export default async function RootLayout({
         {/* Seitenwechsel beginnen oben, Sprungziele stehen ganz im Bild –
             siehe das Bauteil. */}
         <ScrollManager />
+        {/* Zählt Seitenaufrufe und angetippte Telefonverweise – Summen pro
+            Tag, ohne Kennung. Begründung in `lib/metrics.ts`. */}
+        <Counter />
         <Header rating={rating} />
         {/* tabIndex, damit der Sprunglink den Fokus wirklich versetzt: Ohne ihn
             setzen Safari und ältere Engines ihn zurück auf <body>, und der Link
@@ -167,7 +182,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer />
-        <MobileCta devices={devices} mode={commerceMode()} />
+        <MobileCta devices={devices} plans={planBar} mode={commerceMode()} />
       </body>
     </html>
   );

@@ -132,6 +132,7 @@ export const nav = [
   { href: "/e-scooter", label: "E-Scooter kaufen" },
   { href: "/reparatur", label: "Reparatur" },
   { href: "/wartungsvertrag", label: "Wartungsvertrag" },
+  { href: "/finanzierung", label: "Finanzierung" },
   { href: "/versicherung", label: "Versicherung" },
   { href: "/recycling", label: "Recycling" },
   { href: "/ueber-uns", label: "Über uns" },

@@ -144,6 +144,36 @@ export function Header({ rating }: { rating: GoogleRating }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open, setOpen]);
 
+  /* Auf der Startseite führt die Wortmarke nach oben, nicht ins Leere.
+     Gemessen: Wer auf `/` 4000 px tief steht und auf das Logo tippt, blieb
+     bei 4000 px stehen – der Verweis zeigt auf die Adresse, auf der man schon
+     ist, und der Router hat dafür nichts zu tun. Auf jeder anderen Seite
+     bleibt es der gewöhnliche Seitenwechsel; Klicks mit Zusatztaste oder
+     mittlerer Maustaste gehören dem Browser.
+
+     Der Sprung wartet, bis die Scrollsperre des Telefonmenüs gelöst ist:
+     Sie hängt als `position: fixed` am `<body>` und setzt beim Schließen die
+     gemerkte Position zurück – wer währenddessen springt, wird eine
+     Lidschlagbreite später wieder eingesammelt. Dieselbe Regel wie bei den
+     Raute-Verweisen im `ScrollManager`. */
+  const toStart = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/") return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    setOpen(false);
+    const instant = window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    let frames = 0;
+    const go = () => {
+      if (document.body.style.position === "fixed" && frames++ < 20) {
+        requestAnimationFrame(go);
+        return;
+      }
+      window.scrollTo({ top: 0, behavior: instant ? "instant" : "smooth" });
+    };
+    requestAnimationFrame(go);
+  };
+
   return (
     <header
       data-scrolled={scrolled || open ? "true" : "false"}
@@ -189,6 +219,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
         <Link
           href="/"
           aria-label={`${site.name}, Startseite`}
+          onClick={toStart}
           className="press flex min-h-11 items-center"
         >
           <Logo showSub={false} />
@@ -251,7 +282,20 @@ export function Header({ rating }: { rating: GoogleRating }) {
           <Link
             href="/#kundenstimmen"
             aria-label={`${rating.value} von 5 Sternen bei Google, ${rating.count} Rezensionen lesen`}
-            className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex"
+            /* Dieselbe Bandregel wie bei der Telefonnummer darunter, aus
+               demselben Grund: Seit die Navigation sieben Punkte trägt, ist
+               sie bei 1280 px 805 px breit (vorher 687), und die
+               Aktionsgruppe stand gemessen 53 px über dem Satzspiegel – der
+               Anfrage-Knopf war angeschnitten. Da der Seitenkopf `fixed`
+               liegt, meldet die Seite dafür keinen waagerechten Überlauf;
+               man sieht es nur im Bild oder in der Messung.
+
+               Zwischen 1280 und 1399 px fällt deshalb die Bewertung weg. Sie
+               ist von den drei Elementen der Gruppe das einzige, das weder
+               Aktion noch Erreichbarkeit ist, und sie steht vollständig in
+               den Kundenstimmen, auf die sie verweist. Unter 1280 px ist die
+               Navigation eingeklappt, dort ist der Platz da. */
+            className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex min-[1280px]:hidden min-[1400px]:inline-flex"
           >
             <Star
               aria-hidden="true"
@@ -270,7 +314,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
                Anfrage sind das 1241 px plus 112 px Innenrand – 73 px mehr, als
                die Seite hergibt, der Anfrage-Knopf stand außerhalb. In diesem
                Band trägt die Nummer die Aktionsleiste unten und das Menü. */
-            className="press hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-[color,border-color,transform] duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1440px]:inline-flex"
+            className="press hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-[color,border-color,transform] duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1600px]:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
@@ -286,9 +330,17 @@ export function Header({ rating }: { rating: GoogleRating }) {
               1280 px weg, ab 1440 px wieder da – und 1280 und 1366 px sind die
               beiden häufigsten Notebookbreiten. Als Symbolknopf kostet die
               Nummer dort 44 px statt der 150 px der vollen Schreibweise. */}
+          {/* Alle drei Zustände als arbiträre Abfragen, keine gemischt mit
+              `lg:`. Gemessen war der Knopf bei 1280 px `display: none`,
+              obwohl `min-[1280px]:inline-flex` hinter `lg:hidden` stand:
+              Tailwind ordnet benannte und arbiträre Abfragen nicht in einer
+              gemeinsamen Reihe, `lg:hidden` gewann also gegen die spätere
+              Regel. In diesem Band gab es damit weiterhin keinen
+              Telefonverweis – genau der Fehler, den dieser Knopf beheben
+              sollte. */}
           <PhoneButton
             iconOnly
-            className="lg:hidden min-[1280px]:inline-flex min-[1440px]:hidden"
+            className="hidden min-[1280px]:inline-flex min-[1600px]:hidden"
           />
 
           <button

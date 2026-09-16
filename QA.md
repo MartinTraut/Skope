@@ -201,3 +201,54 @@ Echte Restpunkte, keine Codefragen:
    unverändert in `CLAUDE.md` und brauchen eine Auskunft des Betreibers.
 7. **Google-Bewertung vor jedem Deploy abgleichen** — 5,0 aus 37 Rezensionen,
    Stand 18.08.2026. Die Zahl wächst.
+
+## Feinschliff Telefon und Tablet — 16.09.2026
+
+Produktionsbuild auf Port 4312, Playwright. Zwölf Routen × sieben Formaten
+(320 × 568, 390 × 844, 430 × 932, 768 × 1024, 1024 × 768, 1440 × 900,
+844 × 390 Querformat) = 84 Ansichten.
+
+| Prüfung | Ergebnis |
+|---|---|
+| Waagerechter Überlauf | 0 auf allen 84 Ansichten |
+| Abgeschnittener Text | 0 (vorher 10 Zustandszeilen auf `/e-scooter`) |
+| Schrift unter 11 px | nur „SAISON" (8,5 px) auf der Plakette – Grafik, keine Schrift zum Lesen |
+| Zielfläche unter 44 px | 0 (Skip-Link und Honeypot sind Messartefakte) |
+| Konsolenfehler | 0 |
+| Beschriftung jedes Eingabefelds | vorhanden auf `/e-scooter`, `/kontakt`, `/wartungsvertrag`, `/versicherung` |
+
+**Interaktion geprüft**
+
+| Fall | Ergebnis |
+|---|---|
+| Bestand filtern (Alle → ABE → bis 250 € → ab 30 km) | 13 → 11 → 8 → 6, Adresse `?filter=…`, Live-Region „x von 13 Geräten" |
+| Sortierung „teuerste zuerst" | erste Karte `audi-egret-pro`, `?filter=…&sort=preis-ab` |
+| Drei Zurück-Schritte | 6 → 8 → 11 Geräte, Seite bleibt `/e-scooter` |
+| Tarifwahl Basis ↔ Premium | Karte, Zeile über dem Formular, Auswahlfeld und untere Leiste zeigen denselben Vertrag und Beitrag; Zurück stellt die vorige Wahl her |
+| `?zeitraum=0/2/4` auf `/versicherung` | schreibt genau die zugehörige Tabellenzeile ins Nachrichtenfeld |
+| Formular leer abschicken | vier Fehler, Zusammenfassung, `aria-invalid` an allen vier Feldern |
+| Formular gültig abschicken | ehrlicher Hinweis „Versand nicht eingerichtet" mit Telefon und E-Mail, kein Scheinerfolg |
+| Doppelklick auf Absenden | Knopf während des Sendens deaktiviert |
+| Fokus in einem Formularfeld | untere Aktionsleiste ausgeblendet (`visibility: hidden`) |
+| Galerie, Wisch mit der Maus | ohne Wirkung (Absicht: nur Finger und Stift) |
+| Scrollen, CPU 4× gedrosselt | CLS 0, höchstens zwei lange Aufgaben je Route, längste 56 ms |
+
+**Nicht durchführbar**
+
+- Echte Bildschirmtastatur: Im Prüfbrowser lässt sie sich nicht öffnen. Die
+  Leiste blendet deshalb schon am Fokus aus, nicht erst am Tastatur-Ereignis.
+- Wischgesten mit echter Berührung auf der Galerie: Playwright liefert
+  synthetische Zeiger; die Wege wurden in früheren Durchgängen von Hand
+  geprüft.
+- Zustellung einer echten Anfrage: bewusst nicht ausgelöst, es ist kein
+  Versand konfiguriert.
+
+**Offen**
+
+- `RESEND_API_KEY` und `INQUIRY_FROM` fehlen – ohne sie geht keine Anfrage
+  raus. Der Zustand wird dem Nutzer ehrlich angezeigt.
+- Verfügbarkeit je Gerät: `availability` ist bei allen dreizehn Einträgen
+  leer. Plakette und Schema können „reserviert" und „verkauft" darstellen,
+  sobald die Daten es hergeben.
+- Prüfliste bei 320 px zweizeilig – bei 222 px Satz und 315 px Textbreite
+  physikalisch nicht anders lösbar.

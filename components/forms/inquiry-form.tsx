@@ -20,6 +20,7 @@ import {
   type ContactTopic,
 } from "@/lib/data/topics";
 import { site } from "@/lib/site";
+import { visitSource } from "@/lib/source";
 import { cn } from "@/lib/utils";
 
 const initial: FormState = { status: "idle" };
@@ -65,6 +66,7 @@ const labelClass =
 function InquiryFormInner({
   defaultTopic,
   topicFromQuery = false,
+  periods,
   className,
 }: {
   /**
@@ -78,6 +80,15 @@ function InquiryFormInner({
    * /kontakt bei jedem Aufruf serverseitig gerendert werden.
    */
   topicFromQuery?: boolean;
+  /**
+   * Die Zeiträume der Versicherungstabelle, in der Reihenfolge, in der sie
+   * dort stehen. Nur `/versicherung` gibt sie mit: `?zeitraum=<Position>`
+   * wird gegen diese Liste geprüft und als Satz ins Nachrichtenfeld
+   * geschrieben. Die Liste kommt als Eigenschaft und nicht als Import, damit
+   * die Tarifdaten nicht im Bündel jedes anderen Formulars liegen – und
+   * damit kein Zeitraum aus der Adresse übernommen wird, den es nicht gibt.
+   */
+  periods?: readonly string[];
   className?: string;
 }) {
   const [state, action, pending] = useActionState(submitInquiry, initial);
@@ -107,6 +118,28 @@ function InquiryFormInner({
   const device = params?.get("geraet")?.slice(0, 80) || undefined;
 
   /**
+   * `?zeitraum=` trägt die Zeile aus der Tariftabelle ins Nachrichtenfeld.
+   *
+   * Übergeben wird die Position, nicht der Text: So kann aus der Adresse kein
+   * erfundener Zeitraum in eine Anfrage wandern, und der Wortlaut bleibt der
+   * der Tabelle. Die Zeile ist überschreibbar – sie ist ein Anfang, keine
+   * Behauptung über das, was der Kunde will.
+   */
+  /* `Number(null)` ist 0 und `Number.isInteger(0)` wahr – ohne die Prüfung
+     auf den Rohwert stand auf jeder Seite ohne `?zeitraum=` der erste
+     Zeitraum der Tabelle im Nachrichtenfeld. Gemessen: `?zeitraum=2` und
+     `?zeitraum=4` schrieben beide die Zeile von Position 0. */
+  const rawPeriod = params?.get("zeitraum");
+  const periodIndex = rawPeriod === null || rawPeriod === undefined ? NaN : Number(rawPeriod);
+  const period =
+    periods && Number.isInteger(periodIndex) && periods[periodIndex]
+      ? periods[periodIndex]
+      : undefined;
+  const messagePrefill = period
+    ? `Ich möchte ein Versicherungskennzeichen für den Zeitraum ${period}.`
+    : undefined;
+
+  /**
    * Reihenfolge der Vorauswahl: Deeplink schlägt Seite, Seite schlägt leer.
    *
    * Das Formular zeigt überall dieselben vierzehn Anliegen; unterschieden
@@ -130,6 +163,13 @@ function InquiryFormInner({
   const successRef = React.useRef<HTMLDivElement>(null);
   const errorRef = React.useRef<HTMLDivElement>(null);
   const fallbackRef = React.useRef<HTMLDivElement>(null);
+  const sourceRef = React.useRef<HTMLInputElement>(null);
+
+  /* Die Herkunft steht erst im Browser fest (Verweisadresse, `utm_source`).
+     Direkt ins Feld geschrieben statt über den Zustand – siehe das Feld. */
+  React.useEffect(() => {
+    if (sourceRef.current) sourceRef.current.value = visitSource();
+  }, []);
 
   /**
    * Ohne Fokuswechsel bekommen Tastatur- und Screenreader-Nutzer nach dem
@@ -217,6 +257,18 @@ function InquiryFormInner({
           autoComplete="off"
         />
       </div>
+
+      {/* Herkunft der Sitzung, damit in der Mail steht, über welchen Weg die
+          Anfrage zustande kam – „google", „direkt", „instagram". Kein
+          `useState`: Der Wert wird erst beim Absenden gebraucht, und im
+          Server-Rendern gibt es ihn nicht. Ein `defaultValue` wäre also leer
+          und ein `useEffect` mit `setState` nur eine Neuberechnung der ganzen
+          Maske für ein Feld, das niemand sieht. Deshalb schreibt der Effekt
+          direkt ins Feld.
+
+          Ohne JavaScript bleibt es leer, und der Server trägt dann
+          „unbekannt" ein – die Anfrage geht trotzdem raus. */}
+      <input type="hidden" name="quelle" ref={sourceRef} />
 
       {errorCount > 0 ? (
         <div
@@ -382,7 +434,7 @@ function InquiryFormInner({
           minLength={10}
           maxLength={4000}
           rows={5}
-          defaultValue={state.values?.message}
+          defaultValue={state.values?.message ?? messagePrefill}
           aria-invalid={state.errors?.message ? true : undefined}
           aria-describedby={
             state.errors?.message

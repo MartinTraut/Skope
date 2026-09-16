@@ -1,14 +1,26 @@
 import { Check, Medal } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
-import { ButtonLink } from "@/components/ui/button";
+import { PlanAction } from "@/components/sections/plan-action";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { plans } from "@/lib/data/plans";
 import { priceNote } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
 
-export function Plans({ withHead = true }: { withHead?: boolean }) {
+export function Plans({
+  withHead = true,
+  formPath = "/kontakt",
+}: {
+  withHead?: boolean;
+  /**
+   * Wohin der Knopf führt. Auf `/wartungsvertrag` steht das Formular auf
+   * derselben Seite – dorthin zu verlinken statt auf `/kontakt` erspart einen
+   * Seitenwechsel und hält die Auswahl im Bild: Karte, Formular und untere
+   * Aktionsleiste zeigen danach denselben Tarif.
+   */
+  formPath?: string;
+}) {
   return (
     <Section id="wartungsvertrag" tone="silver">
       <Container>
@@ -150,16 +162,14 @@ export function Plans({ withHead = true }: { withHead?: boolean }) {
                     Listenpunkt. `pt-12` ist der Mindestabstand, den
                     `mt-auto` nicht wegkürzen kann. */}
                 <div className="mt-12 pt-2 lg:mt-auto lg:pt-12">
-                  <ButtonLink
-                    // Anker mit: Ohne ihn landet der Nutzer oben auf der
-                    // Kontaktseite und sieht von seiner Vorauswahl nichts.
-                    href={`/kontakt?anliegen=wartungsvertrag-${plan.id}#anfrage`}
-                    size="lg"
-                    variant={plan.popular ? "neon" : "outline"}
-                    className="w-full"
-                  >
-                    {plan.name} anfragen
-                  </ButtonLink>
+                  {/* Anker mit: Ohne ihn landet der Nutzer oben auf der
+                      Zielseite und sieht von seiner Vorauswahl nichts. */}
+                  <PlanAction
+                    id={plan.id}
+                    name={plan.name}
+                    popular={plan.popular}
+                    href={`${formPath}?anliegen=wartungsvertrag-${plan.id}#anfrage`}
+                  />
                 </div>
               </article>
             </Reveal>

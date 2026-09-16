@@ -9,6 +9,12 @@ export type Inquiry = {
   phone?: string;
   scooter?: string;
   message: string;
+  /**
+   * Woher der Besuch kam („google", „direkt", …). Steht in der Mail, damit
+   * sich eine Anfrage einem Weg zuordnen lässt – die Grundlage der
+   * Provisionsabrechnung. Ohne JavaScript „unbekannt".
+   */
+  source?: string;
 };
 
 /**
@@ -69,6 +75,7 @@ export async function sendInquiry(inquiry: Inquiry): Promise<SendResult> {
     `E-Mail: ${inquiry.email}`,
     inquiry.phone ? `Telefon: ${inquiry.phone}` : null,
     inquiry.scooter ? `Scooter: ${inquiry.scooter}` : null,
+    `Herkunft: ${inquiry.source || "unbekannt"}`,
     "",
     inquiry.message,
   ].filter(Boolean);

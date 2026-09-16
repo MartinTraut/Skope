@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 
 import { FALLBACK_TOPIC, isKnownTopic } from "@/lib/data/topics";
+import { fieldSlug, recordEvent } from "@/lib/metrics";
 import { sendInquiry } from "@/lib/notify";
 
 export type InquiryValues = {
@@ -112,6 +113,13 @@ export async function submitInquiry(
     return { status: "ok", message: SUCCESS_MESSAGE };
   }
 
+  /* Herkunft aus dem versteckten Feld. Sie kommt aus dem Browser und damit
+     aus fremder Hand: gegen ein enges Muster geprüft, sonst „unbekannt". Sie
+     landet in einer Mail und in einem Zählerfeld – beides Orte, an denen
+     beliebiger Text nichts zu suchen hat. */
+  const sourceRaw = str(data, "quelle").toLowerCase();
+  const source = /^[a-z0-9.-]{1,24}$/.test(sourceRaw) ? sourceRaw : "unbekannt";
+
   const topicRaw = str(data, "topic");
   const inquiry: InquiryValues = {
     topic: isKnownTopic(topicRaw) ? topicRaw : FALLBACK_TOPIC,
@@ -160,7 +168,21 @@ export async function submitInquiry(
   }
 
   try {
-    const result = await sendInquiry(inquiry);
+    const result = await sendInquiry({ ...inquiry, source });
+
+    /* Gezählt wird die abgeschickte, geprüfte Anfrage – nicht der Versuch und
+       nicht die erfolgreiche Zustellung. Ein Ausfall des Mail-Providers darf
+       die Kontaktzahl nicht senken: Der Kunde hat die Anfrage gestellt, und
+       der Rückfalltext nennt ihm Nummer und Adresse.
+
+       `await`, obwohl das Ergebnis niemanden interessiert: Auf einer
+       Serverless-Plattform wird alles eingefroren, was nach der Antwort noch
+       laufen will. `recordEvent` wirft nie und hat einen eigenen Zeitdeckel. */
+    await recordEvent([
+      "anfrage",
+      `anfrage:${fieldSlug(inquiry.topic)}`,
+      `quelle:${source}`,
+    ]);
     if (result.delivered) return { status: "ok", message: SUCCESS_MESSAGE };
     return {
       status: "fallback",

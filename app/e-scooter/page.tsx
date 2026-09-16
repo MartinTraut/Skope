@@ -395,6 +395,11 @@ export default function ScooterPage() {
             label: "Wartungsvertrag",
             text: "Damit das gekaufte Gerät jährlich durch dieselbe Werkstatt geht, die es freigegeben hat.",
           },
+          {
+            href: "/finanzierung",
+            label: "Finanzierung & Abo",
+            text: "Mietkauf-Abo mit Versicherung und Service in der Rate oder Ratenkauf mit Anzahlung.",
+          },
         ]}
       />
 

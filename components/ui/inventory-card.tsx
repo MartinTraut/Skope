@@ -125,9 +125,9 @@ export function InventoryCard({
   layout?: "card" | "row";
 }) {
   const cover = item.images[0];
+  const cond = condition(item);
 
   if (layout === "row") {
-    const cond = condition(item);
     return (
       <Link
         href={`/e-scooter/${item.id}`}
@@ -166,9 +166,11 @@ export function InventoryCard({
             {item.price}
           </p>
 
-          {cond ? (
-            <p className="mt-2 line-clamp-1 text-xs text-current/60">{cond}</p>
-          ) : null}
+          {/* Kein `line-clamp`: Eine Zeile schnitt zehn von dreizehn
+              Zustandsangaben mitten im Satz ab („Gebraucht, vollständig…").
+              Seit die Karten eines Rasters ohnehin gleich hoch sind, kostet
+              die zweite Zeile nichts – sie steht im leeren Rest. */}
+          {cond ? <p className="mt-2 text-xs text-current/60">{cond}</p> : null}
 
           {/* Nur die zwei Werte, nach denen in einer Liste verglichen wird.
               Tempo steht auf der Geräteseite: Zwölf von dreizehn Geräten
@@ -202,16 +204,38 @@ export function InventoryCard({
       href={`/e-scooter/${item.id}`}
       aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
       className={cn(
-        "press group lift flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
+        "press group lift @container flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
         className,
       )}
     >
-      {/* Quadrat, auch in der einzelnen Spalte. Ein Versuch mit 4:3 am
-          Telefon sparte 86 px Höhe, schnitt aber bei jedem zweiten Gerät die
-          Räder oder den Lenker ab: Die Aufnahmen sind hochkant (720 × 960)
-          und der Roller füllt sie von oben bis unten. Das Quadrat nimmt nur
-          Wand und Boden weg. */}
-      <div className="relative aspect-square overflow-hidden rounded-md bg-ink-700">
+      {/* Quadrat als Ausgangsmaß, aber die Zone darf wachsen (`grow`).
+
+          Das ist die Stelle, an der der Längenunterschied zwischen den
+          Karten aufgefangen wird. Dreizehn Geräte haben Namen von einer bis
+          drei Zeilen und Zustandsangaben von einer bis zwei; in einem Raster
+          mit `auto-rows-fr` sind trotzdem alle Karten gleich hoch, und
+          irgendwo muss die Differenz hin.
+
+          Sie lag bis hierher im Text – zwei Kästen mit `min-h-[2lh]` über
+          Modellname und Zustand hielten vier Zeilen frei, und eine Karte wie
+          „Zamelux E9" füllte davon zwei. Gemessen bei 1512 px: 27 px leer
+          unter dem Modellnamen, 29 px unter dem Zustand. Das war kein
+          Abstand, sondern eine Lücke mitten im Satz – zweimal dieselbe
+          Sorte Fehler, die schon die ausgeschriebene ABE-Warnung verursacht
+          hatte.
+
+          Das Bild ist das einzige Element der Karte, das beliebige Höhe
+          verträgt, ohne als Fehler gelesen zu werden: Es liegt `object-cover`
+          und zeigt bei ein paar Pixeln mehr schlicht mehr vom Roller. Die
+          Aufnahmen sind ohnehin hochkant (720 × 960), ein leicht stehendes
+          Format liegt ihnen näher als das Quadrat.
+
+          `grow` und nicht `flex-1`: `flex-1` setzt die Basis auf 0, damit
+          wäre die Höhe allein der Restraum und `aspect-square` wirkungslos –
+          bei einer Karte mit dreizeiligem Namen schrumpfte das Bild. So
+          bleibt das Quadrat die Untergrenze und der Überschuss kommt oben
+          drauf. */}
+      <div className="relative aspect-square grow overflow-hidden rounded-md bg-ink-700">
         <Image
           src={cover.src}
           alt={cover.alt}
@@ -222,27 +246,69 @@ export function InventoryCard({
 
         <StatusBadge item={item} />
         {item.images.length > 1 ? (
-          <span className="pointer-events-none absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-md bg-ink/75 px-2.5 py-1 text-xs">
+          <span
+            className={cn(
+              "pointer-events-none absolute right-3 inline-flex items-center gap-1.5 rounded-md bg-ink/75 px-2.5 py-1 text-xs",
+              // Über dem Warnstreifen, nicht dahinter.
+              item.streetLegal ? "bottom-3" : "bottom-11",
+            )}
+          >
             <Images aria-hidden="true" className="size-3.5" />
             <span className="tabular">{item.images.length}</span>
           </span>
         ) : null}
+
+        {!item.streetLegal ? (
+          /* Die Zelle im Band sagt „Keine ABE", dieser Streifen sagt, was das
+             heißt – und er liegt auf dem Bild, nicht unter dem Band.
+
+             Zwei Gründe. Der sichtbare: Als Absatz in der Karte machte die
+             zweizeilige Warnung genau zwei der dreizehn Karten höher, und
+             weil alle Karten eines Rasters gleich hoch sind, bekamen die elf
+             übrigen dieselbe Höhe als leere Fläche geschenkt – gemessen 48 px
+             unter dem Zustand, auf jeder Karte, auf jeder Breite. Eine
+             Ausnahme, die zwei Geräte betrifft, darf nicht das Layout aller
+             dreizehn bestimmen.
+
+             Der inhaltliche: Auf dem Bild steht sie vor dem Preis statt
+             hinter den Kennwerten. Sie ist damit nicht kleiner geworden,
+             sondern lauter – Bernstein auf Tinte, volle Kartenbreite,
+             ausgeschrieben wie bisher. Genau das verlangt der Eintrag in
+             CLAUDE.md: nicht einklappen, nicht ins Kleingedruckte. */
+          <p className="pointer-events-none absolute inset-x-0 bottom-0 bg-amber-300/95 px-3 py-2 text-[0.6875rem] leading-snug font-semibold text-ink">
+            Ohne deutsche Betriebserlaubnis – nicht für den öffentlichen
+            Straßenverkehr.
+          </p>
+        ) : null}
       </div>
 
-      {/* Modell links, Preis rechts auf einer Grundlinie. In der einzelnen
+      {/* Die Karte hat vier Teile in fester Reihenfolge: Bild, Benennung,
+          Datenband, Weg. Die überschüssige Höhe liegt an genau einer Stelle –
+          unter dem Preis –, und zwar so, dass man sie nicht als Lücke liest.
+
+          Vorher war sie auf zwei Abstände verteilt (je ein `mt-auto` über
+          Modell und über dem Verweis). Das war der Versuch, ein Loch durch
+          zwei kleinere zu ersetzen: Das Datenband schwamm dadurch frei in der
+          Mitte, mit Leere darüber *und* darunter, und die Karte hatte keine
+          Ordnung mehr, die man am Rand ablesen konnte.
+
+          Jetzt hängt die untere Gruppe – Warnung, Datenband, Verweis –
+          zusammen am Boden der Karte, und das Band läuft über die volle
+          Kartenbreite statt im Satzspiegel. Damit trägt es eine echte Kante:
+          Über der Kante steht, was das Gerät ist, darunter, was es kann.
+          Freie Höhe steht dann direkt unter dem Preis, also unter dem Punkt,
+          auf den das Auge in dieser Karte ohnehin zuerst fällt – dort ist
+          Abstand Satz und keine vergessene Fläche.
+
+          Modell links, Preis rechts auf einer Grundlinie. In der einzelnen
           Spalte (342 px) geht das auf; in zwei Spalten ab `sm` ist die Karte
           mindestens 280 px breit, „Audi Electric Kick Scooter powered by
           Egret Pro" läuft dann über zwei Zeilen, der Preis bleibt oben. */}
       <div className="mt-4 flex items-start justify-between gap-4">
-        {/* Zwei Zeilen Platz, auch wenn der Name nur eine braucht: Von
-            dreizehn Modellen laufen „Audi Electric Kick Scooter powered by
-            Egret Pro" und die beiden Xiaomi über zwei Zeilen, die übrigen
-            über eine – ohne festen Kasten beginnt die Kennwertzeile dann bei
-            jeder zweiten Karte 24 px höher, und die Karten einer Reihe lesen
-            sich als verschieden aufgebaut. `lh` ist die Zeilenhöhe dieses
-            Elements; kennt ein Browser die Einheit nicht, fällt die Angabe
-            weg und es bleibt beim alten Verhalten. */}
-        <h3 className="min-h-[2lh] text-[1.0625rem] leading-snug font-semibold text-balance">
+        {/* Kein reservierter Zweizeiler mehr: Der Name nimmt die Zeilen, die
+            er braucht, und der Unterschied zwischen den Karten wird oben in
+            der Bildzone ausgeglichen. */}
+        <h3 className="text-[1.0625rem] leading-snug font-semibold text-balance">
           {item.model}
         </h3>
         <p className="tabular shrink-0 font-display text-lg leading-none font-bold tracking-tight text-accent sm:text-xl">
@@ -250,38 +316,87 @@ export function InventoryCard({
         </p>
       </div>
 
-      <dl className="mt-4 grid grid-cols-3 divide-x divide-current/12 border-y border-current/12">
-        <Fact label="Tempo" value={speed(item)} />
-        <Fact label="Reichweite" value={range(item)} />
-        <Fact
-          label="Zulassung"
-          value={item.streetLegal ? "ABE" : "Keine ABE"}
-          warn={!item.streetLegal}
-        />
-      </dl>
+      {/* Der Zustand – auf der quadratischen Karte bisher gar nicht gezeigt,
+          obwohl er in den Daten steht und die Zeilenkarte am Telefon ihn
+          trägt.
 
-      {!item.streetLegal ? (
-        /* Die Zelle sagt „Keine ABE", der Satz sagt, was das heißt. Die
-           Warnung bleibt ausgeschrieben auf der Karte – hinter einem Klick
-           wäre sie das Kleingedruckte, das sie nicht sein darf. */
-        <p className="mt-3 text-xs leading-snug text-amber-200/90">
-          Ohne deutsche Betriebserlaubnis – nicht für den öffentlichen
-          Straßenverkehr.
-        </p>
+          Er gehört genau hierhin, und zwar aus zwei Gründen. Erstens ist es
+          die Angabe, die nach Modell und Preis als Nächstes gefragt wird –
+          bei einem Einzelstück aus zweiter Hand ist „vollständig überholt"
+          der Unterschied zum Kleinanzeigenportal. Zweitens war unter dem
+          Preis das Loch: Die Karten eines Rasters sind alle gleich hoch, und
+          die überschüssige Höhe der kürzesten stand dort als leere Fläche.
+          Ein Abstand lässt sich nicht kleiner machen, ohne die Karten wieder
+          ungleich zu machen – Inhalt füllt ihn. Die Angaben sind zwischen 30
+          und 90 Zeichen lang, nehmen also je nach Gerät ein bis drei Zeilen
+          und schlucken damit genau die Schwankung, die sie verursacht.
+
+          Kein `line-clamp`: Dieselbe Entscheidung wie auf der Zeilenkarte –
+          zehn von dreizehn Angaben brächen mitten im Satz ab. */}
+      {cond ? (
+        <p className="mt-2 text-sm leading-relaxed text-current/60">{cond}</p>
       ) : null}
 
-      {/* `mt-auto` zieht die Zeile auf die Unterkante: In einer Rasterreihe
-          sind die Karten unterschiedlich hoch, und Abschlusszeilen auf
-          verschiedenen Höhen lesen sich als Fehler. Kein Knopf, sondern eine
-          Zeile mit Pfeil – die Karte ist selbst der Link. Kein Neon: Der
-          Verweis ist weder Hauptaktion noch harte Zahl. */}
-      <span className="mt-auto flex items-center gap-2 pt-4 font-display text-sm font-semibold tracking-tight text-current underline decoration-current/40 underline-offset-4 group-hover:decoration-current">
-        Mehr Daten
-        <ArrowRight
-          aria-hidden="true"
-          className="size-4 transition-transform duration-300 ease-out-quart group-hover:translate-x-1 motion-reduce:transition-none"
-        />
-      </span>
+      {/* Der Fuß der Karte: Warnung, Datenband und Weg als ein Block, an den
+          unteren Rand gehängt. Ein `mt-auto` für alle drei statt eines je
+          Teil – sonst wandert bei jeder Kartenhöhe ein anderer Abstand mit. */}
+      {/* Kein `mt-auto` mehr: In einer Flex-Spalte gewinnt ein automatischer
+          Rand gegen jedes `grow`, der Rest ginge also wieder an diesen
+          Abstand statt an die Bildzone. Der Fuß steht auch so unten – über
+          ihm liegt nichts mehr, was sich ausdehnen könnte. */}
+      <div className="pt-5">
+        {/* Über die volle Kartenbreite statt im Satzspiegel: Die Haarlinien
+            sind damit Kanten der Karte und nicht drei Striche in ihrer Mitte.
+            Die Zellen behalten ihren Innenabstand über `first:pl-*` /
+            `last:pr-*` in `Fact`, die Werte stehen also weiter auf derselben
+            Linie wie Modell und Preis darüber. */}
+        {/* Zwei oder drei Zellen – entschieden an der **Kartenbreite**, nicht
+            an der Fensterbreite. Genau daran war die Zeile bisher kaputt: Bei
+            768 px Fenster ist die Karte 332 px breit und alles passt, bei
+            1024 px sind es wegen der dritten Rasterspalte nur 293 – und dort
+            brach „bis 20 km" in zwei Zeilen um. Eine Media Query kann das
+            nicht treffen, eine Container-Query schon.
+
+            Die Schwelle ist gemessen, nicht gerundet: Bei gleich breiten
+            Spalten bestimmt das längste Etikett die Zelle. „REICHWEITE" misst
+            76 px, mit dem Zellenabstand 100 px, mal drei            der Karte ergibt 332 px. Darunter fällt Tempo weg – die Angabe,
+            die am wenigsten unterscheidet: Zwölf der dreizehn Geräte fahren
+            20 km/h. Dieselbe Entscheidung wie auf der Zeilenkarte am Telefon,
+            dort aus demselben Grund. Vollständig steht das Tempo auf der
+            Geräteseite. */}
+        <dl className="@[18.75rem]:grid-cols-3 -mx-3.5 grid grid-cols-2 divide-x divide-current/12 border-y border-current/12 px-3.5 sm:-mx-4 sm:px-4">
+          {/* `hidden` lässt die Zelle `:first-child` bleiben, `first:pl-0` in
+              `Fact` greift also weiter an ihr statt an der Reichweite. Die
+              bekommt den linken Rand deshalb ausdrücklich genommen, solange
+              das Tempo nicht steht. */}
+          <Fact
+            label="Tempo"
+            value={speed(item)}
+            className="@[18.75rem]:block hidden"
+          />
+          <Fact
+            label="Reichweite"
+            value={range(item)}
+            className="@[18.75rem]:pl-3 pl-0"
+          />
+          <Fact
+            label="Zulassung"
+            value={item.streetLegal ? "ABE" : "Keine ABE"}
+            warn={!item.streetLegal}
+          />
+        </dl>
+
+        {/* Kein Knopf, sondern eine Zeile mit Pfeil – die Karte ist selbst der
+            Link. Kein Neon: Der Verweis ist weder Hauptaktion noch harte
+            Zahl. */}
+        <span className="mt-4 flex items-center gap-2 font-display text-sm font-semibold tracking-tight text-current underline decoration-current/40 underline-offset-4 group-hover:decoration-current">
+          Mehr Daten
+          <ArrowRight
+            aria-hidden="true"
+            className="size-4 transition-transform duration-300 ease-out-quart group-hover:translate-x-1 motion-reduce:transition-none"
+          />
+        </span>
+      </div>
     </Link>
   );
 }

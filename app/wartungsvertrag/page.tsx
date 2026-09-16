@@ -5,6 +5,7 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Plans } from "@/components/sections/plans";
+import { SelectedPlan } from "@/components/sections/selected-plan";
 import { Related } from "@/components/sections/related";
 import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
@@ -21,6 +22,18 @@ export const metadata: Metadata = pageMeta({
     "Wartungsvertrag für E-Scooter: Basis 130 € im Jahr, Premium 17,99 € im Monat mit Akku-Deep-Check, Express-Reparatur und Hol- und Bringservice bis 15 km.",
   path: "/wartungsvertrag",
 });
+
+/* Nur Name und Preis je Vertrag für das Client-Bauteil – nicht das ganze
+   Modul: `lib/data/plans` trägt zusätzlich Leistungslisten, Beschreibungen
+   und Ausschlüsse, und nichts davon gehört ins Browserbündel, damit über dem
+   Formular eine Zeile steht. Dieselbe Regel wie bei der unteren
+   Aktionsleiste. */
+const planSummary = Object.fromEntries(
+  plans.map((plan) => [
+    plan.id,
+    { name: plan.name, price: `${plan.price} € ${plan.period}` },
+  ]),
+);
 
 export default function PlansPage() {
   return (
@@ -145,7 +158,7 @@ export default function PlansPage() {
         </Container>
       </Section>
 
-      <Plans />
+      <Plans formPath="/wartungsvertrag" />
 
       {/* Ausschlüsse – Ehrlichkeit ist hier das Verkaufsargument.
 
@@ -257,7 +270,14 @@ export default function PlansPage() {
                 damit klar bleibt, wozu das Formular gehört. */}
             <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm defaultTopic="Wartungsvertrag Basis" />
+                {/* Kein festes `defaultTopic` mehr: Es stand auf „Basis",
+                    gleich von welcher Karte man kam – wer Premium gewählt
+                    hatte, fand im Formular den anderen Vertrag. Die Wahl
+                    steht jetzt in der Adresse und wird von Karte, Zeile und
+                    unterer Aktionsleiste aus derselben Stelle gelesen; ohne
+                    Wahl bleibt das Feld leer und damit Pflicht. */}
+                <SelectedPlan plans={planSummary} />
+                <InquiryForm topicFromQuery />
               </Reveal>
             </div>
           </div>

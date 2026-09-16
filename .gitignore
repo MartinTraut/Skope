@@ -39,3 +39,7 @@ kalkulation-skope-gesamtpaket.md
 # Rohmaterial im Projektstamm (Videoschnitt, Screenshots aus der Abstimmung).
 # Ausgeliefert wird nur, was optimiert unter public/ liegt.
 /*.mp4
+
+# Sicherungskopien und Rohmaterial aus der Abstimmung bleiben lokal.
+/.backup/
+/*.html

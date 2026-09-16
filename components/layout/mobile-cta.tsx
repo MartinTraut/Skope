@@ -18,6 +18,7 @@ import {
   type CommerceMode,
 } from "@/lib/commerce";
 import { site } from "@/lib/site";
+import { useQueryParam } from "@/lib/url-state";
 import { cn } from "@/lib/utils";
 
 /**
@@ -61,6 +62,11 @@ const ACTIONS: Record<string, BarAction> = {
      zuzuschreiben, die er nicht getroffen hat. */
   "/wartungsvertrag": {
     label: "Vertrag anfragen",
+    href: "#anfrage",
+    icon: MessageSquareText,
+  },
+  "/finanzierung": {
+    label: "Finanzierung anfragen",
     href: "#anfrage",
     icon: MessageSquareText,
   },
@@ -108,6 +114,7 @@ const FALLBACK: BarAction = {
  */
 export function MobileCta({
   devices,
+  plans,
   mode,
 }: {
   devices: Record<
@@ -117,9 +124,23 @@ export function MobileCta({
   /** Aus dem Layout, nicht selbst gelesen: `commerceMode()` liest die
       Umgebung, und die steht im Browser nicht. */
   mode: CommerceMode;
+  /** Name und Beitrag je Wartungsvertrag – zwei Zeichenketten, nicht das
+      Datenmodul: dieselbe Regel wie bei den Geräten. */
+  plans: Record<string, { name: string; price: string }>;
 }) {
   const pathname = usePathname();
   const [shown, setShown] = React.useState(false);
+
+  /* Die Tarifwahl steht in der Adresse und wird hier gelesen, nicht geraten.
+     Ohne Wahl bleibt die Leiste neutral („Vertrag anfragen") – der frühere
+     Einwand, es gebe keinen Zustand, war richtig, solange die Karten keiner
+     waren. Jetzt sind sie einer, und die Leiste zeigt denselben Vertrag und
+     denselben Beitrag wie Karte und Formular. */
+  const topicSlug = useQueryParam("anliegen");
+  const plan =
+    pathname === "/wartungsvertrag" && topicSlug?.startsWith("wartungsvertrag-")
+      ? plans[topicSlug.slice("wartungsvertrag-".length)]
+      : undefined;
 
   /**
    * Ein Bild pro Messung, wie im Seitenkopf.
@@ -144,6 +165,40 @@ export function MobileCta({
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  /* Während getippt wird, ist die Leiste weg.
+
+     Auf dem Telefon schiebt die Bildschirmtastatur den sichtbaren Bereich
+     auf rund die halbe Höhe; die Leiste steht dabei in iOS Safari weiter am
+     unteren Rand des Layout-Fensters und liegt damit über dem Feld oder dem
+     Absendeknopf, an dem gerade gearbeitet wird. Ein Knopf „Anfrage senden",
+     der den echten Absendeknopf verdeckt, ist schlimmer als keiner.
+
+     Ausgelöst wird das an der Tastatur, nicht an der Maus: `focusin` in
+     einem `<form>` heißt, dass jemand schreibt. Die tatsächliche Tastatur
+     lässt sich im Prüfbrowser nicht öffnen – die Regel greift deshalb schon
+     am Fokus und damit auch dann, wenn ein Gerät ohne Bildschirmtastatur
+     im Spiel ist. */
+  const [typing, setTyping] = React.useState(false);
+  React.useEffect(() => {
+    const inForm = (node: EventTarget | null) =>
+      node instanceof Element &&
+      !!node.closest("form") &&
+      !!node.closest("input, textarea, select");
+    const onIn = (event: FocusEvent) => {
+      if (inForm(event.target)) setTyping(true);
+    };
+    const onOut = (event: FocusEvent) => {
+      if (inForm(event.target) && !inForm(event.relatedTarget))
+        setTyping(false);
+    };
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    return () => {
+      document.removeEventListener("focusin", onIn);
+      document.removeEventListener("focusout", onOut);
     };
   }, []);
 
@@ -173,7 +228,17 @@ export function MobileCta({
           icon: MessageSquareText,
         }
       : null
-    : (ACTIONS[pathname] ?? FALLBACK);
+    : plan
+      ? {
+          /* Nur „Anfragen": Der Vertragsname steht links über dem Beitrag,
+             und zweimal „Basis" in einer 296 px breiten Leiste heißt, dass
+             die Beschriftung des Knopfes bei 320 px abschneidet – gemessen
+             „Basis anfrag…" in 134 px. */
+          label: "Anfragen",
+          href: "#anfrage",
+          icon: MessageSquareText,
+        }
+      : (ACTIONS[pathname] ?? FALLBACK);
   const Icon = action?.icon;
 
   const solid =
@@ -217,7 +282,7 @@ export function MobileCta({
              Ende des Übergangs stattfindet – dieselbe Lösung wie am
              Menü im Seitenkopf. */
           "transition-[opacity,transform,visibility] duration-300 ease-out-quart",
-          shown
+          shown && !typing
             ? "visible translate-y-0 opacity-100"
             : "invisible translate-y-[calc(100%+1.5rem)] opacity-0",
         )}
@@ -255,13 +320,13 @@ export function MobileCta({
             </>
           ) : (
             <>
-              {device ? (
-                <p className="flex h-12 shrink-0 flex-col justify-center pr-1 pl-2 leading-none">
+              {device || plan ? (
+                <p className="flex h-12 min-w-0 shrink flex-col justify-center pr-1 pl-2 leading-none">
                   <span className="font-display text-[0.6875rem] font-semibold tracking-[0.14em] text-current/60 uppercase">
-                    Preis
+                    {device ? "Preis" : plan?.name}
                   </span>
-                  <span className="tabular mt-1 font-display text-lg font-bold tracking-tight text-accent">
-                    {device.price}
+                  <span className="tabular mt-1 truncate font-display text-lg font-bold tracking-tight text-accent">
+                    {device ? device.price : plan?.price}
                   </span>
                 </p>
               ) : (

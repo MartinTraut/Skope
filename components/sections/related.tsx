@@ -65,7 +65,18 @@ export function Related({
           <h2 className="mt-4 text-[length:var(--text-title)]">
             Das brauchen Sie als Nächstes.
           </h2>
-          <ul className="mt-7 grid gap-4 md:grid-cols-2">
+          {/* Die Spaltenzahl folgt der Anzahl, nicht einem festen Wert: Drei
+              Karten in zwei Spalten sind zwei plus eins, also dieselbe
+              ausgefranste Reihe wie seinerzeit bei den Schlagwortkapseln.
+              Bei dreien deshalb erst ab `lg` drei Spalten – bei 768 px
+              blieben je 230 px, und „Versicherungskennzeichen" braucht im
+              Untertitelgrad mehr. */}
+          <ul
+            className={cn(
+              "mt-7 grid gap-4",
+              items.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2",
+            )}
+          >
             {items.map((item) => (
               /* `min-w-0` an Feld und Textspalte: Ein Rasterfeld hat
                  `min-width: auto`, und „Versicherungskennzeichen" im

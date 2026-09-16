@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { FileText, Mail } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, FileText, Mail } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -128,7 +129,70 @@ export default function InsurancePage() {
             >
               {/* Rechtsbündige Werte: Linksbündig standen die Preise mitten
                 in der Spalte, rechts davon Luft statt einer Kolonne. */}
-              <table className="w-full border-collapse text-left">
+              {/* Unter 768 px Karten statt Tabelle.
+
+                  Gemessen bei 320 px: Die Kopfzellen standen 111 px hoch
+                  („HAFT-PFLICHT" getrennt über vier Zeilen), jede Datenzeile
+                  113 px, weil „01.04.2026 bis 31.03.2027" dreimal umbricht –
+                  sechs Zeiträume auf 678 px, in drei Spalten von 118, 84 und
+                  70 px. Abgeschnitten war nichts, lesbar war es trotzdem
+                  nicht: Eine Tabelle, deren Kopf höher ist als ihre Zeilen,
+                  ist keine Tabelle mehr.
+
+                  Dieselben Daten, eine andere Form: je Zeitraum eine Karte
+                  mit beiden Preisen nebeneinander und dem Weg ins Formular.
+                  Die Position der Zeile reist in der Adresse mit
+                  (`?zeitraum=`), das Formular schreibt daraus den Zeitraum
+                  in die Nachricht – Wortlaut aus der Tabelle, nicht aus der
+                  Adresse. */}
+              <ul className="flex flex-col gap-3 md:hidden">
+                {tariffs.map((row, i) => (
+                  <li
+                    key={row.period}
+                    className="rounded-lg border border-current/15 bg-current/4 p-4"
+                  >
+                    <p className="tabular font-display font-semibold tracking-tight">
+                      {row.period}
+                      {row.full ? (
+                        <span className="ml-2 rounded bg-current/10 px-1.5 py-0.5 align-middle font-sans text-[0.6875rem] font-medium tracking-[0.06em] text-current/70 uppercase">
+                          volles Jahr
+                        </span>
+                      ) : null}
+                    </p>
+                    <dl className="mt-3 grid grid-cols-2 gap-3">
+                      <div className="min-w-0">
+                        {/* Zwei Zeilen Platz in beiden Zellen: „Teilkasko
+                            inkl. Diebstahl" bricht um, „Haftpflicht" nicht –
+                            ohne festen Kasten stünden die beiden Preise 18 px
+                            versetzt zueinander. */}
+                        <dt className="min-h-[2lh] text-[0.6875rem] font-medium tracking-[0.08em] text-current/55 uppercase">
+                          Haftpflicht
+                        </dt>
+                        <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
+                          {row.liability}
+                        </dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="min-h-[2lh] text-[0.6875rem] font-medium tracking-[0.08em] text-current/55 uppercase">
+                          Teilkasko inkl. Diebstahl
+                        </dt>
+                        <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
+                          {row.comprehensive}
+                        </dd>
+                      </div>
+                    </dl>
+                    <Link
+                      href={`/versicherung?anliegen=versicherung&zeitraum=${i}#anfrage`}
+                      className="press mt-4 inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold tracking-tight underline decoration-current/40 underline-offset-4"
+                    >
+                      Diesen Zeitraum anfragen
+                      <ArrowRight aria-hidden="true" className="size-4" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <table className="hidden w-full border-collapse text-left md:table">
                 <caption className="sr-only">
                   ERGO Tarife für E-Scooter, Saison 2026/2027, nach
                   Versicherungszeitraum
@@ -413,7 +477,11 @@ export default function InsurancePage() {
                 damit klar bleibt, wozu das Formular gehört. */}
             <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
               <Reveal delay={80}>
-                <InquiryForm defaultTopic="Versicherung: Haftpflicht" />
+                <InquiryForm
+                  defaultTopic="Versicherung: Haftpflicht"
+                  topicFromQuery
+                  periods={tariffs.map((row) => row.period)}
+                />
               </Reveal>
             </div>
           </div>

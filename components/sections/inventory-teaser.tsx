@@ -206,6 +206,27 @@ export function InventoryTeaser() {
               – wir melden uns, sobald ein passendes Gerät hereinkommt.
             </p>
           </div>
+
+          {/* Der Hinweis auf die Ratenzahlung steht als eigene Zeile unter
+              den beiden Wegen, nicht an einer einzelnen Karte.
+
+              Er gehört nicht an das Gerät, solange nicht geklärt ist, ob die
+              Modelle auch für die generalüberholten Einzelstücke gelten – die
+              Rauslösesumme des Abos ist mit „20 % des Neupreises" angegeben.
+              Der offene Punkt steht in `lib/data/financing.ts`. Als
+              allgemeiner Hinweis auf das Angebot des Betriebs ist die Zeile
+              belegt, als Zusage an einem bestimmten Gerät wäre sie es
+              nicht. */}
+          <p className="mt-6 text-sm leading-relaxed text-current/70">
+            Sie müssen den Kaufpreis nicht auf einmal aufbringen:{" "}
+            <Link
+              href="/finanzierung"
+              className="font-semibold underline underline-offset-2"
+            >
+              Mietkauf-Abo und Ratenkauf
+            </Link>{" "}
+            stehen für E-Scooter, E-Chopper und E-Trike zur Verfügung.
+          </p>
         </Reveal>
       </Container>
     </Section>

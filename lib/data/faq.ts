@@ -122,3 +122,43 @@ export const faqHome: FaqItem[] = [
   faqBuy[5],
   faqRepair[1],
 ];
+
+/**
+ * Finanzierung und Abo.
+ *
+ * Bewusst ohne jede Beispielrate: Sobald eine Zahl fällt, greift § 16 PAngV
+ * mit dem effektiven Jahreszins und der ganzen Pflichtangabenkette. Die
+ * Fragen beantworten deshalb, was feststeht (Laufzeit, Rauslösesumme,
+ * Eigentumsübergang, Umfang), und sagen für den Rest, wann man die Zahl
+ * bekommt – im Angebot, vor der Unterschrift.
+ */
+export const faqFinancing: FaqItem[] = [
+  {
+    q: "Kann ich einen E-Scooter bei euch in Raten zahlen oder muss ich den Kaufpreis auf einmal aufbringen?",
+    a: "Sie können in Raten zahlen. Dafür gibt es zwei Wege: den Ratenkauf mit einer Anzahlung bei der Übergabe und monatlichen Raten per SEPA-Lastschrift, und das Mietkauf-Abo mit einer monatlichen Rate über wahlweise 24 oder 36 Monate, in der Anmeldung, Versicherung und Service bereits enthalten sind. Welcher Betrag monatlich anfällt, hängt vom Fahrzeug, vom Modell und von der Laufzeit ab; Rate, Laufzeit und Gesamtbetrag stehen vollständig in Ihrem Angebot, bevor Sie unterschreiben. Beides gilt für E-Scooter, E-Chopper und E-Trike.",
+  },
+  {
+    q: "Was ist der Unterschied zwischen dem Mietkauf-Abo und dem Ratenkauf mit Anzahlung?",
+    a: "Der Zeitpunkt, zu dem das Fahrzeug Ihnen gehört, und was in der Rate steckt. Beim Ratenkauf kaufen Sie sofort: Anzahlung bei der Übergabe, Restbetrag in monatlichen Raten, mit der letzten Rate gehört das Fahrzeug uneingeschränkt Ihnen. Dafür tragen Sie ab der Übergabe Anmeldung, Versicherung, Wartung und Reparaturen selbst. Beim Mietkauf-Abo zahlen Sie 24 oder 36 Monate eine Rate, in der genau diese Posten enthalten sind – Anmeldung, Haftpflicht- und Vollkaskoversicherung sowie der regelmäßige Service; danach können Sie das Fahrzeug für 20 % des Neupreises übernehmen. Kurz: Ratenkauf ist der verteilte Kaufpreis, das Abo sind planbare Gesamtkosten.",
+  },
+  {
+    q: "Kostet mich die Ratenzahlung mehr, als wenn ich den E-Scooter sofort bezahle?",
+    a: "Ja. Im ausgewiesenen Gesamtkaufpreis des Ratenkaufs sind die Aufschläge für die Finanzierung bereits enthalten, er liegt also über dem Barpreis desselben Fahrzeugs. Wir weisen ihn vor der Unterschrift vollständig aus: Gesamtkaufpreis, Anzahlung, zu finanzierender Restbetrag, Laufzeit und die monatliche Rate stehen im Angebot, bevor Sie es annehmen. Eine Beispielrechnung nennen wir hier bewusst nicht, weil jede Zahl vom Fahrzeug und von der Laufzeit abhängt.",
+  },
+  {
+    q: "Was kostet mich die Übernahme am Ende des Mietkauf-Abos?",
+    a: "20 % des Neupreises. Diese Rauslösesumme wird im Vertrag festgelegt und ändert sich während der Laufzeit nicht, unabhängig davon, wie viele Kilometer Sie gefahren sind. Sie ist eine Möglichkeit, keine Pflicht: Nach Ablauf entscheiden Sie, ob Sie das Fahrzeug übernehmen.",
+  },
+  {
+    q: "Ist die Versicherung im Mietkauf-Abo wirklich enthalten oder muss ich sie zusätzlich abschließen?",
+    a: "Sie ist enthalten. Im Abo stecken die Anmeldung des Fahrzeugs sowie Haftpflicht- und Vollkaskoversicherung, dazu der regelmäßige Service mit den Inspektionen in unserer Werkstatt in Neuenstadt am Kocher. Wer dagegen ein Fahrzeug kauft – bar oder auf Raten – braucht das Versicherungskennzeichen separat; das vermitteln wir über die ERGO.",
+  },
+  {
+    q: "Wird meine Bonität geprüft, wenn ich in Raten zahlen möchte?",
+    a: "Ja, und zwar bei beiden Modellen: Sowohl der Ratenkauf als auch das Mietkauf-Abo stehen unter der Bedingung einer positiven Bonitätsprüfung. Welche Unterlagen wir dafür brauchen, sagen wir Ihnen im Beratungsgespräch, bevor Sie etwas einreichen. Die Beratung findet vor Ort in Neuenstadt am Kocher statt oder telefonisch und per E-Mail.",
+  },
+  {
+    q: "Bietet ihr auch eine klassische Finanzierung über eine Bank an?",
+    a: "Noch nicht. Wir bereiten eine Zusammenarbeit mit Partnerbanken vor, unter anderem mit Consors Finanz, damit Ratenkredite künftig direkt vor Ort abgeschlossen werden können. Solange das nicht steht, kündigen wir es hier als geplant an und bieten es nicht an. Verfügbar sind bis dahin das Mietkauf-Abo und der Ratenkauf mit Anzahlung.",
+  },
+];

@@ -19,6 +19,9 @@ export const CONTACT_TOPICS = [
   "Versicherung: Teilkasko inkl. Diebstahl",
   "Beratung zur Versicherung",
   "Altgerät abgeben / Recycling",
+  "Finanzierung: Mietkauf-Abo",
+  "Finanzierung: Ratenkauf",
+  "Beratung zur Finanzierung",
   "Sonstiges",
 ] as const;
 
@@ -79,6 +82,14 @@ export const TOPIC_GROUPS = [
     ],
   },
   {
+    label: "Finanzierung",
+    topics: [
+      "Finanzierung: Mietkauf-Abo",
+      "Finanzierung: Ratenkauf",
+      "Beratung zur Finanzierung",
+    ],
+  },
+  {
     label: "Recycling",
     topics: ["Altgerät abgeben / Recycling"],
   },
@@ -109,4 +120,7 @@ export const TOPIC_BY_SLUG: Record<string, ContactTopic> = {
   kauf: "Suchauftrag generalüberholter E-Scooter",
   geraet: "Frage zu einem Gerät",
   recycling: "Altgerät abgeben / Recycling",
+  "finanzierung-mietkauf": "Finanzierung: Mietkauf-Abo",
+  "finanzierung-ratenkauf": "Finanzierung: Ratenkauf",
+  finanzierung: "Beratung zur Finanzierung",
 };

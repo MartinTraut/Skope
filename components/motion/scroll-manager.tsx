@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import * as React from "react";
+import { notifyUrlChange } from "@/lib/url-state";
 
 /**
  * Zwei Regeln für die Seitenposition, beide gemessen an der Beschwerde
@@ -205,7 +206,16 @@ export function ScrollManager() {
       } else {
         go();
       }
-      history.pushState(null, "", url.hash);
+      /* Die Abfrage bleibt stehen.
+
+         Vorher schrieb diese Zeile nur `url.hash` – ein Verweis wie
+         `?anliegen=wartungsvertrag-premium#anfrage` sprang damit zwar ans
+         Formular, die Auswahl war aber aus der Adresse verschwunden, bevor
+         irgendein Bauteil sie lesen konnte. Trägt der Verweis selbst keine
+         Abfrage, bleibt die vorhandene erhalten: Wer einen Tarif gewählt hat
+         und danach eine andere Raute anspringt, verliert ihn sonst. */
+      history.pushState(null, "", (url.search || window.location.search) + url.hash);
+      notifyUrlChange();
     };
     document.addEventListener("click", onClick, { capture: true });
     return () =>

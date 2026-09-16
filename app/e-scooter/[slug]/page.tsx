@@ -450,7 +450,18 @@ export default async function ScooterDetailPage({
                     Neon: Die Prüfliste ist der Beleg, auf dem die ganze Seite
                     steht, und sie darf ihn führen. Preis und Hauptaktion
                     bleiben die einzigen weiteren Neonwerte der Seite. */}
-                <ul className="grid gap-2.5 sm:grid-cols-2">
+                {/* Eine Spalte bis `xl`, nicht schon ab `sm`.
+
+                    Gemessen: Die längste Position („Akku-Diagnose mit
+                    Kapazitätsmessung") ist im Grundschriftgrad 315 px breit.
+                    In der Pille gehen Füllung, Häkchen und Abstand ab –
+                    zweispaltig blieben davon bei 640 px 227 px, bei 768 px
+                    275 px und bei 1024 px 188 px übrig, und vier der sechs
+                    Positionen liefen zweizeilig. Eine Liste, in der jede
+                    zweite Zeile umbricht, liest sich als Fehler. Zwei
+                    Spalten erst ab 1440 px – bei 1280 px trägt eine Spalte
+                    327 px, gebraucht werden 379. */}
+                <ul className="grid gap-2.5 min-[1440px]:grid-cols-2">
                   {checkupIncludes.map((entry, i) => (
                     <li
                       key={entry}
@@ -460,7 +471,7 @@ export default async function ScooterDetailPage({
                       style={
                         { "--trace-delay": `${i * -0.9}s` } as CSSProperties
                       }
-                      className="trace flex items-start gap-3 rounded-lg bg-current/5 px-4 py-3.5"
+                      className="trace flex items-start gap-2.5 rounded-lg bg-current/5 px-3 py-3 sm:gap-3 sm:px-4 sm:py-3.5"
                     >
                       {/* Grün als Fläche, nicht als Strich: `text-accent`
                           kippt auf Silber auf Tinte, und ein neongrüner
@@ -469,11 +480,21 @@ export default async function ScooterDetailPage({
                           unmissverständlich grün und trotzdem lesbar. */}
                       <span
                         aria-hidden="true"
-                        className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-neon"
+                        className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-neon sm:size-5"
                       >
-                        <Check className="size-3 text-ink" strokeWidth={3.5} />
+                        <Check
+                          className="size-2.5 text-ink sm:size-3"
+                          strokeWidth={3.5}
+                        />
                       </span>
-                      <span className="text-current/80">{entry}</span>
+                      {/* Unter `sm` ein Grad kleiner: Bei 360 px bleiben in
+                          der Pille 262 px Satz, die längste Position braucht
+                          im Grundschriftgrad 315. Bei 320 px geht es auch so
+                          nicht auf – dort blieben 222 px –, das ist die eine
+                          Breite, auf der zwei Zeilen stehen bleiben. */}
+                      <span className="text-[0.875rem] text-current/80 sm:text-[1.0625rem]">
+                        {entry}
+                      </span>
                     </li>
                   ))}
                 </ul>

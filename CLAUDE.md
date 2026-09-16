@@ -968,6 +968,100 @@ Gemessen danach: gleiche Breite **und** gleiche Höhe auf 390, 640, 768,
 Konsolenfehler. Preis am Telefon: Die Zeilenkarten sind 193 statt 171 px
 hoch, die Liste wächst um rund 250 px.
 
+## Bahnen und Bewegung am Telefon — 15.09.2026
+
+Auf Ansage, in dieser Reihenfolge entschieden:
+
+- **Die Kundenstimmen laufen wieder auf jeder Breite von allein.** Die
+  Wischbahn vom 06.09. ist weg, es gilt wieder das Laufband („mach die
+  bewertungen wie davor, also dass sie sich von alleine bewegen"). Der
+  Einwand von damals bleibt bestehen und ist bewusst getragen: Bei 390 px
+  ist die Karte 304 px breit, es steht also eine und ein Drittel im Bild.
+  Die Ausblendbreite am Telefon bleibt bei 2 rem.
+- **Die drei Säulen stehen am Telefon wieder untereinander,** nicht als
+  Wischbahn. `pillars.tsx` ist damit wieder auf dem Stand vor dem Review.
+- **Die Wischbahn der Geräte im Teaser bleibt.** Sie war kurz
+  zurückgenommen und auf Ansage sofort wieder hergestellt.
+- **Die Wortmarke in der Kopfzeile führt auf der Startseite nach oben.**
+  Gemessen: Wer auf `/` 4000 px tief stand und auf das Logo tippte, blieb
+  bei 4000 px — der Verweis zeigt auf die Adresse, auf der man schon ist.
+  Jetzt weicher Sprung auf 0, bei `prefers-reduced-motion` hart. Der Sprung
+  wartet über `requestAnimationFrame`, bis die Scrollsperre des Telefonmenüs
+  gelöst ist; dieselbe Regel wie bei den Raute-Verweisen im `ScrollManager`.
+
+## Feinschliff Telefon und Tablet — 16.09.2026
+
+Auftrag: verbleibende Darstellungs- und Bedienfehler prüfen und beheben, ohne
+Hero, Referenzen, Leistungen und Zoom-Sperre anzutasten. Gemessen über zwölf
+Routen × sieben Formaten (320, 390, 430, 768, 1024, 1440 und 844 × 390).
+
+**Was wirklich falsch war:**
+
+- **Die Prüfliste der Geräteseite brach zeilenweise um.** Die längste
+  Position („Akku-Diagnose mit Kapazitätsmessung") ist im Grundschriftgrad
+  315 px breit; zweispaltig blieben davon 227 px (640), 275 px (768) und
+  188 px (1024). Jetzt eine Spalte bis 1439 px, zwei ab 1440 (380 px je
+  Spalte), unter `sm` ein Grad kleiner und engere Pille. **320 px bleibt die
+  Ausnahme** – dort stehen 222 px Satz zur Verfügung, eine Zeile ginge erst
+  bei 12 px.
+- **Die Tariftabelle war unter 768 px keine Tabelle mehr.** Bei 320 px stand
+  der Kopf 111 px hoch („HAFT-PFLICHT" über vier Zeilen), jede Datenzeile
+  113 px, Spalten von 118 / 84 / 70 px. Unter `md` jetzt Karten aus
+  **denselben Daten**: Zeitraum, beide Preise nebeneinander, Verweis ins
+  Formular. Die Position der Zeile reist als `?zeitraum=` mit, das Formular
+  schreibt daraus den Zeitraum ins Nachrichtenfeld – Wortlaut aus der
+  Tabelle, nicht aus der Adresse, damit aus einer manipulierten Adresse kein
+  erfundener Zeitraum in eine Anfrage wandert.
+- **Die Zustandszeile der Bestandskarte war abgeschnitten.** `line-clamp-1`
+  schnitt zehn von dreizehn Angaben mitten im Satz ab („Gebraucht,
+  vollständig…"). Seit alle Karten eines Rasters gleich hoch sind, kostet
+  die zweite Zeile nichts.
+- **Das Formular der Vertragsseite stand fest auf „Basis".** Wer von der
+  Premium-Karte kam, fand unten den anderen Vertrag.
+- **`?anliegen=` überlebte den Rautensprung nicht.** `ScrollManager` schrieb
+  beim Abfangen eines Verweises auf dieselbe Seite nur `url.hash` – die
+  Auswahl war aus der Adresse verschwunden, bevor ein Bauteil sie lesen
+  konnte. Jetzt bleibt die Abfrage stehen (und die vorhandene erhalten, wenn
+  der Verweis selbst keine trägt), dazu ein Ereignis `skope:urlchange`:
+  `pushState` löst kein `popstate` aus, ohne das Signal merkt kein Bauteil
+  die Änderung.
+- **`Number(null)` ist 0.** Die erste Fassung der Zeitraum-Vorbelegung schrieb
+  auf jeder Seite ohne `?zeitraum=` die erste Tabellenzeile ins
+  Nachrichtenfeld.
+
+**Die Tarifwahl ist jetzt ein Zustand, und zwar genau einer:**
+`?anliegen=wartungsvertrag-basis|premium` in der Adresse. Karte („Premium
+gewählt – zur Anfrage"), Zeile über dem Formular (Name + Beitrag),
+Auswahlfeld des Formulars und die untere Aktionsleiste (Name links, Beitrag
+darunter, Knopf „Anfragen") lesen denselben Wert über `lib/url-state.ts`.
+Ohne Wahl bleibt alles neutral und das Anliegen ein Pflichtfeld. Der frühere
+Eintrag „nicht gebaut, weil es die Bedienung nicht gibt" ist damit erledigt –
+die Karten *sind* jetzt eine Auswahl. Der Knopf heißt nur „Anfragen": Mit
+„Basis anfragen" schnitt die Beschriftung bei 320 px ab (134 px), und der
+Name steht ohnehin links daneben.
+
+**Die untere Aktionsleiste verschwindet, während getippt wird.** Auf dem
+Telefon schiebt die Bildschirmtastatur den sichtbaren Bereich auf etwa die
+halbe Höhe; in iOS Safari bleibt eine feste Leiste am unteren Rand des
+Layout-Fensters stehen und liegt damit über Feld oder Absendeknopf. Ausgelöst
+über `focusin`/`focusout` innerhalb eines `<form>`. **Nicht mit echter
+Tastatur geprüft** – im Prüfbrowser lässt sie sich nicht öffnen.
+
+**Geprüft und in Ordnung, nichts geändert:** Filter, Sortierung und
+Zurück-Navigation der Bestandsseite (13 → 11 → 8 → 6 und über drei
+Zurück-Schritte zurück, Live-Region meldet „x von 13"), Beschriftung der
+Sortierung, Formularprüfung (vier Fehler, Zusammenfassung, `aria-invalid`),
+Doppelklick-Schutz über `disabled={pending}`, Galerie (Mauswisch tut
+bewusst nichts), Scrollverhalten bei vierfach gedrosselter CPU (CLS 0,
+höchstens zwei lange Aufgaben, längste 56 ms).
+
+**Offen und nicht erfindbar:** Der Formularversand ist auf diesem Server
+nicht eingerichtet (`RESEND_API_KEY`, `INQUIRY_FROM`); das Formular zeigt
+statt einer Erfolgsmeldung Telefonnummer und E-Mail-Adresse – geprüft, keine
+stille Verwerfung. Ein Verfügbarkeitsstatus je Gerät steht in den Daten
+nicht: `availability` ist bei allen dreizehn leer, die Plakette für
+„reserviert" und „verkauft" liegt bereit.
+
 ## Telefonknöpfe — 03.09.2026
 
 Auf Ansage entfernt: der Neon-Telefonknopf im Abschlussband (`CtaBand`, alle
@@ -1648,3 +1742,269 @@ unter 44 px, keine Schrift unter 11 px. Nichts davon ist committet.
 Rate-Limit über Upstash, Nonce-CSP, Kennzahlenband im Teaser (vom Nutzer
 so gebaut), 1080p-Export des Films, Öffnungszeiten, `sameAs`-Erweiterung,
 alle Punkte aus dem Faktenaudit mit Rückfrage.
+
+## Bestandskarte neu komponiert — 16.09.2026
+
+Auf Ansage („können wir das besser darstellen", mit Aufnahme der Lücke über
+„Mehr Daten"). Die Verteilung der freien Höhe auf zwei Abstände vom 15.09. war
+Kosmetik: Sie hat ein Loch durch zwei kleinere ersetzt, und das Datenband
+schwamm danach frei in der Kartenmitte. Drei Eingriffe, alle gemessen:
+
+- **Die Lücke war kein Abstandsproblem, sondern fehlender Inhalt.** Der
+  Zustand steht in den Daten und wurde auf der quadratischen Karte gar nicht
+  gezeigt, obwohl die Zeilenkarte am Telefon ihn trägt. Er steht jetzt unter
+  dem Preis – die Angabe, die bei einem Einzelstück aus zweiter Hand nach
+  Modell und Preis als Nächstes gefragt wird. Die Texte sind 30 bis 90 Zeichen
+  lang und schlucken damit genau die Schwankung, die sie verursachen.
+  `min-h-[2lh]` hält die Bänder einer Reihe trotzdem auf einer Linie.
+- **Die ABE-Warnung liegt auf dem Bild, nicht unter dem Band.** Als Absatz in
+  der Karte machte sie zwei der dreizehn Karten höher – und weil `auto-rows-fr`
+  alle Karten gleich hoch macht, bekamen die elf übrigen dieselbe Höhe als
+  leere Fläche geschenkt: gemessen **68 px** unter dem Zustand, auf jeder
+  Karte und jeder Breite. Jetzt ein Bernsteinstreifen über die volle Bildbreite
+  am unteren Bildrand, Wortlaut unverändert und ausgeschrieben. Sie ist damit
+  nicht kleiner geworden, sondern steht vor dem Preis statt hinter den
+  Kennwerten. Gemessen danach: Lücke 20 px bei 1512 (= `pt-5`, also null
+  Überschuss), 20–39 px bei 768. Die Bildzählung rutscht auf den Karten mit
+  Streifen von `bottom-3` auf `bottom-11`.
+- **Das Datenband läuft über die volle Kartenbreite** (`-mx-3.5 px-3.5`,
+  ab `sm` `-mx-4`). Die Haarlinien sind damit Kanten der Karte statt drei
+  Striche in ihrer Mitte; Warnung, Band und Verweis hängen als **ein** Block
+  mit einem einzigen `mt-auto` am Boden. Über der Kante steht, was das Gerät
+  ist, darunter, was es kann.
+
+## Finanzierung & Abo — 16.09.2026
+
+Neue Route `/finanzierung`, aus einer Auskunft des Betreibers (Mietkauf-Abo,
+Ratenkauf mit Anzahlung, Bankfinanzierung in Planung). Der Tonfall der Vorlage
+(„Rundum-Sorglos-Paket", „bleib gespannt", Du-Ansprache) ist nicht übernommen,
+die Fakten vollständig.
+
+- **Auf der ganzen Seite steht keine einzige Beispielrate.** Nicht aus
+  Vorsicht: § 16 PAngV verlangt bei jeder Werbung mit Zahlen zu einer
+  Finanzierung den effektiven Jahreszins und die übrige Pflichtangabenkette.
+  Eine erfundene Rate wäre also nicht nur falsch, sie zöge alles Weitere nach
+  sich. Stattdessen der Satz, der immer stimmt: Rate, Laufzeit und
+  Gesamtbetrag stehen im Angebot, bevor unterschrieben wird.
+- **Die Bankfinanzierung steht sichtbar, aber ohne Anfrage.** Ein Knopf an
+  einem Angebot, das es noch nicht gibt, ist eine Zusage. Eigene Fläche,
+  eigenes Zeichen (Uhr statt Häkchen), kein Ziel. `financingModels` trägt
+  dafür `available`.
+- **Die Wahl steht in der Adresse** (`?anliegen=finanzierung-mietkauf|
+  -ratenkauf`), gelesen über dieselbe Mechanik wie beim Wartungsvertrag.
+  Drei neue Anliegen in `lib/data/topics.ts`, eigene Gruppe „Finanzierung".
+- **Die offenen Punkte stehen als TODO in `lib/data/financing.ts`**, nicht in
+  dieser Datei: ob die Modelle auch für die generalüberholten Einzelstücke
+  gelten (die Rauslösesumme ist mit „20 % des Neupreises" angegeben), die
+  Vertragsmuster nach §§ 506 ff. BGB, die Erlaubnis nach § 34c Abs. 1 Nr. 2
+  GewO für die geplante Kreditvermittlung, die Versicherung im Abo (§ 34d,
+  siehe Faktenaudit) und die Frage, ob E-Chopper und E-Trike verkauft oder
+  nur finanziert werden.
+- **Deshalb kein Finanzierungshinweis an der einzelnen Bestandskarte.** Die
+  Zeile steht im Teaser der Startseite unter den beiden Wegen und als dritte
+  `Related`-Karte auf `/e-scooter` – als Hinweis auf das Angebot des Betriebs
+  belegt, als Zusage an einem bestimmten Gerät nicht.
+
+**Zwei Kopfzeilen-Befunde, die der siebte Navigationspunkt aufgedeckt hat:**
+
+- **Die Aktionsgruppe stand bei 1280 px 53 px über dem Satzspiegel.** Die
+  Navigation ist mit „Finanzierung" 805 statt 687 px breit. Der Seitenkopf
+  liegt `fixed`, also meldet die Seite dafür **keinen waagerechten Überlauf** –
+  man sieht es nur im Bild oder in der Messung (`grp.right` gegen
+  `inner.right`). Wer hier einen Punkt ergänzt, misst genau das nach. Die
+  Bewertung fällt deshalb zwischen 1280 und 1399 px weg, die volle
+  Telefonnummer erst ab 1600 statt ab 1440. Gemessen passt die Gruppe jetzt
+  auf 1024 / 1279 / 1280 / 1366 / 1399 / 1400 / 1512 / 1599 / 1600 / 1920.
+- **Der Telefon-Symbolknopf im Band 1280–1439 war nie sichtbar.** Seine
+  Klasse lautete `lg:hidden min-[1280px]:inline-flex min-[1440px]:hidden`;
+  gemessen stand er bei 1280 px auf `display: none`. Tailwind ordnet benannte
+  und arbiträre Abfragen nicht in einer gemeinsamen Reihe, `lg:hidden` gewann
+  also gegen die spätere Regel. Der Eintrag „Zwischen 1280 und 1439 px gab es
+  keinen Telefonverweis" aus der Handy-Qualitätsprüfung war damit **nicht**
+  behoben. Alle drei Zustände laufen jetzt über arbiträre Abfragen.
+- **`Related` richtet die Spalten nach der Anzahl** (`lg:grid-cols-3` bei
+  drei Karten). Zwei Spalten wären bei dreien zwei plus eins.
+
+Gemessen über zwölf Routen × elf Breiten (320 – 1920 px plus Querformat) gegen
+den Produktionsbuild: kein Überlauf, keine Konsolenfehler, genau eine H1 je
+Route, keine Schrift unter 11 px außer der bekannten Plakettenschrift auf
+`/versicherung`.
+
+## Vertragsmuster nachgereicht — 16.09.2026
+
+Der Betreiber hat „Mietkauf- & Abo-Vertrag" und „Ratenkaufvertrag" geschickt,
+beide mit SEPA-Basislastschriftmandat (Gläubiger-ID DE07ZZZ00002872498). Damit
+ist die Finanzierungsseite nicht mehr nur aus einem Werbetext gebaut. Vier
+Angaben waren dort **falsch oder gar nicht** vermerkt:
+
+- **Die Laufzeit ist 24 *oder* 36 Monate**, nicht „zwischen 24 und 36". Der
+  Vertrag führt zwei Stufen zur Auswahl, keine freie Spanne. Vier Stellen
+  gedreht (Karte, Meta, Schema, zwei FAQ) – jede einzeln angesehen, kein
+  Suchen-und-Ersetzen.
+- **Die Bonitätsprüfung ist bei beiden Modellen aufschiebende Bedingung**
+  (Abo § 2.1, Ratenkauf § 3), nicht nur beim Ratenkauf. Sie steht deshalb
+  unter „Für beide Modelle gilt" und nicht mehr als `note` an einer Karte:
+  An einer Karte gelesen wäre sie ein Unterschied zwischen den Modellen, und
+  das ist sie nicht. Dasselbe gilt für den Einzug zum 1. des Monats.
+- **Der Ratenkaufpreis enthält bereits sämtliche Aufschläge für die
+  Finanzierung** (§ 2). Die Finanzierung kostet also etwas, und das steht
+  jetzt da – als `note` an der Karte und als eigene FAQ. Wer „Kaufpreis
+  verteilt" liest, nimmt sonst an, es käme nichts dazu. **Weiterhin keine
+  Zahl**: Der Vertrag beziffert den Aufschlag nicht, und mit einer Zahl
+  begänne § 16 PAngV.
+- **Beim Ratenkauf trägt der Käufer ab der Übergabe Anmeldung, Versicherung,
+  Wartung und Reparaturen selbst** (§ 5). Das ist der eigentliche Unterschied
+  zum Abo und stand nirgends.
+
+**`FinancingModel` hat dafür ein Feld `excludes`.** Ohne es standen zwei
+Karten mit je vier Häkchen nebeneinander, und der Unterschied zwischen den
+Modellen las sich als Gleichstand. Die Ausschlüsse stehen in derselben Liste –
+`×` im Ring statt Neon-Häkchen, eine Stufe blasser, mit `sr-only`
+„Nicht enthalten:" davor. Dieselbe Lösung wie bei den Ausschlüssen des
+Wartungsvertrags. Gemessen 320 – 1440 px: beide Karten auf jeder Breite gleich
+hoch, kein Überlauf, keine Konsolenfehler, keine Schrift unter 11 px.
+
+**Was die Verträge *nicht* enthalten, steht als TODO 2 und 6 in
+`lib/data/financing.ts`** und hält die Schaltung der Route auf:
+Widerrufsbelehrung (§ 506 i. V. m. § 495 BGB – ohne sie läuft die Frist nicht
+an) und die Pflichtangaben nach Art. 247 EGBGB fehlen in beiden Verträgen;
+die Verzugsklauseln gehen über § 498 BGB hinaus; die einjährige
+Gewährleistung, die die Seite zusagt, kommt in keinem der beiden Verträge vor;
+Bonitätsprüfung und Personalausweisnummer gehören in die Datenschutzerklärung.
+Das ist eine Anwaltsfrage, keine Codefrage – hier steht es nur, damit es nicht
+wieder aus dem Blick gerät.
+
+## Bestandskarte, dritter Anlauf — 16.09.2026
+
+Auf Ansage („nochmal, du sollst das besser gestalten"), mit Aufnahme derselben
+Lücke. Die beiden Versuche davor waren Kosmetik: erst die Leerfläche auf zwei
+Abstände verteilt, dann mit einer Zustandszeile gefüllt. Gemessen war beides
+falsch begründet.
+
+- **Die Karte war auch ohne `auto-rows-fr` 702 px hoch.** Der Überschuss kam
+  nicht aus dem Raster, sondern aus **meinen eigenen zwei `min-h-[2lh]`** an
+  Modellname und Zustandszeile: Sie halten vier Textzeilen frei, und eine
+  Karte wie „Zamelux E9" füllt davon zwei. Gemessen bei 1512 px 27 px leer
+  unter dem Namen und 29 px unter dem Zustand. Die Begründung, die dort stand
+  („die Angaben sind 30 bis 90 Zeichen lang und schlucken die Schwankung"),
+  war nachweislich falsch: Der Zustand ist auf **allen dreizehn** Karten
+  einzeilig.
+- **Der Ausgleich gehört ins Bild, nicht in den Text.** Die Bildzone trägt
+  jetzt `aspect-square grow` – das Quadrat bleibt die Untergrenze, der
+  Überschuss kommt oben drauf. Das Bild ist das einzige Element der Karte,
+  das ein paar Pixel mehr verträgt, ohne als Fehler gelesen zu werden: Es
+  liegt `object-cover`, die Aufnahmen sind ohnehin hochkant (720 × 960).
+  Gemessen 1512 px: Bildhöhe 422 – 445 px, Karte 702 → 674, Abstand unter dem
+  Zustand konstant 20 px (= `pt-5`, also null Überschuss) auf jeder der
+  dreizehn Karten und auf jeder Breite.
+- **`grow`, nicht `flex-1`.** `flex-1` setzt die Basis auf 0, die Höhe wäre
+  dann allein der Restraum und `aspect-square` wirkungslos – bei einer Karte
+  mit dreizeiligem Namen schrumpfte das Bild.
+- **`mt-auto` am Fuß ist weg.** Ein automatischer Rand gewinnt in einer
+  Flex-Spalte gegen jedes `grow`; der Rest wäre wieder in den Abstand
+  gelaufen statt in die Bildzone.
+
+**Das Datenband entscheidet über zwei oder drei Zellen an der Kartenbreite,
+nicht an der Fensterbreite** (`@container` an der Karte, Schwelle
+`@[18.75rem]`). Daran war die Zeile unabhängig von der Lücke kaputt: Bei
+768 px Fenster ist die Karte 332 px breit und alles passt, bei 1024 px sind es
+wegen der dritten Rasterspalte nur 293 – dort brach „bis 20 km" zweizeilig um.
+Eine Media Query kann das nicht treffen. Die Schwelle ist gerechnet: Bei
+gleich breiten Spalten bestimmt das längste Etikett die Zelle, „REICHWEITE"
+misst 76 px, mit Zellenabstand 100, mal drei = 300 px Innenbreite. Darunter
+fällt **Tempo** weg – zwölf der dreizehn Geräte fahren 20 km/h, die Zelle
+unterscheidet nichts; dieselbe Entscheidung wie auf der Zeilenkarte am
+Telefon. Vollständig steht das Tempo auf der Geräteseite.
+
+**Falle dabei:** `hidden` lässt die Zelle `:first-child` bleiben, das
+`first:pl-0` in `Fact` greift also weiter an der ausgeblendeten Zelle. Die
+Reichweite bekommt den linken Rand deshalb ausdrücklich genommen
+(`pl-0 @[18.75rem]:pl-3`).
+
+Gemessen über /e-scooter, / und eine Geräteseite bei 320 – 1512 px: alle
+Karten eines Rasters gleich hoch und gleich breit, keine Zelle mehr
+zweizeilig, kein Überlauf, keine Konsolenfehler.
+
+## Kennzahlen der Website — 16.09.2026
+
+Hintergrund ist die Vergütung: Abgerechnet wird anteilig an dem, was die
+Website einbringt, und dafür braucht es eine Zahl, die beide Seiten ansehen
+können. Gebaut ist die kleinste Fassung, die das trägt.
+
+**Was gezählt wird — und was ausdrücklich nicht.** `lib/metrics.ts` schreibt
+je Tag einen Redis-Hash mit Summen: `anfrage`, `anfrage:<anliegen>`,
+`telefon`, `telefon-quelle:<quelle>`, `quelle:<quelle>`, `seite`,
+`seite:<pfad>`. **Keine IP, keine Kennung, kein Cookie, kein Zeitstempel
+unter Tagesgenau.** Das ist kein Nebenaspekt, sondern die Eigenschaft, an der
+alles hängt: Ein reiner Zähler ist kein Zugriff auf Endgeräte im Sinne des
+§ 25 TDDDG und braucht keine Einwilligung. Wer eine Besucher-ID, eine
+Verweildauer oder einen Zeitstempel auf die Minute ergänzt, bricht das und
+holt sich ein Einwilligungsbanner ins Haus.
+
+- **Speicher ist Upstash Redis über REST** (`UPSTASH_REDIS_REST_URL`,
+  `UPSTASH_REDIS_REST_TOKEN`). Weder Datei noch Prozessspeicher: Beide
+  überleben auf Vercel den nächsten Aufruf nicht. Ohne die beiden Variablen
+  liefert `metricsMode()` `off`, es wird nichts gezählt, und die
+  Kennzahlenseite sagt das — dieselbe Regel wie bei `lib/commerce.ts`: Es gibt
+  keinen Zustand, in dem eine Zahl wie eine Messung aussieht, ohne eine zu
+  sein.
+- **Der Telefontipp hängt an einem Zuhörer am Dokument** (`components/
+  metrics/counter.tsx`), nicht an den Knöpfen. Die Nummer steht an sieben
+  Stellen; ein `onClick` je Knopf macht aus jedem dieser Bauteile eine Client
+  Component und vergisst beim achten die Zeile. `sendBeacon`, nicht `fetch`:
+  Beim Wechsel in die Telefon-App wird ein `fetch` abgebrochen und die Hälfte
+  der Tipps ginge verloren. Der Zuhörer ruft weder `preventDefault` noch
+  `stopPropagation` — der Anruf muss auch zustande kommen, wenn das Zählen
+  scheitert.
+- **Die Herkunft steht im Formular in einem versteckten Feld** und kommt aus
+  `lib/source.ts`: einmal je Sitzung aus `utm_source` oder der Verweisadresse
+  bestimmt, in `sessionStorage` gehalten (kein Cookie, überlebt den Tab
+  nicht). Ohne JavaScript bleibt das Feld leer und der Server trägt
+  „unbekannt" ein — die Anfrage geht trotzdem raus.
+- **Gezählt wird die abgeschickte, geprüfte Anfrage**, nicht die erfolgreich
+  zugestellte Mail. Ein Ausfall des Mail-Providers darf die Kontaktzahl nicht
+  senken.
+- **`fieldSlug()` ist Pflicht für jedes zusammengesetzte Feld.** Die Anliegen
+  heißen „Sicherheits-Checkup (59,99 €)" — mit Klammern und Umlauten fallen
+  sie durch den Feldfilter, und der erste Entwurf zählte deshalb stumm nur die
+  Summe, nie die Aufteilung. `lib/metrics-view.ts` übersetzt über dieselbe
+  Funktion zurück und baut die Karte aus `CONTACT_TOPICS`, nicht von Hand.
+
+**`/kennzahlen`** ist nicht Teil des Auftritts: nicht in der Navigation, nicht
+in der Sitemap, `noindex`, in `robots.ts` gesperrt — und **ohne
+`METRICS_PASSWORD` gibt es sie gar nicht** (404 statt Passwortmaske; eine
+Maske verrät, dass dort etwas liegt). Der Cookie trägt den Hash des Passworts,
+nicht das Passwort. Fehlversuche kosten eine halbe Sekunde.
+
+Die Seite zeigt vier Zahlen (Kontakte, Anfragen, Telefontipps, Seitenaufrufe
+mit Quote), den Verlauf als zweilagige Säulen über die volle Breite und
+darunter zwei Listen — Herkunft und Anliegen. **Unten steht, was die Zahlen
+nicht sagen**, und das bleibt dort: Eine Abrechnungsgrundlage ohne ihre
+Grenzen ist eine Behauptung. Der größte blinde Fleck ist die abgelesene
+Nummer, die von einem anderen Gerät gewählt wird; er verschwindet erst mit
+einer eigenen Rufnummer für die Website.
+
+**Ohne Speicher zeigt die Seite Beispielzahlen** aus
+`lib/data/metrics-demo.ts` — deterministisch erzeugt, mit echten
+Anliegen-Bezeichnungen, und mit einem Warnhinweis in Bernstein über der ersten
+Zahl. Nicht in Neon: Der Hinweis ist kein Etikett der Marke, sondern der
+Vorbehalt, unter dem alles darunter steht.
+
+**Abschnitt 5 der Datenschutzerklärung ist neu geschrieben.** Dort stand die
+Floskel „Ihr Surf-Verhalten kann mit sogenannten Analyseprogrammen ausgewertet
+werden" — zu wenig, seit wirklich gezählt wird, und zugleich zu viel, weil es
+nach einem Analysedienst klingt, den es nicht gibt. Ändert sich der Zähler,
+ändert sich dieser Absatz mit.
+
+**Gemessen:** 404 ohne Passwortvariable, Maske bleibt bei falschem Passwort,
+Beacon meldet `{"event":"telefon","source":"direkt"}` beim Tippen auf einen
+Telefonverweis (nachgewiesen über ein überschriebenes `navigator.sendBeacon` –
+`page.route` von Playwright fängt Beacons **nicht** ab, ein erster Gegentest
+sah deshalb fälschlich leer aus). Achtzehn Prüfungen über sechs Routen ×
+390/1024/1440 px: kein Überlauf, genau eine H1, keine Konsolenfehler. Alle
+übrigen Seiten bleiben statisch, dynamisch sind nur `/kennzahlen` und
+`/api/ereignis`.
+
+**Noch nicht gebaut:** die Zuordnung von Umsätzen. Sie hängt an Shopify
+(`lib/commerce-shopify.ts`) und wird dort angeschlossen, wenn der Verkaufsweg
+steht.

@@ -102,12 +102,32 @@ export default function PrivacyPage() {
           Aufsichtsbehörde zu.
         </p>
 
-        <h2>5. Analyse-Tools</h2>
+        <h2>5. Reichweitenmessung</h2>
+        {/* Konkret statt Floskel: Hier stand „Ihr Surf-Verhalten kann
+            statistisch ausgewertet werden … mit sogenannten
+            Analyseprogrammen". Seit die Seite tatsächlich zählt, ist das zu
+            wenig – und zugleich zu viel, weil es nach einem Analysedienst
+            klingt, den es nicht gibt. Was der Zähler tut und was er
+            ausdrücklich nicht tut, steht in `lib/metrics.ts`. Ändert sich
+            dort etwas, ändert sich dieser Absatz mit. */}
         <p>
-          Beim Besuch dieser Website kann Ihr Surf-Verhalten statistisch
-          ausgewertet werden. Das geschieht vor allem mit sogenannten
-          Analyseprogrammen. Sofern eine Analyse eine Einwilligung erfordert,
-          erfolgt sie erst nach Ihrer ausdrücklichen Zustimmung.
+          Diese Website nutzt kein Google Analytics und keinen vergleichbaren
+          Analysedienst. Sie zählt lediglich, wie oft eine Seite aufgerufen,
+          wie oft ein Telefonverweis angetippt und wie oft das Kontaktformular
+          abgeschickt wurde. Gespeichert wird ausschließlich eine
+          <strong> Tagessumme</strong> – etwa „am 16.09.2026: 42 Seitenaufrufe,
+          3 Kontaktanfragen&ldquo;. Dazu wird festgehalten, über welchen Weg der
+          Besuch kam (zum Beispiel „Google“ oder „direkt eingegeben“).
+        </p>
+        <p>
+          Dabei werden <strong>keine IP-Adressen, keine Kennungen und keine
+          Zeitpunkte unterhalb eines Tages</strong> gespeichert. Es entsteht
+          kein Profil, und die Zahlen lassen sich keiner Person zuordnen. Die
+          Angabe zur Herkunft wird für die Dauer Ihres Besuchs im
+          Sitzungsspeicher Ihres Browsers gehalten und beim Schließen des Tabs
+          gelöscht; ein Cookie wird dafür nicht gesetzt. Zweck ist allein die
+          Frage, wie stark die Website genutzt wird (Art. 6 Abs. 1 lit. f
+          DSGVO, berechtigtes Interesse an einer bedarfsgerechten Gestaltung).
         </p>
 
         <h2>6. Hosting</h2>

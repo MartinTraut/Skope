@@ -257,45 +257,15 @@ export async function Testimonials({
           5 rem sind dort ein Fünftel der Bildbreite, und die erste Karte stand
           halb im Nebel. Gemessen bei 390 px – 2 rem lassen die Kante weich und
           die Karte lesbar. */}
-      {/* Am Telefon eine Wischbahn statt des Laufbands.
+      {/* Auf Ansage vom 15.09.2026 läuft das Band wieder auf jeder Breite,
+          auch am Telefon: Die Bewertungen sollen sich von allein bewegen. Die
+          Wischbahn, die hier vom 06.09. bis dahin stand, ist damit weg.
 
-          Das Band war dort keine Darstellung, sondern ein Defekt: Bei 390 px
-          ist die Karte 304 px breit, es passt also eine und ein Drittel ins
-          Bild – gemessen stand links eine halbe Karte an der Gehäusekante und
-          rechts eine, die mitten im Wort abbrach („sehr net", „immer fü").
-          Dazu ließ sich das Band mit dem Finger nur *anhalten*
-          (`group-active`), nicht bewegen; bei 64 s Umlauf wartet man auf die
-          dritte Stimme bis zu 21 Sekunden.
-
-          Eine Karte je Bild, Einrastpunkte, gewischt wie in der Galerie –
-          derselbe Auslöser für dieselbe Absicht. Ab `sm` läuft das Band
-          weiter, dort stehen mehrere Karten gleichzeitig im Bild und die
-          Bewegung leistet, wofür sie gedacht ist. */}
-      <Reveal delay={80} className="mt-10 sm:hidden">
-        {/* Fokussierbar wie die Tarifbahn auf /versicherung: Die Karten
-            enthalten nichts Fokussierbares, ohne `tabIndex` wären zweite und
-            dritte Stimme per Tastatur unerreichbar. */}
-        <ul
-          tabIndex={0}
-          role="region"
-          aria-label="Kundenstimmen"
-          className="scroll-x flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2"
-        >
-          {testimonials.map((item) => (
-            <li key={item.author} className="flex snap-center">
-              <QuoteCard
-                {...item}
-                centered
-                className="snap-focus w-[calc(100vw-4.5rem)]"
-              />
-            </li>
-          ))}
-        </ul>
-      </Reveal>
-
+          Am Telefon bleibt die Ausblendbreite bei 2 rem – 5 rem sind dort ein
+          Fünftel der Bildbreite, und die erste Karte stünde halb im Nebel. */}
       <Reveal
         delay={80}
-        className="mt-14 hidden [--fade:2rem] sm:block md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
+        className="mt-10 [--fade:2rem] sm:mt-14 md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
       >
         <Marquee
           className="[--duration:64s] [--gap:1.5rem]"
