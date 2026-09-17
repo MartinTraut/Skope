@@ -20,15 +20,12 @@ import {
   type ContactTopic,
 } from "@/lib/data/topics";
 import { site } from "@/lib/site";
+import { subscribeToUrl } from "@/lib/url-state";
 import { visitSource } from "@/lib/source";
 import { cn } from "@/lib/utils";
 
 const initial: FormState = { status: "idle" };
 
-function subscribeToUrl(onChange: () => void) {
-  window.addEventListener("popstate", onChange);
-  return () => window.removeEventListener("popstate", onChange);
-}
 
 /**
  * Gefüllte Felder statt umrandeter.
@@ -97,6 +94,14 @@ function InquiryFormInner({
    * `?anliegen=` wird als externer Browser-Zustand gelesen, nicht über
    * useSearchParams: dieser Hook erzwingt eine Suspense-Grenze und nähme die
    * Seite aus dem statischen Prerendering.
+   *
+   * `subscribeToUrl` kommt aus `lib/url-state` und nicht als eigene Funktion
+   * hier: Das Formular hatte eine zweite, die nur auf `popstate` hörte.
+   * `history.pushState` löst das aber nicht aus – gemessen auf
+   * /finanzierung: Ein Klick auf „Ratenkauf anfragen" aktualisierte die Zeile
+   * über dem Formular und die untere Aktionsleiste, das Auswahlfeld selbst
+   * blieb auf „Bitte wählen". Betroffen war jede Seite, auf der Karten und
+   * Formular zusammen stehen, also auch /wartungsvertrag.
    */
   const search = React.useSyncExternalStore(
     subscribeToUrl,

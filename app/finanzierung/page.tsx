@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Check, Clock } from "lucide-react";
+import { Check, Clock, KeyRound, ShieldCheck } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
+import { FinancingCompare } from "@/components/sections/financing-compare";
 import { Related } from "@/components/sections/related";
-import { ButtonLink } from "@/components/ui/button";
+import { ChoiceAction } from "@/components/ui/choice-action";
+import { ChosenLine } from "@/components/ui/chosen-line";
 import { FaqSection } from "@/components/ui/faq";
 import { Mark } from "@/components/ui/mark";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container, Section, SectionHead } from "@/components/ui/section";
+import { cn } from "@/lib/utils";
 import { faqFinancing } from "@/lib/data/faq";
 import { financingModels, financingTerms } from "@/lib/data/financing";
 import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
@@ -21,6 +24,25 @@ export const metadata: Metadata = pageMeta({
     "E-Scooter, E-Chopper und E-Trike in Raten zahlen: Mietkauf-Abo über 24 oder 36 Monate mit Versicherung und Service in der Rate, oder Ratenkauf mit Anzahlung und SEPA-Lastschrift. Beratung in Neuenstadt am Kocher.",
   path: "/finanzierung",
 });
+
+/* Ein Zeichen je Modell, nicht in den Daten: `lib/data/financing.ts` ist die
+   Belegstelle für Vertragsinhalte und soll keine Symbolbibliothek importieren.
+   Beide stehen im Ring in Silber, nicht in Neon – die Akzentfarbe markiert auf
+   dieser Seite die Hauptaktion und die harte Angabe, und ein Plakettchen wäre
+   eine vierte Aufgabe. */
+const MODEL_ICONS = {
+  mietkauf: ShieldCheck,
+  ratenkauf: KeyRound,
+  bank: Clock,
+} as const;
+
+/* Nur Name je Modell für das Bauteil über dem Formular – nicht das Datenmodul
+   mit Leistungslisten, Ausschlüssen und Rechtsanmerkungen. Dieselbe Regel wie
+   bei den Geräten in der unteren Aktionsleiste. Kein `detail`: Auf dieser
+   Seite steht keine Zahl, siehe § 16 PAngV. */
+const modelSummary = Object.fromEntries(
+  financingModels.map((model) => [model.id, { name: model.name }]),
+);
 
 /* Keine Beispielrate, nirgends auf dieser Seite – die Begründung steht in
    `lib/data/financing.ts`. Wer hier später eine Zahl einträgt, trägt damit
@@ -50,7 +72,18 @@ export default function FinancingPage() {
           Einschränkung, Aktion. */}
       <Section tone="silver">
         <Container>
+          {/* `center` statt des voreingestellten `split`.
+
+              Diese Seite ist die einzige, deren Inhalt eine Entscheidung
+              zwischen zwei gleichrangigen Dingen ist – und die steht auf
+              einer Mittelachse, nicht an der linken Kante. Gemessen bei
+              1512 px hingen vorher Auszeichnung, Überschrift, Lead, beide
+              Kartenköpfe, „Für beide Modelle gilt", der Bankhinweis und der
+              Formularkopf alle an x = 48, während rechts zwischen 280 und
+              860 px Fläche frei blieb. Der Rest der Seite behält die
+              Hausform; hier trägt sie die Komposition nicht. */}
           <SectionHead
+            align="center"
             eyebrow="Zwei Wege"
             title={
               <>
@@ -60,42 +93,98 @@ export default function FinancingPage() {
             lead="Der Unterschied liegt nicht im Preis, sondern darin, wann das Fahrzeug Ihnen gehört und was in der monatlichen Rate schon enthalten ist."
           />
 
-          <ul className="mt-14 grid auto-rows-fr gap-6 lg:grid-cols-2">
-            {available.map((model, i) => (
+          {/* Erst der Vergleich, dann die beiden Karten.
+
+              Die Reihenfolge ist der Punkt: Wer auf diese Seite kommt, will
+              wissen, was der Unterschied ist – nicht zuerst zwei Angebote
+              lesen und den Unterschied selbst bilden. Die Spaltenköpfe der
+              Tabelle tragen die Namen, die Karten darunter die Begründung,
+              die Anmerkungen und die Aktion. */}
+          <FinancingCompare
+            models={{
+              mietkauf: {
+                name: financingModels[0].name,
+                short: financingModels[0].short,
+                icon: MODEL_ICONS[financingModels[0].id],
+              },
+              ratenkauf: {
+                name: financingModels[1].name,
+                short: financingModels[1].short,
+                icon: MODEL_ICONS[financingModels[1].id],
+              },
+            }}
+          />
+
+          {/* Deckel 76 rem und mittig gesetzt, nicht die volle Breite.
+
+              Ungedeckelt war jede Karte bei 1512 px 708 px breit; die
+              Eckdatenzelle „monatlich per SEPA-Lastschrift" braucht davon
+              196 px, die Leistungszeilen rund 380 px. Der Rest war Luft
+              *innerhalb* der Karte, und zwei 708 px breite Kästen mit
+              Fließtext in halber Breite lesen sich als angeschnittene Seite.
+              Jetzt 600 px je Karte, und das Paar steht als Block in der
+              Mitte des Satzspiegels. */}
+          <ul className="mx-auto mt-14 grid max-w-[76rem] auto-rows-fr gap-6 lg:grid-cols-2">
+            {available.map((model, i) => {
+              const Icon = MODEL_ICONS[model.id];
+              return (
               <Reveal key={model.id} delay={i * 80} as="li" className="flex">
-                <div className="lift-lg flex w-full flex-col rounded-xl bg-ink p-7 text-silver on-dark md:p-9">
-                  <h2 className="font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight">
-                    {model.name}
-                  </h2>
-                  <p className="mt-3 font-display text-[length:var(--text-lead)] leading-snug font-semibold tracking-tight text-accent">
-                    {model.claim}
-                  </p>
-                  <p className="mt-5 leading-relaxed text-silver/75">
-                    {model.description}
-                  </p>
+                <div
+                  className={cn(
+                    "flex w-full flex-col rounded-xl border p-7 md:p-9",
+                    /* Zwei Karten in derselben Farbe sind kein Vergleich,
+                       sondern eine Wiederholung: Bis hierher standen beide in
+                       Tinte, unterschieden sich nur im Text und in der
+                       Knopffarbe, und die Seite las sich als zwei gleich
+                       laute Angebote. Jetzt derselbe Bauplan wie bei den
+                       Tarifkarten des Wartungsvertrags – die Karte mit dem
+                       Vollton-Knopf in Tinte, die andere in Silber mit
+                       Kontur. Dieselben Farben trägt die Tabelle darüber in
+                       ihren Spalten, und damit ist die Zuordnung eine Farbe
+                       und keine Leseaufgabe. */
+                    model.id === "mietkauf"
+                      ? "lift-lg border-transparent bg-ink text-silver on-dark"
+                      : "lift border-ink/15 bg-silver-200",
+                  )}
+                >
+                  {/* Der Kopf der Karte steht auf ihrer eigenen Achse:
+                      Zeichen, Name, Kernsatz und Beschreibung mittig. Bei
+                      zwei Karten nebeneinander ergibt das eine durchgehende
+                      Symmetrie – links und rechts derselbe Aufbau um
+                      dieselbe Mitte. Die Listen darunter bleiben linksbündig:
+                      Zentrierter Flattersatz über vier Zeilen ist keine
+                      Komposition, sondern schlecht lesbar. */}
+                  <div className="text-center">
+                    <span
+                      aria-hidden="true"
+                      className="mx-auto grid size-12 place-items-center rounded-full border border-current/20"
+                    >
+                      <Icon className="size-5 text-current/75" />
+                    </span>
+                    <h2 className="mt-5 font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight">
+                      {model.name}
+                    </h2>
+                    {/* `text-accent` kippt auf der hellen Karte auf Tinte
+                        (Farbregel in globals.css) – auf der dunklen stünde
+                        der Kernsatz also in Neon und auf der hellen in
+                        Grau: dieselbe Rolle, zwei Erscheinungen. Deshalb
+                        auf beiden Karten dieselbe Abstufung des
+                        Flächentons; das Neon gehört hier dem Knopf. */}
+                    <p className="mt-3 font-display text-[length:var(--text-lead)] leading-snug font-semibold tracking-tight text-balance">
+                      {model.claim}
+                    </p>
+                    <p className="mt-5 leading-relaxed text-current/70">
+                      {model.description}
+                    </p>
+                  </div>
 
-                  {/* Die Eckdaten als Band mit Haarlinien, wie im Bestand:
-                      Es sind die drei Angaben, die zwischen den Modellen
-                      tatsächlich verglichen werden. Am Telefon untereinander
-                      als Zeilen mit zwei Enden – drei Spalten wären dort je
-                      rund 90 px breit, und „monatlich per SEPA-Lastschrift"
-                      stünde über vier Zeilen. */}
-                  <dl className="mt-7 grid border-y border-silver/12 sm:grid-cols-3 sm:divide-x sm:divide-silver/12">
-                    {model.facts.map((fact) => (
-                      <div
-                        key={fact.label}
-                        className="flex min-w-0 items-baseline justify-between gap-3 border-b border-silver/12 py-3 last:border-b-0 sm:block sm:border-b-0 sm:px-4 sm:py-4 sm:first:pl-0 sm:last:pr-0"
-                      >
-                        <dt className="eyebrow-plain shrink-0 text-silver/55">
-                          {fact.label}
-                        </dt>
-                        <dd className="min-w-0 text-right font-display leading-snug font-semibold tracking-tight text-balance sm:mt-2 sm:text-left">
-                          {fact.value}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-
+                  {/* Das Eckdatenband der Karte ist weg: Seine drei Angaben
+                      stehen in der Vergleichstabelle darüber, und dort in
+                      denselben Kategorien für beide Modelle. Hier standen sie
+                      mit je eigenen Beschriftungen – „Laufzeit / Übernahme /
+                      Enthalten" gegen „Anzahlung / Raten / Eigentum" –, und
+                      genau daran war der Unterschied zwischen den Modellen
+                      nicht zu sehen. */}
                   <ul className="mt-7 grid gap-3">
                     {model.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
@@ -105,7 +194,7 @@ export default function FinancingPage() {
                         >
                           <Check className="size-3 text-ink" strokeWidth={3.5} />
                         </span>
-                        <span className="text-silver/85">{feature}</span>
+                        <span className="text-current/85">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -126,11 +215,11 @@ export default function FinancingPage() {
                         <li key={entry} className="flex items-start gap-3">
                           <span
                             aria-hidden="true"
-                            className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border border-silver/25 text-[0.6875rem] leading-none font-bold text-silver/60"
+                            className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border border-current/25 text-[0.6875rem] leading-none font-bold text-current/55"
                           >
                             ×
                           </span>
-                          <span className="text-silver/60">
+                          <span className="text-current/60">
                             <span className="sr-only">Nicht enthalten: </span>
                             {entry}
                           </span>
@@ -140,54 +229,75 @@ export default function FinancingPage() {
                   ) : null}
 
                   {model.note ? (
-                    <p className="mt-6 text-sm leading-relaxed text-silver/60">
+                    <p className="mt-6 text-sm leading-relaxed text-current/60">
                       {model.note}
                     </p>
                   ) : null}
 
                   {/* `mt-auto`, damit beide Knöpfe auf einer Linie stehen,
-                      auch wenn der eine Block eine Zeile länger ist. */}
+                      auch wenn der eine Block eine Zeile länger ist.
+
+                      Der Knopf ist jetzt zugleich die Anzeige der Wahl: Die
+                      Karten *sind* eine Auswahl, seit das Formular unten sie
+                      liest. Vorher führte er an das Formular, ohne dass von
+                      der Entscheidung danach irgendwo etwas zu sehen war –
+                      wer zurückscrollte, fand zwei gleich aussehende Karten.
+                      Dieselbe Mechanik wie bei den Tarifkarten des
+                      Wartungsvertrags, dasselbe Bauteil. */}
                   <div className="mt-auto pt-8">
-                    <ButtonLink
+                    <ChoiceAction
+                      group="finanzierung"
+                      id={model.id}
+                      name={model.name}
+                      primary={model.id === "mietkauf"}
                       href={`/finanzierung?anliegen=finanzierung-${model.id}#anfrage`}
-                      size="lg"
-                      variant={model.id === "mietkauf" ? "neon" : "outline"}
-                      className="w-full"
-                    >
-                      {model.name} anfragen
-                    </ButtonLink>
+                    />
                   </div>
                 </div>
               </Reveal>
-            ))}
+              );
+            })}
           </ul>
 
           {/* Was für beide Modelle gilt – und der Satz, der sagt, warum auf
               dieser Seite keine einzige Beispielrate steht. */}
+          {/* Überschrift und Einordnung auf der Achse, die fünf Punkte als
+              ein Block darunter.
+
+              Vorher stand die Überschrift in vier von zwölf Spalten links
+              und die Liste in acht rechts – bei 1512 px eine 429 px breite
+              Überschrift neben 936 px Liste, und die Liste selbst lief über
+              die ganze rechte Hälfte. Der Block gehört aber zu *beiden*
+              Karten darüber, nicht zu einer Seite; deshalb steht er in ihrer
+              Mitte und in ihrer Breite (`max-w-[52rem]` gegen die 76 rem des
+              Paares, damit die Lesestrecke nicht breiter wird als der Satz
+              in den Karten).
+
+              Die Einträge bleiben linksbündig: Es sind ganze Sätze, und
+              zentriert wandert ihr Zeilenanfang unter jedem Aufzählungspunkt
+              an eine andere Stelle. */}
           <Reveal delay={160}>
-            <div className="mt-12 grid gap-8 border-t border-current/12 pt-10 lg:grid-cols-12 lg:gap-16">
-              <h2 className="text-[length:var(--text-title)] lg:col-span-4">
+            <div className="mx-auto mt-14 max-w-[52rem] border-t border-current/12 pt-12 text-center">
+              <h2 className="text-[length:var(--text-title)]">
                 Für beide Modelle gilt
               </h2>
-              <div className="lg:col-span-8">
-                <p className="text-[length:var(--text-lead)] leading-relaxed">
-                  {financingTerms.intro}
-                </p>
-                <ul className="mt-5">
-                  {financingTerms.items.map((entry) => (
-                    <li
-                      key={entry}
-                      className="flex items-start gap-3 border-b border-current/12 py-3 leading-relaxed first:border-t"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-2 size-1.5 shrink-0 rounded-full bg-current/40"
-                      />
-                      {entry}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="mt-5 text-[length:var(--text-lead)] leading-relaxed">
+                {financingTerms.intro}
+              </p>
+              <ul className="mt-8 text-left">
+                {financingTerms.items.map((entry) => (
+                  <li
+                    key={entry}
+                    className="flex items-start gap-3 border-b border-current/12 py-3 leading-relaxed first:border-t"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-2 size-1.5 shrink-0 rounded-full bg-current/40"
+                    />
+                    {entry}
+                  </li>
+                ))}
+              </ul>
             </div>
           </Reveal>
         </Container>
@@ -200,22 +310,34 @@ export default function FinancingPage() {
       {planned.map((model) => (
         <Section key={model.id} tone="silver-200" space="tight">
           <Container>
-            <Reveal className="flex max-w-3xl items-start gap-5 border-t border-current/12 pt-10">
+            {/* Das Zeichen steht über dem Text, nicht daneben, und der Block
+                auf der Achse.
+
+                Als Zeile mit Zeichen links stand der Hinweis bei 1512 px in
+                einer 768 px breiten Spalte am linken Rand einer 1416 px
+                breiten Fläche – die größte Leerstelle der Seite, und sie lag
+                unter zwei mittig gesetzten Karten. Der Aufbau ist jetzt
+                derselbe wie im Kopf dieser Karten: Ring, Auszeichnung, Name,
+                Satz. Der Unterschied zu ihnen bleibt sichtbar, weil er dort
+                liegt, wo er hingehört – anderes Zeichen, andere Fläche, und
+                keine Aktion: Ein Knopf an einem Angebot, das es noch nicht
+                gibt, wäre eine Zusage. */}
+            <Reveal className="mx-auto max-w-[36rem] border-t border-current/12 pt-12 text-center">
               <span
                 aria-hidden="true"
-                className="mt-1 grid size-10 shrink-0 place-items-center rounded-full border border-current/20"
+                className="mx-auto grid size-12 place-items-center rounded-full border border-current/20"
               >
-                <Clock className="size-4" />
+                <Clock className="size-5 text-current/70" />
               </span>
-              <div>
-                <p className="eyebrow text-current/90">{model.claim}</p>
-                <h2 className="mt-3 text-[length:var(--text-title)]">
-                  {model.name}
-                </h2>
-                <p className="mt-4 leading-relaxed text-current/70">
-                  {model.description}
-                </p>
-              </div>
+              <p className="eyebrow mt-5 justify-center text-current/90">
+                {model.claim}
+              </p>
+              <h2 className="mt-3 text-[length:var(--text-title)]">
+                {model.name}
+              </h2>
+              <p className="mt-4 leading-relaxed text-current/70">
+                {model.description}
+              </p>
             </Reveal>
           </Container>
         </Section>
@@ -240,29 +362,58 @@ export default function FinancingPage() {
 
       <Section tone="silver">
         <Container>
-          <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-5">
-              <Reveal>
-                <p className="eyebrow text-current/90">Finanzierung anfragen</p>
-                <h2 className="mt-5 text-[length:var(--text-display)]">
-                  Sagen Sie uns, welches <Mark>Fahrzeug</Mark> es sein soll.
-                </h2>
-                <p className="mt-6 leading-relaxed text-current/65">
-                  Mit dem Fahrzeug und der gewünschten Laufzeit rechnen wir
-                  Ihnen die Rate aus und schicken Ihnen das Angebot
-                  schriftlich. Erst danach entscheiden Sie.
-                </p>
-              </Reveal>
-            </div>
-            <div id="anfrage" className="scroll-mt-32 lg:col-span-7">
-              <Reveal delay={80}>
-                {/* `topicFromQuery`: Die Wahl auf den beiden Karten steht in
-                    der Adresse und wird hier gelesen – dieselbe Mechanik wie
-                    beim Wartungsvertrag. Ohne Wahl bleibt das Feld leer und
-                    ist Pflicht. */}
-                <InquiryForm topicFromQuery />
-              </Reveal>
-            </div>
+          {/* Einordnung über dem Formular, nicht daneben.
+
+              Die Fünf-zu-sieben-Teilung ist die Hausform, und auf den anderen
+              Formularseiten bleibt sie. Hier war sie der letzte linke Hang
+              einer Seite, die oben schon auf der Mitte steht: Überschrift in
+              553 px links, Formular in 816 px rechts, und der Text darüber
+              gehört zu genau diesem Formular. Jetzt steht er über ihm, in
+              seiner Breite und auf seiner Achse.
+
+              Der Anker sitzt weiter an der Formularspalte und nicht an der
+              Sektion – an der Sektion landete jeder Knopf, der „anfragen"
+              heißt, auf der Überschrift statt am ersten Feld. */}
+          <Reveal className="mx-auto max-w-[44rem] text-center">
+            <p className="eyebrow justify-center text-current/90">
+              Finanzierung anfragen
+            </p>
+            <h2 className="mt-5 text-[length:var(--text-display)]">
+              Sagen Sie uns, welches <Mark>Fahrzeug</Mark> es sein soll.
+            </h2>
+            <p className="mt-6 leading-relaxed text-current/65">
+              Mit dem Fahrzeug und der gewünschten Laufzeit rechnen wir Ihnen
+              die Rate aus und schicken Ihnen das Angebot schriftlich. Erst
+              danach entscheiden Sie.
+            </p>
+          </Reveal>
+          <div
+            id="anfrage"
+            className="mx-auto mt-12 max-w-[44rem] scroll-mt-32 md:mt-14"
+          >
+            <Reveal delay={80}>
+              {/* `topicFromQuery`: Die Wahl auf den beiden Karten steht in
+                  der Adresse und wird hier gelesen – dieselbe Mechanik wie
+                  beim Wartungsvertrag. Ohne Wahl bleibt das Feld leer und
+                  ist Pflicht.
+
+                  Die Zeile darüber sagt, was gewählt ist. Ohne sie stand die
+                  Wahl allein im Auswahlfeld, also unter dem Namen und drei
+                  Felder tiefer als der Knopf, der sie getroffen hat. Kein
+                  Betrag daneben: Es gibt auf dieser Seite keinen. */}
+              <ChosenLine
+                group="finanzierung"
+                items={modelSummary}
+                label="Gewähltes Modell"
+                empty={
+                  <>
+                    Noch kein Modell gewählt – im Formular unter „Anliegen“
+                    auswählen oder oben auf eine der beiden Karten tippen.
+                  </>
+                }
+              />
+              <InquiryForm topicFromQuery />
+            </Reveal>
           </div>
         </Container>
       </Section>

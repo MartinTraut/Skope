@@ -13,6 +13,7 @@ import {
   listProducts,
   productAvailability,
 } from "@/lib/commerce-source";
+import { financingModels } from "@/lib/data/financing";
 import { plans } from "@/lib/data/plans";
 import { isPreview } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -139,6 +140,12 @@ export default async function RootLayout({
   /* Name und Beitrag je Wartungsvertrag für die untere Aktionsleiste –
      dieselbe Regel wie bei den Geräten: zwei Zeichenketten statt des
      Datenmoduls, das zusätzlich Leistungslisten und Ausschlüsse trägt. */
+  /* Kurzname je Finanzierungsmodell – dieselbe Regel, und ohne Betrag: Auf
+     /finanzierung steht bewusst keine Rate. */
+  const financingBar = Object.fromEntries(
+    financingModels.map((model) => [model.id, model.short]),
+  );
+
   const planBar = Object.fromEntries(
     plans.map((plan) => [
       plan.id,
@@ -182,7 +189,12 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer />
-        <MobileCta devices={devices} plans={planBar} mode={commerceMode()} />
+        <MobileCta
+          devices={devices}
+          plans={planBar}
+          financing={financingBar}
+          mode={commerceMode()}
+        />
       </body>
     </html>
   );

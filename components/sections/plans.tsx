@@ -1,7 +1,7 @@
 import { Check, Medal } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
-import { PlanAction } from "@/components/sections/plan-action";
+import { ChoiceAction } from "@/components/ui/choice-action";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { plans } from "@/lib/data/plans";
 import { priceNote } from "@/lib/site";
@@ -164,10 +164,11 @@ export function Plans({
                 <div className="mt-12 pt-2 lg:mt-auto lg:pt-12">
                   {/* Anker mit: Ohne ihn landet der Nutzer oben auf der
                       Zielseite und sieht von seiner Vorauswahl nichts. */}
-                  <PlanAction
+                  <ChoiceAction
+                    group="wartungsvertrag"
                     id={plan.id}
                     name={plan.name}
-                    popular={plan.popular}
+                    primary={plan.popular}
                     href={`${formPath}?anliegen=wartungsvertrag-${plan.id}#anfrage`}
                   />
                 </div>

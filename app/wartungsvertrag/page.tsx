@@ -5,7 +5,7 @@ import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Plans } from "@/components/sections/plans";
-import { SelectedPlan } from "@/components/sections/selected-plan";
+import { ChosenLine } from "@/components/ui/chosen-line";
 import { Related } from "@/components/sections/related";
 import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
@@ -31,7 +31,7 @@ export const metadata: Metadata = pageMeta({
 const planSummary = Object.fromEntries(
   plans.map((plan) => [
     plan.id,
-    { name: plan.name, price: `${plan.price} € ${plan.period}` },
+    { name: plan.name, detail: `${plan.price} € ${plan.period}` },
   ]),
 );
 
@@ -233,7 +233,7 @@ export default function PlansPage() {
           eyebrow="Häufige Fragen zum Wartungsvertrag"
           title={
             <>
-              Was im Vertrag steht und was <Mark>nicht</Mark>.
+              Welcher Vertrag passt und was er <Mark>abdeckt</Mark>.
             </>
           }
           lead="Umfang, Ersatzteile, Ort der Wartung und die Frage, welcher der beiden Verträge zu welchem Fahrprofil passt."
@@ -276,7 +276,17 @@ export default function PlansPage() {
                     steht jetzt in der Adresse und wird von Karte, Zeile und
                     unterer Aktionsleiste aus derselben Stelle gelesen; ohne
                     Wahl bleibt das Feld leer und damit Pflicht. */}
-                <SelectedPlan plans={planSummary} />
+                <ChosenLine
+                  group="wartungsvertrag"
+                  items={planSummary}
+                  label="Gewählter Vertrag"
+                  empty={
+                    <>
+                      Noch kein Vertrag gewählt – im Formular unter „Anliegen“
+                      auswählen oder oben auf eine der beiden Karten tippen.
+                    </>
+                  }
+                />
                 <InquiryForm topicFromQuery />
               </Reveal>
             </div>

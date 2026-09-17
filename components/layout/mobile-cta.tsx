@@ -115,6 +115,7 @@ const FALLBACK: BarAction = {
 export function MobileCta({
   devices,
   plans,
+  financing,
   mode,
 }: {
   devices: Record<
@@ -127,6 +128,9 @@ export function MobileCta({
   /** Name und Beitrag je Wartungsvertrag – zwei Zeichenketten, nicht das
       Datenmodul: dieselbe Regel wie bei den Geräten. */
   plans: Record<string, { name: string; price: string }>;
+  /** Kurzname je Finanzierungsmodell. Nur der Name, kein Betrag: Auf
+      /finanzierung steht bewusst keine Rate, siehe `lib/data/financing.ts`. */
+  financing: Record<string, string>;
 }) {
   const pathname = usePathname();
   const [shown, setShown] = React.useState(false);
@@ -140,6 +144,14 @@ export function MobileCta({
   const plan =
     pathname === "/wartungsvertrag" && topicSlug?.startsWith("wartungsvertrag-")
       ? plans[topicSlug.slice("wartungsvertrag-".length)]
+      : undefined;
+
+  /* Dieselbe Mechanik auf /finanzierung, aber ohne die linke Zelle: Es gibt
+     dort keinen Betrag, den sie zeigen könnte. Die Wahl steht deshalb in der
+     Beschriftung des Knopfes. */
+  const model =
+    pathname === "/finanzierung" && topicSlug?.startsWith("finanzierung-")
+      ? financing[topicSlug.slice("finanzierung-".length)]
       : undefined;
 
   /**
@@ -238,7 +250,17 @@ export function MobileCta({
           href: "#anfrage",
           icon: MessageSquareText,
         }
-      : (ACTIONS[pathname] ?? FALLBACK);
+      : model
+        ? {
+            /* Die Kurzform, nicht „Anfragen": Anders als beim
+               Wartungsvertrag steht links neben dem Knopf kein gewählter
+               Name, weil es dort keinen Betrag gibt, über dem er stehen
+               könnte. Die Wahl muss also im Knopf selbst sichtbar sein. */
+            label: `${model} anfragen`,
+            href: "#anfrage",
+            icon: MessageSquareText,
+          }
+        : (ACTIONS[pathname] ?? FALLBACK);
   const Icon = action?.icon;
 
   const solid =
