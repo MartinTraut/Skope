@@ -58,7 +58,7 @@ export default function AboutPage() {
             Über <Mark>500</Mark> Scooter. Ein Ansprechpartner.
           </>
         }
-        lead={`${site.owner} betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Verkauf, Reparatur, Wartung und Versicherung laufen über dieselbe Person. Sie erklären Ihr Problem einmal, nicht dreimal.`}
+        lead={`${site.owner} betreibt in Neuenstadt am Kocher eine Fachwerkstatt für Elektrokleinstfahrzeuge. Verkauf, Reparatur, Wartung und Versicherung laufen über eine Person.`}
       />
 
       <Section tone="silver">

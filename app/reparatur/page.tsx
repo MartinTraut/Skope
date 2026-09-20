@@ -28,6 +28,7 @@ import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { priceNote } from "@/lib/site";
 import { Mark } from "@/components/ui/mark";
+import { Steps } from "@/components/ui/steps";
 
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Reparatur Heilbronn & Neuenstadt",
@@ -82,10 +83,10 @@ export default function RepairPage() {
         eyebrow="Werkstatt für Elektrokleinstfahrzeuge"
         title={
           <>
-            E-Scooter <Mark>Reparatur</Mark> in Neuenstadt am Kocher.
+            E-Scooter <Mark>Reparatur</Mark> in Neuenstadt.
           </>
         }
-        lead="Ein defekter E-Scooter ist selten ein Totalschaden. In den meisten Fällen sind es Bremsen, Reifen, ein einzelner Sensor oder eine schwache Zelle im Akku. Alles reparierbar, zu einem Bruchteil des Neupreises."
+        lead="Ein defekter E-Scooter ist selten ein Totalschaden. Meistens sind es Bremsen, Reifen, ein einzelner Sensor oder eine schwache Zelle im Akku."
         asideClassName="lg:col-span-12 xl:col-span-5 xl:col-start-8 xl:justify-self-end xl:self-end"
         aside={
           <StatBand
@@ -223,37 +224,7 @@ export default function RepairPage() {
                   Schritt statt ins Leere zu zeigen. Zwei Abläufe auf einer
                   Website müssen gleich aussehen, sonst sind es zwei
                   Bausteine. */}
-              <ol className="mt-12">
-                {steps.map((step, i) => (
-                  <Reveal
-                    key={step.n}
-                    delay={i * 70}
-                    as="li"
-                    className="relative grid grid-cols-[3rem_1fr] gap-x-5 pb-10 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:gap-x-8"
-                  >
-                    {i < steps.length - 1 && (
-                      <span
-                        aria-hidden="true"
-                        className="absolute top-14 bottom-0 left-6 w-px bg-ink/15 sm:top-16 sm:left-7"
-                      />
-                    )}
-                    <span
-                      aria-hidden="true"
-                      className="tabular grid size-12 place-items-center rounded-full bg-neon font-display text-lg font-bold tracking-tight text-ink sm:size-14 sm:text-xl"
-                    >
-                      {step.n}
-                    </span>
-                    <div className="min-w-0 pt-1.5 sm:pt-2.5">
-                      <h3 className="text-[length:var(--text-subtitle)]">
-                        {step.title}
-                      </h3>
-                      <p className="mt-2.5 max-w-xl leading-relaxed text-current/65">
-                        {step.text}
-                      </p>
-                    </div>
-                  </Reveal>
-                ))}
-              </ol>
+              <Steps items={steps} className="mt-12" />
             </div>
 
             <div className="lg:col-span-5">

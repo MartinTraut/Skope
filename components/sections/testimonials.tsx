@@ -43,19 +43,8 @@ function QuoteCard({
   context,
   rating,
   className,
-  centered = false,
 }: Testimonial & {
   className?: string;
-  /**
-   * Mittelachse statt linker Kante – für die Wischbahn am Telefon. Dort
-   * steht eine Karte allein im Bild, und linksbündig las sich die Karte
-   * als Textblock mit Rand: Sterne links oben, Anführungszeichen rechts
-   * tiefer, unten Kreis, Name und Quelle in drei Höhen. Auf der Achse
-   * stehen Sterne, Zitat, Kreis, Name und Quelle untereinander, und die
-   * Karte ist eine Karte. Im Laufband bleibt die linke Kante: Dort laufen
-   * mehrere Karten nebeneinander, und die Kante ist die Lesespur.
-   */
-  centered?: boolean;
 }) {
   /* Anfangsbuchstaben statt Profilbild. Die Fotos liegen auf Googles
      Servern: Sie einzubinden hieße, bei jedem Seitenaufruf die IP-Adresse
@@ -68,30 +57,30 @@ function QuoteCard({
   const avatar = (
     <span
       aria-hidden="true"
-      className={cn(
-        "grid shrink-0 place-items-center rounded-full bg-silver/10 font-display font-bold tracking-wide",
-        centered ? "size-9 text-[0.8125rem]" : "size-11 text-sm",
-      )}
+      className="grid size-11 shrink-0 place-items-center rounded-full bg-silver/10 font-display text-sm font-bold tracking-wide"
     >
       {initials(author)}
     </span>
   );
 
-  /* Eine Zeile: Zeichen, „Google-Rezension", Rolle. Das Zeichen misst 12 px
-     wie im Kopfbereich – auf Versalhöhe des Textes, nicht darüber. Was hier
-     steht, ist so kurz, dass es bei 300 px nicht bricht; bricht es doch,
-     wandert die Rolle als Ganzes. */
+  /* Die Quelle ist **ein** Textfluss, keine Flex-Zeile aus vier Kindern.
+     Als `flex items-center` ohne `flex-wrap` war sie der eigentliche Grund
+     für die verrutschten Rezensionstexte: Bei 390 px bleiben neben dem
+     44-px-Kreis 198 px, „Google-Rezension" braucht 131 – der Text brach
+     also *innerhalb* seines eigenen Kastens auf zwei Zeilen (48 statt
+     24 px), das 12-px-Google-Zeichen wurde über diese 48 px zentriert und
+     saß damit zwischen den Zeilen, während „· Käufer" mit
+     `whitespace-nowrap` oben rechts allein stehen blieb. Bei 320 px kam der
+     zweizeilige Name dazu und `items-center` an der Unterschrift schob den
+     Kreis 31 px nach unten.
+
+     Im Satz gesetzt bricht die Zeile dort, wo Text bricht, und das Zeichen
+     sitzt auf der Versalhöhe (`align`-Korrektur wie beim Profilverweis
+     weiter unten). */
   const source = (
-    <span
-      className={cn(
-        "flex items-center gap-1.5 text-sm text-current/60",
-        centered ? "justify-center" : "mt-0.5",
-      )}
-    >
-      <GoogleMark className="size-3 shrink-0" />
-      <span>Google-Rezension</span>
-      <span aria-hidden="true">·</span>
-      <span className="whitespace-nowrap">{context}</span>
+    <span className="mt-0.5 block text-sm leading-snug text-current/60">
+      <GoogleMark className="mr-1.5 inline size-3 align-[-0.15em]" />
+      Google-Rezension <span aria-hidden="true">·</span> {context}
     </span>
   );
 
@@ -106,16 +95,11 @@ function QuoteCard({
     <figure
       className={cn(
         "lift flex shrink-0 flex-col rounded-lg bg-ink p-6 text-silver on-dark sm:p-7 md:p-8",
-        centered && "items-center text-center",
-        className ?? "w-[min(78vw,24rem)]",
+        className ?? "w-[min(82vw,24rem)]",
       )}
     >
       <div
-        className={cn(
-          "flex gap-4",
-          centered ? "items-end justify-center gap-3" : "items-center justify-between",
-        )}
-      >
+        className="flex items-center justify-between gap-4">
         <Stars rating={rating} cascade />
         {/* Das Anführungszeichen in derselben Farbe wie die Sterne: Beides
             gehört zur Herkunft der Aussage, nicht zur Seite.
@@ -127,64 +111,42 @@ function QuoteCard({
             `items-center` hinge es eine halbe Zeile unter den Sternen. */}
         <span
           aria-hidden="true"
-          className={cn(
-            "font-display leading-none font-bold text-[#fbbc04]",
-            centered ? "text-4xl" : "text-5xl",
-          )}
+          className="font-display text-5xl leading-none font-bold text-[#fbbc04]"
         >
           &bdquo;
         </span>
       </div>
 
       <blockquote
-        className={cn(
-          "mt-5 font-display text-[length:var(--text-subtitle)] leading-[1.35] font-semibold tracking-tight text-balance",
-          centered && "mt-6",
-        )}
+        className={
+          /* Unter `sm` einen Grad kleiner und ohne `text-balance`: Bei 390 px
+             ist die Karte 320 px breit, der Satz also 272 px – im
+             Untertitelgrad (19,2 px) sind das 24 Zeichen je Zeile über sechs
+             Zeilen. Im Leadgrad (16,8 px) werden es 28 Zeichen und vier bis
+             fünf Zeilen. `text-balance` gleicht dabei die letzte Zeile aus,
+             indem es alle vorherigen kürzt – bei 24 Zeichen kostet das eine
+             weitere Zeile. Ab `sm` bleibt beides, wie es war. */
+          "mt-5 font-display text-[length:var(--text-lead)] leading-[1.35] font-semibold tracking-tight sm:text-[length:var(--text-subtitle)] sm:text-balance"
+        }
       >
         {noBreak(quote)}
       </blockquote>
 
       {/* `mt-auto` statt fester Höhe: Die Zeile sitzt unten, egal wie lang das
           Zitat darüber ist, und alle Karten des Bands schließen bündig ab. */}
-      <figcaption
-        className={cn(
-          "mt-auto flex items-center gap-3.5 border-t border-current/12 pt-5",
-          /* Kein Trennstrich auf der Achse: Die Karte ist dort mittig
-             gesetzt, und die Linie zog quer durch eine Komposition, die
-             ohnehin schon von der Mitte her gelesen wird – sie trennte
-             nicht, sie zerschnitt. Am Schreibtisch bleibt sie: Dort steht
-             die Unterschrift links unter einem linksbündigen Zitat, und die
-             Linie ist die einzige Kante zwischen beiden. */
-          centered && "w-full flex-col items-center gap-2 border-t-0 pt-4",
-        )}
-      >
-        {/* Auf der Mittelachse stehen Kreis und Name in *einer* Zeile, nicht
-            übereinander. Gestapelt waren es unter dem Zitat drei Reihen –
-            Kreis, Name, Quelle – und damit rund 110 px Möbel unter fünf
-            Zeilen Text; die Karte las sich nach unten hin als Liste. Als
-            Zeile ist es eine Unterschrift, und die Karte wird bei 390 px um
-            30 px kürzer, ohne dass etwas fehlt. */}
-        {centered ? (
-          <span className="flex items-center gap-2.5">
-            {avatar}
-            <span className="font-display font-semibold tracking-tight">
-              {author}
-            </span>
+      {/* `items-start` und nicht `items-center`: Sobald Name oder Quelle
+          zweizeilig laufen – bei 320 px tun sie das –, setzt `center` den
+          44 px hohen Kreis auf die Mitte eines 80 px hohen Textblocks und
+          damit gut 30 px unter dessen Oberkante. Gemessen war das der
+          zweite Teil des verrutschten Eindrucks. */}
+      <figcaption className="mt-auto flex items-start gap-3.5 border-t border-current/12 pt-5">
+        {avatar}
+        <span className="min-w-0">
+          <span className="block font-display leading-snug font-semibold tracking-tight">
+            {author}
           </span>
-        ) : (
-          avatar
-        )}
-        {centered ? (
-          source
-        ) : (
-          <span className="min-w-0">
-            <span className="block font-display font-semibold tracking-tight">
-              {author}
-            </span>
-            {source}
-          </span>
-        )}
+          {source}
+        </span>
       </figcaption>
     </figure>
   );
@@ -261,17 +223,25 @@ export async function Testimonials({
           auch am Telefon: Die Bewertungen sollen sich von allein bewegen. Die
           Wischbahn, die hier vom 06.09. bis dahin stand, ist damit weg.
 
-          Am Telefon bleibt die Ausblendbreite bei 2 rem – 5 rem sind dort ein
-          Fünftel der Bildbreite, und die erste Karte stünde halb im Nebel. */}
+          Am Telefon ist die Ausblendbreite auf 1 rem gesetzt: Bei 390 px
+          sind 2 rem je Seite 64 px von 390, und die Karte (320 px) hatte
+          zwischen beiden Nebeln nur 326 px Fenster. 5 rem wären ein Fünftel
+          der Bildbreite.
+
+          `pauseOnHover` ist wieder an. Es stoppt nichts von allein – die
+          Regel greift über `group-active`, also nur solange ein Finger auf
+          dem Band liegt. Gemessen läuft das Band 15,4 px/s; ein sechszeiliges
+          Zitat wandert während des Lesens rund 40 % seiner Kartenbreite, und
+          ohne diese Regel gibt es am Telefon keine Möglichkeit, es
+          festzuhalten. */}
       <Reveal
         delay={80}
-        className="mt-10 [--fade:2rem] sm:mt-14 md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
+        className="mt-10 [--fade:1rem] sm:mt-14 sm:[--fade:2rem] md:[--fade:5rem] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]"
       >
         <Marquee
           className="[--duration:64s] [--gap:1.5rem]"
           repeat={4}
           reverse
-          pauseOnHover={false}
         >
           {testimonials.map((item) => (
             <QuoteCard key={item.author} {...item} />

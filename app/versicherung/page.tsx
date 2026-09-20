@@ -22,6 +22,7 @@ import { JsonLd, breadcrumb, faqPage, pageGraph, service } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { Mark } from "@/components/ui/mark";
 import { Plate } from "@/components/brand/plate";
+import { Steps } from "@/components/ui/steps";
 
 export const metadata: Metadata = pageMeta({
   title: "E-Scooter Versicherung ERGO: Tarife 2026/2027",
@@ -42,10 +43,10 @@ export default function InsurancePage() {
         eyebrow="ERGO Partner · deutschlandweit"
         title={
           <>
-            E-Scooter <Mark>Versicherung</Mark> vom ERGO-Partner.
+            E-Scooter <Mark>versichern</Mark>, über ERGO.
           </>
         }
-        lead="Ab 6 km/h ist die Haftpflicht für jeden E-Scooter Pflicht. Wir vermitteln sie als ERGO-Partner, in der Werkstatt oder online – das Kennzeichen kommt in fünf bis zehn Werktagen per Post."
+        lead="Ab 6 km/h ist die Haftpflicht für jeden E-Scooter Pflicht. Wir vermitteln sie als ERGO-Partner – das Kennzeichen kommt in fünf bis zehn Werktagen per Post."
         asideClassName="lg:col-span-12 xl:col-span-7 xl:col-start-6 xl:justify-self-end xl:self-end"
         aside={
           <StatBand
@@ -347,49 +348,14 @@ export default function InsurancePage() {
               als 768 px schmale Spalte an der linken Kante, rechts davon
               nichts, und die Angaben standen als eigener Block darunter. */}
           <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-14">
-            <ol className="lg:col-span-7">
-              {insuranceSteps.map((step, i) => (
-                <Reveal
-                  key={step.step}
-                  delay={i * 70}
-                  as="li"
-                  className="relative grid grid-cols-[2.75rem_1fr] items-center gap-x-4 gap-y-3 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:items-start sm:gap-x-8 sm:gap-y-0"
-                >
-                  {i < insuranceSteps.length - 1 && (
-                    <span
-                      aria-hidden="true"
-                      className="chain-draw absolute top-12 bottom-0 left-[1.375rem] w-px bg-ink/25 sm:top-16 sm:left-7"
-                    />
-                  )}
-                  <span
-                    aria-hidden="true"
-                    className="tabular grid size-11 place-items-center self-start rounded-full bg-neon font-display text-base font-bold tracking-tight text-ink sm:size-14 sm:row-span-2 sm:text-xl"
-                  >
-                    {step.step}
-                  </span>
-
-                  {/* Am Telefon steht die Nummer neben der Überschrift, der
-                    Fließtext darunter über die volle Breite.
-
-                    Als durchgehende zweite Spalte war der Satz bei 390 px
-                    nur 274 px breit, in den verschachtelten Kästen 234 px –
-                    gemessen 23 bis 25 Zeichen je Zeile, wo der Satzspiegel
-                    342 px hergibt. Ein Ablauf, dessen Erklärung in einer
-                    Rinne steht, liest sich mühsamer als er ist. Ab `sm` ist
-                    genug Platz, dort bleibt die Nummer über beide Zeilen
-                    stehen und der Text rückt wieder ein. */}
-                  <h3 className="text-[length:var(--text-subtitle)]">
-                    {step.title}
-                  </h3>
-
-                  <div className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:pt-2.5">
-                    <p className="leading-relaxed text-current/65 sm:mt-2.5">
-                      {step.text}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </ol>
+            <Steps
+              items={insuranceSteps.map((step) => ({
+                n: step.step,
+                title: step.title,
+                text: step.text,
+              }))}
+              className="lg:col-span-7"
+            />
 
             <Reveal
               delay={100}

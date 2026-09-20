@@ -52,10 +52,10 @@ export default function RecyclingPage() {
         eyebrow="Kostenlose Rücknahme"
         title={
           <>
-            Ausgedienter E-Scooter? Bringen Sie ihn <Mark>vorbei</Mark>.
+            Ausgedienten E-Scooter <Mark>abgeben</Mark>.
           </>
         }
-        lead="Ein defekter E-Scooter ist kein Sperrmüll. Motoren, Akkus und Rahmen sind Rohstoffe und Ersatzteile. Wir übernehmen die Verwertung und das fachgerechte Recycling kostenlos, auch für Geräte, die nicht bei uns gekauft wurden."
+        lead="Ein defekter E-Scooter ist kein Sperrmüll: Motoren, Akkus und Rahmen sind Rohstoffe. Die fachgerechte Verwertung übernehmen wir kostenlos."
       />
 
       <Section tone="silver">

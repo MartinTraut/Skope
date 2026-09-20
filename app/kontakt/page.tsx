@@ -29,7 +29,7 @@ export default function ContactPage() {
             <Mark>Kurzer</Mark> Weg zur Werkstatt.
           </>
         }
-        lead="Am schnellsten geht ein Anruf. Bei den meisten Problemen lässt sich schon am Telefon einschätzen, worum es geht. Schriftlich erreichen Sie uns über das Formular oder direkt per E-Mail."
+        lead="Am schnellsten geht ein Anruf – am Telefon lässt sich meist schon einschätzen, worum es geht. Schriftlich über das Formular oder per E-Mail."
       />
 
       <Section tone="silver">
@@ -107,8 +107,13 @@ export default function ContactPage() {
                       <span className="block text-sm text-current/70">
                         E-Mail
                       </span>
-                      <span className="block font-display text-lg font-bold tracking-tight break-all transition-colors group-hover:text-accent">
-                        {site.email}
+                      {/* Umbruchstelle hinter dem Klammeraffen, nicht
+                          irgendwo: `break-all` hat die Adresse bei 390 px
+                          mitten in der Domain zerlegt („…gmai / l.com").
+                          Dieselbe Lösung wie im Fußbereich. */}
+                      <span className="block font-display text-lg font-bold tracking-tight break-words transition-colors group-hover:text-accent">
+                        {site.email.split("@")[0]}@<wbr />
+                        {site.email.split("@")[1]}
                       </span>
                     </span>
                   </a>

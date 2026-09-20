@@ -51,12 +51,36 @@ export function PageHeader({
      mitgezogen (`mt-7` / `mt-4`), sonst hätte der gewonnene Platz nur die
      Stelle gewechselt.
 
+     **Zweite Absenkung auf Ansage („Heros am Handy nicht so voll").**
+     Gemessen bei 390 × 844 war der Kopf 528 px (/kontakt) bis 846 px
+     (/versicherung) hoch – bis zu 100 % der Bildhöhe für Brotkrume,
+     Auszeichnung, Überschrift und Lead; im Querformat 844 × 390 sogar 585 px
+     in einem 390 px hohen Fenster. Der Vorlauf steht deshalb auf
+     `clamp(3rem,1.25rem+5svh,10rem)` (48 px bei 844 Bildhöhe), der Auslauf
+     auf `clamp(2.5rem,1.5rem+4svh,6rem)`. Am Schreibtisch ändert sich
+     nichts: Ab rund 1000 px Fensterhöhe erreichen beide Terme wieder ihre
+     alten Werte.
+
+     **Der Vorlauf darf nie kleiner sein als die Kopfzeile.** Er steht
+     deshalb in einem `max()` gegen `calc(var(--header-h) + 1.5rem)`.
+     Gemessen im Querformat 844 × 390: Der `svh`-Term ergibt dort 39,5 px,
+     der Boden 48 px – die Kopfzeile ist ab `md` aber 80 px hoch, und damit
+     lagen 32 der 44 px der Zielfläche „Start" in der Brotkrume *hinter* der
+     Leiste. Antippbar blieben 12 px. Mit dem `max()` beginnt die Brotkrume
+     auf jeder Breite 24 px unter der Kopfzeile.
+
+     Die drei Innenabstände sind auf die Leiter der Sektionen gezogen
+     (20 px Auszeichnung → Überschrift, 28 px Überschrift → Lead). Vorher
+     standen dort 16 und 32 px, in `SectionHead` 20 und 28 – derselbe
+     Dreiklang mit zwei Einstellungen, und auf einer Telefonseite liegen
+     beide Stapel nur 100 bis 150 px auseinander.
+
      `svh` statt `vh`: Auf dem iPhone ändert sich `vh` mit dem Ein- und
      Ausfahren der Adressleiste, und mit ihm die Höhe dieser Sektion – der
      bewegte Grund wurde bei jedem Scrollen neu aufgezogen und blitzte
      schwarz. `svh` ist die kleine, stabile Höhe. */
   return (
-    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[clamp(4.5rem,2rem+7svh,10rem)] pb-[clamp(3.5rem,2rem+5svh,6rem)] text-silver on-dark">
+    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[max(calc(var(--header-h)+1.5rem),clamp(3rem,1.25rem+5svh,10rem))] pb-[clamp(2.5rem,1.5rem+4svh,6rem)] text-silver on-dark">
       {/* Derselbe bewegte Grund wie im Hero der Startseite, nicht ein zweiter.
           Vorher lag hier ein statischer radialer Neonfleck – zwei Verfahren
           für dieselbe Aufgabe, und der Unterschied fiel beim Wechsel von der
@@ -82,11 +106,16 @@ export function PageHeader({
                   Start
                 </Link>
               </li>
-              <li aria-hidden="true">
-                <ChevronRight className="size-3.5" />
-              </li>
-              <li aria-current="page" className="text-current/90">
-                {crumb}
+              {/* Trenner im Eintrag, nicht als eigenes Listenelement –
+                  sonst beschließt er in einer `flex-wrap`-Zeile am Telefon
+                  eine Zeile und zeigt ins Leere. Dieselbe Struktur wie auf
+                  der Geräteseite. */}
+              <li
+                aria-current="page"
+                className="flex min-w-0 items-center gap-1.5 text-current/90"
+              >
+                <ChevronRight aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="min-w-0">{crumb}</span>
               </li>
             </ol>
           </nav>
@@ -105,9 +134,9 @@ export function PageHeader({
             bei 78 px lief ihre breiteste Zeile 910 px, bei 88 px sind es
             1027 px und damit drei Pixel über dem Deckel. 1152 px fangen das
             ab. Wer eine längere Überschrift einträgt, misst nach. */}
-        <Reveal immediate className="mt-7 md:mt-10">
+        <Reveal immediate className="mt-5 md:mt-10">
           <p className="eyebrow text-current/90">{eyebrow}</p>
-          <h1 className="mt-4 max-w-6xl text-[length:var(--text-page-title)] md:mt-6">
+          <h1 className="mt-5 max-w-6xl text-[length:var(--text-page-title)] md:mt-6">
             {title}
           </h1>
         </Reveal>
@@ -129,7 +158,7 @@ export function PageHeader({
             gliedern. Der Abstand allein trägt die Zäsur. */}
         {/* mt-8/10 statt 12/14: Eyebrow→H1 sind 24 px, H1→Lead waren 56 –
             Faktor 2,3, der Lead hing nicht mehr an der Überschrift. */}
-        <div className="mt-8 grid gap-x-16 gap-y-8 lg:mt-10 lg:grid-cols-12">
+        <div className="mt-7 grid gap-x-16 gap-y-6 lg:mt-10 lg:grid-cols-12 lg:gap-y-8">
           <Reveal immediate className="lg:col-span-6">
             <p className="text-[length:var(--text-lead)] leading-relaxed text-current/70">
               {lead}

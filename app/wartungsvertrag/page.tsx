@@ -43,10 +43,10 @@ export default function PlansPage() {
         eyebrow="Service-Verträge"
         title={
           <>
-            E-Scooter-Wartung, <Mark>bevor</Mark> etwas kaputtgeht.
+            E-Scooter-Wartung mit <Mark>Vertrag</Mark>.
           </>
         }
-        lead="Wer täglich pendelt, merkt einen Defekt meistens genau dann, wenn er losfahren will. Ein Wartungsvertrag verschiebt diesen Moment nach vorn, in die Werkstatt, zu einem geplanten Termin."
+        lead="Ein Wartungsvertrag verschiebt den Defekt von der Pendelstrecke in die Werkstatt, zu einem geplanten Termin."
       />
 
       {/* Die Entscheidungshilfe zuerst – und zwar die ehrliche: Premium

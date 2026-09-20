@@ -49,11 +49,11 @@ export default function ScooterPage() {
         eyebrow="Generalüberholt · Skope-Qualitätssiegel"
         title={
           <>
-            Gebrauchte <span className="whitespace-nowrap">E-Scooter</span>{" "}
-            kaufen, mit <Mark>Gewährleistung</Mark>.
+            Gebrauchte <span className="whitespace-nowrap">E-Scooter</span> mit{" "}
+            <Mark>Gewährleistung</Mark>.
           </>
         }
-        lead="Ein gebrauchter E-Scooter aus einem Kleinanzeigenportal ist eine Wette auf den Akku. Bei uns ist er ein Gerät, das eine vollständige Werkstattprüfung hinter sich hat: dokumentiert, mit Siegel und mit einem Jahr Gewährleistung."
+        lead="Jedes Gerät hat eine vollständige Werkstattprüfung hinter sich: dokumentiert, mit Siegel und mit einem Jahr Gewährleistung."
       />
 
       {/* Qualitätssiegel erklären, bevor über Geräte gesprochen wird */}

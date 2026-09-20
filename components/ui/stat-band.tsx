@@ -36,20 +36,37 @@ export function StatBand({
 
          Erst ab `md`: Bei 390 px wären zwei Zellen 151 px und drei 87 px
          breit; dort steht eine Angabe je Zeile über die volle Breite. */
-      className="grid gap-y-8 text-center md:grid-flow-col md:auto-cols-max md:justify-end md:gap-x-8 lg:gap-x-10"
+      /* Am Telefon Zeilen mit zwei Enden, erst ab `md` die Spalten.
+
+         Gemessen auf /versicherung bei 390 px: Brotkrume, Auszeichnung,
+         Überschrift und Lead standen an x = 24, die drei Werte mittig bei
+         x ≈ 195 – 171 px Achsversatz innerhalb einer Sektion, und dazu
+         240 px Höhe für drei Angaben. Ein zentrierter Block unter vier
+         linksbündigen ist der sichtbarste Einzelfehler des Kopfes.
+
+         Dieselbe Lösung wie beim Kennzahlenband im Hero (21.08.):
+         Beschriftung links, Wert rechts, Haarlinie darüber. Ab `md` bleibt
+         alles, wie es war – dort stehen die Werte als Spalten rechts neben
+         dem Lead und tragen ihre Mitte selbst. */
+      className="grid gap-y-3 md:gap-y-8 md:grid-flow-col md:auto-cols-max md:justify-end md:gap-x-8 md:text-center lg:gap-x-10"
     >
       {items.map((item) => (
-        /* `items-baseline` gibt es hier nicht: Die Zellen sind gleich hoch,
-           weil die Beschriftung einzeilig ist. Bricht sie doch einmal um,
-           soll die Zahl mitwandern statt allein stehen zu bleiben. */
-        <div key={item.label} className="min-w-0">
-          {/* Beschriftung im Fließtextgrad, Zahl im Kennzahlengrad – und
-              beides mittig in der Zelle. Die Zahlen sind verschieden lang
-              („500+" gegen „59,99 €"); an einer gemeinsamen linken oder
-              rechten Kante hängt unter jeder ein anderer Rest, und die
-              Zeile liest sich als zwei Blöcke mit zufälligem Abstand. */}
+        /* Unter `md` eine Zeile mit zwei Enden: Die Beschriftung darf
+           umbrechen, der Wert nicht (`shrink-0`), und beide sitzen auf der
+           Grundlinie. Ab `md` wieder ein Block – dort sind die Zellen gleich
+           hoch, weil die Beschriftung einzeilig ist. */
+        <div
+          key={item.label}
+          className="flex min-w-0 items-baseline justify-between gap-4 border-t border-current/15 pt-3 md:block md:border-0 md:pt-0"
+        >
+          {/* Beschriftung im Fließtextgrad, Zahl im Kennzahlengrad. Ab `md`
+              steht beides mittig in der Zelle: Die Zahlen sind verschieden
+              lang („500+" gegen „59,99 €"), und an einer gemeinsamen linken
+              oder rechten Kante hängt unter jeder ein anderer Rest. Am
+              Telefon gibt es dieses Problem nicht – dort steht je Zeile nur
+              eine Angabe, und ihre rechte Kante ist die des Satzspiegels. */}
           <dt className="leading-snug text-current/60">{item.label}</dt>
-          <dd className="tabular mt-2 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
+          <dd className="tabular shrink-0 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent md:mt-2">
             {item.value}
           </dd>
         </div>

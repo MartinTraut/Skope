@@ -59,10 +59,10 @@ export default function FinancingPage() {
         eyebrow="Zahlung & Finanzierung"
         title={
           <>
-            Den Kaufpreis <Mark>verteilen</Mark>, statt ihn aufzuschieben.
+            Den Kaufpreis in <Mark>Raten</Mark> verteilen.
           </>
         }
-        lead="Nicht jeder will oder kann ein Fahrzeug auf einmal bezahlen. Dafür gibt es zwei Wege: das Mietkauf-Abo mit fester Monatsrate, in der Versicherung und Service enthalten sind, und den Ratenkauf mit Anzahlung. Beide gelten für E-Scooter, E-Chopper und E-Trike."
+        lead="Zwei Wege: das Mietkauf-Abo mit fester Monatsrate und der Ratenkauf mit Anzahlung. Beide gelten für E-Scooter, E-Chopper und E-Trike."
       />
 
       {/* Die beiden verfügbaren Modelle nebeneinander, nicht untereinander:

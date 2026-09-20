@@ -142,10 +142,15 @@ export default async function ScooterDetailPage({
                   Start
                 </Link>
               </li>
-              <li aria-hidden="true">
-                <ChevronRight className="size-3.5" />
-              </li>
-              <li>
+              {/* Der Trenner steht *im* Eintrag, den er einleitet, nicht als
+                  eigenes Listenelement. Als eigenes Kind einer
+                  `flex-wrap`-Zeile beschloss er am Telefon eine Zeile und
+                  zeigte ins Leere: Gemessen bei 320 und 390 px stand das
+                  zweite Chevron am Ende von Zeile 1 (nach ihm blieben 108 px,
+                  der Modellname braucht 161) und der Name fiel allein auf
+                  Zeile 2. */}
+              <li className="flex items-center gap-1.5">
+                <ChevronRight aria-hidden="true" className="size-3.5 shrink-0" />
                 <Link
                   href="/e-scooter"
                   className="-mx-1 inline-flex min-h-11 items-center px-1 transition-colors hover:text-accent"
@@ -153,11 +158,12 @@ export default async function ScooterDetailPage({
                   E-Scooter kaufen
                 </Link>
               </li>
-              <li aria-hidden="true">
-                <ChevronRight className="size-3.5" />
-              </li>
-              <li aria-current="page" className="text-current/90">
-                {item.model}
+              <li
+                aria-current="page"
+                className="flex min-w-0 items-center gap-1.5 text-current/90"
+              >
+                <ChevronRight aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="min-w-0">{item.model}</span>
               </li>
             </ol>
           </nav>
@@ -381,13 +387,25 @@ export default async function ScooterDetailPage({
                   Konstruktion, nicht der Inhalt. Eine leichte Fläche und
                   Weissraum ordnen dieselben Werte ruhiger. */}
               {specs.length > 0 ? (
-                <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 rounded-xl bg-current/6 p-5 xl:grid-cols-3">
+                /* Unter `sm` eine Spalte mit zwei Enden statt zwei Spalten.
+
+                   Gemessen bei 390 px: Die Wertspalte war 135 px breit,
+                   „StVZO-konform, mit Betriebserlaubnis" lief über drei
+                   Zeilen à zwölf Zeichen, bei 320 px über fünf Zeilen à
+                   sieben. Eine Spalte gibt dem Wert 200 px und stellt ihn
+                   neben seine Beschriftung – dasselbe Muster wie im
+                   Datenband der Bestandskarte und in den Kennzahlen des
+                   Seitenkopfs. Ab `sm` bleibt das Raster. */
+                <dl className="mt-6 grid gap-x-8 gap-y-3 rounded-xl bg-current/6 p-5 sm:grid-cols-2 sm:gap-y-4 xl:grid-cols-3">
                   {specs.map((spec) => (
-                    <div key={spec.label}>
-                      <dt className="eyebrow-plain text-current/55">
+                    <div
+                      key={spec.label}
+                      className="flex items-baseline justify-between gap-4 border-t border-current/10 pt-3 first:border-0 first:pt-0 sm:block sm:border-0 sm:pt-0"
+                    >
+                      <dt className="eyebrow-plain shrink-0 text-current/55">
                         {SHORT_LABEL[spec.label] ?? spec.label}
                       </dt>
-                      <dd className="mt-1.5 font-display leading-snug font-semibold tracking-tight hyphens-auto">
+                      <dd className="font-display leading-snug font-semibold tracking-tight hyphens-auto max-sm:text-right sm:mt-1.5">
                         {spec.value}
                       </dd>
                     </div>

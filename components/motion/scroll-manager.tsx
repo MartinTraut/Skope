@@ -45,7 +45,13 @@ function scrollToId(id: string, behavior: ScrollBehavior) {
      in der Bildmitte, darüber ein Streifen der vorherigen Sektion. Auf
      Ansage vom 16.09.2026 – „beim Knopf Anfragen soll man oben auf der Seite
      landen, nicht irgendwo". Eine Kante ist vorhersehbar, eine Mitte nicht. */
-  const top = rect.top + window.scrollY - header;
+  /* Dieselbe Rechnung wie `scroll-padding-top` in globals.css
+     (`calc(var(--header-h) + 1rem)`). Ohne den Aufschlag landete das Ziel
+     bündig an der Unterkante der Kopfzeile – gemessen auf `/kontakt#anfrage`
+     stand die Überschrift „Anfrage schreiben" bei genau 72 px und der
+     Neonkasten ihrer Auszeichnungszeile stieß an die Leiste. Zwei Wege zum
+     selben Ziel dürfen nicht zwei Landungen haben. */
+  const top = rect.top + window.scrollY - header - 16;
   window.scrollTo({ top: Math.max(0, top), behavior });
   return true;
 }
