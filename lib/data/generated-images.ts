@@ -44,6 +44,30 @@
  * Absicherung.
  */
 export const generatedImages = new Set([
+  /* Kopfbereich der Startseite seit dem 23.09.2026. Erzeugt mit ChatGPT
+     (Bild des Betreibers), Herkunft zusätzlich in den Dateimetadaten
+     (`photoshop:Credit`, `Iptc4xmpExt:DigitalSourceType`). Es zeigt kein
+     Gerät aus dem Bestand und keine Werkstatt – ein Studiomotiv mit drei
+     Fahrzeugarten. Es ist damit näher am Symbolbild als `hero-werkstatt`
+     und behauptet nichts über den Betrieb; die Kennzeichnung braucht es
+     trotzdem, weil es als Foto gelesen wird. */
+  "/img/hero-fahrzeuge.jpg",
+  /* Porträt auf `/ueber-uns`, eingesetzt am 23.09.2026.
+
+     **Es ist erzeugt, und das steht nicht zur Auslegung.** Die Datei kam als
+     `ChatGPT Image 23. Sept. 2026, 19_24_41.png` und trägt einen
+     C2PA-Manifest: `c2pa.created`, `softwareAgent: ChatGPT / gpt-image`,
+     `digitalSourceType: trainedAlgorithmicMedia`, dazu
+     `c2pa.watermarked.unbound`. Es ist also kein bearbeitetes Foto, sondern
+     ein erzeugtes Bild – mit unsichtbarer Wasserzeichnung.
+
+     Deshalb steht hier **kein Name**: Weder im Dateinamen noch im Alt-Text
+     noch in einer Bildunterschrift darf dieses Gesicht Thomas Zielke
+     zugeordnet werden. Es ist die Stelle, an der genau dieser Fehler schon
+     einmal stand (siehe § 5 UWG oben). Kommt ein echtes Foto, fliegt der
+     Pfad aus dieser Liste und der Name darf zurück. */
+  "/img/person-poloshirt.jpg",
+  /* Steht weiter im Film auf `/ueber-uns` hinter den Schrifttafeln. */
   "/img/hero-werkstatt.jpg",
   "/img/werkstatt-service.jpg",
   "/img/akku-diagnose.jpg",

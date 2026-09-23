@@ -119,13 +119,29 @@ function VehicleMenu({
           Übergangsliste stehen, sonst springt die Tafel. */}
       <div
         className={cn(
-          "absolute top-full left-0 w-64 pt-2 transition-[opacity,transform,visibility] duration-200 ease-out-quart",
+          "absolute top-full left-0 w-60 pt-2 transition-[opacity,transform,visibility] duration-200 ease-out-quart",
           open
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-1 opacity-0",
         )}
       >
-        <ul className="overflow-hidden rounded-lg border border-current/12 bg-ink-800 p-1.5 shadow-[0_24px_60px_-24px_rgb(8_9_11/0.75)]">
+        {/* Nur die vier Namen. Vorher stand unter jedem eine Zeile
+            Erklärung ("Der Stehroller für den täglichen Weg …"): vier
+            Überschriften mit zwölf Zeilen Fließtext in einer 256 px breiten
+            Tafel, die man im Vorbeigehen öffnet. Ein Menü ist eine Liste von
+            Wegen, kein Text – wer wissen will, was ein E-Chopper ist, findet
+            es auf der Seite, auf die der Weg führt.
+
+            Der Grad ist der Untertitelgrad der Seite (1,25 rem), nicht der
+            Grundschriftgrad: Die vier Namen sind der ganze Inhalt der Tafel,
+            und ein Menüpunkt, der so groß ist wie der Fließtext einer Seite,
+            liest sich als Fußnote. Fest und nicht fluid – die Tafel hängt an
+            der Kopfzeile und nicht am Satzspiegel, ihre Breite ändert sich
+            über den ganzen Bereich nicht, in dem sie überhaupt sichtbar ist
+            (ab `lg`). Zeilen 48 statt 44 px hoch, mit 2 px Abstand
+            dazwischen: Vier gleich große Flächen ohne Fuge lesen sich als
+            eine Fläche mit Strichen. */}
+        <ul className="space-y-0.5 overflow-hidden rounded-lg border border-current/12 bg-ink-800 p-2 shadow-[0_24px_60px_-24px_rgb(8_9_11/0.75)]">
           {vehicleNav.map((sub) => (
             <li key={sub.href}>
               <Link
@@ -134,18 +150,13 @@ function VehicleMenu({
                 aria-current={pathname === sub.href ? "page" : undefined}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  "block rounded-md px-3 py-2.5 transition-colors duration-200",
+                  "flex min-h-12 items-center rounded-md px-3.5 font-display text-[1.25rem] font-semibold tracking-tight transition-colors duration-200",
                   pathname === sub.href
                     ? "bg-current/8 text-accent"
                     : "text-silver/85 hover:bg-current/8 hover:text-silver",
                 )}
               >
-                <span className="block font-display font-semibold tracking-tight">
-                  {sub.label}
-                </span>
-                <span className="mt-0.5 block text-xs leading-snug text-silver/55">
-                  {sub.blurb}
-                </span>
+                {sub.label}
               </Link>
             </li>
           ))}

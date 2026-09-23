@@ -13,11 +13,12 @@
  * **Was hier steht und was nicht.** Jede Art bekommt eine eigene Route, eine
  * eigene Überschrift und einen eigenen Platz in der Navigation. Was diese
  * Seiten *nicht* tun: ein Sortiment behaupten, das die Daten nicht hergeben.
- * `lib/inventory.ts` führt dreizehn Geräte, alle dreizehn sind E-Scooter.
- * Die Seiten für Chopper und Trike zeigen deshalb keinen erfundenen Bestand,
- * sondern den Weg, auf dem man an ein Gerät kommt – und sobald ein Eintrag
- * mit `category: "chopper"` in der Liste steht, listet die Seite ihn, ohne
- * dass jemand sie anfassen muss.
+ * `lib/inventory.ts` führt seit dem Abgleich mit den Kleinanzeigen vom
+ * 20.09.2026 sieben E-Scooter, einen E-Chopper und ein E-Dreirad. Die Seite
+ * für den E-Roller zeigt deshalb keinen erfundenen Bestand, sondern den Weg,
+ * auf dem man an ein Gerät kommt – und sobald ein Eintrag mit
+ * `category: "roller"` in der Liste steht, listet sie ihn, ohne dass jemand
+ * sie anfassen muss.
  *
  * **Keine technischen Angaben je Art.** Ob ein Gerät 25 oder 45 km/h fährt,
  * ob es ein Versicherungskennzeichen und eine Fahrerlaubnis braucht, hängt
@@ -30,9 +31,11 @@
  *      20.09.2026: „generalüberholte und neue Roller, Chopper, Scooter und
  *      E-Roller". Die Finanzierungsmodelle vom 16.09.2026 nennen E-Scooter,
  *      E-Chopper und E-Trike. Beides zusammen ergibt die vier Arten hier –
- *      das E-Trike steht auf der schwächeren Quelle (es kommt in der
- *      Verkaufsauskunft nicht vor) und gehört wieder weg, falls es nur
- *      finanziert und nicht verkauft wird. Nicht umformulieren, weg.
+ *      Der Abgleich mit den Kleinanzeigen vom 20.09.2026 hat drei davon
+ *      belegt: Es steht ein E-Chopper im Bestand und ein E-Dreirad, beide
+ *      zum Verkauf. Der frühere Vorbehalt gegen das E-Trike ist damit
+ *      erledigt. Offen bleibt der **E-Roller** – die Art steht in der
+ *      Navigation, aber kein Gerät dieser Art in den Daten.
  *   2. Gibt es Geräte zum Fotografieren und Eintragen? Ohne eigenen Bestand
  *      bleibt die Seite ein Anfrageweg; mit drei Geräten ist sie eine Auslage.
  *   3. Beschafft der Betrieb auf Zuruf (Suchauftrag), oder nur aus dem, was
@@ -52,8 +55,6 @@ export type VehicleKind = {
   name: string;
   /** Mehrzahl für Überschriften und Listen. */
   plural: string;
-  /** Ein Satz zur Einordnung. Keine Technik, keine Zulassung. */
-  blurb: string;
 };
 
 export const vehicleKinds: VehicleKind[] = [
@@ -63,8 +64,6 @@ export const vehicleKinds: VehicleKind[] = [
     nav: "E-Scooter",
     name: "E-Scooter",
     plural: "E-Scooter",
-    blurb:
-      "Der Stehroller für den täglichen Weg – der Schwerpunkt des Bestands.",
   },
   {
     id: "chopper",
@@ -72,8 +71,6 @@ export const vehicleKinds: VehicleKind[] = [
     nav: "E-Chopper",
     name: "E-Chopper",
     plural: "E-Chopper",
-    blurb:
-      "Elektroroller im Chopper-Format: tiefer Sitz, breite Reifen, langer Lenker.",
   },
   {
     id: "roller",
@@ -81,8 +78,6 @@ export const vehicleKinds: VehicleKind[] = [
     nav: "E-Roller",
     name: "E-Roller",
     plural: "E-Roller",
-    blurb:
-      "Der Sitzroller im Mopedformat – mit Sitzbank, Trittbrett und Stauraum.",
   },
   {
     id: "trike",
@@ -90,8 +85,6 @@ export const vehicleKinds: VehicleKind[] = [
     nav: "E-Trike",
     name: "E-Trike",
     plural: "E-Trikes",
-    blurb:
-      "Drei Räder statt zwei – sie stehen von allein und kippen im Stand nicht.",
   },
 ];
 

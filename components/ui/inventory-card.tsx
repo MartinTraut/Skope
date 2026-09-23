@@ -217,7 +217,17 @@ export function InventoryCard({
       href={deviceHref(item)}
       aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
       className={cn(
-        "press group lift @container flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
+        /* `w-full` gehört an die Karte, nicht an die Aufrufstelle.
+           Gemessen auf `/e-chopper` bei 1512 px: Die Karte stand 34 px breit
+           in einer 456 px breiten Rasterspalte – genau Innenabstand plus
+           Rahmen, der Inhalt hatte Breite 0. Grund ist `@container`: Die
+           Klasse setzt `container-type: inline-size`, und damit rechnet der
+           Browser die Breite der Karte **ohne ihren Inhalt**. Als Flex-Kind
+           mit `flex-basis: auto` bleibt davon nichts übrig. Der Aufrufer auf
+           `/e-scooter` gab das `w-full` mit, die Kategorieseite nicht – eine
+           Angabe, die an vier Stellen stehen muss und an einer fehlen darf,
+           ist kein Bauteil, sondern eine Falle. */
+        "press group lift @container flex h-full w-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
         className,
       )}
     >

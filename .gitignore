@@ -50,3 +50,7 @@ kalkulation-skope-gesamtpaket.md
 # verkleinerte Fassung unter public/img/werkstatt/, und `sharp` schreibt
 # ohne `withMetadata()` keine EXIF-Daten in die Ausgabe.
 /PXL_*.jpg
+
+# Bildquellen aus dem Chat. Sie liegen als PNG mit 1–2 MB im Projektstamm und
+# werden über sharp nach public/img gerechnet; im Repo braucht sie niemand.
+/ChatGPT Image *.png

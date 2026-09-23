@@ -41,8 +41,6 @@ export type WorkshopPhoto = {
   file: string;
   /** Was zu sehen ist – nicht, was verkauft werden soll. */
   alt: string;
-  /** Eine Zeile unter dem Bild. Nüchtern, kein Werbesatz. */
-  caption: string;
   /** Maße der ausgelieferten Datei. Geben der Kachel ihre Breite. */
   w: number;
   h: number;
@@ -52,50 +50,42 @@ const PHOTOS: WorkshopPhoto[] = [
   {
     file: "standort-container.jpg",
     alt: "Zwei dunkelgraue Container auf einem gepflasterten Platz unter Bäumen, davor ein mit Ketten abgesperrtes Kiesfeld und Parkplätze",
-    caption:
-      "Der Standort: Lagercontainer und Büro, mit Parkplätzen direkt davor.",
     w: 1600,
     h: 1205,
   },
   {
     file: "buero-eingang.jpg",
     alt: "Offene Tür des Bürocontainers unter dem Schild „Skopegebrauchtwarehandel – E-Scooter Service und Verkauf“, innen ein Regal mit verpackten Helmen und ein Aktenschrank",
-    caption: "Das Büro: Annahme, Beratung und Zubehör.",
     w: 1205,
     h: 1600,
   },
   {
     file: "lager-regal.jpg",
     alt: "Blick in den geöffneten Lagercontainer: E-Scooter in zwei Reihen unter einem Schwerlastregal, am vordersten Gerät hängt ein bedrucktes Datenblatt am Lenker",
-    caption: "Im Lager steht Gerät an Gerät, vorn eines mit seinem Datenblatt.",
     w: 1200,
     h: 1600,
   },
   {
     file: "lager-gang.jpg",
     alt: "Langer Gang im Lagercontainer mit Wänden aus Grobspanplatten, rechts ein Feuerlöscher, links eine Reihe aufgereihter E-Scooter",
-    caption: "Der Bestand steht trocken, mit Löscher an der Wand.",
     w: 1200,
     h: 1600,
   },
   {
     file: "werkbank-scooter.jpg",
     alt: "Aufgeschraubter Segway-Ninebot auf der Werkbank, Trittbrett geöffnet, Akku, Steuerung und Kabelbaum liegen frei, darüber eine Wand mit Schraubendrehern",
-    caption: "Diagnose am offenen Gerät: Akku, Steuerung, Verkabelung.",
     w: 1600,
     h: 1205,
   },
   {
     file: "reparatur-stecker.jpg",
     alt: "Hand hält einen durchgeschmorten Steckverbinder mit verkohltem Schrumpfschlauch über dem geöffneten Trittbrett eines E-Scooters",
-    caption: "Ein durchgeschmorter Steckverbinder – und der Grund dafür.",
     w: 1205,
     h: 1600,
   },
   {
     file: "reparatur-trittbrett.jpg",
     alt: "Geöffnetes Trittbrett eines E-Scooters von oben, eine Hand hebt die Abdeckung über Kabelbaum und Akkuanschluss an",
-    caption: "Unter der Abdeckung: Kabelbaum, Akkuanschluss, Steuerung.",
     w: 1205,
     h: 1600,
   },

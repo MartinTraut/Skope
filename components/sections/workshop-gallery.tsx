@@ -35,6 +35,12 @@ import { workshopPhotos } from "@/lib/data/workshop-photos";
  * fokussierbar und reagiert auf die Pfeiltasten, weil der Browser das für
  * rollbare Flächen selbst mitbringt.
  *
+ * **Keine Bildunterschriften (23.09.2026, auf Ansage).** Was zu sehen ist,
+ * steht weiterhin im `alt` jeder Aufnahme – für alle, die die Bilder nicht
+ * sehen. Unter dem Bild war es eine zweite, kürzere Fassung derselben
+ * Aussage und gab der Bahn eine ausgefranste Unterkante, die erst mit einem
+ * festen Textkasten (`min-h-[2lh]`) wieder gerade wurde.
+ *
  * **Keine KI-Kennzeichnung.** Diese Bilder sind fotografiert; der
  * `GeneratedMark` gehört ausschließlich auf die acht erzeugten Motive
  * (`lib/data/generated-images.ts`). Eine falsche Kennzeichnung ist genauso
@@ -84,7 +90,7 @@ export function WorkshopGallery({
           der Rollfläche und übergeht den Innenabstand: Gemessen bei 390 px
           rastete die Bahn beim ersten Sichtkontakt selbsttätig um 24 px ein,
           die erste Kachel stand dann an der Gehäusekante und 24 px links von
-          Überschrift, Lead und ihrer eigenen Bildunterschrift. */}
+          Überschrift und Lead. */}
       {/* Ein Reveal um die **ganze** Bahn, nicht eines je Kachel.
 
           Mit einem Reveal pro Kachel hängt jedes Bild an einem
@@ -104,48 +110,30 @@ export function WorkshopGallery({
         aria-label="Aufnahmen aus dem Betrieb"
       >
         {photos.map((photo) => (
-          <figure
+          /* Kein `<figure>` mehr um die Kachel: Ohne Bildunterschrift hätte
+             es kein zweites Kind, und die Umgehung ihrer Mindestbreite
+             (`w-0 min-w-full`) fällt damit ebenfalls weg. Die Kachel ist
+             jetzt selbst das Flex-Kind – feste Höhe, Breite aus dem
+             Seitenverhältnis der Datei.
+
+             Am Telefon zusätzlich auf 82vw gedeckelt: Ein Querformat wäre
+             bei 17 rem Höhe 361 px breit und stünde bei 390 px Fensterbreite
+             fast randlos. */
+          <div
             key={photo.file}
-            className="flex shrink-0 snap-start flex-col"
+            style={{ aspectRatio: `${photo.w} / ${photo.h}` }}
+            className="relative h-[17rem] max-w-[82vw] shrink-0 snap-start overflow-hidden rounded-lg bg-ink-700 sm:h-[22rem] sm:max-w-none lg:h-[26rem]"
           >
-            {/* Feste Höhe, Breite aus dem Seitenverhältnis. Am Telefon
-                zusätzlich auf 82vw gedeckelt – ein Querformat wäre bei 17rem
-                Höhe 361 px breit und stünde bei 390 px Fensterbreite fast
-                randlos. */}
-            <div
-              style={{ aspectRatio: `${photo.w} / ${photo.h}` }}
-              className="relative h-[17rem] max-w-[82vw] overflow-hidden rounded-lg bg-ink-700 sm:h-[22rem] sm:max-w-none lg:h-[26rem]"
-            >
-              <Image
-                src={`/img/werkstatt/${photo.file}`}
-                alt={photo.alt}
-                fill
-                /* Die Kachel ist am Telefon höchstens 82vw breit, ab `sm`
-                   höchstens 22rem × (1600/1205) ≈ 468 px, ab `lg` 553 px. */
-                sizes="(min-width: 1024px) 560px, (min-width: 640px) 470px, 82vw"
-                className="object-cover"
-              />
-            </div>
-            {/* `w-0 min-w-full`: Die Figur ist ein Flex-Kind ohne
-                Breitenangabe und wird deshalb so breit wie ihr breitester
-                Inhalt. Gemessen bei 1512 px zog die Bildunterschrift von
-                „Im Lager steht Gerät an Gerät…" die Kachel auf 352 statt
-                312 px – und weil der Bildkasten darin auf `stretch` steht,
-                wuchs er mit und sein Seitenverhältnis war wirkungslos: Vier
-                der sieben Kacheln waren zu breit und beschnitten das Bild
-                doch. Eine Breite von 0 trägt nichts zur Mindestbreite bei,
-                `min-width: 100%` füllt danach die Breite, die der Bildkasten
-                gesetzt hat. */}
-            {/* `min-h-[2lh]`: Vier der sieben Zeilen laufen zweizeilig, drei
-                einzeilig – gemessen liefen die Unterkanten der Kacheln bei
-                1512 px um bis zu 41 px auseinander, und eine Bahn mit
-                ausgefranster Unterkante liest sich als Sammlung statt als
-                Folge. Kennt ein Browser die Einheit `lh` nicht, fällt die
-                Angabe weg und es ist wieder wie vorher. */}
-            <figcaption className="mt-3 min-h-[2lh] w-0 min-w-full text-sm leading-snug text-current/65">
-              {photo.caption}
-            </figcaption>
-          </figure>
+            <Image
+              src={`/img/werkstatt/${photo.file}`}
+              alt={photo.alt}
+              fill
+              /* Die Kachel ist am Telefon höchstens 82vw breit, ab `sm`
+                 höchstens 22rem × (1600/1205) ≈ 468 px, ab `lg` 553 px. */
+              sizes="(min-width: 1024px) 560px, (min-width: 640px) 470px, 82vw"
+              className="object-cover"
+            />
+          </div>
         ))}
       </Reveal>
     </Section>

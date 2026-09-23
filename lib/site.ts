@@ -163,7 +163,6 @@ export const nav = [
 export const vehicleNav = vehicleKinds.map((kind) => ({
   href: kind.href,
   label: kind.nav,
-  blurb: kind.blurb,
 }));
 
 export const legalNav = [

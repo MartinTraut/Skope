@@ -177,7 +177,7 @@ export function InventoryTeaser() {
               key={item.id}
               className="flex w-[calc(100vw-4.5rem)] shrink-0 snap-center"
             >
-              <InventoryCard item={item} className="w-full" />
+              <InventoryCard item={item} />
             </li>
           ))}
         </ul>

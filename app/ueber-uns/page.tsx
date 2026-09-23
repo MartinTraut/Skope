@@ -66,15 +66,21 @@ export default function AboutPage() {
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-ink text-silver on-dark">
+              {/* Heller Grund statt Tinte: Das Motiv ist vor Weiß
+                  freigestellt, und eine weiße Fläche in einem
+                  tintefarbenen Rahmen liest sich als Fehler. Der Ausschnitt
+                  ist 1400 × 1749 – exakt 4:5, also schneidet `object-cover`
+                  nichts ab. Keine Bildfahrt (`parallax`): Sie skaliert auf
+                  110 % und würde die Schuhe abschneiden. */}
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg border border-current/12 bg-white">
                 <Image
-                  src="/img/akku-diagnose.jpg"
-                  alt="Symbolbild: Kapazitätsmessung an einem geöffneten E-Scooter-Akku mit Prüfspitzen und Messgerät"
+                  src="/img/person-poloshirt.jpg"
+                  alt="Symbolbild: Person im schwarzen Poloshirt mit SKOPE-Aufdruck vor weißem Grund"
                   fill
                   sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
-                  className="parallax object-cover"
+                  className="object-cover"
                 />
-                <GeneratedMark src="/img/akku-diagnose.jpg" />
+                <GeneratedMark src="/img/person-poloshirt.jpg" />
               </div>
               {/* Der Alt-Text nannte hier „Thomas Zielke bei der Arbeit". Das
                   Motiv ist erzeugt: Es ordnet einer realen, namentlich

@@ -186,14 +186,20 @@ export async function Hero() {
               eine Tailwind-Klasse am Bild selbst verliert. Und nicht an die
               Zone: An ihr hängen Schleier und Auslauf in die Tinte, deren
               Stopps auf die gemessenen Kontraste gerechnet sind. */}
-          <div className="hero-figure absolute inset-x-0 top-[calc(var(--header-h)+1.5rem)] bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+          <div className="hero-figure absolute right-0 bottom-0 aspect-[2400/1351] w-[74%] max-h-[calc(100%-var(--header-h)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem)]">
             <Image
-              src="/img/hero-werkstatt.jpg"
-              alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+              src="/img/hero-fahrzeuge.jpg"
+              alt="Drei Elektrofahrzeuge nebeneinander in einer dunklen Halle mit grünen Leuchtbändern: ein E-Chopper mit tiefem Sitz, ein E-Scooter und ein E-Roller mit Sitzbank"
               fill
               priority
+              /* Next optimiert ohne Angabe mit `quality: 75`. Bei diesem
+                 Motiv ist das sichtbar: 1672 px Quellbreite werden auf einem
+                 Retina-Schirm über 1664 px CSS gezogen, und die Kanten der
+                 Felgen und Leuchtbänder fallen in der Quantisierung zuerst.
+                 Gemessen 90 statt 75: 214 statt 138 kB bei 1920 px. */
+              quality={90}
               sizes="min(100vw, 104rem)"
-              className="object-cover object-[64%_center] lg:object-contain lg:object-[right_bottom]"
+              className="object-cover object-[64%_center] lg:object-[right_bottom]"
             />
           </div>
           {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
@@ -211,7 +217,7 @@ export async function Hero() {
               nicht mehr. Erkennbar bleibt sie, weil sie im selben Bildfeld
               steht; Art. 50 Abs. 4 verlangt Erkennbarkeit, nicht Auffälligkeit. */}
           <GeneratedMark
-            src="/img/hero-werkstatt.jpg"
+            src="/img/hero-fahrzeuge.jpg"
             className="right-[max(1.5rem,env(safe-area-inset-right))] bottom-6"
           />
           {/* Der Werkstattboden ist die hellste Stelle der Aufnahme und lag
@@ -290,14 +296,15 @@ export async function Hero() {
               46 % sichtbarer Breite bei 0,63 bis 0,64 – der Roller
               (0,49 – 0,825) hat auf beiden Seiten Luft, statt an einer Kante
               zu kleben. */}
-          <div className="hero-figure absolute inset-x-0 bottom-0 h-[min(calc(100%-4rem),157vw)] [mask-image:linear-gradient(to_bottom,transparent,black_2rem)]">
+          <div className="hero-figure absolute inset-x-0 bottom-0 aspect-[2400/1351] max-h-full [mask-image:linear-gradient(to_bottom,transparent,black_2.5rem)]">
             <Image
-              src="/img/hero-werkstatt.jpg"
-              alt="Geprüfter E-Scooter in der Werkstatt, dahinter die Werkzeugwand unter der Neonröhre"
+              src="/img/hero-fahrzeuge.jpg"
+              alt="Drei Elektrofahrzeuge nebeneinander in einer dunklen Halle mit grünen Leuchtbändern: ein E-Chopper mit tiefem Sitz, ein E-Scooter und ein E-Roller mit Sitzbank"
               fill
               priority
+              quality={90}
               sizes="100vw"
-              className="object-cover object-[74%_center] brightness-115"
+              className="object-contain object-bottom"
             />
           </div>
           {/* Rechts, und so tief wie die Bühne es zulässt.
@@ -321,7 +328,7 @@ export async function Hero() {
               Marke lag von 116 bis 135 px – sie stand quer über der Zeile.
               Jetzt 88 bis 107 px, gemessen 14 px darüber. */}
           <GeneratedMark
-            src="/img/hero-werkstatt.jpg"
+            src="/img/hero-fahrzeuge.jpg"
             className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] min-[360px]:bottom-6 sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
           />
           <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />

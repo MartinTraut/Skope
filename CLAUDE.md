@@ -2134,3 +2134,129 @@ größten *sichtbaren*, und weil der Filter über `hidden` arbeitet, wechselte
 diese mit jedem Filterklick: gemessen bei 390 px dieselbe Karte ohne Filter
 212 px, mit „Bis 250 €" 176 px. Man drückt auf einen Filter und die ganze
 Liste wechselt die Proportion, obwohl an den Geräten nichts anders ist.
+
+## Fahrzeug-Unterseiten repariert — 23.09.2026
+
+Auf Ansage („die Fahrzeug-Unterseiten spacken"). `/e-chopper` und `/e-trike`
+zeigten ihr Gerät als **34 px breiten schwarzen Streifen** mit einem Zeichen
+je Zeile, den Preis daneben im Leeren. Kein Überlauf, kein Konsolenfehler —
+deshalb war es durch jede bisherige Prüfung gefallen.
+
+- **Ursache ist `@container` an der Bestandskarte.** Die Klasse setzt
+  `container-type: inline-size`, und damit rechnet der Browser die Breite der
+  Karte **ohne ihren Inhalt**. Als Flex-Kind mit `flex-basis: auto` bleibt
+  davon der Innenabstand übrig: 16 + 16 + 2 px Rahmen = 34. Gemessen bei
+  1512 px in einer 456 px breiten Rasterspalte, alle vier Kinder der Karte
+  0 px breit.
+- **`w-full` steht jetzt an der Karte, nicht an der Aufrufstelle.** Es wurde
+  bisher von vier Stellen einzeln mitgegeben; `/e-scooter` und der
+  Startseiten-Teaser taten es, die Kategorieseite nicht. Eine Angabe, ohne
+  die ein Bauteil zusammenfällt, gehört ins Bauteil. Die redundanten
+  `w-full` an den Aufrufern sind weg.
+- **Die Kategorieseite trägt jetzt beide Kartenformen** — Zeilenkarte unter
+  `sm`, Quadrat darüber — und `auto-rows-fr` erst ab `sm`. Vorher war es die
+  quadratische Karte auf jeder Breite und `fr` auch einspaltig; dieselben
+  zwei Entscheidungen wie im Bestandsfilter.
+- **Der Abschluss handelte von der falschen Gattung.** `CtaBand` stand ohne
+  Angaben da und fragte auf `/e-chopper`, „was der **Scooter** macht" — und
+  schickte nach `/kontakt`, obwohl eine Sektion höher das eigene
+  Suchauftrag-Formular steht (Vorauswahl weg). Jetzt `formHref="#anfrage"`
+  und ein Text je Bestandslage: mit Gerät „steht bereit", ohne Gerät nicht.
+- Gemessen 320 / 390 / 768 / 1024 / 1512 px über `/e-chopper`, `/e-trike`,
+  `/e-roller`, `/e-scooter` und `/`: Karten auf voller Spaltenbreite,
+  `/e-scooter` und Startseite unverändert, kein Überlauf, keine
+  Konsolenfehler.
+
+## Neues Kopfbild und Porträt — 23.09.2026
+
+Zwei Bilder des Betreibers eingesetzt, beide mit ChatGPT erzeugt.
+
+**Kopfbereich: `hero-fahrzeuge.jpg` statt `hero-werkstatt.jpg`.** Drei
+Fahrzeuge im Studio – Chopper, Scooter, Roller – statt einer erfundenen
+Werkstatt. Inhaltlich der bessere Grund: Das Motiv zeigt jetzt das Sortiment
+und nicht einen Betriebsort, den es so nicht gibt.
+
+- **Die Quelle ist 1672 × 941 und damit zu klein.** Ausgeliefert wird auf
+  2400 px hochgerechnet (`lanczos3` plus Unschärfemaske, q92, 4:4:4). Das
+  erfindet keine Auflösung, hält aber die vorhandene Kantenzeichnung, statt
+  sie in der Quantisierung zu verlieren. Dazu `quality={90}` am `<Image>` –
+  Next optimiert ohne Angabe mit 75, und bei den Felgen und Leuchtbändern
+  sieht man das.
+- **Der Zuschnitt musste umgebaut werden, weil das Seitenverhältnis ein
+  anderes ist** (1,78 statt 1,59) **und das Motiv 60 % der Bildbreite
+  braucht** (Fahrzeuge von 33 bis 93 %, gemessen über die Kantenenergie je
+  Spalte). Der alte Kopfbereich schnitt am Telefon auf 38 % zu – sichtbar
+  waren ein Trittbrett und ein halbes Rad.
+- **Am Telefon liegt das Bild deshalb `object-contain` als Band am Fuß der
+  Bühne**, nicht mehr `object-cover` über die ganze Fläche: bei 390 px
+  390 × 220 px, alle drei Fahrzeuge vollständig. Der Text steht darüber auf
+  reiner Tinte. Der Deckel `157vw` und der Ausschnitt `74 %` sind damit
+  gegenstandslos und weg.
+- **`.hero-stage-scrim` läuft erst ab 92 % in die Tinte** statt ab 68. Die
+  68 % waren auf ein bildfüllendes Motiv gerechnet; über einem Band, das von
+  62 bis 100 % steht, hätten sie genau die Fahrzeuge verschluckt.
+- **Am Schreibtisch hängt die Bildfläche an ihrer Breite, nicht an der
+  Zonenhöhe** (`w-[74%] aspect-[2400/1351]`, unten rechts verankert). Die
+  74 % sind gerechnet, nicht geraten: Die Textspalte endet bei 50 % der
+  Containerbreite, die Fahrzeuge beginnen bei 33 % der Bildbreite, also
+  muss `1 − 0,67 · W ≥ 0,5` gelten. Vorher hing die Fläche an der Zonenhöhe
+  und wurde auf einem 1024 × 900-Fenster 1156 px breit – der Chopper stand
+  unter dem Fließtext, gemessener Kontrast 2,8:1.
+- **Die weiche Kante links ist eine Maske an der Bildfläche**
+  (`mask-composite: intersect`, 16 rem nach rechts, 2 rem nach oben). Sie
+  funktioniert nur, weil die Fläche exakt das Seitenverhältnis des Motivs
+  trägt – an einer Fläche, die größer ist als das Bild, läge die Maske
+  neben der Kante. Vorher stand an der Bildkante eine senkrechte Naht
+  mitten in der Sektion.
+- **Gemessen** über 320 – 2560 px plus Querformat, je schlechtester
+  Textkasten über dem Bild (Buchstaben transparent gesetzt, Kopfzeile
+  ausgeblendet): 5,7:1 im ungünstigsten Fall (768 px), am Telefon 15 bis
+  19,8:1. Kein Überlauf, keine Konsolenfehler, Sektionshöhen unverändert
+  (844 von 844 px bei 390).
+
+**Porträt auf `/ueber-uns`: `person-poloshirt.jpg`.**
+
+- **Es ist erzeugt, und das ist nicht Auslegung.** Die Datei trägt ein
+  C2PA-Manifest: `c2pa.created`, `softwareAgent: ChatGPT / gpt-image`,
+  `digitalSourceType: trainedAlgorithmicMedia`, dazu
+  `c2pa.watermarked.unbound`. Kein bearbeitetes Foto, sondern ein erzeugtes
+  Bild mit unsichtbarer Wasserzeichnung.
+- **Deshalb steht dort kein Name** – nicht im Dateinamen, nicht im
+  Alt-Text, nicht in einer Bildunterschrift. Es ist genau die Stelle, an der
+  dieser Fehler am 02.09.2026 schon einmal stand („Thomas Zielke bei der
+  Arbeit" unter einem erfundenen Gesicht). Der Chip `KI-BILD` steht im Bild.
+- Der Rahmen ist hell statt Tinte (das Motiv ist vor Weiß freigestellt), und
+  die Bildfahrt ist weg – sie skaliert auf 110 % und hätte die Schuhe
+  abgeschnitten. 1400 × 1749 ist exakt 4:5, `object-cover` schneidet nichts.
+- **Offen für den Betreiber:** Ein echtes Foto ersetzt beides in einem
+  Schritt – Pfad aus `lib/data/generated-images.ts` nehmen, dann darf der
+  Name zurück in den Alt-Text.
+
+**Bildunterschriften der Werkstattbahn sind weg — 23.09.2026, auf Ansage.**
+Was zu sehen ist, steht weiterhin im `alt` jeder Aufnahme; unter dem Bild war
+es eine zweite, kürzere Fassung derselben Aussage. Mit ihnen fallen drei
+Behelfe weg, die es nur ihretwegen gab: das `<figure>` um die Kachel, die
+Umgehung seiner Mindestbreite (`w-0 min-w-full`) und der feste Textkasten
+(`min-h-[2lh]`), der die ausgefranste Unterkante wieder gerade zog. Die
+Kachel ist jetzt selbst das Flex-Kind. Das Feld `caption` ist aus
+`lib/data/workshop-photos.ts` entfernt — ein Feld, das niemand liest, läuft
+beim nächsten Eingriff auseinander; der Wortlaut steht in der Historie.
+Gemessen 390 und 1512 px: alle sieben Kacheln auf einer Unterkante (580 bzw.
+684 px), kein Überlauf, kein Bild ohne `alt`.
+
+**Das Fahrzeugmenü im Kopf trägt nur noch die Namen — 23.09.2026, auf
+Ansage.** Unter jedem Eintrag stand eine Zeile Erklärung („Der Stehroller für
+den täglichen Weg …"): vier Überschriften mit zwölf Zeilen Fließtext in einer
+256 px breiten Tafel, die man im Vorbeigehen öffnet. Ein Menü ist eine Liste
+von Wegen, kein Text. Jetzt vier Namen im Grundschriftgrad, je 44 px hoch,
+Tafel 208 statt 256 px breit. Das Feld `blurb` ist aus `lib/data/vehicles.ts`
+und `vehicleNav` entfernt — es hatte keinen zweiten Leser, und die Sätze
+stehen ohnehin als `lead` auf den Kategorieseiten.
+
+**Nachgezogen am selben Tag, auf Ansage („größer und etwas mehr Abstand"):**
+Namen auf 1,25 rem (Untertitelgrad) statt 1,0625, Zeilen 48 statt 44 px,
+2 px Fuge dazwischen, Tafel 240 statt 208 px breit, Innenabstand 8 statt
+6 px. Gemessen 240 × 216 px, vier Flächen zu 222 × 48. Der Grad ist **fest,
+nicht fluid**: Die Tafel hängt an der Kopfzeile, nicht am Satzspiegel, und
+ist nur ab `lg` überhaupt sichtbar – über diesen Bereich ändert sich ihre
+Breite nicht, eine `clamp`-Angabe hätte dort nichts zu skalieren.

@@ -23,10 +23,11 @@ import type { VehicleKind } from "@/lib/data/vehicles";
  * landen kann, mit dem Bestand dieser Art und dem Weg zu einem Gerät.
  *
  * **Sie behauptet keinen Bestand.** `listByCategory` liest dieselbe Liste wie
- * jede andere Seite; steht dort kein Gerät dieser Art – und Stand heute steht
- * dort keines –, sagt die Seite genau das und zeigt den Anfrageweg. Sobald
- * ein Eintrag mit der passenden `category` in `lib/inventory.ts` liegt,
- * listet sie ihn, ohne dass jemand diese Datei anfassen muss. Ein
+ * jede andere Seite; steht dort kein Gerät dieser Art – Stand 20.09.2026 ist
+ * das nur noch beim E-Roller so –, sagt die Seite genau das und zeigt den
+ * Anfrageweg. Sobald ein Eintrag mit der passenden `category` in
+ * `lib/inventory.ts` liegt, listet sie ihn, ohne dass jemand diese Datei
+ * anfassen muss. Ein
  * Platzhalter-Gerät oder ein „ab"-Preis ohne Ware wäre an dieser Stelle eine
  * Tatsachenbehauptung über das Sortiment.
  */
@@ -73,14 +74,20 @@ export function VehicleCategoryPage({
           />
 
           {items.length > 0 ? (
-            /* Dasselbe Raster und dieselbe Karte wie auf der Bestandsseite –
-               inklusive `auto-rows-fr`, damit alle Karten einer Reihe gleich
-               hoch sind. Zwei Auslagen mit zwei Kartenformen wären zwei
-               Bausteine. */
-            <ul className="mt-12 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            /* Dasselbe Raster und dieselben beiden Kartenformen wie auf der
+               Bestandsseite: am Telefon die Zeilenkarte, ab `sm` das Quadrat
+               im Raster. Zwei Auslagen mit zwei Kartenformen wären zwei
+               Bausteine, von denen einer beim nächsten Mal anders aussieht.
+
+               `auto-rows-fr` erst ab `sm`: Einspaltig gibt es keinen
+               Nachbarn, an dem sich etwas ausrichten könnte, und `fr` gäbe
+               jeder Karte die Höhe der größten – dieselbe Entscheidung wie
+               im Bestandsfilter. */
+            <ul className="mt-10 grid gap-3 sm:mt-12 sm:auto-rows-fr sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {items.map((item) => (
                 <li key={item.id} className="flex">
-                  <InventoryCard item={item} />
+                  <InventoryCard item={item} layout="row" className="sm:hidden" />
+                  <InventoryCard item={item} className="hidden sm:flex" />
                 </li>
               ))}
             </ul>
@@ -172,7 +179,28 @@ export function VehicleCategoryPage({
         ]}
       />
 
-      <CtaBand />
+      {/* Der Abschluss muss von dieser Seite handeln. Die Voreinstellung
+          fragt, „was der Scooter macht", und schickt nach `/kontakt` – auf
+          einer Seite über E-Chopper ist das erste die falsche Gattung und
+          das zweite der Verlust der Vorauswahl im Formular, das eine Sektion
+          höher steht. Dieselbe Regel wie auf `/e-scooter`. */}
+      <CtaBand
+        formHref="#anfrage"
+        eyebrow="Kauf"
+        title={
+          <>
+            <Mark>Ansehen</Mark> geht am besten vor Ort.
+          </>
+        }
+        /* Ohne Bestand kein „steht bereit": Das wäre eine Zusage über Ware,
+           die es gerade nicht gibt. Die Überschrift trägt beide Fälle – der
+           Laden steht auch dann, wenn diese eine Art gerade fehlt. */
+        text={
+          items.length > 0
+            ? `Im Kampfrad 3 in Neuenstadt am Kocher. Kurz anrufen, dann steht der passende ${kind.name} bereit, wenn Sie kommen.`
+            : `Im Kampfrad 3 in Neuenstadt am Kocher. Ein ${kind.name} steht gerade nicht da – sagen Sie uns im Formular oben, was Sie suchen.`
+        }
+      />
     </>
   );
 }

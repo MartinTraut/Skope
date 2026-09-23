@@ -282,7 +282,7 @@ export default function ScooterPage() {
                       layout="row"
                       className="sm:hidden"
                     />
-                    <InventoryCard item={item} className="hidden w-full sm:flex" />
+                    <InventoryCard item={item} className="hidden sm:flex" />
                   </li>
                 ))}
               </InventoryBrowser>
