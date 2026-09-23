@@ -1157,6 +1157,25 @@
    */
   .hero-stage-scrim {
     background-image:
+      /* Streifen für den festen Seitenkopf – dieselbe Aufgabe wie in
+         `.hero-scrim`, hier seit dem 23.09.2026 nötig.
+
+         Ungescrollt hat die Kopfzeile keine eigene Fläche und liegt direkt
+         auf der Aufnahme. Mit dem Hochformat reicht die Aufnahme bis an den
+         oberen Rand der Bühne, und je kürzer das Fenster, desto weiter oben
+         steht das Motiv darin: Gemessen bei 320 × 568 lag der grüne
+         Lenkergriff genau hinter dem Wortzeichen – 1,2:1. Bei 360 px und
+         darüber steht dort die dunkle Decke (11,8 bis 17,5:1), der Streifen
+         kostet also nichts; er greift nur dort, wo der Zuschnitt eng wird.
+
+         Er läuft bis 8 rem aus und endet damit vor `--hero-head`, wo der
+         eigentliche Textschleier beginnt. */
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ink) 88%, transparent) 0,
+        color-mix(in oklab, var(--color-ink) 62%, transparent) 4.5rem,
+        transparent 8rem
+      ),
       /* Der Schleier über dem Text. Er ist oben leicht (Auszeichnung im
          Bild), gibt in der Mitte den Roller frei, wird an `--hero-head`
          dicht und bleibt es über die ganze Textstrecke – 17 rem, weil die

@@ -100,7 +100,7 @@ export default function HomePage() {
       <Workshop />
       <Pillars />
       <Testimonials />
-      <Region />
+      <Region space="tight" />
 
       <Section id="faq" tone="silver">
         <FaqSection

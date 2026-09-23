@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import type { CSSProperties } from "react";
 
 import { GoogleMark } from "@/components/brand/google-mark";
@@ -68,6 +68,52 @@ const stats = [
     short: "reparierte E-Scooter",
   },
 ];
+
+/**
+ * Die Beschreibung steht einmal, nicht dreimal.
+ *
+ * Beide Fassungen zeigen dasselbe Motiv; drei abweichende Alt-Texte an drei
+ * Flächen derselben Aufnahme wären drei Stellen, die beim nächsten Eingriff
+ * auseinanderlaufen.
+ */
+const heroAlt =
+  "Drei Elektrofahrzeuge nebeneinander in einer dunklen Halle mit grünen Leuchtbändern: ein E-Chopper mit tiefem Sitz, ein E-Scooter und ein E-Roller mit Sitzbank";
+
+/**
+ * Ein transparentes Pixel als Rückfall im `<picture>`.
+ *
+ * Ein `<img>` lädt immer etwas – auch wenn sein Vorfahr `display: none` trägt
+ * und auch dann, wenn eine Klasse ihn erst ab einem Breakpunkt zeigt. Wo eine
+ * Fläche auf dieser Breite gar kein Motiv tragen soll, muss deshalb ein Ziel
+ * stehen, das keine Anfrage auslöst. Eine Datenadresse tut das.
+ */
+const BLANK =
+  "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+
+/* Die Kandidatenlisten kommen aus Next, nicht von Hand: `getImageProps`
+   liefert genau das `srcSet`, das `<Image>` auch schreiben würde – nur eben
+   als Werte, die sich an ein `<source>` mit Medienabfrage hängen lassen.
+   `quality: 90` braucht den Eintrag `images.qualities` in `next.config.ts`,
+   sonst verwirft Next die Angabe stumm und liefert 75. */
+const { props: hoch } = getImageProps({
+  src: "/img/hero-fahrzeuge-hoch.jpg",
+  alt: heroAlt,
+  fill: true,
+  quality: 90,
+  sizes: "100vw",
+});
+
+/* Dieselbe `sizes`-Angabe für Tablet und Schreibtisch, damit beide denselben
+   Kandidaten wählen: Unterhalb von 104 rem sind `100vw` und
+   `min(100vw, 104rem)` derselbe Wert, und eine gemeinsame Angabe heißt eine
+   Datei im Zwischenspeicher statt zweier Breiten derselben Aufnahme. */
+const { props: quer } = getImageProps({
+  src: "/img/hero-fahrzeuge.jpg",
+  alt: heroAlt,
+  fill: true,
+  quality: 90,
+  sizes: "min(100vw, 104rem)",
+});
 
 export async function Hero() {
   const googleRating = await getGoogleRating();
@@ -187,20 +233,32 @@ export async function Hero() {
               Zone: An ihr hängen Schleier und Auslauf in die Tinte, deren
               Stopps auf die gemessenen Kontraste gerechnet sind. */}
           <div className="hero-figure absolute right-0 bottom-0 aspect-[2400/1351] w-[74%] max-h-[calc(100%-var(--header-h)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem)]">
-            <Image
-              src="/img/hero-fahrzeuge.jpg"
-              alt="Drei Elektrofahrzeuge nebeneinander in einer dunklen Halle mit grünen Leuchtbändern: ein E-Chopper mit tiefem Sitz, ein E-Scooter und ein E-Roller mit Sitzbank"
-              fill
-              priority
-              /* Next optimiert ohne Angabe mit `quality: 75`. Bei diesem
+            {/* Nur ab `lg` wird hier überhaupt etwas geholt.
+
+                Vorher stand an dieser Stelle ein `<Image priority>`. Sein
+                Vorladehinweis steht im Dokumentkopf und kennt keine
+                CSS-Klasse: Seit am Telefon eine *andere* Datei liegt, hätte
+                er dort die Schreibtischfassung zusätzlich geholt. Die
+                Medienabfrage am `<source>` entscheidet vor dem Laden, der
+                Rückfall ist ein transparentes Pixel. */}
+            <picture>
+              <source
+                media="(min-width: 64rem)"
+                srcSet={quer.srcSet}
+                sizes={quer.sizes}
+              />
+              <img
+                src={BLANK}
+                alt={heroAlt}
+                style={quer.style}
+                /* Next optimiert ohne Angabe mit `quality: 75`. Bei diesem
                  Motiv ist das sichtbar: 1672 px Quellbreite werden auf einem
                  Retina-Schirm über 1664 px CSS gezogen, und die Kanten der
                  Felgen und Leuchtbänder fallen in der Quantisierung zuerst.
                  Gemessen 90 statt 75: 214 statt 138 kB bei 1920 px. */
-              quality={90}
-              sizes="min(100vw, 104rem)"
-              className="object-cover object-[64%_center] lg:object-[right_bottom]"
-            />
+                className="object-cover object-[64%_center] lg:object-[right_bottom]"
+              />
+            </picture>
           </div>
           {/* Der Schleier trennt Leuchten von Lesbarkeit – siehe .hero-scrim. */}
           <div className="hero-scrim absolute inset-0" />
@@ -227,108 +285,106 @@ export async function Hero() {
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
         </div>
 
-        {/* Dieselbe Aufnahme für das Telefon – aber als Bühne über dem Text,
-            nicht als Grund hinter der ganzen Sektion.
+        {/* Die Bühne unter `lg` – am Telefon ein Hochformat, auf dem
+            Tablet das Querformat.
 
-            Über die volle Sektionshöhe gelegt bleibt bei 390 px nichts vom
-            Motiv übrig: Die Sektion ist 1630 px hoch, die Aufnahme 2400 × 1507.
-            `object-cover` skaliert dann über die Höhe (Faktor 1,08), das Bild
-            wird 2600 px breit, und sichtbar sind 15 % davon – ein Ausschnitt
-            der Trittfläche. Auf eine Zone von 26 rem begrenzt liegt der Faktor
-            bei 0,28, sichtbar sind 59 % der Breite, und der Roller steht
-            vollständig darin.
+            **Zwei Dateien, und das ist der Punkt.** Bis zum 23.09.2026 lag
+            hier dieselbe 16:10-Aufnahme wie am Schreibtisch. Gemessen wurde
+            daraus bei 390 × 844 ein Band von 390 × 220 px in einer 644 px
+            hohen Bühne: 66 % leere Tinte darüber, die drei Fahrzeuge 108 px
+            hoch – 12,8 % der Bildhöhe –, das linke Drittel leere Halle. Ein
+            Zuschnitt behebt das nicht. Die Fahrzeuge stehen im Querformat
+            nebeneinander und brauchen 60 % der Bildbreite; was hochkant fehlt,
+            ist keine Ausschnittfrage, sondern Bildfläche, die es nicht gibt.
+
+            Das Hochformat (941 × 1672, auf 1400 px gerechnet) füllt die Bühne
+            dagegen ganz. Gemessen an der Kantenenergie stehen die Fahrzeuge
+            zwischen 34 % und 79 % der Bildhöhe; die oberen 30 % sind dunkle
+            Decke mit zwei Leuchtbändern – genau der Grund, den Überschrift und
+            Beleg brauchen. Der Text steht damit nicht mehr *neben* dem Motiv
+            auf leerer Tinte, sondern darauf.
+
+            **`object-bottom` ist die Antwort auf das Rutschen.** Die Bühne
+            hängt an der Fensterhöhe, und die ändert sich in Safari mit der
+            Adressleiste. Vorher wanderte die Bildfläche dabei 1:1 mit
+            (+100 px Fensterhöhe = +100 px Versatz, während die Überschrift
+            10 px wanderte). Unten verankert wächst die Bühne nach **oben** in
+            die dunkle Decke hinein: Die Fahrzeuge behalten ihren Abstand zum
+            Kennzahlenband, und die gewonnene Strecke fällt dorthin, wo ohnehin
+            nichts steht.
 
             Die Fläche läuft bis an beide Gehäusekanten (`w-screen`), weil ein
             Motiv, das im Satzspiegel endet, auf dem Telefon eine Tafel wäre –
             und eine Tafel war hier schon.
 
-            Der Verlauf ist dreiteilig: oben leicht abgedunkelt für die
-            Auszeichnungszeile, in der Mitte offen für den Roller, unten dicht,
-            damit die Überschrift darauf steht und die Zone ohne Kante in die
-            Tinte übergeht. */}
-        <div className="pointer-events-none absolute top-0 left-1/2 -z-10 bottom-0 w-screen -translate-x-1/2 overflow-hidden sm:bottom-auto sm:h-[max(min(58svh,26rem),min(56vw,26rem))] lg:hidden">
-          {/* Die Aufnahme beginnt unter der Kopfzeile, nicht am oberen Rand
-              der Bühne.
+            **Warum `<picture>` und nicht zwei `<Image>`.** Beide Flächen im
+            Kopfbereich trugen bisher dieselbe Datei mit derselben
+            `sizes`-Angabe; deshalb war es eine Anfrage, gleich welche Fläche
+            gerade sichtbar war (gemessen bei 390 px: genau eine). Zwei
+            *verschiedene* Dateien holt der Browser dagegen beide – `hidden`
+            hält ein Bild nicht vom Laden ab, und `priority` schreibt ohnehin
+            ein `<link rel="preload">` in den Kopf, das keine CSS-Klasse kennt.
+            Eine Medienabfrage am `<source>` ist die eine Stelle, die vor dem
+            Laden entscheidet. `getImageProps` liefert dafür die von Next
+            gerechneten Kandidaten, es wird also nichts an der Optimierung
+            vorbeigebaut. */}
+        <div className="pointer-events-none absolute top-0 bottom-0 left-1/2 -z-10 w-screen -translate-x-1/2 overflow-hidden sm:bottom-auto sm:h-[max(min(58svh,26rem),min(56vw,26rem))] lg:hidden">
+          {/* **Die Fläche hängt an ihrer Breite, nicht an der Fensterhöhe.**
 
-              Der Grund ist die Deckung: `object-cover` skaliert hier über die
-              Höhe (Bühne 390 × 416, Aufnahme 2400 × 1507), der Roller füllt
-              also immer die volle Höhe der Fläche, in der er liegt – sein
-              Lenker klebte damit an der Oberkante und lief quer durch das
-              Wortzeichen der Kopfzeile. Kein Bildausschnitt behebt das:
-              `object-position` in der Senkrechten ist wirkungslos, solange die
-              Aufnahme in der Höhe hineinpasst.
+              Das ist der eigentliche Riegel gegen das Rutschen. Ein
+              `object-cover` über die ganze Bühne rechnet seinen Ausschnitt
+              aus *beiden* Maßen; wird das Fenster höher, wandert der
+              Ausschnitt und mit ihm die Fahrzeuge. Mit dem Seitenverhältnis
+              der Aufnahme (941/1672) folgt die Höhe allein der Breite, und
+              unten verankert steht der Werkstattboden immer auf derselben
+              Linie über dem Kennzahlenband. Die gewonnene Strecke wird oben
+              zu Tinte.
 
-              Deshalb eine eigene Fläche, die 4 rem tiefer anfängt. Der Roller
-              wird dadurch rund 15 % kleiner und sitzt mit seinem Lenker gut
-              20 px unter der Kopfzeile. Der Verlauf darüber bleibt an der
-              Bühne und damit unverändert – die gemessenen Kontraste hinter
-              Überschrift und Fließtext hängen an seinen Stopps.
+              Ab `sm` gilt das nicht: Dort ist die Bühne ein 26-rem-Band, und
+              darin soll das Querformat vollständig stehen. */}
+          <div className="absolute inset-x-0 bottom-0 aspect-[941/1672] sm:inset-0 sm:aspect-auto">
+            <picture>
+              {/* Ab `lg` trägt die Fläche darüber das Motiv – hier nichts
+                laden. Die Reihenfolge entscheidet: Der erste passende
+                `<source>` gewinnt. */}
+              <source media="(min-width: 64rem)" srcSet={BLANK} />
+              <source
+                media="(min-width: 40rem)"
+                srcSet={quer.srcSet}
+                sizes={quer.sizes}
+              />
+              {/* Kein `next/image` mehr an dieser Stelle, sondern das `<img>`,
+                das `getImageProps` beschreibt: Ein `<Image>` innerhalb eines
+                `<picture>` würde seine eigenen Kandidaten mitbringen und die
+                Medienabfrage am `<source>` ins Leere laufen lassen.
 
-              Die Maske nimmt der neuen Oberkante die Kante: Ohne sie stünde
-              bei 4 rem eine waagerechte Naht zwischen leerer Tinte und dem zu
-              62 % durchscheinenden Bild.
-
-              **Die Höhe dieser Fläche ist gedeckelt (15.09.2026).** Sie hing
-              vorher allein an der Bühne, und die füllt seit dem 06.09. den
-              ganzen ersten Bildschirm. Auf einem langen Telefon wird die
-              Fläche damit schmal und hoch – und `object-cover` skaliert über
-              die Höhe, zeigt also nur einen senkrechten Streifen der 2400 ×
-              1507 großen Aufnahme. Gemessen, wie viel Bildbreite übrig
-              bleibt: 46 % bei 360 × 780, 42 % bei 390 × 844, 30 % bei
-              440 × 1180, 26 % bei 390 × 1200. Der Roller selbst braucht
-              33,5 % der Bildbreite (Vorderrad bei 49 %, Hinterrad bei 82,5 %)
-              – unter 34 % passt er schlicht nicht mehr ins Bild, und bei
-              82 % Ausschnittlage fiel genau sein Vorderrad aus dem linken
-              Rand. Der Lenker stand dann als senkrechte Stange in der
-              Überschrift, vom Gerät war nichts zu erkennen.
-
-              Der Deckel `157vw` hält den Ausschnitt bei mindestens 40 % der
-              Bildbreite (2400 / 1507 / 0,40 = 1,57). Er greift erst, wenn das
-              Fenster länger ist, als die Aufnahme verträgt: bei 390 × 844
-              bleibt es bei 580 px, bei 440 × 1180 sind es 691 statt 914. Die
-              Fläche hängt dafür **unten** (`bottom-0`, Höhe statt `top`), der
-              Roller steht also weiter auf dem Boden der Bühne; die gewonnene
-              Strecke wird oben zu Tinte – genau dort, wo Überschrift und
-              Beleg ohnehin einen dichten Grund brauchen.
-
-              Der Ausschnitt liegt bei 74 % statt 82 %. Gerechnet steht die
-              Mitte des Sichtfensters damit über die ganze Spanne von 40 bis
-              46 % sichtbarer Breite bei 0,63 bis 0,64 – der Roller
-              (0,49 – 0,825) hat auf beiden Seiten Luft, statt an einer Kante
-              zu kleben. */}
-          <div className="hero-figure absolute inset-x-0 bottom-0 aspect-[2400/1351] max-h-full [mask-image:linear-gradient(to_bottom,transparent,black_2.5rem)]">
-            <Image
-              src="/img/hero-fahrzeuge.jpg"
-              alt="Drei Elektrofahrzeuge nebeneinander in einer dunklen Halle mit grünen Leuchtbändern: ein E-Chopper mit tiefem Sitz, ein E-Scooter und ein E-Roller mit Sitzbank"
-              fill
-              priority
-              quality={90}
-              sizes="100vw"
-              className="object-contain object-bottom"
-            />
+                `object-cover object-bottom` am Telefon, `object-contain` ab
+                `sm`: Dort ist die Bühne ein 26-rem-Band über die volle Breite,
+                und das Querformat soll darin vollständig stehen, nicht
+                beschnitten werden. */}
+              <img
+                {...hoch}
+                alt={heroAlt}
+                className="hero-figure absolute inset-0 size-full object-cover object-bottom sm:object-contain sm:object-bottom"
+              />
+            </picture>
           </div>
-          {/* Rechts, und so tief wie die Bühne es zulässt.
+          {/* Rechts unten auf dem Werkstattboden, unterhalb der Fahrzeuge.
 
-              Die untere Hälfte der Bühne ist besetzt: Gemessen bei 320 px
-              beginnt die Auszeichnungszeile bei 148 px, die Überschrift bei
-              207, der Fließtext bei 384 – die Bühne endet bei 416. Unterhalb
-              der Überschrift bleibt nirgends ein freier Streifen, und die
-              Bühne liegt mit `-z-10` *hinter* dem Text: Eine Marke dort wäre
-              nicht dezent, sondern von Buchstaben überdeckt und damit keine
-              Kennzeichnung mehr.
+              Die Fahrzeuge enden bei 79 % der Bildhöhe, darunter liegt nur
+              noch der spiegelnde Boden – dort steht die Marke frei und deckt
+              kein Motiv zu. Sie liegt über dem Verlauf, nicht darunter: Ein
+              Hinweis, den man suchen muss, ist keiner.
 
-              Frei ist genau der Streifen zwischen Kopfzeile und
-              Auszeichnungszeile. Dort steht sie rechts statt links und 1 rem
-              unter der Kopfzeile – 30 px unter dem Menüknopf (44 px), damit
-              sie nicht als dessen Beschriftung gelesen wird.
+              Unter 360 px steht sie höher (`bottom-[25%]`): Dort ist die
+              Bühne nur rund 412 px hoch, und `bottom-6` setzte sie gemessen
+              auf dieselbe Zeile wie „37 Rezensionen bei Google" – beides
+              stand nebeneinander. Auf 25 % liegt sie 63 px darüber und frei.
 
-              Der Abstand stand auf 2,75 rem und war seit der Straffung des
-              Kopfbereichs am 05.09. zu groß: Bei 320 px bricht die
-              Auszeichnungszeile zweizeilig um und begann bei 121 px, die
-              Marke lag von 116 bis 135 px – sie stand quer über der Zeile.
-              Jetzt 88 bis 107 px, gemessen 14 px darüber. */}
+              Ab `sm` wieder oben rechts unter der Kopfzeile, weil die Bühne
+              dort nur 26 rem hoch ist und ihr Fuß im Kennzahlenband steht. */}
           <GeneratedMark
-            src="/img/hero-fahrzeuge.jpg"
+            src="/img/hero-fahrzeuge-hoch.jpg"
             className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] min-[360px]:bottom-6 sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
           />
           <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />

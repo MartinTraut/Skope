@@ -200,7 +200,6 @@ export default function AboutPage() {
                 Die Werkstatt in <Mark>35</Mark> Sekunden.
               </>
             }
-            lead="Was hier passiert, wenn ein Gerät hereinkommt: messen statt raten, Preis vor der Arbeit, und was es außer der Reparatur noch gibt."
           />
           <ExplainerVideo
             className="mt-12"
@@ -219,11 +218,22 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      {/* Silber statt silver-200: Darüber steht der Film auf Tinte, darunter
-          `Region` auf silver-200 – im Standardton lägen hier zwei silberne
-          Sektionen ohne Kante aneinander. */}
-      <Testimonials tone="silver" />
-      <Region />
+      {/* Beide im Standardton, und `Region` mit halbem Kopfabstand.
+
+          Das Band stand hier bis zum 23.09.2026 auf Silber, damit sich die
+          Fläche zur Sektion darunter unterscheidet. Auf Ansage entfernt: Die
+          Tonstufe lief als waagerechte Linie quer unter den Zitatkarten
+          durch, und sie trennte zwei Blöcke, die zusammengehören – was Kunden
+          sagen und wo die Werkstatt liegt.
+
+          Ohne Tonwechsel trägt nichts mehr eine Zäsur, also darf auch nicht
+          der volle Abstand beider Sektionen stehen: Das wäre kein Absatz,
+          sondern ein Loch. `tight` nimmt `Region` den oberen Rand, die
+          Sektion darüber trägt ihn allein – gemessen 46 px am Telefon und
+          86 px auf 1512 zwischen Kartenunterkante und Überschrift. Die
+          Zäsur nach oben trägt weiter die Kante zum Film auf Tinte. */}
+      <Testimonials />
+      <Region space="tight" />
 
       <CtaBand
         eyebrow="Kennenlernen"

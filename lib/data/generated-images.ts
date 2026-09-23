@@ -52,6 +52,21 @@ export const generatedImages = new Set([
      und behauptet nichts über den Betrieb; die Kennzeichnung braucht es
      trotzdem, weil es als Foto gelesen wird. */
   "/img/hero-fahrzeuge.jpg",
+  /* Dasselbe Motiv als Hochformat, am Telefon seit dem 23.09.2026.
+
+     Es ist eine eigene Aufnahme und kein Zuschnitt des Querformats: Der
+     Betreiber hat sie mit ChatGPT als 941 × 1672 erzeugt, das C2PA-Manifest
+     der Quelldatei weist sie aus. Ausgeliefert wird sie auf 1400 px
+     hochgerechnet (`lanczos3` plus Unschärfemaske) – die Quelle reicht für
+     ein Telefon mit dreifacher Pixeldichte sonst nicht.
+
+     Warum überhaupt zwei Dateien: Am Telefon ist die Bühne hochkant, das
+     Querformat musste dort in ein 220-px-Band gezwängt werden, in dem die
+     Fahrzeuge 108 px hoch standen. Ein Zuschnitt löst das nicht – die drei
+     Fahrzeuge stehen im Querformat nebeneinander und brauchen 60 % der
+     Bildbreite. Zwei Fassungen desselben Motivs sind hier der Unterschied
+     zwischen einem Kopfbereich und einer Fußleiste. */
+  "/img/hero-fahrzeuge-hoch.jpg",
   /* Porträt auf `/ueber-uns`, eingesetzt am 23.09.2026.
 
      **Es ist erzeugt, und das steht nicht zur Auslegung.** Die Datei kam als

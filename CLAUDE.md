@@ -2260,3 +2260,159 @@ Namen auf 1,25 rem (Untertitelgrad) statt 1,0625, Zeilen 48 statt 44 px,
 nicht fluid**: Die Tafel hängt an der Kopfzeile, nicht am Satzspiegel, und
 ist nur ab `lg` überhaupt sichtbar – über diesen Bereich ändert sich ihre
 Breite nicht, eine `clamp`-Angabe hätte dort nichts zu skalieren.
+
+## Vollbild der Gerätegalerie — 23.09.2026
+
+Auf Ansage („wenn ich auf Bilder vergrößern drücke, spackt es und nimmt das
+ganze Display ein, dass ich nicht mehr rauskomme"). Zwei Befunde, beide
+gemessen bei 390 × 844 gegen den Produktionsbuild.
+
+- **Man kam wirklich nicht heraus.** Der einzige Weg hinaus war das Kreuz
+  oben rechts, und das lag auf 16 px – bei `viewport-fit=cover` also unter
+  Statusleiste und Aussparung. Escape gibt es am Telefon nicht, der Zoom ist
+  gesperrt, und der dokumentierte „Klick auf den Grund schließt" lief ins
+  Leere: Die innere Fläche füllt den ganzen Dialog, `event.target` war also
+  nie der Dialog selbst. Gemessen: Tipp an den Rand und Tipp auf das Bild –
+  beide Male blieb die Überlagerung offen.
+- **„Vermischt" war `bg-ink/95`.** Fünf Prozent Durchsicht reichen, wenn
+  darunter silberne Schrift auf Tinte steht: Wortzeichen, Brotkrume,
+  Vorschaureihe und die Überschrift der Seite standen lesbar im Bild. Jetzt
+  deckende Tinte, auch am `::backdrop`.
+
+Was dabei entschieden wurde:
+
+- **Drei Gesten, die jede Bildansicht hat:** Tipp (unter 10 px Weg) schließt,
+  Wisch nach unten (über 80 px, deutlich senkrechter als waagerecht) schließt,
+  Wisch quer blättert – dieselben Schwellen wie in der kleinen Galerie. Ein
+  Baustein, der an einer Stelle wischen kann, muss es überall können.
+- **Knöpfe sind von der Geste ausgenommen** (`event.target.closest("button")`).
+  Wer auf den Pfeil tippt, will blättern und nicht schließen.
+- **`touch-action: none` an der Vollbildfläche.** Die senkrechte Richtung wird
+  hier selbst gebraucht, und es gibt nichts zu scrollen: Der Körper steht
+  währenddessen auf `position: fixed`.
+- **`h-dvh` statt `h-full`.** Ein modaler Dialog rechnet `100 %` gegen den
+  *großen* Darstellungsbereich; in iOS Safari liegt die Bedienleiste darüber
+  und die Pfeilreihe am Fuß verschwindet darunter.
+- **Aussparungsschutz** am Kreuz (`max(1rem, env(safe-area-inset-top/right))`)
+  und an der Pfeilreihe (`max(1.5rem, env(safe-area-inset-bottom))`).
+
+Gemessen danach bei 390 × 844 und 1512 × 900: Wisch links 1/6 → 2/6, Wisch
+rechts zurück, Wisch nach unten schließt, Tipp schließt, Kreuz schließt,
+Escape schließt – und in jedem der fünf Fälle steht die Seite wieder auf
+ihrer alten Höhe (260 → 260 px), `position` des Körpers zurück auf `static`.
+Kein Überlauf, keine Konsolenfehler.
+
+**Eine Falle nebenbei:** Ein laufender `next start` auf 4312 liefert nach
+einem Neubau unformatierte Seiten – er hält den Build-Manifest vom Start in
+der Hand, und die CSS-Bündel haben beim Neubau andere Namen bekommen. Sieht
+aus wie ein kaputtes Stylesheet, ist ein alter Prozess. Nach jedem
+`npm run build` den Server neu starten.
+
+## Hochformat im Kopfbereich am Telefon — 23.09.2026
+
+Auf Ansage („nimm das fürs handy hero"), mit einer eigenen Aufnahme des
+Betreibers. Sie behebt zugleich den schwersten Befund des Gremiums vom selben
+Tag.
+
+**Es waren zwei Fehler, und beide hingen am Querformat.** Gemessen bei
+390 × 844: Die 16:10-Aufnahme lag als Band von 390 × 220 px in einer 644 px
+hohen Bühne — 66 % darüber leere Tinte, die drei Fahrzeuge 108 px hoch
+(12,8 % der Bildhöhe), das linke Drittel leere Halle. Und die Bildfläche hing
+am Fensterboden, der Text am Fensterkopf: **+100 px Fensterhöhe = +100 px
+Bildversatz bei +10 px Textversatz**, über sechs Telefonformate eine Spanne
+von 257 px gegen 36 px. Das war das „Rumrutschen", wörtlich.
+
+- **`hero-fahrzeuge-hoch.jpg` ist eine eigene Aufnahme, kein Zuschnitt.**
+  941 × 1672 aus ChatGPT (C2PA-Manifest in der Quelldatei), ausgeliefert auf
+  1400 px gerechnet (`lanczos3` plus Unschärfemaske, q92, 4:4:4). Ein
+  Zuschnitt des Querformats geht nicht: Die drei Fahrzeuge stehen dort
+  nebeneinander und brauchen 60 % der Bildbreite. Der Pfad steht in
+  `lib/data/generated-images.ts` — die Kennzeichnung ist Pflicht wie bei den
+  anderen acht.
+- **Gemessen an der Kantenenergie stehen die Fahrzeuge zwischen 34 % und
+  79 % der Bildhöhe.** Die oberen 30 % sind dunkle Decke mit zwei
+  Leuchtbändern, also der Grund, den Überschrift und Beleg brauchen. Der Text
+  steht jetzt *auf* dem Motiv statt daneben auf leerer Tinte.
+- **Die Bildfläche hängt an ihrer Breite, nicht an der Fensterhöhe.** Das ist
+  der Riegel gegen das Rutschen: `aspect-[941/1672]` plus `bottom-0`. Die
+  Höhe folgt allein der Breite, der Werkstattboden steht immer auf derselben
+  Linie über dem Kennzahlenband, die gewonnene Strecke wird oben zu Tinte.
+  Gemessen nach dem Umbau: Bildmaß bei +100 px Fensterhöhe unverändert
+  (390 × 694 → 390 × 693), vorher wuchs es von 644 auf 744.
+- **`<picture>` mit Medienabfrage statt zweier `<Image>`.** Bisher trugen
+  Telefon- und Schreibtischfläche *dieselbe* Datei mit derselben
+  `sizes`-Angabe — deshalb war es eine Anfrage, gleich welche sichtbar war.
+  Zwei verschiedene Dateien holt der Browser beide: `hidden` hält ein Bild
+  nicht vom Laden ab, und `priority` schreibt ein `<link rel="preload">` in
+  den Kopf, das keine CSS-Klasse kennt. Die Kandidaten kommen aus
+  `getImageProps`, es wird also nichts an Nexts Optimierung vorbeigebaut.
+  **Wo eine Fläche auf einer Breite kein Motiv tragen soll, steht ein
+  transparentes Pixel als Datenadresse** (`BLANK`) — ein `<img>` lädt sonst
+  immer etwas. Gemessen: genau eine Bildanfrage je Breite (390/430 das
+  Hochformat, 768/1512 das Querformat).
+- **`images.qualities` in `next.config.ts`.** Next 16 nimmt `quality` am
+  `<Image>` nur an, wenn der Wert dort steht, und fällt sonst **stumm** auf
+  75 zurück. Gemessen vorher: beide Kopfbilder trugen `quality={90}`,
+  ausgeliefert wurde auf jeder Breite `q=75`. Der Eintrag vom 23.09. („214
+  statt 138 kB") beschrieb einen Zustand, den der Build nie hatte. Wer an
+  einem Grad-Token für Bilder schraubt, prüft die ausgelieferte URL.
+- **Der Bühnenverlauf hat einen eigenen Streifen für die Kopfzeile bekommen**
+  (88 % bei 0, 62 % bei 4,5 rem, aus bei 8 rem). Grund: Mit dem Hochformat
+  reicht die Aufnahme bis an den oberen Rand der Bühne, und je kürzer das
+  Fenster, desto weiter oben steht das Motiv darin. Gemessen bei 320 × 568
+  lag der grüne Lenkergriff hinter dem Wortzeichen — **1,2:1**. Danach
+  8,0:1; bei 360 bis 430 px stand dort ohnehin die dunkle Decke, der Streifen
+  kostet dort nichts.
+- **Die KI-Marke steht unter 360 px wieder höher** (`bottom-[25%]`). Bei
+  320 px ist die Bühne nur rund 412 px hoch, und `bottom-6` setzte sie
+  gemessen auf dieselbe Zeile wie „37 Rezensionen bei Google".
+
+**Gemessene Kontraste** (Text ausgeblendet, hellster Punkt im Zeilenkasten,
+Weiß darauf): Wortzeichen 8,0 / 19,3 / 19,0 / 18,5:1 und H1 5,0 / 4,6 / 6,8 /
+10,0:1 bei 320 / 360 / 390 / 430 px, Google-Zeile überall über 14:1.
+
+**320 × 568 bleibt die bekannte Ausnahme:** Dort läuft die H1 über vier
+Zeilen und die letzte Kennzahlenreihe steht unter der Falz.
+
+## Tonkante unter den Kundenstimmen — 23.09.2026
+
+Auf Ansage („entfern diese linie zwischen den bewertungen"). Es war kein
+Rahmen, sondern eine **Tonstufe**: Auf `/ueber-uns` stand das Zitatband auf
+Silber, `Region` darunter auf Silber-200 — die Kante zwischen beiden Flächen
+las sich als waagerechter Strich quer unter den Zitatkarten.
+
+- **Beide stehen jetzt im Standardton.** Damit trennt nichts mehr zwei
+  Blöcke, die zusammengehören: was Kunden sagen und wo die Werkstatt liegt.
+- **`Region` hat dafür ein `space`-Prop bekommen** und steht auf beiden
+  Seiten auf `tight`. Ohne Tonwechsel trägt nichts eine Zäsur, also darf auch
+  nicht der volle Abstand beider Sektionen stehen — das wäre kein Absatz,
+  sondern ein Loch (das Gremium hatte auf der Startseite 128 px am Telefon
+  gemessen). Gemessen danach 46 px am Telefon, 86 px auf 1512.
+- Die Zäsur nach oben trägt auf `/ueber-uns` weiter die Kante zum Film auf
+  Tinte.
+- **Die Haarlinie über der Unterschrift in der Zitatkarte ist ebenfalls weg**
+  (`border-t`, auf Nachfrage desselben Tages). Sie stand dort, weil Zitat und
+  Unterschrift am Schreibtisch beide linksbündig laufen und die Linie die
+  einzige Kante zwischen ihnen war. Auf der Karte ist sie aber der dritte
+  waagerechte Strich neben Sternreihe und Kartenkante, und sie trennt zwei
+  Teile derselben Aussage: was jemand geschrieben hat und wer es war. Der
+  Innenabstand bleibt — ohne Linie ist er der Abstand zwischen Zitat und
+  Unterschrift statt der Abstand zu ihr. Der frühere Eintrag unter
+  „Kundenstimmen" („Am Schreibtisch bleibt sie") gilt damit nicht mehr.
+
+## Drei Fließtexte entfernt — 23.09.2026
+
+Auf Ansage, alle drei aus demselben Grund: Sie beschrieben, was unmittelbar
+darunter zu sehen war.
+
+- **Lead der Werkstattbahn** („Standort, Lager und Werkbank … keine
+  Symbolbilder"). Die Herkunft trägt die Überschrift („fotografiert"), den
+  Inhalt der `alt` jeder Aufnahme.
+- **Lead über dem Erklärfilm** („Was hier passiert, wenn ein Gerät
+  hereinkommt"). Er kündigte einen Film an, der sich in 35 Sekunden selbst
+  erklärt.
+- **Die Textalternative unter dem Film** steht nur noch als `sr-only` im
+  Baum. **Ganz streichen geht nicht:** Der Film hat keine Tonspur, für
+  jemanden, der ihn nicht sehen kann, gäbe es sonst nichts. Die
+  KI-Offenlegung darunter bleibt sichtbar — sie in ein `sr-only` zu schieben
+  wäre genau die Fußnote, die Art. 50 Abs. 4 ausschließt.

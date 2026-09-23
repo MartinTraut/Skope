@@ -57,12 +57,17 @@ export function ExplainerVideo({
           dort rund 130 Zeichen je Zeile, das Doppelte des Lesbaren. */}
       <figcaption className="mx-auto mt-5 max-w-[70rem] text-sm leading-relaxed text-current/70">
         <span className="block max-w-2xl">
-          {caption}{" "}
-          {/* Die Offenlegung steht in derselben Zeile wie die
-              Textalternative, nicht als eigener Absatz darunter: Sie gehört
-              zum Film, nicht zur Seite, und ein eigener Block würde sie zu
-              einer Fußnote machen. Sichtbar ohne Tippen und ohne Aufklappen –
-              das verlangt Art. 50 Abs. 4. */}
+          {/* Die Textalternative steht seit dem 23.09.2026 nur noch für
+              Screenreader im Baum, nicht mehr im Bild – auf Ansage. Sie
+              beschrieb in vier Zeilen den Inhalt eines Films, der direkt
+              darüber steht und sich in 35 Sekunden selbst erklärt. Sie ganz zu
+              streichen geht nicht: Der Film hat keine Tonspur, also gibt es
+              für jemanden, der ihn nicht sehen kann, sonst nichts. */}
+          <span className="sr-only">{caption} </span>
+          {/* Die Offenlegung bleibt sichtbar. Sie gehört zum Film, nicht zur
+              Seite, und Art. 50 Abs. 4 verlangt sie ohne Tippen und ohne
+              Aufklappen – ein `sr-only` wäre hier genau die Fußnote, die die
+              Vorschrift ausschließt. */}
           <span className="text-current/50">{generatedVideoNotice}.</span>
         </span>
       </figcaption>

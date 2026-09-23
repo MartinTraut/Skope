@@ -67,7 +67,6 @@ export function WorkshopGallery({
               Der Betrieb, <Mark>fotografiert</Mark>.
             </>
           }
-          lead="Standort, Lager und Werkbank in Neuenstadt am Kocher. Keine Symbolbilder – das sind die Container, in denen die Geräte stehen."
         />
         {/* Die Pfeile stehen über der Bahn, nicht auf den Bildern: Auf der
             Kachel läge ein Knopf über einer Aufnahme, die gerade deshalb hier

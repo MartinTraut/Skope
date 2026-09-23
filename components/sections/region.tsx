@@ -38,9 +38,22 @@ const allPlaces: { name: string; distance: string }[] = [
  * Silberstreifen, und das Band las sich als versehentlich stehengebliebener
  * Balken statt als Übergang in die nächste dunkle Sektion.
  */
-export function Region() {
+export function Region({
+  space,
+}: {
+  /**
+   * Durchgereicht an `Section`.
+   *
+   * `tight` ist hier der Regelfall, nicht die Ausnahme: `Region` folgt auf
+   * der Startseite und auf `/ueber-uns` unmittelbar auf das Zitatband, und
+   * beide stehen auf Silber-200. Wo die Fläche nicht wechselt, trägt nichts
+   * eine Zäsur – die vollen Abstände beider Sektionen sind dort kein Absatz,
+   * sondern ein Loch (gemessen 128 px am Telefon, 208 px auf 1512).
+   */
+  space?: "default" | "tight";
+}) {
   return (
-    <Section id="region" tone="silver-200" className="pb-0">
+    <Section id="region" tone="silver-200" space={space} className="pb-0">
       <Container>
         {/* Beide Spalten beginnen an derselben Oberkante.
 

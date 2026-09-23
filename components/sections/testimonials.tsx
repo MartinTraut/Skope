@@ -139,7 +139,19 @@ function QuoteCard({
           44 px hohen Kreis auf die Mitte eines 80 px hohen Textblocks und
           damit gut 30 px unter dessen Oberkante. Gemessen war das der
           zweite Teil des verrutschten Eindrucks. */}
-      <figcaption className="mt-auto flex items-start gap-3.5 border-t border-current/12 pt-5">
+      {/* Keine Haarlinie mehr über der Unterschrift (23.09.2026, auf Ansage).
+
+          Sie stand hier, weil Zitat und Unterschrift am Schreibtisch beide
+          linksbündig laufen und die Linie die einzige Kante zwischen ihnen
+          war. Auf der Karte ist sie aber der dritte waagerechte Strich neben
+          Sternreihe und Kartenkante – und sie trennt zwei Teile derselben
+          Aussage: was jemand geschrieben hat und wer es war. Die Trennung
+          leisten der Abstand und der Kreis links; das reicht, weil darunter
+          ohnehin ein anderer Schriftgrad steht.
+
+          Der Innenabstand bleibt: Ohne die Linie ist er kein Abstand *zu*
+          ihr mehr, sondern der Abstand zwischen Zitat und Unterschrift. */}
+      <figcaption className="mt-auto flex items-start gap-3.5 pt-5">
         {avatar}
         <span className="min-w-0">
           <span className="block font-display leading-snug font-semibold tracking-tight">

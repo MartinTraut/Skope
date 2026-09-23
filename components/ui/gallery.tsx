@@ -121,6 +121,69 @@ export function Gallery({
   };
 
   /**
+   * Die Bedienung **im** Vollbild. Sie fehlte vollständig: Die Überlagerung
+   * ließ sich nur über das Kreuz oben rechts schließen, und das ist am
+   * Telefon der schlechteste aller Wege – es liegt unter der Statusleiste
+   * (`viewport-fit=cover`), der Zoom ist gesperrt, eine Escape-Taste gibt es
+   * nicht, und der Klick auf den Grund lief ins Leere, weil die innere Fläche
+   * den ganzen Dialog füllt und `event.target` deshalb nie der Dialog selbst
+   * war. Gemessen: Tipp an den Rand, Tipp auf das Bild – beide Male blieb die
+   * Überlagerung offen.
+   *
+   * Jetzt drei Gesten, die jede Bildansicht hat:
+   *
+   * - **Tipp** (unter 10 px Weg) schließt. Das ist die Geste, die jeder
+   *   zuerst probiert.
+   * - **Wisch nach unten** (über 80 px, deutlich senkrechter als waagerecht)
+   *   schließt ebenfalls.
+   * - **Wisch quer** blättert – dieselben Schwellen wie in der kleinen
+   *   Galerie. Ein Baustein, der an einer Stelle wischen kann, muss es
+   *   überall können.
+   *
+   * Knöpfe sind ausgenommen: Wer auf den Pfeil tippt, will blättern und
+   * nicht schließen.
+   */
+  const zoomGesture = React.useRef<{
+    x: number;
+    y: number;
+    id: number;
+  } | null>(null);
+
+  const onZoomPointerDown = (event: React.PointerEvent) => {
+    zoomGesture.current = {
+      x: event.clientX,
+      y: event.clientY,
+      id: event.pointerId,
+    };
+  };
+
+  const onZoomPointerUp = (event: React.PointerEvent) => {
+    const start = zoomGesture.current;
+    zoomGesture.current = null;
+    if (!start || start.id !== event.pointerId) return;
+    if ((event.target as HTMLElement).closest("button")) return;
+
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+      closeZoom();
+      return;
+    }
+    if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) {
+      closeZoom();
+      return;
+    }
+    if (
+      images.length > 1 &&
+      Math.abs(dx) >= 44 &&
+      Math.abs(dx) > Math.abs(dy) * 1.5
+    ) {
+      step(dx < 0 ? 1 : -1);
+    }
+  };
+
+  /**
    * Vollbild über das native `<dialog>`: Es bringt Fokusfalle, Escape und die
    * Sperre für den Hintergrund mit. Eine nachgebaute Überlagerung müsste all
    * das von Hand haben – und hat es in der Praxis nie vollständig.
@@ -303,24 +366,39 @@ export function Gallery({
 
       {/* Vollbild. `object-contain` statt `cover`: Hier geht es darum, das
           ganze Gerät zu sehen – ein Ausschnitt wäre genau das Gegenteil des
-          Zwecks. Der Klick auf den Grund schließt, wie man es von jeder
-          Bildansicht erwartet. */}
+          Zwecks.
+
+          **Deckende Tinte, nicht 95 %.** Die fünf Prozent Durchsicht waren
+          auf dem Telefon der Befund „vermischt": Wortzeichen, Brotkrume,
+          Vorschaureihe und die Überschrift der Seite standen sichtbar im
+          Bild, weil silberne Schrift auf Tinte auch bei 5 % noch hell genug
+          ist. Eine Bildansicht, durch die man die Seite darunter liest, sieht
+          aus wie ein Fehler – und war hier einer.
+
+          **`h-dvh` statt `h-full`.** Ein modaler Dialog rechnet `100 %` gegen
+          den *großen* Darstellungsbereich; in iOS Safari liegt die
+          Bedienleiste darüber, und die Pfeilreihe am Fuß verschwindet
+          darunter. `dvh` folgt dem, was wirklich zu sehen ist. */}
       <dialog
         ref={dialogRef}
         onClose={releaseScroll}
-        onClick={(event) => {
-          if (event.target === dialogRef.current) closeZoom();
-        }}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") step(1);
           else if (event.key === "ArrowLeft") step(-1);
           else return;
           event.preventDefault();
         }}
-        className="m-0 h-full max-h-none w-full max-w-none bg-ink/95 text-silver on-dark backdrop:bg-ink/80"
+        className="m-0 h-dvh max-h-none w-full max-w-none bg-ink text-silver on-dark backdrop:bg-ink"
       >
         {zoomed ? (
-          <div className="relative flex h-full w-full flex-col">
+          /* `touch-action: none`: Die senkrechte Richtung wird hier gebraucht
+             (Wisch nach unten schließt), und es gibt nichts zu scrollen – der
+             Körper steht währenddessen auf `position: fixed`. */
+          <div
+            onPointerDown={onZoomPointerDown}
+            onPointerUp={onZoomPointerUp}
+            className="relative flex h-full w-full flex-col [touch-action:none]"
+          >
             <div className="relative min-h-0 flex-1">
               <Image
                 src={images[active].src}
@@ -331,7 +409,9 @@ export function Gallery({
               />
             </div>
 
-            <div className="flex items-center justify-center gap-4 px-4 pb-6">
+            {/* Aussparungsschutz: Ohne ihn liegt die Pfeilreihe am iPhone
+                unter dem Streifen der Startgeste. */}
+            <div className="flex items-center justify-center gap-4 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               {images.length > 1 ? (
                 <>
                   <button
@@ -361,7 +441,13 @@ export function Gallery({
               type="button"
               onClick={closeZoom}
               aria-label="Vollbild schließen"
-              className="absolute top-4 right-4 grid size-12 place-items-center rounded-full bg-ink/70 transition-colors duration-200 hover:bg-ink"
+              /* Der Knopf lag auf 16 px – bei `viewport-fit=cover` also am
+                 iPhone unter der Statusleiste und der Aussparung. Zusammen
+                 mit gesperrtem Zoom und fehlender Escape-Taste war das der
+                 Befund „ich komme nicht mehr raus". Jetzt hinter der
+                 Aussparung, mit Kante, damit er auf dunklen Aufnahmen nicht
+                 verschwindet. */
+              className="absolute top-[max(1rem,env(safe-area-inset-top))] right-[max(1rem,env(safe-area-inset-right))] grid size-12 place-items-center rounded-full border border-current/25 bg-ink/80 transition-colors duration-200 hover:bg-ink"
             >
               <X className="size-5" aria-hidden="true" />
             </button>
