@@ -546,7 +546,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
            der Menüliste an die Seite darunter weiter. Man wischt im Menü und
            bewegt die Seite dahinter – sichtbar, sobald das Menü wieder zugeht. */
         className={cn(
-          "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-h))] min-h-[calc(100svh-var(--header-h))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
+          "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-block))] min-h-[calc(100svh-var(--header-block))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
           "transition-[opacity,transform,visibility] duration-300 ease-out-quart motion-reduce:transition-none",
           open
             ? "visible translate-y-0 opacity-100"

@@ -52,9 +52,15 @@ export default function ScooterPage() {
 
   return (
     <>
+      {/* Auszeichnungszeile ohne das Siegel: Bei 390 px lief
+          „Generalüberholt · Skope-Qualitätssiegel" gesperrt über zwei Zeilen.
+          Beide Hälften stehen ohnehin im Lead zwei Zeilen tiefer
+          („Werkstattprüfung … mit Siegel"), und das Siegel ist das Thema der
+          ersten Sektion darunter – dort steht es groß und erklärt sich
+          selbst. „Generalüberholt" ist der Teil, der die Ware beschreibt. */}
       <PageHeader
         crumb="E-Scooter kaufen"
-        eyebrow="Generalüberholt · Skope-Qualitätssiegel"
+        eyebrow="Generalüberholt"
         title={
           <>
             Gebrauchte <span className="whitespace-nowrap">E-Scooter</span> mit{" "}
@@ -73,7 +79,28 @@ export default function ScooterPage() {
                 Ende der rechten Spalte versteckt, steht jetzt hier – direkt
                 neben dem Zeichen, für das sie bürgt. */}
             <Reveal className="lg:col-span-5">
-              <Seal className="seal-stamp w-full max-w-md" />
+              {/* **Unter `sm` auf 13 rem gedeckelt.**
+
+                  Gemessen füllte das Siegel am Telefon die ganze Spalte:
+                  342 px bei 390 px Fensterbreite, 382 bei 430 – also 41 bis
+                  45 Prozent einer Bildhöhe, und das auf der Seite, auf der
+                  jemand Geräte sehen will. Ein Zeichen, das so groß ist wie
+                  ein Produktfoto, behauptet, wichtiger zu sein als die Ware.
+
+                  Lesbar bleibt es: Die Schrift auf der Prägung ist bei 208 px
+                  noch größer als der Grundschriftgrad der Seite, und sie ist
+                  ohnehin Teil einer Zeichnung – der Inhalt steht als
+                  `alt`-Text und in der Liste darunter. */}
+              <Seal
+                className="seal-stamp w-full max-w-[13rem] sm:max-w-md"
+                /* **Keine `min()`-Terme.** Gemessen holte Chromium bei
+                   768 px mit `min(28rem, calc(100vw - 5rem))` die
+                   1920er-Fassung statt der 1080er – es löst den Ausdruck
+                   nicht auf und fällt still auf `100vw` zurück. Reine
+                   Stufen wirken: Ab 640 px deckelt `max-w-md` die Fläche
+                   ohnehin auf 28 rem, darunter gilt der Telefondeckel. */
+                sizes="(min-width: 640px) 28rem, 13rem"
+              />
               <dl className="mt-10 max-w-md border-t border-current/12">
                 <div className="flex items-baseline justify-between gap-6 border-b border-current/12 py-4">
                   <dt className="text-current/70">Gewährleistung</dt>
@@ -376,7 +403,7 @@ export default function ScooterPage() {
           Kante die beiden Themen trennt. */}
       <Section id="faq" tone="silver">
         <FaqSection
-          eyebrow="Häufige Fragen zum Kauf"
+          eyebrow="Häufige Fragen"
           title={
             <>
               Siegel, <Mark>Gewährleistung</Mark>, Service danach.

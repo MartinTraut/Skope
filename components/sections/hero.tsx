@@ -232,7 +232,7 @@ export async function Hero() {
               eine Tailwind-Klasse am Bild selbst verliert. Und nicht an die
               Zone: An ihr hängen Schleier und Auslauf in die Tinte, deren
               Stopps auf die gemessenen Kontraste gerechnet sind. */}
-          <div className="hero-figure absolute right-0 bottom-0 aspect-[2400/1351] w-[74%] max-h-[calc(100%-var(--header-h)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem)]">
+          <div className="hero-figure absolute right-0 bottom-0 aspect-[2400/1351] w-[74%] max-h-[calc(100%-var(--header-block)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem)]">
             {/* Nur ab `lg` wird hier überhaupt etwas geholt.
 
                 Vorher stand an dieser Stelle ein `<Image priority>`. Sein
@@ -362,10 +362,31 @@ export async function Hero() {
                 `sm`: Dort ist die Bühne ein 26-rem-Band über die volle Breite,
                 und das Querformat soll darin vollständig stehen, nicht
                 beschnitten werden. */}
+              {/* **Kein `.hero-figure` unter `lg`.**
+
+                Die Klasse skaliert 3,5 % über 1,1 s mit Ursprung unten. Am
+                Schreibtisch setzt sich damit ein freigestellter Gegenstand auf
+                seine Standfläche. Hier füllt das Motiv die ganze Bühne, und
+                dieselbe Skalierung verschiebt statt eines Gegenstands den
+                Bildausschnitt: Gemessen bei 390 px steht die Unterkante fest
+                (643,8 px), die Oberkante wandert von −73,5 auf −49,2 – die
+                drei Fahrzeuge sinken um bis zu 24 px, die Hälfte davon in den
+                ersten 200 ms. Das liest sich nicht als Auftritt, sondern als
+                ein Bild, das noch nicht fertig geladen ist.
+
+                Kleiner machen hilft nicht: Unter 4 px Versatz bliebe eine
+                Skalierung von 0,6 %, und das ist keine Bewegung mehr, sondern
+                nur noch eine Compositor-Ebene. Über `opacity` einblenden geht
+                erst recht nicht – die Aufnahme ist hier der LCP-Kandidat.
+
+                Auf dem Tablet gilt dasselbe und aus demselben Grund: Dort
+                liegt das Querformat `contain` in einem 26-rem-Band und füllt
+                es ebenso; gemessen wären es 14,5 px. Die Choreografie des
+                Kopfbereichs trägt unter `lg` also allein der Text. */}
               <img
                 {...hoch}
                 alt={heroAlt}
-                className="hero-figure absolute inset-0 size-full object-cover object-bottom sm:object-contain sm:object-bottom"
+                className="absolute inset-0 size-full object-cover object-bottom sm:object-contain sm:object-bottom"
               />
             </picture>
           </div>
@@ -385,7 +406,7 @@ export async function Hero() {
               dort nur 26 rem hoch ist und ihr Fuß im Kennzahlenband steht. */}
           <GeneratedMark
             src="/img/hero-fahrzeuge-hoch.jpg"
-            className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] min-[360px]:bottom-6 sm:top-[calc(var(--header-h)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
+            className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[25%] min-[360px]:bottom-6 sm:top-[calc(var(--header-block)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
           />
           <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
         </div>

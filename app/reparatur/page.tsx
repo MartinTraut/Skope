@@ -380,7 +380,7 @@ export default function RepairPage() {
       {/* FAQ */}
       <Section id="faq" tone="ink">
         <FaqSection
-          eyebrow="Häufige Fragen zur Reparatur"
+          eyebrow="Häufige Fragen"
           title={
             <>
               Was Kunden vor dem Werkstatttermin <Mark>fragen</Mark>.

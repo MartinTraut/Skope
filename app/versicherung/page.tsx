@@ -434,7 +434,7 @@ export default function InsurancePage() {
 
       <Section tone="silver">
         <FaqSection
-          eyebrow="Häufige Fragen zur Versicherung"
+          eyebrow="Häufige Fragen"
           title={
             <>
               <Mark>Pflicht</Mark>, Preis, Kennzeichen.

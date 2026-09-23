@@ -67,7 +67,10 @@ export function VehicleCategoryPage({
             eyebrow="Bestand"
             title={
               <>
-                {kind.plural} <Mark>im Bestand</Mark>.
+                {/* Ein Wort in Neon, nicht zwei: Die Farbe markiert laut
+                    Farbregel in `globals.css` genau ein Wort je Überschrift.
+                    „im" ist eine Präposition und trägt die Aussage nicht. */}
+                {kind.plural} im <Mark>Bestand</Mark>.
               </>
             }
             lead={description}

@@ -24,10 +24,13 @@ export function Seal({
   className,
   decorative = false,
   priority = false,
+  sizes = "(min-width: 640px) 28rem, calc(100vw - 3rem)",
 }: {
   className?: string;
   decorative?: boolean;
   priority?: boolean;
+  /** Breite der Fläche, in der das Siegel steht. Siehe unten. */
+  sizes?: string;
 }) {
   return (
     <Image
@@ -35,10 +38,14 @@ export function Seal({
       width={1000}
       height={1000}
       priority={priority}
-      /* Größter Einsatz ist derzeit `max-w-md` (448 px), auf Retina also
-         896 px. `sizes` deckelt entsprechend, damit nicht die volle
-         Kantenlänge ausgeliefert wird. */
-      sizes="28rem"
+      /* Der Deckel ist `max-w-md` (448 px) – aber nur, wo die Spalte so
+         breit ist. Am Telefon ist sie es nie: Dort steht das Siegel in der
+         vollen Spalte, gemessen 342 px bei 390 px Fensterbreite. Die feste
+         Angabe `28rem` ließ den Browser dort trotzdem für 448 px wählen und
+         bei dreifacher Pixeldichte 1344 statt 1026 px holen – rund ein
+         Drittel Bild für nichts, auf der Breite, auf der es am meisten
+         kostet. `min()` nimmt, was kleiner ist. */
+      sizes={sizes}
       alt={
         decorative
           ? ""

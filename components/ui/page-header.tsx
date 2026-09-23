@@ -62,7 +62,7 @@ export function PageHeader({
      alten Werte.
 
      **Der Vorlauf darf nie kleiner sein als die Kopfzeile.** Er steht
-     deshalb in einem `max()` gegen `calc(var(--header-h) + 1.5rem)`.
+     deshalb in einem `max()` gegen `calc(var(--header-block) + 1.5rem)`.
      Gemessen im Querformat 844 × 390: Der `svh`-Term ergibt dort 39,5 px,
      der Boden 48 px – die Kopfzeile ist ab `md` aber 80 px hoch, und damit
      lagen 32 der 44 px der Zielfläche „Start" in der Brotkrume *hinter* der
@@ -80,7 +80,7 @@ export function PageHeader({
      bewegte Grund wurde bei jedem Scrollen neu aufgezogen und blitzte
      schwarz. `svh` ist die kleine, stabile Höhe. */
   return (
-    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[max(calc(var(--header-h)+1.5rem),clamp(3rem,1.25rem+5svh,10rem))] pb-[clamp(2.5rem,1.5rem+4svh,6rem)] text-silver on-dark">
+    <section className="relative overflow-hidden border-b border-current/10 bg-ink pt-[max(calc(var(--header-block)+1.5rem),clamp(3rem,1.25rem+5svh,10rem))] pb-[clamp(2.5rem,1.5rem+4svh,6rem)] text-silver on-dark">
       {/* Derselbe bewegte Grund wie im Hero der Startseite, nicht ein zweiter.
           Vorher lag hier ein statischer radialer Neonfleck – zwei Verfahren
           für dieselbe Aufgabe, und der Unterschied fiel beim Wechsel von der

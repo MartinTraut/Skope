@@ -41,9 +41,9 @@ const pillars = [
   },
 ];
 
-export function Pillars() {
+export function Pillars({ space }: { space?: "default" | "tight" }) {
   return (
-    <Section id="leistungen" tone="ink">
+    <Section id="leistungen" tone="ink" space={space}>
       <Container>
         <SectionHead
           eyebrow="Drei Wege, ein Ansprechpartner"

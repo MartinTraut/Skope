@@ -23,12 +23,29 @@ import { notifyUrlChange } from "@/lib/url-state";
  *    Raute auf derselben Seite (`#bestand`, `#anfrage`, `/#kundenstimmen`)
  *    und für den Aufruf einer Adresse mit Raute von einer anderen Seite aus.
  */
+/**
+ * Die belegte Höhe der Kopfzeile – gemessen, nicht gerechnet.
+ *
+ * Bis zum 23.09.2026 stand hier `parseFloat` auf `--header-h`. Zwei Fehler
+ * in einer Zeile: Das Token ist nur die Leiste, der `<header>` trägt
+ * darüber hinaus `pt-[env(safe-area-inset-top)]` – als eigenes Fenster vom
+ * Startbildschirm landete damit jeder Rauten-Verweis 59 px zu hoch, also
+ * hinter der Kopfzeile. Und `--header-block`, das den Zuschlag führt, lässt
+ * sich hier gar nicht lesen: Eine Custom Property kommt als
+ * `calc(4.5rem + …)` zurück, nicht als Pixelwert, und `parseFloat` liefert
+ * darauf `NaN`.
+ *
+ * Das Element selbst kennt die Antwort. Es steht `fixed` am oberen Rand und
+ * trägt den Zuschlag als Polsterung, seine Höhe *ist* die belegte Strecke –
+ * auf jedem Gerät und in jedem Anzeigemodus, ohne eine zweite Rechnung, die
+ * beim nächsten Eingriff auseinanderläuft.
+ */
 function headerHeight(): number {
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(
-    "--header-h",
-  );
-  const rem = parseFloat(raw);
-  return Number.isFinite(rem) ? rem * 16 : 80;
+  const el = document.querySelector("header");
+  const h = el?.getBoundingClientRect().height ?? 0;
+  /* Rückfall für den Fall, dass der Kopf noch nicht im Baum steht: der
+     größere der beiden Tokenwerte (5 rem ab 48 rem Fensterbreite). */
+  return h > 0 ? h : 80;
 }
 
 function scrollToId(id: string, behavior: ScrollBehavior) {
@@ -46,7 +63,7 @@ function scrollToId(id: string, behavior: ScrollBehavior) {
      Ansage vom 16.09.2026 – „beim Knopf Anfragen soll man oben auf der Seite
      landen, nicht irgendwo". Eine Kante ist vorhersehbar, eine Mitte nicht. */
   /* Dieselbe Rechnung wie `scroll-padding-top` in globals.css
-     (`calc(var(--header-h) + 1rem)`). Ohne den Aufschlag landete das Ziel
+     (`calc(var(--header-block) + 1rem)`). Ohne den Aufschlag landete das Ziel
      bündig an der Unterkante der Kopfzeile – gemessen auf `/kontakt#anfrage`
      stand die Überschrift „Anfrage schreiben" bei genau 72 px und der
      Neonkasten ihrer Auszeichnungszeile stieß an die Leiste. Zwei Wege zum

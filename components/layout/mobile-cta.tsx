@@ -185,17 +185,61 @@ export function MobileCta({
    */
   React.useEffect(() => {
     let frame = 0;
+
+    /**
+     * Die Bezugshöhe wird **einmal gemerkt**, nicht bei jeder Messung
+     * gelesen.
+     *
+     * `window.innerHeight` ist in iOS Safari keine Konstante: Die
+     * Adressleiste fährt beim Scrollen ein und aus und ändert den Wert um
+     * rund 15 %. Gemessen bei 390 × 844 wanderte die Schwelle damit zwischen
+     * 365 und 464 px – und zwar *während* man sich ihr nähert. Die Leiste
+     * erscheint, die Adressleiste fährt ein, die Schwelle rutscht über die
+     * eigene Scrollposition, die Leiste verschwindet wieder.
+     */
+    let base = window.innerHeight;
+
+    /**
+     * Hysterese, dieselbe Regel wie im Seitenkopf (32 px hinein, 8 px
+     * hinaus).
+     *
+     * Ohne sie wechselt der Zustand an jeder Mikrobewegung um die Schwelle:
+     * gemessen neun Blendvorgänge bei zehn Zitterbewegungen von je wenigen
+     * Pixeln, wie sie ein Finger auf dem Glas ohne Absicht erzeugt. Herein
+     * bei 55 %, hinaus erst bei 45 % – dazwischen liegt eine halbe
+     * Fingerbreite Scrollweg, die niemand versehentlich zurücklegt.
+     */
+    let visible = false;
+
     const measure = () => {
       frame = 0;
-      setShown(window.scrollY > window.innerHeight * 0.55);
+      const y = window.scrollY;
+      const next = visible ? y > base * 0.45 : y > base * 0.55;
+      if (next === visible) return;
+      visible = next;
+      setShown(next);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(measure);
     };
+
+    /* Nur eine *echte* Größenänderung setzt die Bezugshöhe neu – ein
+       Drehen des Geräts oder ein anderes Fenster. Die Adressleiste bewegt
+       sich um rund 15 %, der Schwellwert liegt mit 25 % darüber. Ohne die
+       Grenze wäre die gemerkte Höhe wieder die gelesene. */
+    const onResize = () => {
+      const h = window.innerHeight;
+      if (Math.abs(h - base) / base <= 0.25) return;
+      base = h;
+      measure();
+    };
+
     measure();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);

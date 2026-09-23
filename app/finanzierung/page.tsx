@@ -345,7 +345,7 @@ export default function FinancingPage() {
 
       <Section tone="ink">
         <FaqSection
-          eyebrow="Häufige Fragen zur Finanzierung"
+          eyebrow="Häufige Fragen"
           title={
             <>
               Was feststeht und was im <Mark>Angebot</Mark> steht.

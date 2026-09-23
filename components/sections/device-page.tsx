@@ -194,13 +194,20 @@ export function DevicePage({ item }: { item: InventoryItem }) {
               Reihe beginnt rund 30 px unter der Falz – ein Wischen, nicht die
               halbe Seite wie in der Ausgangslage. Ab etwa 900 px Fensterhöhe
               steht sie wieder vollständig im Bild. */}
+          {/* **`svh`, nicht `vh` (23.09.2026).** `vh` ist in iOS Safari keine
+              Konstante: Es folgt der Adressleiste, und ein Deckel, der ihr
+              folgt, ändert beim Scrollen die Breite der Bildspalte – die
+              Galerie wird unter dem Finger größer und kleiner. `svh` ist der
+              kleine Darstellungsbereich und steht fest; der Deckel fällt
+              dadurch etwas knapper aus, dafür bewegt sich nichts. Dieselbe
+              Umstellung wie im Kopfbereich am 05.09.2026. */}
           {/* 03.09.2026: Deckel von `min(38rem,62vh)` auf `min(30rem,48vh)`.
               Bei 1512 × 860 war die Galerie 533 px breit und mit Vorschaureihe
               rund 830 px hoch, die H1 lief im Seitentitelgrad über zwei
               Zeilen, und das Datenblatt begann unter der Falz – „links, rechts,
               unten alles abgeschnitten". Jetzt stehen Bild, Modell, Preis,
               Aktionen und Datenblatt in einem Bild. */}
-          <div className="mt-5 grid gap-10 lg:grid-cols-[minmax(0,min(30rem,48vh))_minmax(0,1fr)] lg:gap-12">
+          <div className="mt-5 grid gap-10 lg:grid-cols-[minmax(0,min(30rem,48svh))_minmax(0,1fr)] lg:gap-12">
             {/* Die Galerie hebt sich beim Seitenaufbau an ihren Platz: aus
                 einer Spur kleiner und leicht tiefer, in einem Zug. Das ist
                 die Bewegung, die den Sprung von der Karte trägt – dieselbe
@@ -224,7 +231,7 @@ export function DevicePage({ item }: { item: InventoryItem }) {
                 38 vh mit 321 px schmaler als der Satzspiegel (342 px), und
                 dort soll das Bild die volle Spalte haben. Ab `lg` übernimmt
                 das Raster. */}
-            <div className="settle mx-auto w-full sm:max-w-[max(20rem,min(26rem,38vh))] lg:mx-0 lg:max-w-none">
+            <div className="settle mx-auto w-full sm:max-w-[max(20rem,min(26rem,38svh))] lg:mx-0 lg:max-w-none">
               <Gallery
                 images={item.images}
                 thumbnails

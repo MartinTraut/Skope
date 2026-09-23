@@ -2374,6 +2374,177 @@ Weiß darauf): Wortzeichen 8,0 / 19,3 / 19,0 / 18,5:1 und H1 5,0 / 4,6 / 6,8 /
 **320 × 568 bleibt die bekannte Ausnahme:** Dort läuft die H1 über vier
 Zeilen und die letzte Kennzahlenreihe steht unter der Falz.
 
+## Gremium-Restliste abgearbeitet — 23.09.2026
+
+Auf Ansage („arbeite alle die Punkte ab, die du meinst"). Es ist die Liste,
+die das Gremium desselben Tages hinterlassen hatte und die bis dahin nur als
+Bericht existierte. Gemessen wurde jeweils vorher und nachher gegen den
+Produktionsbuild auf Port 4312.
+
+**Rückmeldung und Bewegung:**
+
+- **`.press` lag vollständig in `prefers-reduced-motion: no-preference`.**
+  Wer die Bedienungshilfe eingeschaltet hat – viele dauerhaft, wegen
+  Reisekrankheit –, drückte auf 36 Schaltflächen ohne jede Antwort. Die
+  Einstellung verlangt, *Bewegung* zu vermeiden, nicht Rückmeldung: Bei
+  `reduce` trägt jetzt `opacity: 0.68` über 120 ms. Eine Deckkraftänderung
+  hat keinen Vektor, dem das Auge folgt, und sie kennt weder Tinte noch
+  Silber – ein Farbwechsel müsste beide Flächen kennen.
+- **Das Zitatband lief auf der ganzen Seitenlänge**, auch acht
+  Bildschirmhöhen unter der Falz. Es hält jetzt an, solange es nicht im Bild
+  ist (`IntersectionObserver`, 300 px Vorlauf, damit man das Anhalten nicht
+  sieht). Gemessen bei 390 px und vierfach gedrosselter CPU über 40
+  Scrollschritte: Stilberechnung 0,033 → 0,015 s, Skriptzeit 0,018 → 0,012 s,
+  Layout halbiert.
+  - **`Marquee` ist dafür ein Client-Bauteil geworden.** Die Kinder kommen
+    weiter fertig vom Server als `children` – dieselbe Regel wie beim
+    Bestandsfilter.
+  - **Die Pause hängt an `data-offscreen` am Container und wird über
+    `group-data-[…]` gelesen, nicht als Klasse an der Spur.** Erster Versuch
+    war eine schlichte Klasse `[animation-play-state:paused]`, und sie tat
+    nichts: `animation` ist eine Kurzschreibweise und setzt den Zustand auf
+    `running` zurück; bei gleicher Spezifität gewinnt die spätere Regel, und
+    im gebauten Bündel steht `animate-[marquee…]` dahinter. Nachgesehen mit
+    `grep -o "animation-play-state:paused" .next/static/chunks/*.css`.
+    Derselbe Fallstrick steht seit jeher am Bauteil – für die *Laufrichtung*.
+    `group-hover` funktionierte nur deshalb, weil die Variante einen zweiten
+    Klassenselektor mitbringt.
+
+**Untere Aktionsleiste:**
+
+- **Keine Hysterese und eine wandernde Bezugshöhe.** `window.innerHeight`
+  ist in iOS Safari keine Konstante – die Adressleiste ändert sie um rund
+  15 %, gemessen wanderte die Schwelle bei 390 × 844 zwischen 365 und
+  464 px, und zwar während man sich ihr nähert. Jetzt wird die Höhe einmal
+  gemerkt (neu nur bei über 25 % Änderung, also Drehen des Geräts), und die
+  Schwelle hat zwei Werte: herein bei 55 %, hinaus bei 45 %. Gemessen über
+  zwölf Sprünge um die Schwelle: **1 Zustandswechsel statt 9.**
+
+**Galerie:**
+
+- **`setPointerCapture` fehlte.** Eine Wischgeste über 44 px endet
+  regelmäßig außerhalb des Rahmens; ohne Fang ging das `pointerup` an das
+  Element darunter und die Geste kam nie an. Gemessen mit einem Wisch, der
+  160 px weit aus dem Rahmen läuft: vorher nichts, jetzt Bild 1 → 2. Im
+  Vollbild noch wichtiger – der Wisch nach unten endet naturgemäß am Rand.
+- **Alle sechs Bilder lagen im Baum** (1454 kB, rund 37 MB Textur), und zwar
+  vollständig beim Aufruf. Jetzt ein Fenster aus aktivem Bild und beiden
+  Nachbarn: **3 statt 6.** Kein Aufblitzen möglich, weil der jeweils nächste
+  immer schon steht; das Vollbild rendert ohnehin nur das aktive.
+- Aussparungsschutz seitlich im Vollbild (Bild und Pfeilreihe).
+
+**`--header-block` ist neu — und das eine Token für die Kopf*kante*:**
+
+- `--header-h` ist die Höhe der Leiste; der `<header>` trägt darüber hinaus
+  `pt-[env(safe-area-inset-top)]`. Vier Stellen rechneten trotzdem gegen
+  `--header-h`: `scroll-padding-top`, der Kopfabstand jedes Unterseitenkopfs,
+  die Höhe der Menütafel und der `ScrollManager`. Im Browser stimmt das –
+  die Aussparung ist dort null, und **genau deshalb fällt es in keiner
+  Prüfung auf**. Läuft die Seite vom Startbildschirm als eigenes Fenster,
+  landet jedes Sprungziel 59 px zu hoch, also hinter der Kopfzeile.
+- **Der `ScrollManager` liest jetzt gar kein Token mehr, sondern misst den
+  `<header>`.** `--header-block` ließe sich dort nicht lesen: Eine Custom
+  Property kommt als `calc(4.5rem + …)` zurück, `parseFloat` liefert darauf
+  `NaN`. Das Element kennt die Antwort ohne zweite Rechnung.
+- Wer die Leiste selbst bemisst, nimmt weiter `--header-h` (nur noch die
+  Kopfzeile tut das).
+
+**Maße und Abstände:**
+
+- **Die letzten zwei `vh` sind weg** (`device-page.tsx`): Ein Spaltendeckel
+  an `vh` folgt der Adressleiste, die Galerie wurde beim Scrollen größer und
+  kleiner. Jetzt `svh`.
+- **Zwei Wischbahnen hatten feste 24-px-Ränder statt `.gutter`**
+  (Gerätebahn im Startseiten-Teaser, Filterzeile der Bestandsseite). Im
+  Querformat mit Aussparung brachen sie nicht weit genug aus dem Satzspiegel
+  aus *und* standen gleichzeitig links vom Text.
+- **`Workshop` → `Pillars` auf der Startseite steht auf `tight`.** Beide auf
+  Tinte, also trägt nichts eine Zäsur – 128 px am Telefon und 208 auf 1512
+  waren dort kein Absatz, sondern ein Loch. Dieselbe Regel wie bei `Region`.
+- **Das Siegel füllte am Telefon die halbe Bildhöhe** (342 px bei 390,
+  382 bei 430 – 41 bis 45 %), und zwar auf der Seite, auf der jemand Geräte
+  sehen will. Unter `sm` auf 13 rem gedeckelt. Ein Zeichen, das so groß ist
+  wie ein Produktfoto, behauptet, wichtiger zu sein als die Ware.
+- **`min()` in `sizes` löst Chromium nicht auf.** Gemessen holte
+  `min(28rem, calc(100vw - 5rem))` bei 768 px die 1920er-Fassung – der
+  Browser fällt still auf `100vw` zurück. Reine Stufen wirken. **Wer hier
+  eine `sizes`-Angabe schreibt, prüft die ausgelieferte URL** – dieselbe
+  Lehre wie bei `images.qualities`.
+- **`Gallery` hat keinen Vorgabewert für `sizes` mehr.** Der alte beschrieb
+  ein dreispaltiges Raster, die Galerie steht aber in einer Spalte von
+  höchstens 30 rem; der einzige Aufrufer überschrieb ihn ohnehin. Ein
+  Vorgabewert, der nicht stimmt, ist ein Angebot an den nächsten Aufrufer,
+  nicht nachzurechnen.
+
+**Text:**
+
+- **Fünf FAQ-Auszeichnungszeilen hießen „Häufige Fragen zur Versicherung"**
+  und so weiter – das Thema wiederholte die Seite, auf der man steht, und
+  die Zeile lief bei 390 px gesperrt über zwei Zeilen. Jetzt überall
+  „Häufige Fragen", wie auf der Startseite schon.
+- Dazu „Sofort verfügbar · Neuenstadt am Kocher" → „Sofort verfügbar" (der
+  Ort steht auf derselben Seite in `Region`) und „Generalüberholt ·
+  Skope-Qualitätssiegel" → „Generalüberholt" (beide Hälften stehen im Lead
+  zwei Zeilen tiefer, das Siegel ist das Thema der Sektion darunter).
+- `<Mark>im Bestand</Mark>` markierte zwei Wörter, davon eine Präposition.
+  Die Farbregel erlaubt eines je Überschrift: jetzt `im <Mark>Bestand</Mark>`.
+- **`autoCapitalize="words"` am Namensfeld.** iOS steht auf `sentences` und
+  macht aus „max mustermann" ein „Max mustermann". Bei den übrigen Feldern
+  nicht nötig – Safari schaltet die Großschreibung bei `type="email"` selbst
+  ab.
+
+**Bewusst nicht geändert, mit Grund:**
+
+- **`.scroll-x` behält `overscroll-behavior-x: contain`.** Das Gremium will
+  es an Bahnen freigeben, die bei `scrollLeft: 0` stehen, damit Safaris
+  Zurück-Wisch durchkommt. Der Einwand ist nachvollziehbar, aber die Angabe
+  steht aus einem gemessenen Grund da (ohne sie wird aus dem Wischen über
+  eine Bahn ein Zurück-Blättern im Verlauf), und die Gegenprobe braucht ein
+  echtes iPhone – im Prüfbrowser gibt es die Kantengeste nicht. Eine
+  begründete Angabe auf Verdacht zurückzunehmen ist der schlechtere Handel.
+- **Der helle Rahmen um das Porträt auf `/ueber-uns`** und **`align="center"`
+  auf `/finanzierung`** sind beide dokumentierte Entscheidungen mit
+  Begründung an Ort und Stelle.
+- **„Werkstatt für Elektrokleinstfahrzeuge" auf `/reparatur`** läuft bei
+  390 px weiter zweizeilig. Der Fachbegriff grenzt gegen Fahrrad und
+  Motorrad ab und ist die Kategorie, unter der die Seite gefunden werden
+  soll; zwei Zeilen sind hier der Preis für Präzision. Bei 320 px bleiben
+  drei weitere zweizeilig – das ist die bekannte Ausnahmebreite, auf der
+  auch die H1 der Startseite vier Zeilen läuft.
+
+**Gemessen nach dem Durchgang:** 99 Prüfungen (11 Routen × 9 Formate,
+320 – 1512 px plus Querformat) – kein waagerechter Überlauf, genau eine H1 je
+Route, kein Bild ohne `alt`, keine Konsolenfehler, keine Schrift unter 11 px.
+Einziger Treffer unter 44 px ist der Skip-Link (1 × 1 px im Ruhezustand,
+200 × 52 im Fokus – das bekannte Messartefakt).
+
+## Das Wandern des Kopfbilds am Telefon — 23.09.2026
+
+Auf Ansage („das Bild startet zu weit oben und wandert dann nach unten").
+Nicht der alte Rutschfehler mit der Adressleiste – der ist seit dem Umbau auf
+das Hochformat weg (im Kopfbereich steht kein `vh` und kein `dvh` mehr). Es
+war die **Ladeanimation**.
+
+- **`.hero-figure` setzt voraus, dass ein Gegenstand in einer Fläche liegt.**
+  Sie skaliert 3,5 % über 1,1 s mit Ursprung unten; am Schreibtisch kommt
+  damit der freigestellte Roller auf seiner Standfläche zur Ruhe. Am Telefon
+  füllt das Motiv die ganze Bühne, und dieselbe Skalierung verschiebt keinen
+  Gegenstand, sondern den Bildausschnitt.
+- **Gemessen bei 390 px:** Unterkante fest bei 643,8 px, Oberkante von −73,5
+  auf −49,2 – die drei Fahrzeuge sinken 24,3 px, die Hälfte davon in den
+  ersten 200 ms. Auf dem Tablet dieselbe Sorte Fehler mit 14,5 px.
+- **Kleiner machen hilft nicht.** Unter 4 px Versatz bliebe eine Skalierung
+  von 0,6 %: keine Bewegung mehr, nur noch eine Compositor-Ebene über dem
+  LCP-Element. Einblenden über `opacity` scheidet aus demselben Grund aus wie
+  am Schreibtisch – die Aufnahme ist der LCP-Kandidat, und `opacity` zählt
+  erst am Ende der Animation als gezeichnet.
+- **Die Klasse steht deshalb nur noch an der Fläche ab `lg`.** Unter `lg`
+  trägt die Choreografie des Kopfbereichs allein der Text; das Motiv ist dort
+  der Grund, auf dem er steht, und kein Gegenstand daneben.
+- Gemessen über 320 / 360 / 390 / 430 / 768 / 1512 px: Wanderung 0 px bis
+  einschließlich Tablet, am Schreibtisch unverändert 22 px. Sektionshöhen,
+  Überlauf und Konsole unverändert.
+
 ## Tonkante unter den Kundenstimmen — 23.09.2026
 
 Auf Ansage („entfern diese linie zwischen den bewertungen"). Es war kein

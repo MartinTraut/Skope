@@ -212,7 +212,9 @@ function Browser({
           <div
             role="group"
             aria-label="Bestand filtern"
-            className="scroll-x -mx-6 flex gap-2 px-6 lg:mx-0 lg:flex-wrap lg:px-0"
+            /* Dieselben Ränder wie `.gutter`, nicht fest auf 24 px – siehe
+               die Begründung an der Gerätebahn im Startseiten-Teaser. */
+            className="scroll-x -mr-[max(1.5rem,env(safe-area-inset-right))] -ml-[max(1.5rem,env(safe-area-inset-left))] flex gap-2 pr-[max(1.5rem,env(safe-area-inset-right))] pl-[max(1.5rem,env(safe-area-inset-left))] lg:mx-0 lg:flex-wrap lg:px-0"
           >
             {filters.map((f) => {
               const active = f.id === filter;

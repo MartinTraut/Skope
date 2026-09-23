@@ -98,7 +98,13 @@ export default function HomePage() {
       <Hero />
       <InventoryTeaser />
       <Workshop />
-      <Pillars />
+      {/* `tight`: `Workshop` und `Pillars` stehen beide auf Tinte, zwischen
+          ihnen wechselt die Fläche also nicht – und wo nichts die Zäsur
+          trägt, ist der volle Abstand beider Sektionen kein Absatz, sondern
+          ein Loch. Gemessen 128 px am Telefon und 208 auf 1512. Dieselbe
+          Regel und dieselbe Stufe wie bei `Region` unten und bei „Was nicht
+          abgedeckt ist" auf /wartungsvertrag. */}
+      <Pillars space="tight" />
       <Testimonials />
       <Region space="tight" />
 

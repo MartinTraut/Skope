@@ -32,8 +32,13 @@ export function InventoryTeaser() {
   return (
     <Section id="bestand" tone="silver">
       <Container>
+        {/* Die Auszeichnungszeile trägt den Ort nicht mehr. Bei 390 px lief
+            „Sofort verfügbar · Neuenstadt am Kocher" gesperrt über zwei
+            Zeilen, und eine Auszeichnungszeile ist ein Etikett, kein Satz.
+            „Neuenstadt am Kocher" steht auf derselben Seite in `Region`, im
+            Fußbereich und im Seitentitel. */}
         <SectionHead
-          eyebrow="Sofort verfügbar · Neuenstadt am Kocher"
+          eyebrow="Sofort verfügbar"
           title={
             <>
               Geprüfte Geräte, die <Mark>heute</Mark> hier stehen.
@@ -170,7 +175,14 @@ export function InventoryTeaser() {
           tabIndex={0}
           role="region"
           aria-label="Verfügbare Geräte"
-          className="scroll-x -mx-6 mt-10 flex snap-x snap-mandatory gap-4 scroll-px-6 px-6 pb-2 sm:hidden"
+          /* Ränder über `env()` wie in `.gutter`, nicht fest auf 24 px.
+             Die Bahn bricht aus dem Satzspiegel bis an die Gehäusekante aus
+             und trägt den Rand dann selbst – mit festen 24 px bricht sie im
+             Querformat eines iPhone nicht weit genug aus (der Gutter ist
+             dort so breit wie die Aussparung), und die erste Karte steht
+             gleichzeitig 20 px links vom Text. Rechts und links getrennt,
+             weil die Aussparung nur auf einer Seite liegt. */
+          className="scroll-x mt-10 -mr-[max(1.5rem,env(safe-area-inset-right))] -ml-[max(1.5rem,env(safe-area-inset-left))] flex snap-x snap-mandatory gap-4 pr-[max(1.5rem,env(safe-area-inset-right))] pb-2 pl-[max(1.5rem,env(safe-area-inset-left))] scroll-pl-[max(1.5rem,env(safe-area-inset-left))] sm:hidden"
         >
           {items.map((item) => (
             <li

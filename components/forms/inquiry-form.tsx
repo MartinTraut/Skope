@@ -379,12 +379,20 @@ function InquiryFormInner({
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
+        {/* `autoCapitalize="words"` und nicht der Standard: iOS steht auf
+            `sentences` und schreibt damit nur das erste Wort groß – aus
+            „max mustermann" wird „Max mustermann", und der Nachname bleibt
+            klein, bis jemand von Hand zurückgeht. Bei den übrigen Feldern
+            braucht es die Angabe nicht: Safari schaltet die Großschreibung
+            bei `type="email"` von selbst ab, und eine Telefonnummer hat
+            keine. */}
         <Field
           id="name"
           label="Name"
           required
           maxLength={120}
           autoComplete="name"
+          autoCapitalize="words"
           defaultValue={state.values?.name}
           error={state.errors?.name}
         />

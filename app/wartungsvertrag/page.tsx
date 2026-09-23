@@ -230,7 +230,7 @@ export default function PlansPage() {
 
       <Section tone="ink">
         <FaqSection
-          eyebrow="Häufige Fragen zum Wartungsvertrag"
+          eyebrow="Häufige Fragen"
           title={
             <>
               Welcher Vertrag passt und was er <Mark>abdeckt</Mark>.

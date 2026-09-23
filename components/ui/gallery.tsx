@@ -36,14 +36,24 @@ import { cn } from "@/lib/utils";
 export function Gallery({
   images,
   className,
-  sizes = "(min-width: 1280px) 30vw, (min-width: 380px) 46vw, calc(100vw - 3rem)",
+  sizes,
   thumbnails = false,
   priority = false,
   ratio = "square",
 }: {
   images: InventoryImage[];
   className?: string;
-  sizes?: string;
+  /**
+   * Die Breite der Bildfläche – **Pflichtangabe, kein Vorgabewert.**
+   *
+   * Hier stand einer, und er war falsch: `(min-width: 1280px) 30vw …`
+   * beschrieb ein dreispaltiges Raster, die Galerie steht aber auf der
+   * Geräteseite in einer Spalte von höchstens 30 rem. Der einzige Aufrufer
+   * hat ihn deshalb ohnehin überschrieben – ein Vorgabewert, den niemand
+   * benutzt und der nicht stimmt, ist nur ein Angebot an den nächsten
+   * Aufrufer, es nicht nachzurechnen.
+   */
+  sizes: string;
   /** Vorschaureihe unter dem Bild – siehe Begründung oben. */
   thumbnails?: boolean;
   priority?: boolean;
@@ -105,9 +115,18 @@ export function Gallery({
    */
   const swipe = React.useRef<{ x: number; y: number; id: number } | null>(null);
 
+  /* **Der Zeiger wird gefangen.** Ohne `setPointerCapture` geht das
+     `pointerup` an das Element, über dem der Finger zufällig endet – bei
+     einer Wischgeste über 44 px ist das regelmäßig nicht mehr der Rahmen,
+     sondern die Karte daneben oder der Satzspiegel. Die Geste war dann
+     nicht falsch, sie kam nur nie an: Das Bild blieb stehen, und man wischt
+     ein zweites Mal. Gefangen landet jedes Folgeereignis wieder hier, ganz
+     gleich, wo der Finger steht. Der Browser gibt den Fang bei `pointerup`
+     und `pointercancel` von selbst frei. */
   const onPointerDown = (event: React.PointerEvent) => {
     if (event.pointerType === "mouse") return;
     swipe.current = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const onPointerUp = (event: React.PointerEvent) => {
@@ -155,6 +174,10 @@ export function Gallery({
       y: event.clientY,
       id: event.pointerId,
     };
+    /* Derselbe Fang wie in der kleinen Galerie, hier noch wichtiger: Der
+       Wisch nach unten endet naturgemäß am unteren Rand oder darüber
+       hinaus. */
+    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const onZoomPointerUp = (event: React.PointerEvent) => {
@@ -257,21 +280,38 @@ export function Gallery({
             ratio === "portrait" ? "aspect-[3/4]" : "aspect-square",
           )}
         >
-          {images.map((image, i) => (
-            <Image
-              key={image.src}
-              src={image.src}
-              alt={image.alt}
-              aria-hidden={i === active ? undefined : "true"}
-              fill
-              sizes={sizes}
-              priority={priority && i === 0}
-              className={cn(
-                "object-cover transition-opacity duration-300 motion-reduce:transition-none",
-                i === active ? "opacity-100" : "opacity-0",
-              )}
-            />
-          ))}
+          {/* **Drei Bilder im Baum, nicht alle sechs.**
+
+              Der Überblendung wegen müssen altes und neues Bild gleichzeitig
+              dastehen – das war die Begründung, alle zu rendern. Sie trägt
+              genau zwei Nachbarn weit: Gemessen lagen auf der Geräteseite
+              1454 kB in rund 37 MB Texturspeicher, und zwar vollständig beim
+              Aufruf der Seite, bevor jemand das erste Mal blättert.
+
+              Das Fenster umfasst das aktive Bild und seine beiden Nachbarn,
+              rundherum gerechnet. Ein Aufblitzen kann daraus nicht entstehen:
+              Wer von 0 auf 1 blättert, sieht Bild 1, das schon stand – Bild 2
+              wird im selben Moment eingehängt und hat eine volle Blätterrunde
+              Zeit. Das Vollbild rendert ohnehin nur das aktive. */}
+          {images.map((image, i) => {
+            const d = Math.abs(i - active);
+            if (d > 1 && d < images.length - 1) return null;
+            return (
+              <Image
+                key={image.src}
+                src={image.src}
+                alt={image.alt}
+                aria-hidden={i === active ? undefined : "true"}
+                fill
+                sizes={sizes}
+                priority={priority && i === 0}
+                className={cn(
+                  "object-cover transition-opacity duration-300 motion-reduce:transition-none",
+                  i === active ? "opacity-100" : "opacity-0",
+                )}
+              />
+            );
+          })}
 
           {/* Vergrößern liegt auf dem Bild, nicht daneben: Die Fläche, die man
               größer sehen will, ist auch die, auf die man tippt. Der Knopf ist
@@ -405,13 +445,16 @@ export function Gallery({
                 alt={images[active].alt}
                 fill
                 sizes="100vw"
-                className="object-contain p-4 md:p-10"
+                /* Aussparungsschutz auch seitlich: Im Querformat liegt die
+                   Kameraaussparung links oder rechts, und `p-4` allein
+                   schiebt das Bild nicht darunter hervor. */
+                className="object-contain pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] md:p-10"
               />
             </div>
 
             {/* Aussparungsschutz: Ohne ihn liegt die Pfeilreihe am iPhone
                 unter dem Streifen der Startgeste. */}
-            <div className="flex items-center justify-center gap-4 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="flex items-center justify-center gap-4 pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1.5rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
               {images.length > 1 ? (
                 <>
                   <button
