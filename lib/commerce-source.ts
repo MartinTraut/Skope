@@ -5,6 +5,7 @@ import {
   type Availability,
   type CommerceMode,
 } from "@/lib/commerce";
+import type { VehicleCategory } from "@/lib/data/vehicles";
 import {
   availabilityOf,
   condition,
@@ -40,10 +41,12 @@ export type ProductSource = {
   /** Woher die Ware kommt – steht in Protokollen und im QA-Bericht. */
   readonly name: "local" | "shopify";
   list(): Product[];
+  /** Nur die Ware einer Fahrzeugart – für die Kategorieseiten. */
+  listByCategory(category: VehicleCategory): Product[];
   get(id: string): Product | undefined;
   related(id: string, count?: number): Product[];
   highlights(count?: number): Product[];
-  facts(): ReturnType<typeof inventoryFacts>;
+  facts(items?: Product[]): ReturnType<typeof inventoryFacts>;
   availability(item: Product): Availability;
 };
 
@@ -57,6 +60,8 @@ export type ProductSource = {
 const localSource: ProductSource = {
   name: "local",
   list: () => inventory,
+  listByCategory: (category) =>
+    inventory.filter((item) => item.category === category),
   get: inventoryItem,
   related: relatedInventory,
   highlights: inventoryHighlights,
@@ -88,12 +93,15 @@ export function productSource(): ProductSource {
 
 /** Kurzwege für die Seiten – dieselben Namen wie bisher, andere Herkunft. */
 export const listProducts = () => productSource().list();
+export const listByCategory = (category: VehicleCategory) =>
+  productSource().listByCategory(category);
 export const getProduct = (id: string) => productSource().get(id);
 export const relatedProducts = (id: string, count = 3) =>
   productSource().related(id, count);
 export const highlightProducts = (count = 3) =>
   productSource().highlights(count);
-export const productFacts = () => productSource().facts();
+export const productFacts = (items?: Product[]) =>
+  productSource().facts(items);
 export const productAvailability = (item: Product) =>
   productSource().availability(item);
 

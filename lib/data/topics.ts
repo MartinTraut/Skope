@@ -7,6 +7,9 @@
 
 export const CONTACT_TOPICS = [
   "Suchauftrag generalüberholter E-Scooter",
+  "Suchauftrag E-Chopper",
+  "Suchauftrag E-Roller",
+  "Suchauftrag E-Trike",
   "Frage zu einem Gerät",
   "Beratung vor dem Kauf",
   "Reparatur",
@@ -56,6 +59,9 @@ export const TOPIC_GROUPS = [
     label: "Kauf",
     topics: [
       "Suchauftrag generalüberholter E-Scooter",
+      "Suchauftrag E-Chopper",
+      "Suchauftrag E-Roller",
+      "Suchauftrag E-Trike",
       "Frage zu einem Gerät",
       "Beratung vor dem Kauf",
     ],
@@ -118,6 +124,9 @@ export const TOPIC_BY_SLUG: Record<string, ContactTopic> = {
   checkup: "Sicherheits-Checkup (59,99 €)",
   versicherung: "Versicherung: Haftpflicht",
   kauf: "Suchauftrag generalüberholter E-Scooter",
+  "suchauftrag-chopper": "Suchauftrag E-Chopper",
+  "suchauftrag-roller": "Suchauftrag E-Roller",
+  "suchauftrag-trike": "Suchauftrag E-Trike",
   geraet: "Frage zu einem Gerät",
   recycling: "Altgerät abgeben / Recycling",
   "finanzierung-mietkauf": "Finanzierung: Mietkauf-Abo",

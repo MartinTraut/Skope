@@ -9,6 +9,7 @@
  * `pageGraph([...])`, nicht das Layout.
  */
 
+import { deviceHref } from "@/lib/data/vehicles";
 import type { FaqItem } from "@/lib/data/faq";
 import { listProducts } from "@/lib/commerce-source";
 import { AVAILABILITY_SCHEMA } from "@/lib/commerce";
@@ -379,19 +380,32 @@ export function refurbishedService(): Node {
  * Bilder und Zustand liegen vor, und genau dieser Knoten trägt in der Suche
  * Preis und Verfügbarkeit.
  *
- * Der Knoten gehört ausschließlich auf `/e-scooter/<id>` und steht deshalb
+ * Der Knoten gehört ausschließlich auf die Geräteseite und steht deshalb
  * auch mit dieser Adresse in `@id` und `offers.url`. Vorher lag er dreizehnmal
  * auf der Übersicht mit einem Sprungziel als Angebotsadresse: Google kann
  * daraus kein einzelnes Gerät als Ergebnis ausspielen, weil dreizehn Produkte
  * auf dieselbe URL zeigen. Die Übersicht führt sie jetzt nur noch als
  * `inventoryList()` – eine Liste mit Verweisen, keine dreizehn Datenblätter.
  *
- * `itemCondition` steht auf RefurbishedCondition und nicht auf UsedCondition,
+ * `itemCondition` kommt aus dem Feld `condition` und steht nicht mehr fest
+ * auf RefurbishedCondition: Seit im Bestand fabrikneue Geräte stehen, wäre
+ * eine feste Angabe eine falsche Beschaffenheitsangabe in der Suche – die
+ * Karte trüge die Plakette „Neu", das Angebot daneben „generalüberholt".
+ *
+ * Für die gebrauchten Geräte gilt weiter RefurbishedCondition und nicht
+ * UsedCondition,
  * weil jedes Gerät die Werkstattprüfung durchlaufen hat. Das ist der Zustand,
  * den das Siegel beschreibt.
  */
+/** Zustand als schema.org-Begriff, aus dem Feld am Gerät. */
+function conditionSchema(item: InventoryItem): string {
+  return item.condition === "neu"
+    ? "https://schema.org/NewCondition"
+    : "https://schema.org/RefurbishedCondition";
+}
+
 export function inventoryProduct(item: InventoryItem): Node {
-  const url = `${site.url}/e-scooter/${item.id}`;
+  const url = `${site.url}${deviceHref(item)}`;
 
   return {
     "@type": "Product",
@@ -400,7 +414,7 @@ export function inventoryProduct(item: InventoryItem): Node {
     description: item.summary,
     url,
     image: item.images.map((image) => `${site.url}${image.src}`),
-    itemCondition: "https://schema.org/RefurbishedCondition",
+    itemCondition: conditionSchema(item),
     additionalProperty: item.specs.map((spec) => ({
       "@type": "PropertyValue",
       name: spec.label,
@@ -411,7 +425,7 @@ export function inventoryProduct(item: InventoryItem): Node {
       price: item.priceValue,
       priceCurrency: "EUR",
       availability: AVAILABILITY_SCHEMA[availabilityOf(item)],
-      itemCondition: "https://schema.org/RefurbishedCondition",
+      itemCondition: conditionSchema(item),
       url,
       seller: { "@id": ORG_ID },
       warranty: {
@@ -448,7 +462,7 @@ export function inventoryList(): Node[] {
         "@type": "ListItem",
         position: i + 1,
         name: item.model,
-        url: `${site.url}/e-scooter/${item.id}`,
+        url: `${site.url}${deviceHref(item)}`,
       })),
     },
   ];

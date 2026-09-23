@@ -4,6 +4,7 @@ import { AlertTriangle, ArrowRight, Images } from "lucide-react";
 
 import { AVAILABILITY_LABEL } from "@/lib/commerce";
 import { availabilityOf, condition, type InventoryItem } from "@/lib/inventory";
+import { deviceHref } from "@/lib/data/vehicles";
 import { cn } from "@/lib/utils";
 
 /**
@@ -80,7 +81,19 @@ function Fact({
  */
 function StatusBadge({ item }: { item: InventoryItem }) {
   const state = availabilityOf(item);
-  if (state === "available") return null;
+  if (state === "available") {
+    /* Die Plakette gibt es nur für Neugeräte, nicht für beide Zustände.
+       Generalüberholt ist der Normalfall dieses Bestands – ein Etikett auf
+       jeder Karte sagt nichts, es färbt nur. Was „generalüberholt" hier
+       konkret heißt, steht als Zustandszeile unter dem Preis und
+       ausführlich auf der Geräteseite. */
+    if (item.condition !== "neu") return null;
+    return (
+      <span className="pointer-events-none absolute top-2 left-2 rounded bg-neon px-2 py-1 font-display text-[0.6875rem] font-semibold tracking-[0.08em] text-ink uppercase">
+        Neu
+      </span>
+    );
+  }
   return (
     <span className="pointer-events-none absolute top-2 left-2 rounded bg-ink/85 px-2 py-1 font-display text-[0.6875rem] font-semibold tracking-[0.08em] text-silver uppercase">
       {AVAILABILITY_LABEL[state]}
@@ -130,7 +143,7 @@ export function InventoryCard({
   if (layout === "row") {
     return (
       <Link
-        href={`/e-scooter/${item.id}`}
+        href={deviceHref(item)}
         aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
         className={cn(
           "press group flex w-full gap-4 rounded-lg border border-silver/15 bg-ink p-3 text-silver on-dark [--press-scale:0.99]",
@@ -201,7 +214,7 @@ export function InventoryCard({
 
   return (
     <Link
-      href={`/e-scooter/${item.id}`}
+      href={deviceHref(item)}
       aria-label={`${item.model}, ${item.price}, mehr Daten und Bilder`}
       className={cn(
         "press group lift @container flex h-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",

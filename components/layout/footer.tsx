@@ -7,6 +7,7 @@ import {
   fullAddress,
   legalNav,
   nav,
+  vehicleNav,
   nearbyPlaceNames,
   priceNote,
   serviceArea,
@@ -106,7 +107,11 @@ export function Footer() {
             {/* Wie die Rechtslinks unten: mindestens 44 px Zielfläche.
                 Bei `gap-3` und Zeilenhöhe blieben davon rund 24 px übrig. */}
             <ul className="mt-4 -mb-2 flex flex-col">
-              {[...nav, { href: "/kontakt", label: "Kontakt & Anfahrt" }].map(
+              {[
+                ...vehicleNav,
+                ...nav.slice(1),
+                { href: "/kontakt", label: "Kontakt & Anfahrt" },
+              ].map(
                 (item) => (
                   <li key={item.href}>
                     <Link

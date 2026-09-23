@@ -16,7 +16,7 @@ import { PhoneButton } from "@/components/ui/phone-button";
 import { Container, Section, SectionHead } from "@/components/ui/section";
 import { faqBuy } from "@/lib/data/faq";
 import { checkupIncludes } from "@/lib/data/services";
-import { listProducts, productFacts, rangeKm } from "@/lib/commerce-source";
+import { listByCategory, productFacts, rangeKm } from "@/lib/commerce-source";
 import {
   JsonLd,
   breadcrumb,
@@ -37,10 +37,18 @@ export const metadata: Metadata = pageMeta({
 });
 
 export default function ScooterPage() {
-  /* Stückzahl, Preisspanne und Marken einmal aus dem Bestand ableiten – die
-     Begründung steht an `inventoryFacts()` in `lib/inventory.ts`. */
-  const products = listProducts();
-  const facts = productFacts();
+  /* **Nur E-Scooter.** Bis zum 20.09.2026 stand hier `listProducts()` und
+     damit der ganze Bestand – solange alles E-Scooter waren, fiel das nicht
+     auf. Seit ein E-Chopper und ein E-Dreirad dabei sind, stünden sie in
+     dieser Auslage, in ihrer Zählung, in ihrer Preisspanne und im
+     `ItemList`-Schema dieser Adresse. Genau dafür gibt es die
+     Kategorieseiten.
+
+     Stückzahl, Preisspanne und Marken werden aus **dieser** Liste abgeleitet
+     und nicht aus dem ganzen Bestand – die Begründung steht an
+     `inventoryFacts()` in `lib/inventory.ts`. */
+  const products = listByCategory("scooter");
+  const facts = productFacts(products);
 
   return (
     <>
@@ -249,6 +257,7 @@ export default function ScooterPage() {
                   price: Number(item.priceValue),
                   range: rangeKm(item),
                   abe: item.streetLegal,
+                  isNew: item.condition === "neu",
                 }))}
               >
                 {products.map((item) => (

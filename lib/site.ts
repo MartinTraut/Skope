@@ -4,6 +4,8 @@
  * (Stand der Extraktion: siehe PROJECT-BRIEF.md). Nichts erfunden.
  */
 
+import { vehicleKinds } from "@/lib/data/vehicles";
+
 export const site = {
   name: "SKOPE",
   legalName: "Skopegebrauchtwarenhandel",
@@ -128,8 +130,27 @@ export const nearbyPlaces = [
 /** Nur die Namen – für Fliesstext und strukturierte Daten. */
 export const nearbyPlaceNames = nearbyPlaces.map((place) => place.name);
 
+/**
+ * Die Hauptnavigation.
+ *
+ * Der erste Eintrag ist eine **Gruppe**, kein einzelner Verweis: Unter
+ * „Fahrzeuge" liegen E-Scooter, E-Chopper und E-Trike (`vehicleNav`). Bis zum
+ * 20.09.2026 stand dort „E-Scooter kaufen", und damit endete das Sortiment
+ * nach außen beim Stehroller – eine Suche nach „E-Chopper kaufen" fand auf
+ * dieser Seite nichts, obwohl die Finanzierung die Geräte ausdrücklich nennt.
+ *
+ * Als drei weitere Einträge in einer Reihe geht das nicht: Die Zeile ist bei
+ * 1280 px schon mit sieben Punkten 805 px breit, und die Aktionsgruppe stand
+ * nach dem letzten Zuwachs 53 px über dem Satzspiegel (gemessen, siehe
+ * CLAUDE.md). „Fahrzeuge" ist kürzer als „E-Scooter kaufen", die Zeile wird
+ * durch die Gruppe also schmaler statt breiter.
+ *
+ * `href` bleibt gesetzt und zeigt auf die Bestandsseite: Die Gruppe ist im
+ * Kopf ein Knopf, aber Fußbereich, Sitemap und die 404 lesen dieselbe Liste
+ * und brauchen ein Ziel.
+ */
 export const nav = [
-  { href: "/e-scooter", label: "E-Scooter kaufen" },
+  { href: "/e-scooter", label: "Fahrzeuge", group: "vehicles" },
   { href: "/reparatur", label: "Reparatur" },
   { href: "/wartungsvertrag", label: "Wartungsvertrag" },
   { href: "/finanzierung", label: "Finanzierung" },
@@ -137,6 +158,13 @@ export const nav = [
   { href: "/recycling", label: "Recycling" },
   { href: "/ueber-uns", label: "Über uns" },
 ] as const;
+
+/** Die drei Fahrzeugarten als Verweise – Reihenfolge aus `vehicleKinds`. */
+export const vehicleNav = vehicleKinds.map((kind) => ({
+  href: kind.href,
+  label: kind.nav,
+  blurb: kind.blurb,
+}));
 
 export const legalNav = [
   { href: "/impressum", label: "Impressum" },

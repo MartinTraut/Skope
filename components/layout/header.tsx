@@ -3,14 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, Star, X } from "lucide-react";
+import { ChevronDown, Menu, Phone, Star, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { PhoneButton } from "@/components/ui/phone-button";
 import { Container } from "@/components/ui/section";
 import type { GoogleRating } from "@/lib/google-rating";
-import { nav, site } from "@/lib/site";
+import { nav, site, vehicleNav } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /*
@@ -22,6 +22,139 @@ import { cn } from "@/lib/utils";
  * und reicht ihn durch; über `cache()` ist es derselbe Abruf, den auch
  * Kopfbereich und Kundenstimmen benutzen.
  */
+/**
+ * Die Fahrzeuggruppe in der Navigation am Schreibtisch.
+ *
+ * Ein Knopf mit `aria-expanded` und eine Liste darunter – kein reines
+ * CSS-Hover-Menü: Das wäre mit der Tastatur nicht erreichbar und auf einem
+ * Tablet, das `hover` meldet, nach dem ersten Tipp offen stehengeblieben.
+ * Geöffnet wird mit Zeiger *und* Klick, geschlossen mit Escape, einem Klick
+ * außerhalb, dem Verlassen des Bereichs und jedem Routenwechsel.
+ *
+ * Die Gruppe trägt selbst kein Ziel. „Fahrzeuge" ist keine Seite, sondern
+ * drei Seiten; ein Verweis darauf müsste eine vierte erfinden.
+ */
+function VehicleMenu({
+  active,
+  pathname,
+}: {
+  active: boolean;
+  pathname: string;
+}) {
+  /* Dieselbe Mechanik wie beim Telefonmenü weiter unten: Die Tafel merkt
+     sich, auf welcher Route sie geöffnet wurde, statt einen Effekt beim
+     Routenwechsel zu schließen. Ein `setState` im Effekt löst eine zweite
+     Renderrunde aus – und die Lint-Regel `react-hooks/set-state-in-effect`
+     verbietet es zu Recht. */
+  const [openedOn, setOpenedOn] = React.useState<string | null>(null);
+  const open = openedOn === pathname;
+  const setOpen = React.useCallback(
+    (value: boolean) => setOpenedOn(value ? pathname : null),
+    [pathname],
+  );
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onDown = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [open, setOpen]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative"
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") setOpen(true);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "mouse") setOpen(false);
+      }}
+      /* Tastatur: Verlässt der Fokus die Gruppe, geht sie zu. `focusout`
+         blubbert, `blur` nicht – deshalb React's `onBlur` mit Prüfung auf
+         das neue Ziel. */
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "press relative inline-flex min-h-11 items-center gap-1 rounded-md px-2.5 text-[0.9375rem] font-medium whitespace-nowrap transition-[color,transform] duration-200",
+          active || open ? "text-current" : "text-current/[0.88] hover:text-current",
+        )}
+      >
+        Fahrzeuge
+        <ChevronDown
+          aria-hidden="true"
+          className={cn(
+            "size-3.5 transition-transform duration-200 ease-out-quart",
+            open && "rotate-180",
+          )}
+        />
+        <span
+          className={cn(
+            "absolute inset-x-2.5 bottom-1.5 h-px origin-left bg-accent transition-transform duration-300 ease-out-quart",
+            active ? "scale-x-100" : "scale-x-0",
+          )}
+        />
+      </button>
+
+      {/* `visibility` statt `pointer-events-none`: Eine nur durchsichtige
+          Tafel stünde weiter in der Tabreihenfolge – derselbe Befund wie an
+          der unteren Aktionsleiste. `visibility` muss dafür in der
+          Übergangsliste stehen, sonst springt die Tafel. */}
+      <div
+        className={cn(
+          "absolute top-full left-0 w-64 pt-2 transition-[opacity,transform,visibility] duration-200 ease-out-quart",
+          open
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-1 opacity-0",
+        )}
+      >
+        <ul className="overflow-hidden rounded-lg border border-current/12 bg-ink-800 p-1.5 shadow-[0_24px_60px_-24px_rgb(8_9_11/0.75)]">
+          {vehicleNav.map((sub) => (
+            <li key={sub.href}>
+              <Link
+                href={sub.href}
+                tabIndex={open ? undefined : -1}
+                aria-current={pathname === sub.href ? "page" : undefined}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "block rounded-md px-3 py-2.5 transition-colors duration-200",
+                  pathname === sub.href
+                    ? "bg-current/8 text-accent"
+                    : "text-silver/85 hover:bg-current/8 hover:text-silver",
+                )}
+              >
+                <span className="block font-display font-semibold tracking-tight">
+                  {sub.label}
+                </span>
+                <span className="mt-0.5 block text-xs leading-snug text-silver/55">
+                  {sub.blurb}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 export function Header({ rating }: { rating: GoogleRating }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
@@ -228,7 +361,17 @@ export function Header({ rating }: { rating: GoogleRating }) {
         <nav aria-label="Hauptnavigation" className="hidden shrink-0 xl:block">
           <ul className="flex items-center gap-1">
             {nav.map((item) => {
-              const active = pathname === item.href;
+              const active =
+                "group" in item
+                  ? vehicleNav.some((v) => pathname.startsWith(v.href))
+                  : pathname === item.href;
+              if ("group" in item) {
+                return (
+                  <li key={item.href}>
+                    <VehicleMenu active={active} pathname={pathname} />
+                  </li>
+                );
+              }
               return (
                 <li key={item.href}>
                   <Link
@@ -433,29 +576,70 @@ export function Header({ rating }: { rating: GoogleRating }) {
                     dem Telefon ist das Menü der einzige Orientierungspunkt,
                     und dort sahen alle sechs Zeilen gleich aus – gemessen kein
                     `aria-current` im Panel auf keiner der sechs Routen. */}
-                <Link
-                  href={item.href}
-                  aria-current={pathname === item.href ? "page" : undefined}
-                  // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist –
-                  // dann ändert sich `pathname` nicht und das Menü bliebe offen.
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "press flex items-baseline gap-4 py-4 font-display text-2xl font-bold",
-                    pathname === item.href
-                      ? "text-current"
-                      : "text-current/[0.88]",
-                  )}
-                >
-                  <span
+                {"group" in item ? (
+                  /* Die Fahrzeuggruppe steht am Telefon **offen**, nicht als
+                     zweite Klappe. Ein Menü, das man aufklappt, um darin
+                     etwas aufzuklappen, kostet einen Tipp für nichts – und
+                     die drei Zeilen sind der Grund, warum jemand das Menü
+                     öffnet. Die Gruppenzeile ist deshalb kein Verweis,
+                     sondern eine Überschrift; sie zeigt auf keine eigene
+                     Seite, die es gäbe. */
+                  <div className="py-4">
+                    <p className="flex items-baseline gap-4 font-display text-2xl font-bold text-current/[0.88]">
+                      <span className="tabular font-sans text-xs font-medium text-accent/45">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {item.label}
+                    </p>
+                    <ul className="mt-1 flex flex-col pl-9">
+                      {vehicleNav.map((sub) => (
+                        <li key={sub.href}>
+                          <Link
+                            href={sub.href}
+                            aria-current={
+                              pathname === sub.href ? "page" : undefined
+                            }
+                            onClick={() => setOpen(false)}
+                            className={cn(
+                              "press flex min-h-11 items-center py-2 font-display text-lg font-semibold",
+                              pathname === sub.href
+                                ? "text-accent"
+                                : "text-current/75",
+                            )}
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    aria-current={pathname === item.href ? "page" : undefined}
+                    // Deckt auch den Fall ab, dass die Zielroute die aktuelle ist –
+                    // dann ändert sich `pathname` nicht und das Menü bliebe offen.
+                    onClick={() => setOpen(false)}
                     className={cn(
-                      "tabular font-sans text-xs font-medium",
-                      pathname === item.href ? "text-accent" : "text-accent/45",
+                      "press flex items-baseline gap-4 py-4 font-display text-2xl font-bold",
+                      pathname === item.href
+                        ? "text-current"
+                        : "text-current/[0.88]",
                     )}
                   >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {item.label}
-                </Link>
+                    <span
+                      className={cn(
+                        "tabular font-sans text-xs font-medium",
+                        pathname === item.href
+                          ? "text-accent"
+                          : "text-accent/45",
+                      )}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

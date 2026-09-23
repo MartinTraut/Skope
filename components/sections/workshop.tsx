@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
-import { GeneratedMark } from "@/components/ui/generated-mark";
 import { Container, Section } from "@/components/ui/section";
 import { checkupIncludes, turnaround } from "@/lib/data/services";
 import { cn } from "@/lib/utils";
@@ -27,20 +26,31 @@ export function Workshop() {
           <Reveal className="flex flex-col lg:col-span-5">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700 lg:aspect-auto lg:min-h-[28rem] lg:flex-1">
               <Image
-                src="/img/werkstatt-service.jpg"
-                alt="Symbolbild: Prüfung des Klappscharniers an einem eingespannten E-Scooter mit dem Drehmomentschlüssel"
+                src="/img/werkstatt/reparatur-trittbrett.jpg"
+                alt="Geöffnetes Trittbrett eines E-Scooters von oben, eine Hand hebt die Abdeckung über Kabelbaum und Akkuanschluss an"
                 fill
                 sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
                 className="parallax object-cover"
               />
-              <GeneratedMark src="/img/werkstatt-service.jpg" />
             </div>
-            {/* Keine Bildunterschrift: Sie beschrieb, was man ohnehin sieht,
-                und die KI-Offenlegung trägt der Chip im Bild (`GeneratedMark`),
-                Kurzform sichtbar, Wortlaut in `title` und `sr-only`. Eine
-                frühere Fassung nannte hier den Ort – unter einem erzeugten
-                Motiv eine Tatsachenbehauptung (§ 5 UWG), deshalb nicht
-                zurückschreiben. */}
+            {/* **Echte Aufnahme, kein Symbolbild – deshalb kein
+                `GeneratedMark`.** Hier lag bis zum 20.09.2026
+                `werkstatt-service.jpg`, eines der acht erzeugten Motive. Für
+                eine Sektion, die aufzählt, was für 59,99 € *tatsächlich*
+                passiert, war ein erfundenes Bild die schlechteste Wahl der
+                ganzen Seite: Der Absatz belegt eine Prüfung, das Bild belegte
+                nichts. Jetzt steht dort ein aufgeschraubtes Gerät aus der
+                eigenen Werkstatt (`lib/data/workshop-photos.ts`).
+
+                Damit trägt die Startseite ein erzeugtes Motiv weniger. Die
+                Datei bleibt in `generated-images.ts` – sie ist weiter im
+                Projekt, und die Liste beschreibt die Bilder, nicht ihre
+                Verwendung.
+
+                Keine Bildunterschrift: Der Ort gehört nicht darunter – unter
+                einem erzeugten Motiv wäre er eine Tatsachenbehauptung
+                (§ 5 UWG) gewesen, und auch unter einer echten Aufnahme sagt
+                die Sektion ihn nicht besser als die Seite es ohnehin tut. */}
           </Reveal>
 
           <div className="lg:col-span-7">

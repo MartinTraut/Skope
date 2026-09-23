@@ -43,3 +43,10 @@ kalkulation-skope-gesamtpaket.md
 # Sicherungskopien und Rohmaterial aus der Abstimmung bleiben lokal.
 /.backup/
 /*.html
+
+# Telefonaufnahmen aus dem Betrieb, unbearbeitet und je 3–10 MB.
+# Sie tragen EXIF mit Aufnahmeort auf ein paar Meter genau, Gerät und
+# Zeitstempel – das Repository ist öffentlich. Ausgeliefert wird nur die
+# verkleinerte Fassung unter public/img/werkstatt/, und `sharp` schreibt
+# ohne `withMetadata()` keine EXIF-Daten in die Ausgabe.
+/PXL_*.jpg

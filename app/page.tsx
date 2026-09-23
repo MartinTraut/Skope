@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { productFacts } from "@/lib/commerce-source";
 import Link from "next/link";
 
 import { CtaBand } from "@/components/sections/cta-band";
@@ -25,7 +27,14 @@ export const metadata: Metadata = pageMeta({
   title: "Geprüfte E-Scooter kaufen in Neuenstadt",
   absolute: true,
   description:
-    "Generalüberholte E-Scooter ab 169,99 € mit einem Jahr Gewährleistung, geprüft in eigener Werkstatt in Neuenstadt am Kocher. Dazu Reparatur und Wartung.",
+    /* Der Einstiegspreis kommt aus dem Bestand, nicht aus dem Satz. Bis zum
+       20.09.2026 stand hier „ab 169,99 €" hart im Text – ein Wert aus der
+       alten Platzhalterliste, der mit dem echten Bestand um 80 € danebenlag
+       und beim nächsten Wechsel wieder danebenliegen würde. Ohne Preis im
+       Bestand fällt der Satzteil weg statt „ab null €" zu behaupten. */
+    `Geprüfte E-Scooter, E-Chopper und E-Dreiräder${
+      productFacts().priceFrom ? ` ab ${productFacts().priceFrom}` : ""
+    } mit einem Jahr Gewährleistung, aus eigener Werkstatt in Neuenstadt am Kocher. Dazu Reparatur und Wartung.`,
   path: "/",
 });
 

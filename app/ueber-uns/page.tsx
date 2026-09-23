@@ -5,6 +5,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Region } from "@/components/sections/region";
 import { Testimonials } from "@/components/sections/testimonials";
+import { WorkshopGallery } from "@/components/sections/workshop-gallery";
 import { ExplainerVideo } from "@/components/ui/explainer-video";
 import { GeneratedMark } from "@/components/ui/generated-mark";
 import { PageHeader } from "@/components/ui/page-header";
@@ -161,6 +162,16 @@ export default function AboutPage() {
           </div>
         </Container>
       </Section>
+
+      {/* Die echten Aufnahmen stehen **vor** dem Erklärfilm.
+
+          Der Film ist die eigene Darstellung in Motion Design, hinter seinen
+          Schrifttafeln liegt ein erzeugtes Motiv. Die Fotos sind der Betrieb,
+          wie er ist. Wer beides sieht, soll zuerst den Ort sehen und dann die
+          Erklärung – nicht umgekehrt.
+
+          Ton silber-200: darüber Silber, darunter der Film auf Tinte. */}
+      <WorkshopGallery tone="silver-200" />
 
       {/* Der Erklärfilm zwischen den Grundsätzen und den Kundenstimmen.
 

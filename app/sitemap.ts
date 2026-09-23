@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 
+import { deviceHref } from "@/lib/data/vehicles";
 import { listProducts } from "@/lib/commerce-source";
-import { legalNav, nav, site } from "@/lib/site";
+import { legalNav, nav, site, vehicleNav } from "@/lib/site";
 
 /**
  * Kein `lastModified`. Bis zum 02.09.2026 stand hier die Bauzeit an allen
@@ -13,11 +14,18 @@ import { legalNav, nav, site } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: site.url, changeFrequency: "monthly" as const, priority: 1 },
-    ...nav.map((item) => ({
-      url: `${site.url}${item.href}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    })),
+    /* `nav` führt die Fahrzeuggruppe mit einem einzigen Ziel (`/e-scooter`);
+       die übrigen Kategorieseiten kommen aus `vehicleNav`. Doppelte Adressen
+       fängt das `filter` ab – E-Scooter steht in beiden Listen. */
+    ...[...nav, ...vehicleNav]
+      .filter(
+        (item, i, all) => all.findIndex((x) => x.href === item.href) === i,
+      )
+      .map((item) => ({
+        url: `${site.url}${item.href}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+      })),
     /**
      * Die Geräteseiten. `weekly`, weil der Bestand tatsächlich wechselt – und
      * mit 0.7 unter den Leistungsseiten: Ein verkauftes Gerät verschwindet,
@@ -25,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
      * schickt Crawler bevorzugt auf die Adressen mit der kürzesten Lebensdauer.
      */
     ...listProducts().map((item) => ({
-      url: `${site.url}/e-scooter/${item.id}`,
+      url: `${site.url}${deviceHref(item)}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),

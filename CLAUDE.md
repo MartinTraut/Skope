@@ -2008,3 +2008,129 @@ sah deshalb fälschlich leer aus). Achtzehn Prüfungen über sechs Routen ×
 **Noch nicht gebaut:** die Zuordnung von Umsätzen. Sie hängt an Shopify
 (`lib/commerce-shopify.ts`) und wird dort angeschlossen, wenn der Verkaufsweg
 steht.
+
+## Echte Werkstattfotos — 20.09.2026
+
+Sieben Telefonaufnahmen des Betreibers. Sie liegen verkleinert unter
+`public/img/werkstatt/`, die Rohdateien bleiben lokal (`/PXL_*.jpg` in
+`.gitignore`).
+
+- **Die Rohbilder tragen EXIF mit Aufnahmeort, Gerät und Zeitstempel.** Das
+  Repository ist öffentlich. `sharp` schreibt ohne `withMetadata()` nichts
+  davon in die Ausgabe – wer die Bilder neu erzeugt, lässt das so. Geprüft:
+  33 EXIF-Treffer im Rohbild, null in der ausgelieferten Datei.
+- **Keine KI-Kennzeichnung.** Diese Bilder sind fotografiert; `GeneratedMark`
+  gehört ausschließlich auf die acht erzeugten Motive. Eine falsche
+  Kennzeichnung ist genauso irreführend wie eine fehlende.
+- **Die Startseite trägt ein erzeugtes Motiv weniger.** In der
+  Checkup-Sektion (`workshop.tsx`) lag `werkstatt-service.jpg`; für einen
+  Absatz, der aufzählt, was für 59,99 € *tatsächlich* passiert, war ein
+  erfundenes Bild die schlechteste Wahl der Seite. Dort steht jetzt
+  `reparatur-trittbrett.jpg`.
+- **Die Bahn hat gleich hohe, verschieden breite Kacheln.** Fünf Aufnahmen
+  sind hochkant, zwei quer. Ein gemeinsames 4/3 hätte den Hochformaten oben
+  und unten je ein Fünftel genommen – beim Bürocontainer genau das Schild
+  über der Tür. Die Breite kommt über `aspect-ratio` aus `w`/`h` am Eintrag,
+  also steht die Bahn vor dem ersten geladenen Bild richtig (CLS 0).
+- **Drei Fallen, die dabei zugeschnappt sind:**
+  - **Die Bildunterschrift zog die Kachel breit.** Eine Figur ohne
+    Breitenangabe im Flex wird so breit wie ihr breitester Inhalt, und der
+    Bildkasten darin steht auf `stretch` – sein Seitenverhältnis war damit
+    wirkungslos (gemessen 352 statt 312 px auf vier von sieben Kacheln).
+    `w-0 min-w-full` an der `figcaption` nimmt sie aus der Mindestbreite.
+  - **`snap-start` übergeht den Innenabstand.** Die Bahn rastete beim ersten
+    Sichtkontakt selbsttätig um 24 px ein; die erste Kachel stand an der
+    Gehäusekante, 24 px links von Überschrift und Lead. `scroll-padding-left`
+    muss denselben Wert tragen wie `padding-left`.
+  - **Ein `Reveal` je Kachel bleibt beim Wischen aus.** Der Beobachter zählt
+    gegen das *Fenster*, die Bahn bewegt sich waagerecht: nach einem Wisch
+    ans Ende standen drei Kacheln dauerhaft auf Deckkraft 0. Jetzt ein
+    `Reveal` um die ganze Bahn.
+- **`components/ui/lane-arrows.tsx`** gibt einer Wischbahn zwei Pfeile ab
+  `md`. Grund: Am Telefon hat sie ihre Geste, nach einem Tab ihre
+  Pfeiltasten – mit der Maus hat sie nichts, weil `.scroll-x` den Rollbalken
+  ausblendet und ein senkrechtes Rad sie nicht bewegt. Die Bahn wird über
+  ihre `id` gefunden, nicht über eine Ref: Die Galerien sind Server-Bauteile.
+  Der Zustand läuft über `useSyncExternalStore` mit einer **Zeichenkette** als
+  Momentaufnahme – ein frisches Objekt je Aufruf wäre bei jedem Rollereignis
+  ein neuer Wert und damit eine Endlosschleife.
+- **`workshopPhotos()` warnt beim Bauen, wenn keine Datei liegt.** Ein Build
+  vor den Bilddateien lieferte `/ueber-uns` ohne die Sektion, und im
+  Protokoll stand nichts. Niemand sucht nach etwas, das aussieht, als hätte
+  es nie existiert.
+
+## Echter Bestand aus den Kleinanzeigen — 20.09.2026
+
+`lib/inventory.ts` ist keine Platzhalterliste mehr. Quelle ist die
+Händlerseite des Betriebs (kleinanzeigen.de/pro/skopegebrauchtwarenhandel),
+abgerufen am 20.09.2026: **neun Modelle, dreizehn Geräte** — sieben
+E-Scooter, ein E-Chopper (3×), ein E-Dreirad. Preise **249,00 bis 1.779,00 €**
+statt vorher 169,99 bis 599,99.
+
+- **Damit sind drei Entscheidungen belegt, die vorher nur Auskunft waren:**
+  Es gibt wirklich Chopper (Mangosteen M1-P), es gibt wirklich ein Trike
+  (Citycoco COCO CP-3, „E-Dreirad"), und es gibt wirklich Neuware — der
+  Xiaomi 6 Ultra und beide 45-km/h-Fahrzeuge sind originalverpackt. Der
+  frühere TODO „E-Trike steht auf der schwächeren Quelle, im Zweifel weg" ist
+  damit erledigt. **`/e-roller` hat weiterhin keinen Bestand.**
+- **`quantity` ist neu.** Dreimal derselbe Chopper und dreimal derselbe
+  Xiaomi 6 Ultra stehen in den Kleinanzeigen als je drei Anzeigen. Hier sind
+  sie **ein** Eintrag mit Stückzahl: Drei gleichnamige Karten mit demselben
+  Bild und demselben Preis liest niemand als Vorrat, sondern als Fehler.
+  `inventoryFacts().count` summiert deshalb Stückzahlen (13), `models` zählt
+  Einträge (9).
+- **`inventoryFacts(items?)` nimmt jetzt eine Liste.** „13 Geräte, ab 249 €"
+  über einer Auslage mit sieben E-Scootern ist eine falsche Angabe über
+  genau das, was darunter steht. Die Startseite rechnet weiter über alles.
+- **Die Geräteseite liegt unter ihrer Fahrzeugart.** `app/e-scooter/[slug]`
+  war die einzige Adressform; ein Chopper unter `/e-scooter/mangosteen-m1p`
+  widerspricht der Trennung, für die es die Kategorieseiten überhaupt gibt.
+  Die Seite steht jetzt als `components/sections/device-page.tsx`, die vier
+  Routen sind dünne Dateien mit `listByCategory(<art>)`. Die Art kommt aus
+  `item.category`, nicht aus der Adresse — und jede Route prüft sie, sonst
+  läge jedes Gerät unter allen vier Adressen (dreifach doppelter Inhalt).
+- **`deviceHref()` in `lib/data/vehicles.ts` ist die eine Stelle für die
+  Adresse.** Vorher bildeten sie vier Stellen einzeln: Karte, Sitemap,
+  Product-Schema, untere Aktionsleiste.
+- **`/e-scooter` liest `listByCategory("scooter")`.** Vorher `listProducts()`
+  — solange alles E-Scooter waren, fiel das nicht auf.
+- **`itemCondition` im Schema kommt aus `condition`.** Fest auf
+  `RefurbishedCondition` wäre am Neugerät eine falsche Beschaffenheitsangabe
+  in der Suche: Plakette „Neu" auf der Karte, „generalüberholt" im Angebot
+  daneben. Dasselbe gilt für den Seitentitel der Geräteseite („neu kaufen"
+  statt „gebraucht kaufen").
+- **Der Einstiegspreis in der Meta der Startseite kommt aus den Daten.** Er
+  stand als „ab 169,99 €" hart im Satz und lag mit dem echten Bestand um 80 €
+  daneben.
+
+**Was bewusst NICHT in den Daten steht:** Reichweiten in Kilometern bei
+Chopper und Dreirad — die Anzeigen nennen dort nur 30 Ah und 20 Ah, und aus
+Amperestunden eine Reichweite zu rechnen hieße, eine Zahl zu erfinden, an der
+ein Käufer sein Kaufmotiv festmacht. Dasselbe beim NAVEE UT5 Max, dessen
+Anzeige Akku und Motor nur in Worten beschreibt.
+
+**Zwei Widersprüche, die der Abgleich aufgedeckt hat — beide offen:**
+
+- **§ 25a gegen § 19 UStG.** Jede Kleinanzeige nennt „Differenzbesteuerung
+  nach § 25a UStG". Impressum und Schema dieser Website führen den Betrieb
+  als Kleinunternehmer nach § 19. Beides zusammen geht nicht — wer § 19
+  anwendet, weist ohnehin keine Umsatzsteuer aus. Eine der beiden Angaben ist
+  falsch und steht öffentlich.
+- **45 km/h ist kein Elektrokleinstfahrzeug.** Chopper und Dreirad sind
+  Kleinkrafträder (Führerschein AM oder B, Versicherungskennzeichen für
+  Kleinkrafträder). Der ERGO-Aushang auf `/versicherung` führt Tarife für
+  Elektrokleinstfahrzeuge. Ob die Vermittlung die andere Klasse abdeckt und
+  zu welchem Beitrag, ist ungeklärt — deshalb steht an beiden Geräten nur,
+  dass es ein anderer Tarif ist, und keine Zahl.
+
+**Bilder:** je sechs aus der Anzeige (`rule=$_57` liefert 1600 px, alles
+darüber gibt es nicht), auf 1200 px und rund 120–290 kB gerechnet, ohne
+Metadaten. Reihenfolge ist nicht die der Anzeige: Dort steht die Seitenansicht
+an vierter Stelle, auf der Karte muss sie die erste sein.
+
+**`auto-rows-fr` gilt erst ab `sm`.** Einspaltig gibt es keinen Nachbarn, an
+dem sich etwas ausrichten könnte — `fr` gab jeder Karte trotzdem die Höhe der
+größten *sichtbaren*, und weil der Filter über `hidden` arbeitet, wechselte
+diese mit jedem Filterklick: gemessen bei 390 px dieselbe Karte ohne Filter
+212 px, mit „Bis 250 €" 176 px. Man drückt auf einen Filter und die ganze
+Liste wechselt die Proportion, obwohl an den Geräten nichts anders ist.

@@ -80,6 +80,26 @@ const ACTIONS: Record<string, BarAction> = {
     href: "#anfrage",
     icon: MessageSquareText,
   },
+  /* Die drei übrigen Fahrzeugarten. Ohne eigene Einträge fielen sie auf
+     `FALLBACK` und führten am Telefon nach `/kontakt#anfrage` – also **weg**
+     von dem Formular, das auf der Seite selbst steht und dort das Anliegen
+     schon vorausgewählt hat. Auf Seiten, deren Zweck genau dieses Formular
+     ist, ist das die teuerste Fehlleitung der ganzen Leiste. */
+  "/e-chopper": {
+    label: "E-Chopper anfragen",
+    href: "#anfrage",
+    icon: MessageSquareText,
+  },
+  "/e-roller": {
+    label: "Suchauftrag stellen",
+    href: "#anfrage",
+    icon: Search,
+  },
+  "/e-trike": {
+    label: "E-Dreirad anfragen",
+    href: "#anfrage",
+    icon: MessageSquareText,
+  },
 };
 
 const FALLBACK: BarAction = {
@@ -219,9 +239,12 @@ export function MobileCta({
      unter `lg` ohnehin dauerhaft als Symbolknopf in der Kopfzeile. Das Anliegen
      und das Modell reisen wie im Kopfbereich der Seite in der Adresse mit,
      damit im Formular nicht steht „Anfrage zu einem Gerät". */
-  const device = pathname.startsWith("/e-scooter/")
-    ? devices[pathname.slice("/e-scooter/".length)]
-    : undefined;
+  /* Die Adresse kann seit dem 20.09.2026 unter jeder der vier Fahrzeugarten
+     liegen (`/e-chopper/…`, `/e-trike/…`). Deshalb der letzte Pfadabschnitt
+     statt eines festen Präfixes – und nachgeschlagen wird in `devices`, das
+     nur echte Geräte enthält: Die Kategorieseite `/e-chopper` selbst hat
+     keinen zweiten Abschnitt und fällt damit von allein heraus. */
+  const device = devices[pathname.split("/").filter(Boolean)[1] ?? ""];
 
   /* Beschriftung und Ziel kommen aus `deviceAction()` – derselben Funktion,
      die auch der Kopf der Geräteseite liest. Zwei Stellen mit demselben Knopf

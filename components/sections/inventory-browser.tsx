@@ -29,11 +29,17 @@ import { cn } from "@/lib/utils";
  * genommen, einen Status gibt es nicht). Ein Filter, der immer alles zeigt,
  * ist ein Versprechen ohne Deckung.
  */
-type Filter = "alle" | "abe" | "bis250" | "ab30km";
+type Filter = "alle" | "neu" | "gebraucht" | "abe" | "bis250" | "ab30km";
 type Sort = "" | "preis-auf" | "preis-ab" | "reichweite";
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "alle", label: "Alle" },
+  /* Zustand: Seit der Auskunft vom 20.09.2026 verkauft der Betrieb neue
+     *und* generalüberholte Geräte. Die beiden Kapseln erscheinen nur, wenn
+     in der gezeigten Liste tatsächlich beides steht – ein Filter, der immer
+     alles oder immer nichts zeigt, ist ein Versprechen ohne Deckung. */
+  { id: "neu", label: "Neu" },
+  { id: "gebraucht", label: "Generalüberholt" },
   { id: "abe", label: "Mit ABE" },
   { id: "bis250", label: "Bis 250 €" },
   { id: "ab30km", label: "Ab 30 km" },
@@ -46,6 +52,8 @@ const SORTS: { id: Sort; label: string }[] = [
 ];
 
 function match(item: BrowserItem, filter: Filter) {
+  if (filter === "neu") return item.isNew;
+  if (filter === "gebraucht") return !item.isNew;
   if (filter === "abe") return item.abe;
   if (filter === "bis250") return item.price <= 250;
   if (filter === "ab30km") return item.range !== null && item.range >= 30;
@@ -59,6 +67,8 @@ export type BrowserItem = {
   /** Reichweite in km, `null` wenn sie nicht in den Daten steht. */
   range: number | null;
   abe: boolean;
+  /** Neugerät. Steuert die beiden Zustandskapseln und die Plakette. */
+  isNew: boolean;
 };
 
 /**
@@ -77,14 +87,23 @@ export function InventoryBrowser(props: {
   );
 }
 
-/* `auto-rows-fr`: Ohne das bekommt jede Rasterreihe ihre eigene Höhe – die
-   Reihe mit den beiden Geräten ohne ABE trägt die ausgeschriebene Warnung und
-   war bei 1512 px 662 px hoch, die Reihe darüber 614. Gleich große Karten in
-   einer Reihe und verschieden große von Reihe zu Reihe liest sich als
-   Zufall. Die gewonnene Strecke fällt über `mt-auto` vor die Zeile „Mehr
-   Daten", steht also zwischen Inhalt und Abschluss und nicht im Text. */
+/* `auto-rows-fr` **erst ab `sm`**, also erst ab zwei Spalten.
+ *
+ * Wozu es da ist: Ohne das bekommt jede Rasterreihe ihre eigene Höhe – die
+ * Reihe mit den Geräten ohne ABE trägt die ausgeschriebene Warnung und war
+ * bei 1512 px 662 px hoch, die Reihe darüber 614. Gleich große Karten
+ * nebeneinander und verschieden große untereinander liest sich als Zufall.
+ *
+ * Warum es am Telefon weg muss: Dort steht **eine** Spalte, es gibt also
+ * keinen Nachbarn, an dem sich etwas ausrichten könnte – `fr` gibt jeder
+ * Karte trotzdem die Höhe der größten *sichtbaren*. Und weil der Filter die
+ * Einträge über `hidden` aus dem Raster nimmt, ändert sich diese größte mit
+ * jedem Filterklick: gemessen bei 390 px war dieselbe Zeilenkarte ohne
+ * Filter 212 px hoch, mit „Bis 250 €" 176 px. Man drückt auf einen Filter
+ * und die ganze Liste wechselt die Proportion, obwohl an den Geräten nichts
+ * anders ist. Einspaltig ist die natürliche Höhe die richtige. */
 const listClass =
-  "mt-6 grid auto-rows-fr gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3";
+  "mt-6 grid gap-3 sm:mt-8 sm:auto-rows-fr sm:grid-cols-2 sm:gap-6 lg:grid-cols-3";
 
 function PlainList({ children }: { children: React.ReactNode }) {
   return <ul className={listClass}>{children}</ul>;
@@ -102,8 +121,21 @@ function Browser({
   const pathname = usePathname();
   const params = useSearchParams();
 
+  /* Die Zustandskapseln nur, wenn die Liste beides enthält. Mit dreizehn
+     generalüberholten Geräten und keinem Neugerät sagte „Generalüberholt"
+     dasselbe wie „Alle" und „Neu" führte auf eine leere Liste. */
+  const mixed =
+    items.some((item) => item.isNew) && items.some((item) => !item.isNew);
+  const filters = React.useMemo(
+    () =>
+      FILTERS.filter(
+        (f) => mixed || (f.id !== "neu" && f.id !== "gebraucht"),
+      ),
+    [mixed],
+  );
+
   const raw = params.get("filter");
-  const filter: Filter = FILTERS.some((f) => f.id === raw)
+  const filter: Filter = filters.some((f) => f.id === raw)
     ? (raw as Filter)
     : "alle";
   const rawSort = params.get("sort");
@@ -182,7 +214,7 @@ function Browser({
             aria-label="Bestand filtern"
             className="scroll-x -mx-6 flex gap-2 px-6 lg:mx-0 lg:flex-wrap lg:px-0"
           >
-            {FILTERS.map((f) => {
+            {filters.map((f) => {
               const active = f.id === filter;
               return (
                 <button
