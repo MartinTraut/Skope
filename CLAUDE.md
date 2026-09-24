@@ -2502,6 +2502,43 @@ steigt jetzt mit `6vw + 0,15rem` und ist bei `6,5rem` gedeckelt (vorher
 - Kontrast über 1280 bis 3440 px unverändert 19,9:1 — hinter der
   Überschrift steht auf jeder Breite reine Tinte.
 
+**Die ABE-Warnung ist eine Plakette oben rechts — 24.09.2026, in zwei
+Runden auf Ansage.** Sie lag als flacher Bernsteinstreifen mit einem Satz im
+11-px-Grad am unteren Bildrand und las sich damit wie eine Bildunterschrift —
+also wie eine Angabe zum Foto, nicht wie eine Einschränkung des Geräts.
+
+Der erste Anlauf war ein Streifen über die volle Bildbreite mit Warnbake,
+Überschrift und Satz. Er war unübersehbar, und genau das war sein Fehler:
+71 bis 86 px hoch verdeckte er das untere Viertel der Aufnahme, und auf den
+beiden betroffenen Karten war der Warnhinweis das größte Element — größer
+als Modellname und Preis zusammen. Ansage danach: „oben rechts und
+minimalistischer".
+
+- **Sie steht jetzt gegenüber der Plakette für „Neu" und „Reserviert", in
+  derselben Geometrie** — Pille, Ring in Tinte, Zeichen plus Wort —, nur in
+  Bernstein und mit dem Warndreieck statt dem Funken. Zwei Plaketten mit
+  derselben Aufgabe dürfen nicht verschieden aussehen. Der Ring ist hier
+  aus demselben Grund Pflicht wie dort: Die Aufnahmen sind Telefonfotos vor
+  einer hellen Containerwand.
+- **Gemessen 188 × 20 px auf jeder Breite.** Der engste Fall ist nicht die
+  kleinste Fensterbreite, sondern 640 px: Dort ist die Karte zweispaltig und
+  das Bild nur 250 px breit. Mit 14 px Grad wären es 224 px gewesen und die
+  Plakette hätte fast die ganze Bildbreite eingenommen.
+- **Der volle Wortlaut ist nicht verschwunden.** Er steht als `sr-only` an
+  der Plakette, in der Zulassungszelle des Datenbands („Keine ABE", in
+  Bernstein) und auf der Geräteseite als eigener Absatz mit Begründung und
+  erlaubter Nutzung. Was der Eintrag unter „Offene Punkte" verlangt, ist die
+  sichtbare Kennzeichnung der beiden Ausnahmen — nicht eine bestimmte Größe
+  des Kastens.
+- **Der Bildzähler steht wieder auf `bottom-3`.** Sein `bottom-11` war der
+  Behelf gegen den Streifen und ist mit ihm weg.
+- **Die Zeilenkarte am Telefon trägt die Warnung weiter als Zeile**, jetzt
+  mit demselben Zeichen und derselben Fläche: Auf einem 115 px breiten Bild
+  ist für eine Plakette kein Platz.
+- Gemessen 320 – 1920 px über `/e-scooter` und `/`: Karten eines Rasters
+  weiter gleich hoch, kein Überlauf, keine Konsolenfehler, keine Schrift
+  unter 11 px.
+
 ## Gremium-Restliste abgearbeitet — 23.09.2026
 
 Auf Ansage („arbeite alle die Punkte ab, die du meinst"). Es ist die Liste,

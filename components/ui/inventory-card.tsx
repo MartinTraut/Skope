@@ -72,6 +72,44 @@ function Fact({
 }
 
 /**
+ * Der Warnhinweis für Geräte ohne deutsche Betriebserlaubnis.
+ *
+ * Er steht als Plakette oben rechts auf dem Bild – gegenüber der Plakette
+ * für „Neu" und „Reserviert", in derselben Geometrie, nur in Bernstein und
+ * mit dem Warnzeichen statt dem Funken. Zwei Plaketten mit derselben
+ * Aufgabe dürfen nicht verschieden aussehen.
+ *
+ * Vorher war es ein Streifen über die volle Bildbreite am Fuß, mit
+ * Warnbake, Überschrift und Satz. Er war unübersehbar und genau das war
+ * sein Fehler: 71 bis 86 px hoch verdeckte er das untere Viertel der
+ * Aufnahme, und auf den beiden betroffenen Karten war der Warnhinweis das
+ * größte Element – größer als Modellname und Preis zusammen.
+ *
+ * **Der volle Wortlaut ist nicht verschwunden.** Er steht als `sr-only` an
+ * der Plakette, in der Zulassungszelle des Datenbands („Keine ABE", in
+ * Bernstein), und auf der Geräteseite als eigener Absatz mit Begründung und
+ * erlaubter Nutzung. Was der Eintrag in CLAUDE.md verlangt, ist die
+ * sichtbare Kennzeichnung der beiden Ausnahmen – nicht eine bestimmte
+ * Größe des Kastens.
+ */
+function NoAbeBadge() {
+  return (
+    <span className="pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-amber-300 py-1 pr-2.5 pl-2 font-display text-[0.6875rem] leading-none font-bold tracking-tight text-ink uppercase ring-2 ring-ink/70">
+      <AlertTriangle
+        aria-hidden="true"
+        className="size-3 shrink-0"
+        strokeWidth={2.75}
+      />
+      Keine Straßenzulassung
+      <span className="sr-only">
+        : ohne deutsche Betriebserlaubnis, nicht für den öffentlichen
+        Straßenverkehr.
+      </span>
+    </span>
+  );
+}
+
+/**
  * Der Zustand nur, wenn er vom Regelfall abweicht.
  *
  * „Sofort verfügbar" auf dreizehn Karten ist keine Auskunft, sondern
@@ -218,8 +256,24 @@ export function InventoryCard({
           </p>
 
           {!item.streetLegal ? (
-            <p className="mt-1.5 text-[0.6875rem] leading-snug text-amber-200/90">
-              Nicht für den öffentlichen Straßenverkehr.
+            /* Die Zeilenkarte trägt die kurze Fassung, und zwar nicht aus
+               Platznot: „Keine ABE" steht eine Zeile darüber, der Satz sagt
+               also, was das heißt, und wiederholt es nicht. Die volle
+               Fassung stünde bei 390 px in 165 px Satz über fünf Zeilen und
+               wäre dort der längste Block einer Zeilenkarte.
+
+               Dieselbe Farbe, dasselbe Zeichen, dieselbe Fläche wie auf der
+               quadratischen Karte – ein Warnhinweis, der auf zwei Karten
+               verschieden aussieht, ist kein zweiter, sondern ein defekter. */
+            <p className="mt-2 flex items-start gap-1.5 rounded bg-amber-300/15 px-2 py-1.5 text-[0.6875rem] leading-snug font-semibold text-amber-200">
+              <AlertTriangle
+                aria-hidden="true"
+                className="mt-px size-3.5 shrink-0"
+                strokeWidth={2.5}
+              />
+              <span className="min-w-0 [hyphens:auto]">
+                Nicht für den öffentlichen Straßenverkehr.
+              </span>
             </p>
           ) : null}
         </div>
@@ -283,40 +337,13 @@ export function InventoryCard({
         />
 
         <StatusBadge item={item} />
+        {!item.streetLegal ? <NoAbeBadge /> : null}
+
         {item.images.length > 1 ? (
-          <span
-            className={cn(
-              "pointer-events-none absolute right-3 inline-flex items-center gap-1.5 rounded-md bg-ink/75 px-2.5 py-1 text-xs",
-              // Über dem Warnstreifen, nicht dahinter.
-              item.streetLegal ? "bottom-3" : "bottom-11",
-            )}
-          >
+          <span className="pointer-events-none absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-md bg-ink/75 px-2.5 py-1 text-xs">
             <Images aria-hidden="true" className="size-3.5" />
             <span className="tabular">{item.images.length}</span>
           </span>
-        ) : null}
-
-        {!item.streetLegal ? (
-          /* Die Zelle im Band sagt „Keine ABE", dieser Streifen sagt, was das
-             heißt – und er liegt auf dem Bild, nicht unter dem Band.
-
-             Zwei Gründe. Der sichtbare: Als Absatz in der Karte machte die
-             zweizeilige Warnung genau zwei der dreizehn Karten höher, und
-             weil alle Karten eines Rasters gleich hoch sind, bekamen die elf
-             übrigen dieselbe Höhe als leere Fläche geschenkt – gemessen 48 px
-             unter dem Zustand, auf jeder Karte, auf jeder Breite. Eine
-             Ausnahme, die zwei Geräte betrifft, darf nicht das Layout aller
-             dreizehn bestimmen.
-
-             Der inhaltliche: Auf dem Bild steht sie vor dem Preis statt
-             hinter den Kennwerten. Sie ist damit nicht kleiner geworden,
-             sondern lauter – Bernstein auf Tinte, volle Kartenbreite,
-             ausgeschrieben wie bisher. Genau das verlangt der Eintrag in
-             CLAUDE.md: nicht einklappen, nicht ins Kleingedruckte. */
-          <p className="pointer-events-none absolute inset-x-0 bottom-0 bg-amber-300/95 px-3 py-2 text-[0.6875rem] leading-snug font-semibold text-ink">
-            Ohne deutsche Betriebserlaubnis – nicht für den öffentlichen
-            Straßenverkehr.
-          </p>
         ) : null}
       </div>
 
