@@ -1240,7 +1240,7 @@
          eigentliche Textschleier beginnt. */
       linear-gradient(
         to bottom,
-        color-mix(in oklab, var(--color-ink) 88%, transparent) 0,
+        color-mix(in oklab, var(--color-ink) 62%, transparent) 0,
         color-mix(in oklab, var(--color-ink) 62%, transparent) 4.5rem,
         transparent 8rem
       ),
@@ -1264,21 +1264,35 @@
         color-mix(in oklab, var(--color-ink) 8%, transparent)
           calc(var(--hero-head) + 21rem)
       ),
-      /* Der Auslauf in die Tinte.
+      /* Der Schleier unter dem Kennzahlenband.
 
-         **Er beginnt seit dem 23.09.2026 erst bei 92 Prozent.** Vorher lag er
-         bei 68 – gerechnet auf eine Aufnahme, die die ganze Bühne füllte und
-         unter dem Text dunkel bleiben sollte. Das neue Motiv liegt
-         `object-contain` und steht als Band auf dem Boden der Bühne: Bei
-         390 px ist es 219 von 580 px hoch, also genau die Strecke von 62 bis
-         100 Prozent. Ein Auslauf ab 68 Prozent hätte die drei Fahrzeuge
-         verschluckt, für die das Bild da ist.
-         
-         Ganz weglassen geht nicht: Die Bühne endet dort, wo das
-         Kennzahlenband beginnt, und dieser Übergang darf keine Kante haben.
-         Die letzten acht Prozent sind im Motiv dunkler, spiegelnder Boden –
-         dort kostet der Auslauf nichts. */
-        linear-gradient(to bottom, transparent 92%, var(--color-ink) 100%);
+         **Er rechnet vom Fuß der Bühne in rem, nicht in Prozent.** Seit dem
+         24.09.2026 reicht die Bühne über die ganze Sektion, das Band liegt
+         also auf dem Werkstattboden statt auf reiner Tinte darunter. Die
+         Höhe des Bandes hängt an der Schrift (200 px bei 390, 218 bei 320)
+         und nicht an der Fensterhöhe – ein Prozentwert liefe bei jeder
+         anderen Fensterhöhe an einer anderen Stelle vorbei.
+
+         75 Prozent Tinte sind gemessen, nicht gewählt: Ohne Schleier steht
+         Weiß hinter dem Band auf 1,6:1 und Neon auf 1,2:1 – die hellste
+         Stelle ist eine Spiegelung auf dem Reifen. Gemessen über sechs
+         Telefonformate sind es jetzt 6,4:1 für die Beschriftung und 4,7:1
+         für die Zahlen; der ungünstigste Fall ist 360 × 780, weil dort das
+         Vorderrad genau hinter der ersten Kennzahl steht.
+
+         88 Prozent waren der erste Versuch und zu viel: Bei 15:1 ist vom
+         Boden nichts mehr zu sehen, und dann hätte das Band auch auf Tinte
+         stehen können.
+
+         13 rem deckt das Band samt seinem Abstand, die restlichen 5 rem sind
+         der Übergang: Eine harte Kante quer über den Boden wäre schlimmer
+         als das, was sie verdeckt. */
+        linear-gradient(
+          to top,
+          color-mix(in oklab, var(--color-ink) 75%, transparent) 0,
+          color-mix(in oklab, var(--color-ink) 75%, transparent) 13rem,
+          transparent 18rem
+        );
   }
 
   .hero-scrim {

@@ -2374,6 +2374,61 @@ Weiß darauf): Wortzeichen 8,0 / 19,3 / 19,0 / 18,5:1 und H1 5,0 / 4,6 / 6,8 /
 **320 × 568 bleibt die bekannte Ausnahme:** Dort läuft die H1 über vier
 Zeilen und die letzte Kennzahlenreihe steht unter der Falz.
 
+## Kennzahlen auf dem Bild, Bühne an der Sektion — 24.09.2026
+
+Auf Ansage („handy hero ist immer noch verschoben, das Bild … und ruckelt",
+danach „setz die zahlen auf das bild, rutsch das bild runter, sodass alles
+stimmig aussieht"). Es war beides dieselbe Ursache.
+
+**Die Bühne endete am Fuß der Bildzone, nicht an der Sektion.** Die Bildzone
+ist `flex-1` an einer Sektion mit `min-h-svh`; ändert sich die Fensterhöhe,
+wächst die Zone, und die unten verankerte Aufnahme wandert mit. Gemessen bei
+390 px Breite: 844 → 924 px Fensterhöhe verschob die Aufnahme um volle 80 px,
+während die Überschrift stand. Das ist das „Verschieben", und es war kein
+Rest der alten Ladeanimation — die ist seit dem 23.09. weg.
+
+- **Die Bühne hängt jetzt an der Sektion** (`absolute inset-y-0` als
+  Geschwister der Bildzone statt Kind). Aufnahme und Kennzahlenband hängen
+  damit an derselben Unterkante: Gemessen über 780, 844, 924 und 1200 px
+  Fensterhöhe bleibt der Abstand zwischen Bildunterkante und Bandfuß
+  konstant bei 40 px. Vorher liefen beide auseinander.
+- **Die Zahlen liegen dadurch auf dem Werkstattboden.** Die Aufnahme reicht
+  bis an die Unterkante der Sektion; die Fahrzeuge enden bei 79 % der
+  Bildhöhe, darunter ist nur noch spiegelnder Boden. Gemessen bei 390 px ist
+  die Aufnahme 200 px nach unten gerückt (Oberkante −49 → 151).
+- **Ab `sm` ändert sich nichts.** Dort ist die Bühne ein Band fester Höhe am
+  oberen Rand, und der obere Rand von Sektion und Bildzone ist derselbe.
+  Gemessene Sektionshöhen bei 640, 768, 1024, 1280, 1512, 1920, 2560 und
+  3440 px unverändert.
+
+**Der Schleier unter dem Band rechnet in rem vom Fuß, nicht in Prozent.** Der
+alte Auslauf (`transparent 92%` → Tinte) war auf eine Bühne gerechnet, die am
+Kennzahlenband endete. Die Höhe des Bandes hängt an der Schrift (200 px bei
+390, 218 bei 320) und nicht an der Fensterhöhe — ein Prozentwert liefe bei
+jeder anderen Fensterhöhe an einer anderen Stelle vorbei. Jetzt volle Deckung
+über 13 rem, Übergang bis 18 rem.
+
+- **75 % Tinte sind gemessen.** Ohne Schleier steht Weiß hinter dem Band auf
+  1,6:1 und Neon auf 1,2:1 — die hellste Stelle ist eine Spiegelung auf dem
+  Reifen. Mit 75 % sind es 6,9 bis 10,0:1 für die Beschriftung und 5,1 bis
+  7,5:1 für die Zahlen; der ungünstigste Fall ist 360 × 780, weil dort das
+  Vorderrad hinter der ersten Kennzahl steht.
+- **88 % waren der erste Versuch und zu viel.** Bei 15:1 ist vom Boden nichts
+  mehr zu sehen — dann hätte das Band auch auf reiner Tinte stehen können,
+  und genau das sollte weg.
+
+**Die KI-Marke steht unten rechts im Streifen unter der letzten
+Kennzahlenzeile.** Gemessen bei 390 px endet die Beschriftung bei 804 px und
+die Sektion bei 844 — dort liegen 40 px, in denen nichts steht. Der frühere
+Sonderfall unter 360 px (`bottom-[25%]`) ist weg; er war der Behelf gegen
+eine Bühne, die am Kennzahlenband endete. Geprüft auf 320, 360, 390, 412,
+430 und 390 × 1200: keine Überschneidung mit einer Beschriftung.
+
+99 Prüfungen über elf Routen × neun Formate: kein Überlauf, genau eine H1 je
+Route, keine Konsolenfehler, keine Schrift unter 11 px. **320 × 568 bleibt
+die bekannte Ausnahme** — dort läuft die H1 vier Zeilen und die letzte
+Kennzahlenreihe steht unter der Falz.
+
 ## Kopfbereich am Schreibtisch, Karte, Tabelle — 24.09.2026
 
 Sieben Ansagen an einem Stück, alle mit Aufnahme.
