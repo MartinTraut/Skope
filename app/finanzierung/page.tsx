@@ -405,12 +405,6 @@ export default function FinancingPage() {
                 group="finanzierung"
                 items={modelSummary}
                 label="Gewähltes Modell"
-                empty={
-                  <>
-                    Noch kein Modell gewählt – im Formular unter „Anliegen“
-                    auswählen oder oben auf eine der beiden Karten tippen.
-                  </>
-                }
               />
               <InquiryForm topicFromQuery />
             </Reveal>

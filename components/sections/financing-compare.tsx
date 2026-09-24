@@ -103,6 +103,32 @@ export function FinancingCompare({
   const cell =
     "px-3.5 py-3.5 leading-snug text-ink/85 transition-colors duration-200 lg:px-5 lg:py-5";
 
+  /**
+   * Die Zeile, über der die Maus steht.
+   *
+   * Bis zum 24.09.2026 wechselte sie von `silver` bzw. `silver-200/70` auf
+   * `silver-200` – also Grau auf Grau, bei der ungeraden Zeile ein
+   * Unterschied von unter drei Prozent Helligkeit. Gemessen war das keine
+   * Rückmeldung, sondern ein Rechenvorgang; auf Ansage („sonst ist das grau
+   * und man erkennt es nicht").
+   *
+   * Jetzt ein Neonschleier von 14 Prozent. Das ist kein Verstoß gegen die
+   * Farbregel: Neon ist auf hellen Flächen **Fläche** und nie Schrift, und
+   * genau das ist es hier. Die Regel „drei Aufgaben" gilt der dauerhaften
+   * Auszeichnung – ein Zustand, der nur existiert, solange ein Zeiger
+   * daraufsteht, zeichnet nichts aus, sondern zeigt, wo der Zeiger steht.
+   *
+   * 14 Prozent sind gerechnet: #9ef605 auf #eef1f4 ergibt rund #e5f3d8 und
+   * damit einen klaren Grünstich, während der Text darauf bei 13:1 bleibt.
+   * Bei 25 Prozent stand die Zeile als Auswahl da und die Tabelle sah aus,
+   * als sei eine Zeile angeklickt.
+   *
+   * Der Übergang lief bisher gar nicht: `transition-colors` stand nur an
+   * `cell`, nicht an der Beschriftungsspalte, und die sprang.
+   */
+  const hoverRow =
+    "transition-colors duration-200 ease-out-quart lg:group-hover/row:bg-neon/[0.14]";
+
   return (
     <Reveal delay={60}>
       {/* Derselbe Deckel wie das Kartenpaar darunter (76 rem) und dieselbe
@@ -161,6 +187,11 @@ export function FinancingCompare({
                   stripe,
                   "col-span-2 flex items-center gap-2 px-3.5 pt-3.5 pb-2 font-display text-[0.6875rem] font-bold tracking-[0.12em] text-ink/60 uppercase",
                   "lg:col-span-1 lg:items-start lg:border-r lg:border-ink/8 lg:bg-ink/[0.045] lg:px-5 lg:py-5 lg:text-sm lg:tracking-normal lg:normal-case",
+                  hoverRow,
+                  /* Die Kante steht als innerer Schatten, nicht als Rahmen:
+                     Ein Rahmen ändert die Box und schöbe beim Überfahren die
+                     ganze Zeile um zwei Pixel nach rechts. */
+                  "lg:group-hover/row:text-ink lg:group-hover/row:shadow-[inset_3px_0_0_var(--color-neon)]",
                 )}
               >
                 {/* Zwei der sieben Beschriftungen laufen ab `lg` zweizeilig
@@ -174,23 +205,22 @@ export function FinancingCompare({
                 />
                 {row.label}
               </dt>
-              {/* Die Aufhellung beim Überfahren gilt der ganzen Zeile und
-                  beiden Spalten gleich – sie hebt die Zeile, die man gerade
-                  liest, nicht ein Modell. Tailwinds `group-hover` bringt die
-                  Abfrage `(hover: hover)` seit v4 selbst mit, am Telefon
-                  bleibt also kein Zustand stehen. */}
+              {/* Die Markierung gilt der ganzen Zeile und beiden Spalten
+                  gleich – sie hebt die Zeile, die man gerade liest, nicht ein
+                  Modell. Tailwinds `group-hover` bringt die Abfrage
+                  `(hover: hover)` seit v4 selbst mit, am Telefon bleibt also
+                  kein Zustand stehen. */}
               <dd
                 className={cn(
                   cell,
                   stripe,
-                  "border-r border-ink/8 lg:group-hover/row:bg-silver-200",
+                  hoverRow,
+                  "border-r border-ink/8",
                 )}
               >
                 <Cell cell={row.mietkauf} />
               </dd>
-              <dd
-                className={cn(cell, stripe, "lg:group-hover/row:bg-silver-200")}
-              >
+              <dd className={cn(cell, stripe, hoverRow)}>
                 <Cell cell={row.ratenkauf} />
               </dd>
             </div>

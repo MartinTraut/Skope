@@ -21,24 +21,29 @@ export function ChosenLine({
   group,
   items,
   label,
-  empty,
 }: {
   /** Rumpf des Kürzels vor dem Bindestrich, z. B. `wartungsvertrag`. */
   group: string;
   items: Record<string, { name: string; detail?: string }>;
   label: string;
-  empty: React.ReactNode;
 }) {
   const slug = useQueryParam("anliegen");
   const prefix = `${group}-`;
   const id = slug?.startsWith(prefix) ? slug.slice(prefix.length) : null;
   const item = id ? items[id] : undefined;
 
-  if (!item) {
-    return (
-      <p className="mb-6 text-sm leading-relaxed text-current/65">{empty}</p>
-    );
-  }
+  /* **Ohne Wahl steht hier nichts** (24.09.2026, auf Ansage).
+
+     Vorher stand ein Hinweis: „Noch kein Modell gewählt – im Formular unter
+     ‚Anliegen‘ auswählen oder oben auf eine der beiden Karten tippen." Er
+     erklärte ein Formular, das direkt darunter steht und sich selbst erklärt:
+     Das Anliegen ist dort ein Pflichtfeld mit sichtbarer Beschriftung, und
+     wer keine Karte gedrückt hat, vermisst auch keine Auswahl. Ein Satz, der
+     einen leeren Zustand kommentiert, macht aus dem Normalfall einen Mangel.
+
+     Die Zeile *mit* Wahl bleibt: Sie ist die Rückmeldung auf einen Druck, der
+     drei Felder weiter oben passiert ist. */
+  if (!item) return null;
 
   return (
     <p className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-current/15 bg-current/5 px-4 py-3">

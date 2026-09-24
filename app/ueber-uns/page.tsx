@@ -98,25 +98,62 @@ export default function AboutPage() {
               {/* Keine Bildunterschrift – die Offenlegung trägt der Chip im
                   Bild, das Motiv erklärt sich selbst. */}
 
-              {/* Füllt die kurze linke Spalte mit echtem Nutzen statt Leerraum */}
-              <dl className="mt-8 rounded-lg border border-current/12 p-7">
-                <div className="border-b border-current/10 pb-4">
-                  <dt className="text-sm text-current/60">Betrieb</dt>
-                  <dd className="mt-1 font-display text-lg font-bold tracking-tight">
+              {/* **Die Eckdaten stehen auf Tinte, nicht auf Silber**
+                  (24.09.2026, auf Ansage „besser farblich, cool animiert").
+
+                  Vorher war es ein heller Kasten mit Haarlinie auf hellem
+                  Grund: drei graue Beschriftungen, drei schwarze Werte, kein
+                  Ton, keine Farbe, keine Bewegung – die Fläche unter dem
+                  Porträt, die den Blick nicht hält.
+
+                  Die Form ist nicht neu erfunden, sondern die der
+                  Preisanker-Karte auf `/reparatur`: dunkle Fläche, Haarlinien
+                  zwischen den Zeilen, Beschriftung links, Wert rechts, die
+                  eine harte Zahl in Neon. Zwei Kennzahlenkarten auf einer
+                  Website müssen gleich aussehen, sonst sind es zwei
+                  Bausteine – dieselbe Regel, nach der auch die beiden Abläufe
+                  angeglichen wurden.
+
+                  **Neon trägt hier genau eine Zahl.** „über 500" ist der
+                  Beleg, um den es auf dieser Seite geht; er steht schon in
+                  der H1. Auf Tinte ist Neon lesbar (15,8:1), auf Silber wäre
+                  es mit 1,18:1 verboten – das ist der zweite Grund für den
+                  Flächenwechsel, nicht nur der optische.
+
+                  Die Neonlinie am oberen Rand zeichnet sich, während die
+                  Karte ins Bild läuft (`.rule-draw`, scroll-getrieben, bei
+                  reduzierter Bewegung steht sie fertig da). */}
+              <dl className="lift-lg relative mt-8 overflow-hidden rounded-lg border border-silver/15 bg-ink p-7 text-silver on-dark">
+                <span
+                  aria-hidden="true"
+                  className="rule-draw absolute inset-x-0 top-0 h-px bg-neon"
+                />
+                {/* Gestapelt, nicht als Zeile mit zwei Enden – anders als in
+                    der Preisanker-Karte, die dieselbe Fläche trägt. Der
+                    Unterschied liegt im Inhalt: Dort stehen rechts Beträge
+                    („ab 25 €"), hier ganze Sätze. Gemessen bei 1512 px stieß
+                    „Einzelunternehmen, Inhaber Thomas Zielke" an den rechten
+                    Rand und „Termine nach Vereinbarung, telefonisch jederzeit
+                    erreichbar" brach unter sein eigenes Etikett – zwei Zeilen
+                    nebeneinander, eine darunter, und die Karte hatte drei
+                    verschiedene Ausrichtungen. */}
+                <div className="border-b border-silver/12 pb-4">
+                  <dt className="text-sm text-current/70">Betrieb</dt>
+                  <dd className="mt-1 font-display font-semibold tracking-tight text-balance">
                     Einzelunternehmen, Inhaber {site.owner}
                   </dd>
                 </div>
-                <div className="border-b border-current/10 py-4">
-                  <dt className="text-sm text-current/60">
+                <div className="border-b border-silver/12 py-4">
+                  <dt className="text-sm text-current/70">
                     Reparierte E-Scooter
                   </dt>
-                  <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
+                  <dd className="tabular mt-1 font-display text-[length:var(--text-stat)] leading-none font-bold tracking-tight text-accent">
                     über 500
                   </dd>
                 </div>
                 <div className="pt-4">
-                  <dt className="text-sm text-current/60">Erreichbarkeit</dt>
-                  <dd className="mt-1 leading-relaxed text-current/80">
+                  <dt className="text-sm text-current/70">Erreichbarkeit</dt>
+                  <dd className="mt-1 leading-relaxed font-medium text-balance">
                     {site.openingHours}
                   </dd>
                 </div>

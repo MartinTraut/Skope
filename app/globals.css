@@ -171,8 +171,21 @@
      (er ist dieselbe Ebene, nicht die nächsthöhere), und der Displaygrad der
      Abschnittsüberschriften liegt mit 1,75 rem eine Stufe darunter statt
      eine darüber. Ab 610 px bzw. 683 px übernimmt jeweils wieder der
-     Anstieg, der Desktop-Satz bleibt unverändert. */
-  --text-hero: clamp(2.125rem, 5.2vw + 0.4rem, 5.6rem);
+     Anstieg, der Desktop-Satz bleibt unverändert.
+
+     Anstieg und Deckel sind am 24.09.2026 auf Ansage angehoben worden
+     (5,2vw + 0,4rem, Deckel 5,6rem → 6vw + 0,15rem, Deckel 6,5rem). Der
+     Boden bleibt unangetastet, und der Punkt, an dem der Anstieg ihn
+     überholt, ebenfalls: 34 px werden weiterhin bei rund 530 px
+     Fensterbreite erreicht, am Telefon ändert sich also nichts. Gemessen
+     bei 1512 px 85 → 93 px, ab 1693 px steht der Deckel bei 104 px.
+
+     Der Deckel ist kein runder Wert, sondern der Satz: „Geprüfte
+     E-Scooter" misst 8,9 mal den Schriftgrad, die Überschriftenspalte ist
+     bei 1920 px und darüber 1033 px breit (acht Spalten, vom
+     104-rem-Deckel des Containers begrenzt). Über 116 px bricht die erste
+     Zeile also um; 104 lassen zehn Prozent Luft für einen anderen Satz. */
+  --text-hero: clamp(2.125rem, 6vw + 0.15rem, 6.5rem);
   /* Der Boden des Unterseitentitels liegt eine Stufe unter dem des Hero
      (2 rem = 32 px statt 34): Auf Ansage darf die H1 im Unterseitenkopf am
      Telefon höchstens zwei Zeilen laufen. Gemessen bei 390 px (342 px
@@ -1843,6 +1856,48 @@
         animation-range-start: var(--range-start);
         animation-range-end: var(--range-end);
         transform-origin: top center;
+      }
+
+      /**
+       * Eine Linie, die von links einläuft.
+       *
+       * Dieselbe Mechanik wie `.chain-draw`, nur waagerecht: Die Linie
+       * gehört der Fläche, an deren Oberkante sie liegt, und zeichnet sich,
+       * während die Fläche ins Bild kommt. Sie ist damit kein Zierrat,
+       * sondern die Ankunft der Karte – man sieht, dass etwas beginnt, bevor
+       * man den ersten Wert liest.
+       *
+       * Drei Dinge, die hier nicht anders gehen und an denen dieses Projekt
+       * schon zweimal hängengeblieben ist:
+       *
+       * - `animation-duration: auto` muss als **eigene Zeile** stehen. In der
+       *   Kurzschreibweise ist `auto` kein gültiger Zeitwert, die Dauer
+       *   fiele auf 0 s und die Animation stünde vom ersten Bild an auf
+       *   ihrem Endbild.
+       * - **Keine `animation-range`-Angabe in Kurzform.** Lightning CSS zieht
+       *   `entry 0% exit 100%` beim Bauen zu `entry exit 0%` zusammen; die
+       *   Spanne liegt dann außerhalb des erreichbaren Scrollwegs. Deshalb
+       *   eigene Eigenschaften.
+       * - `transform-origin` links, sonst wächst die Linie aus der Mitte.
+       */
+      .rule-draw {
+        animation: rule-draw linear both;
+        animation-duration: auto;
+        animation-timeline: view();
+        --range-start: entry 30%;
+        --range-end: cover 30%;
+        animation-range-start: var(--range-start);
+        animation-range-end: var(--range-end);
+        transform-origin: left center;
+      }
+
+      @keyframes rule-draw {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
       }
 
       @keyframes chain-draw {

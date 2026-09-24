@@ -186,7 +186,7 @@ export async function Hero() {
           harte senkrechte Kante mitten in der Sektion. Der Auslauf hängt an
           `min-[104rem]`, damit er unterhalb der Grenze nicht den Roller
           anschneidet – dort steht er am rechten Bildrand. */}
-        <div className="pointer-events-none absolute top-0 bottom-[-2.5rem] left-1/2 -z-10 hidden w-full max-w-[104rem] -translate-x-1/2 overflow-hidden lg:block min-[104rem]:[mask-image:linear-gradient(to_right,transparent,black_7rem,black_calc(100%-7rem),transparent)]">
+        <div className="pointer-events-none absolute top-0 right-0 bottom-[-2.5rem] left-0 -z-10 hidden overflow-hidden lg:block">
           {/* `object-contain` statt `object-cover` – die Aufnahme wird
             vollständig gezeigt, nicht beschnitten.
 
@@ -232,7 +232,7 @@ export async function Hero() {
               eine Tailwind-Klasse am Bild selbst verliert. Und nicht an die
               Zone: An ihr hängen Schleier und Auslauf in die Tinte, deren
               Stopps auf die gemessenen Kontraste gerechnet sind. */}
-          <div className="hero-figure absolute right-0 bottom-0 aspect-[2400/1351] w-[74%] max-h-[calc(100%-var(--header-block)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem)]">
+          <div className="hero-figure absolute right-[4vw] bottom-0 aspect-[2400/1351] w-[74vw] max-h-[calc(100%-var(--header-block)-1.5rem)] [mask-composite:intersect] [mask-image:linear-gradient(to_bottom,transparent,black_2rem),linear-gradient(to_right,transparent,black_16rem,black_calc(100%-4rem),transparent)]">
             {/* Nur ab `lg` wird hier überhaupt etwas geholt.
 
                 Vorher stand an dieser Stelle ein `<Image priority>`. Sein

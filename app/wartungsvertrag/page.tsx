@@ -280,12 +280,6 @@ export default function PlansPage() {
                   group="wartungsvertrag"
                   items={planSummary}
                   label="Gewählter Vertrag"
-                  empty={
-                    <>
-                      Noch kein Vertrag gewählt – im Formular unter „Anliegen“
-                      auswählen oder oben auf eine der beiden Karten tippen.
-                    </>
-                  }
                 />
                 <InquiryForm topicFromQuery />
               </Reveal>

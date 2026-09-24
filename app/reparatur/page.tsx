@@ -209,8 +209,13 @@ export default function RepairPage() {
             <div className="lg:col-span-7">
               <Reveal>
                 <p className="eyebrow text-current/90">So läuft es ab</p>
+                {/* „keine Überraschungen" war ein Versprechen, kein
+                    Sachverhalt – und die Auszeichnungszeile darüber sagt
+                    ohnehin schon, dass hier ein Ablauf steht. Die Überschrift
+                    trägt jetzt die Zusage, die die vier Schritte tatsächlich
+                    machen und die in Schritt 03 wörtlich eingelöst wird. */}
                 <h2 className="mt-5 text-[length:var(--text-display)]">
-                  <Mark>Vier</Mark> Schritte, keine Überraschungen.
+                  <Mark>Vier</Mark> Schritte. Der Preis steht vor der Arbeit.
                 </h2>
               </Reveal>
 

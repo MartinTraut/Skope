@@ -2374,6 +2374,134 @@ Weiß darauf): Wortzeichen 8,0 / 19,3 / 19,0 / 18,5:1 und H1 5,0 / 4,6 / 6,8 /
 **320 × 568 bleibt die bekannte Ausnahme:** Dort läuft die H1 über vier
 Zeilen und die letzte Kennzahlenreihe steht unter der Falz.
 
+## Kopfbereich am Schreibtisch, Karte, Tabelle — 24.09.2026
+
+Sieben Ansagen an einem Stück, alle mit Aufnahme.
+
+**Der Kopfbereich nutzt jetzt die ganze Fläche.** Ansage: „du sollst die
+gesamte Fläche nutzen und das Bild größer machen und die Schrift weiter nach
+oben setzen."
+
+- **Die Bildfläche hängt nicht mehr am 104-rem-Deckel, sondern am Fenster**
+  (`w-[74vw]` statt `w-[74%]` einer auf `max-w-[104rem]` gedeckelten Fläche).
+  Gemessen wuchs das Motiv damit von 1231 px auf 1421 (1920), 1894 (2560) und
+  2546 px (3440); bei 1512 und darunter ändert sich **nichts** – dort war das
+  Fenster ohnehin schmaler als der Deckel.
+- **Das ist eine bewusste Ausnahme von der Regel „Motive bindet man an
+  `Container`, nicht ans Fenster"** (19.08.2026). Die Regel entstand an einem
+  anderen Fall: Damals lag die Aufnahme `contain` und hing an der *Zonenhöhe*,
+  klebte deshalb am rechten Fensterrand und ließ 1400 px schwarze Fläche
+  zwischen sich und dem Text. Heute hängt sie an ihrer Breite und skaliert
+  mit – der Abstand zum Text bleibt anteilig gleich, gleich wie breit das
+  Fenster ist. Wer die Fläche wieder deckelt, bekommt auf 2560 px ein Motiv,
+  das nur noch die Hälfte der Fläche einnimmt.
+- **Ein zwischenzeitlicher Versuch, den Text vertikal zu zentrieren, ist
+  zurückgenommen.** Er halbierte zwar die gemessene Lücke zwischen Beleg und
+  Kennzahlenband (696 → 369 px bei 2560), schob dafür aber die Überschrift
+  auf halbe Fensterhöhe – und ließ oben 300 px leere Tinte stehen. Die
+  Beschwerde danach war eindeutig. Die Lücke war nie das Problem, die
+  Bildgröße war es.
+- **Das Motiv steht 4 vw vom rechten Rand ab und läuft dort weich aus**
+  (`right-[4vw]`, Maske `black calc(100% - 4rem), transparent`). Vorher stieß
+  es bündig an die Fensterkante, während es links über 16 rem auslief – eine
+  harte Kante auf der einen, ein Auslauf auf der anderen Seite. Die 4 rem
+  sind gerechnet: Das rechte Fahrzeug endet bei 93 % der Bildbreite, der
+  Auslauf beginnt bei rund 95,5 %.
+- **Kontrast nachgemessen** (Textcontainer und Kopfzeile ausgeblendet,
+  hellster Punkt im Zeilenkasten) über 1280 bis 3440 px: überall 19,9:1 –
+  hinter dem Text steht auf jeder Breite reine Tinte. **Achtung bei dieser
+  Messung:** Einzelne Elemente auf `visibility: hidden` zu setzen reicht
+  nicht. Der Neongrund der Wortmarkierung, die goldenen Sterne und die
+  Kürzelkreise bleiben dann in der Stichprobe stehen, und man misst 2:1, wo
+  20:1 stehen. Es muss der ganze Textcontainer verschwinden.
+
+**Bestandskarte, Plakette, Tabelle:**
+
+- **Der Kartenfuß ist eine eigene Fläche.** Datenband und „Mehr Daten" lagen
+  als flache Liste im selben Grund wie der Text darüber, und die Haarlinien
+  des Bands waren die einzige Struktur – zugleich das schwächste Element der
+  Karte. Jetzt 3,5 % Silber auf Tinte, bis an die Kartenränder, unten mit dem
+  Kartenradius. Die Karte liest sich in drei Zonen: das Gerät, was es ist,
+  was es kann. Der Radius ist `calc(var(--radius-lg) - 1px)` – die Fläche
+  liegt innerhalb des 1-px-Rahmens, sonst steht an der Rundung ein dunkler
+  Sichel.
+- **Die Karte antwortet beim Überfahren jetzt sichtbar** (`hover:border-neon/45`
+  zusätzlich zur Anhebung).
+- **Die Neu-Plakette ist 77 × 36 statt 44 × 24 px**, mit Funke-Zeichen und
+  Ring in Tinte. Der Ring ist Pflicht und kein Zierrat: Die Aufnahmen sind
+  Telefonfotos vor einer hellen Containerwand, und Neon auf Hellgrau steht
+  bei 1,18:1 – ohne dunkle Kante verschwand der Chip auf der oberen
+  Bildhälfte. Die Plakette für „reserviert"/„verkauft" ist mitgewachsen:
+  Zwei Zustände, die sich ausschließen, dürfen nicht verschieden groß sein.
+- **Die Vergleichstabelle auf `/finanzierung` markiert die Zeile unter dem
+  Zeiger jetzt in Neon** (`bg-neon/[0.14]`, Neonkante links als innerer
+  Schatten, Beschriftung auf volle Tinte). Vorher ging sie von `silver` auf
+  `silver-200` – Grau auf Grau, bei der ungeraden Zeile unter drei Prozent
+  Unterschied, und ohne Übergang, weil `transition-colors` nur an den Zellen
+  stand und nicht an der Beschriftungsspalte. **Kein Verstoß gegen die
+  Farbregel:** Neon ist auf hellen Flächen Fläche und nie Schrift, und die
+  „drei Aufgaben" gelten der dauerhaften Auszeichnung – ein Zustand, der nur
+  existiert, solange ein Zeiger daraufsteht, zeichnet nichts aus. Die Kante
+  steht als `box-shadow: inset`, ein Rahmen schöbe die Zeile um zwei Pixel.
+
+**Text und Flächen:**
+
+- **Die Eckdaten auf `/ueber-uns` stehen auf Tinte.** Vorher ein heller
+  Kasten mit Haarlinie auf hellem Grund: kein Ton, keine Farbe, keine
+  Bewegung. Jetzt die Form der Preisanker-Karte von `/reparatur` – zwei
+  Kennzahlenkarten auf einer Website müssen gleich aussehen, sonst sind es
+  zwei Bausteine. Die harte Zahl „über 500" steht im Statgrad in Neon; auf
+  Silber wäre das mit 1,18:1 verboten, und **das ist der zweite Grund für den
+  Flächenwechsel, nicht nur der optische.** Die Zeilen sind gestapelt und
+  nicht zweiendig wie im Vorbild: Dort stehen rechts Beträge, hier ganze
+  Sätze, und gemessen brach die längste unter ihr eigenes Etikett.
+- **Neu `.rule-draw`** – eine Linie, die von links einläuft, scroll-getrieben
+  wie `.chain-draw`. Dieselben drei Fallen wie dort: `animation-duration: auto`
+  als eigene Zeile, keine `animation-range`-Kurzform (Lightning CSS zieht sie
+  falsch zusammen), `transform-origin: left`.
+- **„Vier Schritte, keine Überraschungen." heißt jetzt „Vier Schritte. Der
+  Preis steht vor der Arbeit."** Der alte Nachsatz war ein Versprechen, kein
+  Sachverhalt; die Auszeichnungszeile darüber sagt ohnehin schon, dass ein
+  Ablauf folgt. Die neue Fassung trägt die Zusage, die Schritt 03 wörtlich
+  einlöst. Gemessen zweizeilig auf 390, 768 und 1512 px.
+- **Der Hinweis „Noch kein Modell/Vertrag gewählt …" ist weg**, auf beiden
+  Seiten. Er erklärte ein Formular, das direkt darunter steht und sich selbst
+  erklärt: Das Anliegen ist dort ein Pflichtfeld mit sichtbarer Beschriftung.
+  Ein Satz, der einen leeren Zustand kommentiert, macht aus dem Normalfall
+  einen Mangel. `ChosenLine` hat dafür sein `empty`-Prop verloren und gibt
+  ohne Wahl `null` zurück; die Zeile *mit* Wahl bleibt – sie ist die
+  Rückmeldung auf einen Druck drei Felder weiter oben.
+
+Gemessen: 99 Prüfungen über elf Routen × neun Formate – kein Überlauf, genau
+eine H1 je Route, kein Bild ohne `alt`, keine Konsolenfehler, keine Schrift
+unter 11 px.
+
+**Die H1 der Startseite ist größer — 24.09.2026, auf Ansage.** `--text-hero`
+steigt jetzt mit `6vw + 0,15rem` und ist bei `6,5rem` gedeckelt (vorher
+`5,2vw + 0,4rem`, Deckel `5,6rem`). Gemessen 85 → 93 px bei 1512 und 90 →
+104 px ab 1693 px.
+
+- **Der Boden bleibt bei 2,125 rem, und der Punkt, an dem der Anstieg ihn
+  überholt, bleibt bei rund 530 px.** Das ist die Bedingung, unter der man
+  an diesem Token überhaupt drehen darf: Am Telefon hängt an den 34 px der
+  ganze Schriftleiter (34 / 26 / 24 / 19), und der ist gemessen, nicht
+  gewählt. Wer nur den Anstieg anhebt, verschiebt den Übergang nach links
+  und macht die Überschrift auf dem Telefon mit.
+- **Der Deckel ist der Satz, nicht ein runder Wert.** „Geprüfte E-Scooter"
+  misst 8,9 mal den Schriftgrad; die Überschriftenspalte ist ab 1920 px
+  1033 px breit (acht Spalten, vom 104-rem-Deckel des Containers begrenzt).
+  Über 116 px bricht die erste Zeile um, 104 lassen zehn Prozent Luft.
+- **Die Höhe zahlt die Bildzone, nicht das Kennzahlenband.** Die Sektion
+  steht ab `lg` auf `min-h-svh` und die Bildzone auf `flex-1`; gemessen
+  liegt die Unterkante der Kennzahlen jetzt bei 744 (1280 × 800), 724
+  (1440 × 780) und 734 px (1512 × 790) — also näher an der Falz als vorher,
+  aber darüber. Die Bildmaße sind unverändert, weil die Bildfläche an ihrer
+  Breite hängt.
+- Zwei Zeilen auf jeder Breite von 360 bis 3440 px. **320 × 568 bleibt die
+  bekannte Ausnahme** (vier Zeilen, letzte Kennzahlenreihe unter der Falz).
+- Kontrast über 1280 bis 3440 px unverändert 19,9:1 — hinter der
+  Überschrift steht auf jeder Breite reine Tinte.
+
 ## Gremium-Restliste abgearbeitet — 23.09.2026
 
 Auf Ansage („arbeite alle die Punkte ab, die du meinst"). Es ist die Liste,

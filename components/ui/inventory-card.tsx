@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, Images } from "lucide-react";
+import { AlertTriangle, ArrowRight, Images, Sparkles } from "lucide-react";
 
 import { AVAILABILITY_LABEL } from "@/lib/commerce";
 import { availabilityOf, condition, type InventoryItem } from "@/lib/inventory";
@@ -88,14 +88,29 @@ function StatusBadge({ item }: { item: InventoryItem }) {
        konkret heißt, steht als Zustandszeile unter dem Preis und
        ausführlich auf der Geräteseite. */
     if (item.condition !== "neu") return null;
+    /* **Größer, mit Zeichen und mit Rand** (24.09.2026, auf Ansage).
+       Vorher ein 11-px-Chip von 44 × 24 px oben links – auf einer 456 px
+       breiten Karte mit einem Foto darunter fiel er nicht auf, und er war
+       der einzige Hinweis darauf, dass zwischen dreizehn Gebrauchtgeräten
+       auch Neuware steht.
+
+       Der Ring in Tinte ist kein Zierrat: Die Aufnahmen sind Telefonfotos
+       vor einer hellen Containerwand, und Neon auf Hellgrau steht bei 1,18:1
+       – ohne die dunkle Kante verschwand der Chip auf der oberen Bildhälfte.
+       Der Funke ist das einzige Zeichen im Satz, das „ungebraucht" sagt,
+       ohne ein Wort zu brauchen. */
     return (
-      <span className="pointer-events-none absolute top-2 left-2 rounded bg-neon px-2 py-1 font-display text-[0.6875rem] font-semibold tracking-[0.08em] text-ink uppercase">
+      <span className="pointer-events-none absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-neon py-1.5 pr-3.5 pl-3 font-display text-sm font-bold tracking-tight text-ink uppercase ring-2 ring-ink/70">
+        <Sparkles aria-hidden="true" className="size-4" strokeWidth={2.5} />
         Neu
       </span>
     );
   }
   return (
-    <span className="pointer-events-none absolute top-2 left-2 rounded bg-ink/85 px-2 py-1 font-display text-[0.6875rem] font-semibold tracking-[0.08em] text-silver uppercase">
+    /* Dieselbe Größe und Lage wie die Neu-Plakette: Zwei Plaketten, die
+       sich gegenseitig ausschließen, dürfen nicht verschieden groß sein –
+       sonst liest man aus dem Maß eine Rangfolge, die es nicht gibt. */
+    <span className="pointer-events-none absolute top-3 left-3 inline-flex items-center rounded-full bg-ink/90 px-3.5 py-1.5 font-display text-sm font-bold tracking-tight text-silver uppercase ring-2 ring-silver/25">
       {AVAILABILITY_LABEL[state]}
     </span>
   );
@@ -227,7 +242,7 @@ export function InventoryCard({
            `/e-scooter` gab das `w-full` mit, die Kategorieseite nicht – eine
            Angabe, die an vier Stellen stehen muss und an einer fehlen darf,
            ist kein Bauteil, sondern eine Falle. */
-        "press group lift @container flex h-full w-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
+        "press group lift @container flex h-full w-full flex-col rounded-lg border border-silver/15 bg-ink p-3.5 text-silver on-dark transition-[transform,box-shadow,border-color] duration-300 ease-out-quart [--press-scale:0.985] hover:-translate-y-1 hover:border-neon/45 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-4",
         className,
       )}
     >
@@ -367,7 +382,28 @@ export function InventoryCard({
           Rand gegen jedes `grow`, der Rest ginge also wieder an diesen
           Abstand statt an die Bildzone. Der Fuß steht auch so unten – über
           ihm liegt nichts mehr, was sich ausdehnen könnte. */}
-      <div className="pt-5">
+      {/* **Der Fuß ist eine eigene Fläche** (24.09.2026, auf Ansage
+          „besser dargestellt").
+
+          Die Karte hatte zwei Zonen, die sich ansahen wie eine: Unter dem
+          Bild lief alles als ein Textblock durch – Modell, Preis, Zustand,
+          drei Kennwerte zwischen Haarlinien, ein Verweis –, und die untere
+          Hälfte war damit eine flache Liste ohne Abschluss. Die Haarlinien
+          des Datenbands waren die einzige Struktur darin und zugleich das
+          schwächste Element der Karte.
+
+          Jetzt liegen Datenband und Weg auf einer eigenen, kaum abgesetzten
+          Fläche, die bis an die Kartenränder läuft und unten deren Radius
+          aufnimmt. Die Karte liest sich damit von oben nach unten als drei
+          Zonen: das Gerät (Bild), was es ist (Modell, Preis, Zustand), was es
+          kann (Daten, Weg). Der Ton ist bewusst gering – 3,5 Prozent Silber
+          auf Tinte –, es ist eine Zone, kein zweiter Kasten.
+
+          Der Radius ist `calc(…)`: Die Fläche liegt innerhalb des 1-px-Rahmens
+          der Karte, ihr Radius muss also um genau diese Linie kleiner sein,
+          sonst steht zwischen Fläche und Rahmen an der Rundung ein dunkler
+          Sichel. */}
+      <div className="-mx-3.5 -mb-3.5 mt-5 rounded-b-[calc(var(--radius-lg)-1px)] bg-silver/[0.035] px-3.5 pt-4 pb-3.5 sm:-mx-4 sm:-mb-4 sm:px-4 sm:pb-4">
         {/* Über die volle Kartenbreite statt im Satzspiegel: Die Haarlinien
             sind damit Kanten der Karte und nicht drei Striche in ihrer Mitte.
             Die Zellen behalten ihren Innenabstand über `first:pl-*` /
@@ -387,7 +423,7 @@ export function InventoryCard({
             20 km/h. Dieselbe Entscheidung wie auf der Zeilenkarte am Telefon,
             dort aus demselben Grund. Vollständig steht das Tempo auf der
             Geräteseite. */}
-        <dl className="@[18.75rem]:grid-cols-3 -mx-3.5 grid grid-cols-2 divide-x divide-current/12 border-y border-current/12 px-3.5 sm:-mx-4 sm:px-4">
+        <dl className="@[18.75rem]:grid-cols-3 grid grid-cols-2 divide-x divide-current/12 border-b border-current/12 pb-1">
           {/* `hidden` lässt die Zelle `:first-child` bleiben, `first:pl-0` in
               `Fact` greift also weiter an ihr statt an der Reichweite. Die
               bekommt den linken Rand deshalb ausdrücklich genommen, solange
