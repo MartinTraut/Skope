@@ -2807,3 +2807,74 @@ darunter zu sehen war.
   jemanden, der ihn nicht sehen kann, gäbe es sonst nichts. Die
   KI-Offenlegung darunter bleibt sichtbar — sie in ein `sr-only` zu schieben
   wäre genau die Fußnote, die Art. 50 Abs. 4 ausschließt.
+
+## Fixpunkt für das Kopfbild am Telefon — 25.09.2026
+
+Auf Ansage („das Handy-Hero-Bild darf sich nicht bewegen, sondern soll einen
+Fixpunkt haben"). Der Ladeverlauf war sauber — gemessen über 70 Frames nach
+dem Aufruf genau **ein** Wert für Bildkasten und H1, die Choreografie ist seit
+dem 23.09. vom Motiv genommen. Was wanderte, hing an der **Fensterhöhe**.
+
+- **Die Aufnahme hing unten, der Text oben.** Die Bühne steht seit dem 24.09.
+  an der Sektion, und die ist `min-h-svh`; die Bildfläche war darin
+  `bottom-0`. Gemessen bei 390 px über 780 / 844 / 924 / 1000 px Fensterhöhe:
+  Bildoberkante 87 → 151 → 231 → 307 px, H1 unverändert bei 148. **220 px
+  Versatz gegen 12.** Auf einem Gerät ändert sich `svh` nicht, zwischen zwei
+  Geräten aber sehr wohl — und genau das sah man im Vergleich.
+- **Sie hängt jetzt oben, an `--hero-head`.** Das ist derselbe Wert, an dem
+  der Satzspiegel hängt: Zwischen Überschrift und Fahrzeugen liegt damit auf
+  jedem Telefon derselbe Abstand. Gemessen Bildoberkante / H1: 148/148 (390 ×
+  844), 149/149 (393 × 852), 156/156 (412 × 915), 157/157 (430 × 932).
+- **Der Riegel nach unten ist ein `min()`.** Die Aufnahme ist 1,7768 mal so
+  hoch wie breit, über die volle Gehäusebreite also 177,68 vw. Passt sie
+  unter `--hero-head` nicht mehr in die Sektion, gewinnt der zweite Term
+  `calc(100% - 177.68vw)` und schiebt sie so weit hoch, dass sie genau auf
+  der Unterkante aufsitzt. Ohne ihn wären auf einem kurzen Telefon die Räder
+  abgeschnitten — gemessen 375 × 667: fester Kopfabstand hätte 131 px
+  gekostet, so steht die Aufnahme bei 0,7 px und die Fahrzeuge enden bei 527.
+  Im Bereich, in dem beide Terme greifen können (780 – 932 px Höhe), bleibt
+  der Rest-Versatz unter 17 px.
+- **Die Maske am Fuß gehört dazu** (`linear-gradient(to top, transparent,
+  black 4rem)`, ab `sm` aus). Sobald der obere Term gewinnt, endet die
+  Aufnahme über der Sektionskante; ohne Auslauf stünde dort eine waagerechte
+  Naht in der Tinte.
+- **Kontraste nachgemessen** (ganzer Textcontainer und Kopfzeile
+  ausgeblendet, hellster Punkt im Zeilenkasten, Weiß darauf): H1 14,0 / 5,3 /
+  4,9 / 5,0 / 4,9:1 bei 320 / 360 / 390 / 412 / 430 px, Kennzahlenband überall
+  9,9 – 10,1:1.
+- **390 × 1200 ist der eine Fall, in dem das Band nicht mehr auf dem Bild
+  steht.** Dort endet die Aufnahme bei 853 und das Band beginnt bei 1000 —
+  147 px Tinte dazwischen, vom Schleier getragen. Das ist kein Telefonformat,
+  sondern eine Prüfbreite; der Fixpunkt ist der teurere und richtige Handel.
+
+## Zwei Aufnahmen im Sicherheits-Checkup — 25.09.2026
+
+Auf Ansage („füg das Bild ein bei ‚was bei 59,99 € passiert‘"), mit der
+Aufnahme des durchgeschmorten Steckverbinders.
+
+- **Die Sektion trägt jetzt zwei echte Aufnahmen**, `reparatur-trittbrett`
+  und `reparatur-stecker`. Der Grund ist inhaltlich: Der Absatz zählt auf,
+  was geprüft wird — Bremsen, Akku, Elektronik, Verschleißteile. Das
+  geöffnete Trittbrett zeigt den Zugang, der verkohlte Steckverbinder den
+  Befund. Einzeln belegt jede nur eine Hälfte des Satzes.
+- **Die Anordnung folgt der Spaltenform, nicht der Fensterbreite.** Am
+  Telefon ist die Spalte breit und flach: zwei Hochformate nebeneinander,
+  gemessen je 165 × 206 px — zusammen 206 px statt der 428, die das eine
+  4/5-Bild vorher brauchte. Ab `lg` ist die Spalte schmal und hoch und wird
+  von der Textspalte bemessen: dort untereinander, je 608 × 408 px bei
+  1512 px (`auto-rows-fr` an einer Fläche, die `flex-1` ist).
+- **Die beiden Pfade stehen im Bauteil, nicht in `workshop-photos.ts`.** Jene
+  Liste ist die Bahn auf `/ueber-uns` und wird zur Bauzeit gegen das
+  Dateisystem geprüft — fehlt eine Datei, fällt sie dort still heraus. Hier
+  wäre das falsch: Die Sektion hat einen festen Platz für zwei Motive, und
+  eine Lücke darin ist ein Fehler, kein Rückfall. Die Beschreibungen sind
+  wortgleich mit den Einträgen dort.
+- **Kein `GeneratedMark`** — beide sind fotografiert.
+
+## Lead des Bestands-Teasers entfernt — 25.09.2026
+
+Auf Ansage. „Jeder Scooter ist ein Einzelstück und läuft vor dem Verkauf
+durch dieselbe Werkstatt …" sagte, was die Karten darunter selbst tragen
+(Zustand, Siegel, Gewährleistung), und die Prüfung ist das Thema von
+`Workshop` eine Sektion tiefer. Am Telefon waren es vier Zeilen Fließtext
+zwischen Überschrift und erster Kachel.

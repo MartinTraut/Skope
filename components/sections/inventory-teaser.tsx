@@ -37,6 +37,11 @@ export function InventoryTeaser() {
             Zeilen, und eine Auszeichnungszeile ist ein Etikett, kein Satz.
             „Neuenstadt am Kocher" steht auf derselben Seite in `Region`, im
             Fußbereich und im Seitentitel. */}
+        {/* Kein Lead. Er sagte, was jede Karte darunter selbst trägt –
+            Zustand, Siegel, Gewährleistung – und die Prüfung ist das Thema
+            von `Workshop` eine Sektion tiefer. Drei Zeilen Fließtext zwischen
+            Überschrift und Kennzahlenband waren am Telefon der längste Block
+            vor der ersten Kachel. */}
         <SectionHead
           eyebrow="Sofort verfügbar"
           title={
@@ -44,7 +49,6 @@ export function InventoryTeaser() {
               Geprüfte Geräte, die <Mark>heute</Mark> hier stehen.
             </>
           }
-          lead={`Jeder Scooter ist ein Einzelstück und läuft vor dem Verkauf durch dieselbe Werkstatt, die ihn danach auch wartet: Bremsen, Akkukapazität, Elektronik, Verschleißteile. Erst dann bekommt er das ${proof.sealName} und ${proof.warrantyYears} Jahr Gewährleistung.`}
         />
 
         {/* Die harten Angaben stehen über den Karten, nicht darunter: Sie

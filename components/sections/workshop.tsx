@@ -7,6 +7,23 @@ import { Container, Section } from "@/components/ui/section";
 import { checkupIncludes, turnaround } from "@/lib/data/services";
 import { cn } from "@/lib/utils";
 
+/* Die beiden Aufnahmen stehen hier und nicht in `workshop-photos.ts`: Jene
+   Liste ist die Bahn auf `/ueber-uns` und wird zur Bauzeit gegen das
+   Dateisystem geprüft – fehlt eine Datei, fällt sie dort still heraus. An
+   dieser Stelle wäre das falsch: Die Sektion hat einen festen Platz für zwei
+   Motive, und eine Lücke darin ist ein Fehler, kein Rückfall. Die
+   Beschreibungen sind wortgleich mit den Einträgen dort. */
+const workshopStills = [
+  {
+    src: "/img/werkstatt/reparatur-trittbrett.jpg",
+    alt: "Geöffnetes Trittbrett eines E-Scooters von oben, eine Hand hebt die Abdeckung über Kabelbaum und Akkuanschluss an",
+  },
+  {
+    src: "/img/werkstatt/reparatur-stecker.jpg",
+    alt: "Hand hält einen durchgeschmorten Steckverbinder mit verkohltem Schrumpfschlauch über dem geöffneten Trittbrett eines E-Scooters",
+  },
+];
+
 /**
  * Die Vertrauens-Sektion: konkrete Prüfschritte und echte Bearbeitungszeiten
  * statt Adjektiven. Heller Grund als Ruhepunkt zwischen zwei dunklen Zonen.
@@ -16,31 +33,52 @@ export function Workshop() {
     <Section tone="ink">
       <Container>
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-          {/* Bild – hochformatig, bricht das Raster der übrigen Sektionen */}
-          {/* Ab `lg` bestimmt die Textspalte die Höhe, das Bild füllt sie:
-              Gemessen bei 1999 × 1123 war die Textspalte 902 px hoch, das
-              4/5-Bild 770 – und die ganze Sektion 1110 px, die Knöpfe damit
-              unter der Fensterkante. Jetzt ist die Textspalte auf rund 690 px
-              gestrafft und das Bild wächst mit ihr statt mit einem festen
-              Seitenverhältnis. Am Telefon bleibt 4/5. */}
+          {/* Ab `lg` bestimmt die Textspalte die Höhe, die Bildspalte füllt
+              sie: Gemessen bei 1999 × 1123 war die Textspalte 902 px hoch,
+              ein festes 4/5-Bild 770 – und die ganze Sektion 1110 px, die
+              Knöpfe damit unter der Fensterkante. Jetzt ist die Textspalte
+              auf rund 690 px gestrafft und die Bilder wachsen mit ihr statt
+              mit einem festen Seitenverhältnis. Am Telefon bleibt 4/5. */}
+          {/* Zwei Aufnahmen, und ihre Anordnung folgt der Spaltenform.
+              Am Telefon ist die Spalte breit und flach – dort stehen die
+              beiden Hochformate nebeneinander (gemessen bei 390 px je
+              165 × 206 px, zusammen 206 statt der 428 px, die das eine Bild
+              im Format 4/5 brauchte). Ab `lg` ist die Spalte schmal und hoch
+              und wird von der Textspalte bemessen: dort untereinander, je
+              zur Hälfte der Texthöhe (`auto-rows-fr` an einer Fläche, die
+              `flex-1` ist).
+
+              Warum überhaupt zwei: Die Sektion zählt auf, was für 59,99 €
+              geprüft wird – Bremsen, Akku, Elektronik, Verschleißteile. Ein
+              geöffnetes Trittbrett zeigt den Zugang, der durchgeschmorte
+              Steckverbinder zeigt den Befund. Zusammen belegen sie beide
+              Hälften des Satzes; einzeln belegt jede nur eine. */}
           <Reveal className="flex flex-col lg:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-ink-700 lg:aspect-auto lg:min-h-[28rem] lg:flex-1">
-              <Image
-                src="/img/werkstatt/reparatur-trittbrett.jpg"
-                alt="Geöffnetes Trittbrett eines E-Scooters von oben, eine Hand hebt die Abdeckung über Kabelbaum und Akkuanschluss an"
-                fill
-                sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
-                className="parallax object-cover"
-              />
+            <div className="grid auto-rows-fr grid-cols-2 gap-3 lg:grid-cols-1 lg:min-h-[28rem] lg:flex-1">
+              {workshopStills.map((photo) => (
+                <div
+                  key={photo.src}
+                  className="relative aspect-[4/5] overflow-hidden rounded-lg bg-ink-700 lg:aspect-auto"
+                >
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(min-width: 1024px) 40vw, (min-width: 768px) calc(50vw - 3rem), calc(50vw - 2rem)"
+                    className="parallax object-cover"
+                  />
+                </div>
+              ))}
             </div>
-            {/* **Echte Aufnahme, kein Symbolbild – deshalb kein
+            {/* **Echte Aufnahmen, keine Symbolbilder – deshalb kein
                 `GeneratedMark`.** Hier lag bis zum 20.09.2026
                 `werkstatt-service.jpg`, eines der acht erzeugten Motive. Für
                 eine Sektion, die aufzählt, was für 59,99 € *tatsächlich*
                 passiert, war ein erfundenes Bild die schlechteste Wahl der
                 ganzen Seite: Der Absatz belegt eine Prüfung, das Bild belegte
-                nichts. Jetzt steht dort ein aufgeschraubtes Gerät aus der
-                eigenen Werkstatt (`lib/data/workshop-photos.ts`).
+                nichts. Jetzt stehen dort zwei Aufnahmen aus der eigenen
+                Werkstatt (dieselben Motive wie in
+                `lib/data/workshop-photos.ts`).
 
                 Damit trägt die Startseite ein erzeugtes Motiv weniger. Die
                 Datei bleibt in `generated-images.ts` – sie ist weiter im

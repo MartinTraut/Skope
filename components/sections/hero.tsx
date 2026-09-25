@@ -220,9 +220,32 @@ export async function Hero() {
             Linie über dem Kennzahlenband. Die gewonnene Strecke wird oben
             zu Tinte.
 
-            Ab `sm` gilt das nicht: Dort ist die Bühne ein 26-rem-Band, und
-            darin soll das Querformat vollständig stehen. */}
-        <div className="absolute inset-x-0 bottom-0 aspect-[941/1672] sm:inset-0 sm:aspect-auto">
+            **Und sie hängt oben, nicht unten – das ist der Fixpunkt.**
+            Unten verankert lag die Aufnahme an der Unterkante der Sektion,
+            und die ist `min-h-svh`. Gemessen bei 390 px wanderte ihre
+            Oberkante über 780 / 844 / 924 / 1000 px Fensterhöhe von 87 auf
+            307 px, während die Überschrift bei 148 stand: 220 px Versatz
+            gegen 12. `--hero-head` ist derselbe Wert, an dem der Satzspiegel
+            hängt – oben daran verankert liegt zwischen Überschrift und
+            Fahrzeugen auf jedem Telefon derselbe Abstand.
+
+            Der zweite Term ist der Riegel nach unten. Die Aufnahme ist
+            1,7768 mal so hoch wie breit (177,68 vw über die volle
+            Gehäusebreite); passt sie unter `--hero-head` nicht mehr in die
+            Sektion, greift `min()` und schiebt sie so weit hoch, dass sie
+            genau auf der Unterkante aufsitzt. Sonst wären auf einem kurzen
+            Telefon die Räder abgeschnitten – gemessen 375 × 667: fester
+            Kopfabstand hätte 131 px abgeschnitten, so sitzt die Aufnahme bei
+            0,7 px. Im Bereich, in dem beide Terme greifen könnten
+            (780 – 932 px Höhe), bleibt der Versatz unter 17 px.
+
+            Die Maske am Fuß gehört dazu: Sobald der obere Term gewinnt, endet
+            die Aufnahme über der Sektionskante, und ohne Auslauf stünde dort
+            eine waagerechte Naht in der Tinte.
+
+            Ab `sm` gilt das alles nicht: Dort ist die Bühne ein 26-rem-Band,
+            und darin soll das Querformat vollständig stehen. */}
+        <div className="absolute inset-x-0 top-[min(var(--hero-head),calc(100%-177.68vw))] aspect-[941/1672] [mask-image:linear-gradient(to_top,transparent,black_4rem)] sm:inset-0 sm:aspect-auto sm:[mask-image:none]">
           <picture>
             {/* Ab `lg` trägt die Fläche darüber das Motiv – hier nichts
               laden. Die Reihenfolge entscheidet: Der erste passende
