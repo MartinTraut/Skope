@@ -112,7 +112,7 @@ export const faqInsurance: FaqItem[] = [
   },
   {
     q: "Was kostet eine E-Scooter Versicherung über euch als ERGO-Partner?",
-    a: "Haftpflicht ab 42 € für ein volles Versicherungsjahr, Teilkasko mit Diebstahlschutz ab 69 €. Für kürzere Zeiträume gelten eigene Beiträge; sie stehen vollständig in der Tarifübersicht auf dieser Seite. Der genaue Betrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO ermittelt. Es ist kein Abo – Sie zahlen einmal für den gewählten Zeitraum.",
+    a: "Haftpflicht ab 42 € für die volle Saison vom 01.03.2026 bis 28.02.2027, Teilkasko mit Diebstahlschutz ab 69 €. Wer später einsteigt, zahlt anteilig nur den Rest bis zum Saisonende – alle zwölf Zeiträume stehen in der Tarifübersicht. Der genaue Betrag hängt von Alter, Standort und Risikoart ab und wird von der ERGO ermittelt. Es ist kein Abo: Sie zahlen einmal für die Saison.",
   },
   {
     q: "Wie lange dauert es, bis ich mein Versicherungskennzeichen bekomme?",

@@ -27,11 +27,17 @@
  *   Deshalb tragen die Bildunterschriften an diesen Stellen keinen Ort mehr,
  *   und die Alt-Texte keine reale Person.
  *
- * **Was hier ausdrücklich nicht drinsteht:** `ergo-aushang.jpg` ist die eigene
- * Preistafel des Betriebs, `karte-neuenstadt.png` ein Kartenausschnitt aus
- * OpenStreetMap, `siegel-skope.png` das Siegel. Alles drei ist gestaltet, aber
- * nichts davon ist erzeugt, und eine falsche Kennzeichnung ist genauso
- * irreführend wie eine fehlende.
+ * **Was hier ausdrücklich nicht drinsteht:** `karte-neuenstadt.png` ist ein
+ * Kartenausschnitt aus OpenStreetMap, `siegel-skope.png` das Siegel. Beides
+ * ist gestaltet, aber nicht erzeugt, und eine falsche Kennzeichnung ist
+ * genauso irreführend wie eine fehlende.
+ *
+ * **Der ERGO-Aushang stand bis zum 26.09.2026 in genau dieser Reihe** – als
+ * „eigene Preistafel des Betriebs". Für den Druck vom 14.08. stimmte das. Der
+ * Aushang der Saison 2026/2027 ist mit ChatGPT gestaltet, Auskunft des
+ * Betreibers, und zeigt einen fotorealistischen Roller vor einer Stadtkulisse.
+ * Er ist deshalb aufgenommen – mit eigenem Wortlaut, siehe
+ * `generatedPosterNotice`.
  *
  * **Die Motive bleiben.** Entscheidung des Betreibers vom 02.09.2026: Der
  * Austausch gegen echte Aufnahmen aus Im Kampfrad 3 – bis dahin als der
@@ -67,6 +73,18 @@ export const generatedImages = new Set([
      Bildbreite. Zwei Fassungen desselben Motivs sind hier der Unterschied
      zwischen einem Kopfbereich und einer Fußleiste. */
   "/img/hero-fahrzeuge-hoch.jpg",
+  /* Der ERGO-Aushang der Saison 2026/2027, beide Seiten, auf `/versicherung`
+     seit dem 26.09.2026. Mit ChatGPT gestaltet (Auskunft des Betreibers):
+     Roller, Hintergrund und Layout sind erzeugt, die Beiträge kommen von der
+     ERGO.
+
+     Genau deshalb trägt er nicht den Standardsatz „Symbolbild, mit KI
+     erzeugt", sondern `generatedPosterNotice` – dieselbe Unterscheidung wie
+     beim Erklärfilm. „Symbolbild" über einer Preistafel hieße, auch die
+     Zahlen seien beispielhaft, und das wäre die Irreführung, die die
+     Kennzeichnung gerade verhindern soll. */
+  "/img/ergo-plakat-2026-2027.jpg",
+  "/img/ergo-aushang-2026-2027.jpg",
   /* Porträt auf `/ueber-uns`, eingesetzt am 23.09.2026.
 
      **Es ist erzeugt, und das steht nicht zur Auslegung.** Die Datei kam als
@@ -110,6 +128,18 @@ export const generatedImageNotice = "Symbolbild, mit KI erzeugt";
 
 /** Kurzform für die Marke im Bild, wo für den vollen Satz kein Platz ist. */
 export const generatedImageBadge = "KI-Bild";
+
+/**
+ * Der Wortlaut für ein gestaltetes Blatt, dessen Angaben echt sind.
+ *
+ * Erzeugt ist beim ERGO-Aushang die Gestaltung – Motiv, Hintergrund, Layout.
+ * Die Beiträge stammen von der ERGO und stehen so auch in `lib/data/
+ * insurance.ts`. „Symbolbild, mit KI erzeugt" würde über einer Preistafel
+ * genau das Gegenteil dessen sagen, was stimmt: dass auch die Zahlen
+ * beispielhaft seien. Dieselbe Unterscheidung wie beim Erklärfilm.
+ */
+export const generatedPosterNotice =
+  "Gestaltung mit KI erzeugt, Beiträge von der ERGO";
 
 /**
  * Der Wortlaut für den Erklärfilm.

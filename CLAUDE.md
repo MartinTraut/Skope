@@ -1459,9 +1459,12 @@ Abgearbeitet. Was dabei herauskam und nicht wieder aufgeweicht werden darf:
   fünf Dateien vom 14.08. durch eine Optimierung verlorengegangen. Neu
   hineingeschrieben wurde es **verlustfrei**: als APP1-Segment direkt in den
   JPEG-Bytestrom, nicht über ein Neukodieren mit sharp.
-- **Nicht gekennzeichnet und das mit Absicht:** `ergo-aushang.jpg` (die eigene
-  Preistafel), `siegel-skope.png`, die Gerätefotos, `karte-neuenstadt.png`
-  (OpenStreetMap). **Der Erklärfilm stand bis zum 02.09.2026 in dieser Reihe
+- **Nicht gekennzeichnet und das mit Absicht:** `siegel-skope.png`, die
+  Gerätefotos, die Werkstattaufnahmen, `karte-neuenstadt.png` (OpenStreetMap).
+  **Der ERGO-Aushang stand bis zum 26.09.2026 in dieser Reihe** – für den
+  Druck vom 14.08. zu Recht, er war eine reine Preistafel. Der Aushang der
+  Saison 2026/2027 ist mit ChatGPT gestaltet und trägt die Kennzeichnung,
+  siehe `generatedPosterNotice`. **Der Erklärfilm stand bis zum 02.09.2026 in dieser Reihe
   und gehört nicht hierher** – hinter seinen Schrifttafeln liegt
   `hero-werkstatt`. Er trägt die Offenlegung jetzt in eigener Formulierung. Eine falsche Kennzeichnung ist genauso
   irreführend wie eine fehlende.
@@ -1508,10 +1511,10 @@ Was bleibt, hängt an Leistungs- und Rechtsaussagen:
   Auskunft des Betreibers, deckungsgleich mit der Altseite. Die Aussage
   „sofort in der Werkstatt" stammte aus dem Werkstattaushang und ist auf
   allen Stellen gedreht (Kopf, Kennzahl, Karte, Ablauf ohne Weiche, FAQ,
-  Teaser, Kachel der Startseite, Filmunterschrift). **Offen bleibt der
-  Aushang selbst:** Das Foto auf /versicherung zeigt weiter „PLAKETTE –
-  Sofort Mitnahme". Die Bildunterschrift stellt es richtig; besser ist ein
-  neuer Druck.
+  Teaser, Kachel der Startseite, Filmunterschrift). **Der Aushang selbst ist am
+  26.09.2026 erledigt:** Der neue Druck der Saison 2026/2027 sagt „Plakette
+  per Post" und liegt als `public/img/ergo-aushang-2026-2027.jpg` auf der
+  Seite.
 - **Leih-Scooter fehlt komplett.** Alt: „Dauert die Reparatur länger als 48
   Stunden, erhalten Sie kostenlos einen Leih-Scooter", Bestandteil des
   Premium-Vertrags. Die einzige ersatzlos verlorene Leistung. Gibt es sie
@@ -3166,6 +3169,99 @@ Gemessen nach dem Durchgang: 135 Prüfungen (15 Routen × 9 Formate,
 320 – 1920 px plus Querformat) – kein waagerechter Überlauf, genau eine H1 je
 Route, kein Bild ohne `alt`, keine Konsolenfehler, keine Schrift unter 11 px
 außer der bekannten Plakettenschrift auf `/versicherung`.
+
+## Neuer ERGO-Aushang, Saison 2026/2027 — 26.09.2026
+
+Der Betreiber hat einen neuen Aushang geschickt (zwei Seiten: Plakat und
+Tarifblatt). Er ersetzt den vom 14.08.2026 vollständig und räumt dabei zwei
+Punkte ab, die als offen geführt waren:
+
+- **Die zweite Preisspalte gibt es nicht mehr.** Der alte Aushang führte in
+  fünf Zeilen einen unerklärten zweiten Haftpflichtwert (122, 186, 180, 115,
+  130 €); der neue nennt je Zeitraum genau einen Haftpflicht- und einen
+  Gesamtbeitrag. Der TODO in `lib/data/insurance.ts` ist erledigt.
+- **„Sofort Mitnahme" steht nicht mehr drauf.** Der neue Druck sagt selbst
+  „Plakette per Post" und „Plakette wird von ERGO per Post versendet". Der
+  Widerspruch zwischen Seite und Werkstattwand, offen seit dem 03.09.2026, ist
+  damit aufgelöst. Am 26.09. noch einmal bestätigt: **per Post, nicht vor
+  Ort.** Ein erster Entwurf des neuen Plakats trug die Kachel „Plakette direkt
+  vor Ort erhältlich" – der ist zurückgegangen und darf nicht eingebaut werden.
+
+**Zwölf Zeiträume statt sechs, alle mit demselben Ende.** Jeder Zeitraum läuft
+bis zum 28.02.2027, dem Ende des Verkehrsjahres; der Beitrag ist der anteilige
+Rest. Die Reihe fällt dadurch monoton (42 → 3 € Haftpflicht, 69 → 6 € mit
+Teilkasko), während die alte im Winter *stieg*. Die volle Saison beginnt am
+01.03.2026, nicht am 01.04. wie bisher.
+
+- **`Tariff` hat ein Feld `start`,** und `seasonEnd` steht als eigener Wert.
+  Ohne das ließe sich die Tabelle am Telefon nicht mehr darstellen: Als Karte
+  mit Kopfzeile, zwei Preiszellen und eigenem Verweis maß eine Zeile 168 px –
+  zwölf davon wären gut 2000 px. Weil alle Zeiträume am selben Tag enden,
+  steht in der Zelle nur noch der Beginn, und damit passt bei 320 px
+  „ab 01.04.2026" mit beiden Beträgen in **eine** Zeile (56 px, ganze Zeile
+  antippbar, `?zeitraum=` reist wie bisher mit).
+- **Die Preisspalten am Telefon haben feste Breite** (`w-[4.25rem]`). „ab 7 €"
+  ist zwei Ziffern schmaler als „ab 42 €"; ohne Kasten wandert die
+  Teilkaskospalte über zwölf Zeilen sichtbar hin und her.
+- **Die Regel steht unter der Tabelle ausgeschrieben.** Ohne sie liest sich
+  die fallende Spalte als Rabatt für späte Kunden statt als das, was sie ist:
+  weniger Monate bei gleichem Enddatum.
+- **„ab" bleibt vor jedem Betrag**, obwohl der Aushang die Zahlen ohne diesen
+  Zusatz druckt. Der Beitrag hängt an Alter, Standort und Risikoart – genau
+  das sagt `tariffDisclaimer` seit jeher. Ein Festpreis wäre eine Zusage, die
+  der Betrieb nicht halten kann; „ab" ist im ungünstigen Fall zu vorsichtig,
+  nie zu billig. Als TODO vermerkt: Sind es Festpreise, fällt das „ab".
+
+**Neu auf der Seite: was die Teilkasko abdeckt.** Acht Positionen (Diebstahl,
+Brand/Explosion, Glasbruch, Kurzschluss, Sturm/Hagel, Überschwemmung,
+Tierkollision, Tierbiss) und die Selbstbeteiligung – 150 € je Schaden, 300 €
+bei Totalentwendung. Grund: Die Tabelle nannte einen Teilkaskobeitrag, und
+nirgends stand, wofür er einspringt und was im Schadensfall selbst zu tragen
+ist. Ein Kaskopreis ohne Selbstbeteiligung ist eine halbe Preisangabe.
+
+**Das Bild ist ausgetauscht.** `ergo-aushang.jpg` ist gelöscht, auf der Seite
+stehen `ergo-plakat-2026-2027.jpg` und `ergo-aushang-2026-2027.jpg`.
+
+- **Beide Seiten, und deshalb eine eigene Reihe.** Der erste Einbau nahm nur
+  das Tarifblatt – die Figur neben der Tabelle hat genau eine Aufgabe, und die
+  Zahlen stehen auf Seite 2. Auf Ansage stehen jetzt beide da. In der schmalen
+  Spalte ging das nicht: Ein Blatt passt hinein, zwei hätten die Spalte auf
+  2300 px getrieben, während links nach 785 px Tabelle nichts mehr kommt. Die
+  Blätter stehen deshalb als eigene Reihe unter dem Raster, und die rechte
+  Spalte trägt jetzt Antragskarte (Reihe 1) und Teilkasko-Karte (Reihe 2)
+  neben der über beide Reihen laufenden Tabelle.
+- **Nebeneinander erst ab 1280 px.** Bei 640 px blieben je Spalte 280 px, bei
+  768 px 328 – die Tariftabelle auf dem zweiten Blatt stünde dort in rund 5 px
+  Schrift. Darunter untereinander, jedes Blatt in voller Breite bis zum Deckel.
+- **Die Kacheln „In der Werkstatt" und „Online" stehen ab `lg` untereinander.**
+  In der 5-Spalten-Spalte sind zwei Kacheln je 220 px breit; gemessen stand
+  „Rahmennummer" bei 1024 px an der Kante.
+- **Keine Bildunterschrift** (auf Ansage). Sie sagte dreimal, was danebensteht:
+  dass es der Aushang der Saison ist (steht im Bild), dass die Tabelle
+  maßgeblich ist (die Tabelle steht daneben) und dass die Gestaltung erzeugt
+  ist (das trägt die Marke im Bild – genau dafür liegt sie dort und nicht in
+  einer Fußnote). Mit ihr fällt das `figure`: eine Figur ohne Unterschrift ist
+  ein Bild.
+- **Nicht hochgerechnet.** Die Quellen liefern nach dem Zuschnitt 609 × 1158 px.
+  Beim Kopfbild war Hochrechnen richtig (`lanczos3` plus Unschärfemaske) – dort
+  ging es um Kantenzeichnung an Felgen und Leuchtbändern. Hier ist das Motiv
+  Schrift, und Schrift verliert beim Skalieren genau das, wofür sie da ist.
+  Stattdessen ein Deckel von **38 rem** an jeder Bildfläche: Ohne ihn liefe
+  ein Blatt bei 1512 px auf 716 px Anzeigebreite hinaus, bei doppelter
+  Pixeldichte also 1432 Gerätepixel aus einer 609-px-Quelle.
+  TODO Betreiber: höher aufgelöster Export, dann fällt der Deckel.
+- **`sizes` ohne `min()`** – die bekannte Falle: Chromium löst `min()` dort
+  nicht auf und fällt still auf `100vw` zurück. Reine Stufen.
+- **Die Kennzeichnung trägt einen eigenen Wortlaut** (`generatedPosterNotice`,
+  „Gestaltung mit KI erzeugt, Beiträge von der ERGO"). Der Standardsatz
+  „Symbolbild, mit KI erzeugt" über einer Preistafel hieße, auch die Zahlen
+  seien beispielhaft – das wäre die Irreführung, die die Kennzeichnung gerade
+  verhindern soll. Dieselbe Unterscheidung wie beim Erklärfilm. `GeneratedMark`
+  und `GeneratedNote` nehmen dafür ein `notice`-Prop; die Kurzform in der Ecke
+  bleibt „KI-Bild".
+- **Die Pfade stehen einmal als Liste** im Bauteil, nicht je Blatt dreimal
+  getippt (Bild, Marke, Verzeichnisabfrage). Ein Pfad, der beim Austausch an
+  zwei von drei Stellen geändert wird, verliert die Kennzeichnung.
 
 ## FAQ gekürzt — 26.09.2026
 

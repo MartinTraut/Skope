@@ -30,9 +30,13 @@ import { cn } from "@/lib/utils";
 export function GeneratedMark({
   src,
   className,
+  notice = generatedImageNotice,
 }: {
   src: string;
   className?: string;
+  /** Abweichender Wortlaut, wo „Symbolbild" falsch wäre – siehe
+      `generatedPosterNotice`. Die Kurzform in der Ecke bleibt dieselbe. */
+  notice?: string;
 }) {
   if (!isGeneratedImage(src)) return null;
 
@@ -44,14 +48,14 @@ export function GeneratedMark({
        erschiene der `title` nie. Der Chip liegt in Kacheln, die selbst
        Verweise sind; ein Klick auf ihn läuft an den Verweis weiter. */
     <span
-      title={generatedImageNotice}
+      title={notice}
       className={cn(
         "absolute right-3 bottom-3 z-10 rounded-sm bg-ink/85 px-2 py-1 font-display text-[0.6875rem] leading-none font-semibold tracking-[0.08em] text-silver/85 uppercase backdrop-blur-sm",
         className,
       )}
     >
       <span aria-hidden="true">{generatedImageBadge}</span>
-      <span className="sr-only">{generatedImageNotice}</span>
+      <span className="sr-only">{notice}</span>
     </span>
   );
 }
@@ -66,17 +70,19 @@ export function GeneratedNote({
   src,
   className,
   separator = false,
+  notice = generatedImageNotice,
 }: {
   src: string;
   className?: string;
   separator?: boolean;
+  notice?: string;
 }) {
   if (!isGeneratedImage(src)) return null;
 
   return (
     <span className={cn("text-current/50", className)}>
       {separator ? " · " : null}
-      {generatedImageNotice}
+      {notice}
     </span>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, FileText, Mail } from "lucide-react";
+import { Check, FileText, Mail } from "lucide-react";
 
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Reveal } from "@/components/motion/reveal";
@@ -11,10 +11,15 @@ import { FaqSection } from "@/components/ui/faq";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatBand } from "@/components/ui/stat-band";
 import { Container, Section, SectionHead } from "@/components/ui/section";
+import { GeneratedMark } from "@/components/ui/generated-mark";
+import { generatedPosterNotice } from "@/lib/data/generated-images";
 import { faqInsurance } from "@/lib/data/faq";
 import {
+  comprehensiveDeductible,
+  comprehensiveScope,
   insuranceDocs,
   insuranceSteps,
+  seasonEnd,
   tariffDisclaimer,
   tariffs,
 } from "@/lib/data/insurance";
@@ -30,6 +35,20 @@ export const metadata: Metadata = pageMeta({
     "E-Scooter Haftpflicht ab 42 €, Teilkasko ab 69 € im Jahr über ERGO. Antrag in Neuenstadt am Kocher oder online, Kennzeichen in 5 bis 10 Werktagen per Post.",
   path: "/versicherung",
 });
+
+/* Der Aushang steht an drei Stellen im Bauteil – Bild, Kennzeichnung und
+   Verzeichnisabfrage. Ein Pfad, der zweimal getippt wird, läuft beim nächsten
+   Austausch auseinander, und dann fehlt die Kennzeichnung. */
+const AUSHANG = [
+  {
+    src: "/img/ergo-plakat-2026-2027.jpg",
+    alt: "Plakat der Saison 2026/2027: E-Scooter vor einer Stadtkulisse, Saisonzeitraum 01.03.2026 bis 28.02.2027, drei Hinweise – gesetzlich vorgeschrieben, Haftpflicht oder optional mit Teilkasko, Plakette per Post – und die ERGO als Vertriebspartner",
+  },
+  {
+    src: "/img/ergo-aushang-2026-2027.jpg",
+    alt: "Tarifblatt der Saison 2026/2027: Tabelle mit zwölf Versicherungszeiträumen, je Zeile der Haftpflicht- und der Gesamtbeitrag mit Teilkasko, darunter der Umfang der Teilkasko, die Selbstbeteiligung und der Ablauf vom Kauf bis zum Kennzeichen per Post",
+  },
+];
 
 export default function InsurancePage() {
   /* Die erste Zeile der Tabelle ist die volle Saison – der Preis, der im
@@ -76,7 +95,7 @@ export default function InsurancePage() {
                 Was die Versicherung <Mark>kostet</Mark>.
               </>
             }
-            lead="Der Beitrag hängt vom Versicherungszeitraum ab: Wer mitten in der Saison einsteigt, zahlt für weniger Monate. Die Werte sind Startpreise der günstigsten Risikoklasse."
+            lead="Jeder Zeitraum läuft bis zum Saisonende am 28.02.2027. Wer später einsteigt, zahlt anteilig nur den Rest – die Werte sind Startpreise der günstigsten Risikoklasse."
           />
 
           {/* Die Tabelle passt jetzt auch auf ein 320-px-Telefon.
@@ -101,7 +120,7 @@ export default function InsurancePage() {
           <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-14">
             <Reveal
               delay={60}
-              className="scroll-x lg:col-span-7"
+              className="scroll-x lg:col-span-7 lg:row-span-2 lg:row-start-1"
               role="region"
               aria-label="ERGO Tarife für die Saison 2026/2027"
               tabIndex={0}
@@ -124,57 +143,63 @@ export default function InsurancePage() {
                   (`?zeitraum=`), das Formular schreibt daraus den Zeitraum
                   in die Nachricht – Wortlaut aus der Tabelle, nicht aus der
                   Adresse. */}
-              <ul className="flex flex-col gap-3 md:hidden">
+              {/* Unter `md` dieselben Daten als Zeilen, nicht als Karten.
+
+                  Mit dem Aushang der Saison 2026/2027 sind es zwölf
+                  Zeiträume statt sechs. Als Karte mit Kopfzeile, zwei
+                  Preiszellen und eigenem Verweis maß eine Zeile 168 px –
+                  zwölf davon wären gut 2000 px, eine Tariftabelle über zwei
+                  Bildschirmhöhen. Möglich wird die Zeile durch die Daten
+                  selbst: Alle Zeiträume enden am selben Tag, es steht also
+                  nur noch der Beginn in der Zelle. Gemessen bei 320 px
+                  passen „ab 01.04.2026" und beide Beträge in eine Zeile.
+
+                  Die ganze Zeile ist der Verweis – die Position reist wie
+                  bisher als `?zeitraum=` mit, das Formular schreibt daraus
+                  den Wortlaut aus der Tabelle in die Nachricht. */}
+              <ul className="flex flex-col md:hidden">
                 {tariffs.map((row, i) => (
-                  <li
-                    key={row.period}
-                    className="rounded-lg border border-current/15 bg-current/4 p-4"
-                  >
-                    <p className="tabular font-display font-semibold tracking-tight">
-                      {row.period}
-                      {row.full ? (
-                        <span className="ml-2 rounded bg-current/10 px-1.5 py-0.5 align-middle font-sans text-[0.6875rem] font-medium tracking-[0.06em] text-current/70 uppercase">
-                          volles Jahr
-                        </span>
-                      ) : null}
-                    </p>
-                    <dl className="mt-3 grid grid-cols-2 gap-3">
-                      <div className="min-w-0">
-                        {/* Zwei Zeilen Platz in beiden Zellen: „Teilkasko
-                            inkl. Diebstahl" bricht um, „Haftpflicht" nicht –
-                            ohne festen Kasten stünden die beiden Preise 18 px
-                            versetzt zueinander. */}
-                        <dt className="min-h-[2lh] text-[0.6875rem] font-medium tracking-[0.08em] text-current/55 uppercase">
-                          Haftpflicht
-                        </dt>
-                        <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
-                          {row.liability}
-                        </dd>
-                      </div>
-                      <div className="min-w-0">
-                        <dt className="min-h-[2lh] text-[0.6875rem] font-medium tracking-[0.08em] text-current/55 uppercase">
-                          Teilkasko inkl. Diebstahl
-                        </dt>
-                        <dd className="tabular mt-1 font-display text-lg font-bold tracking-tight">
-                          {row.comprehensive}
-                        </dd>
-                      </div>
-                    </dl>
+                  <li key={row.period} className="border-t border-current/15">
                     <Link
                       href={`/versicherung?anliegen=versicherung&zeitraum=${i}#anfrage`}
-                      className="press mt-4 inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold tracking-tight underline decoration-current/40 underline-offset-4"
+                      className="press flex min-h-14 items-center justify-between gap-3 py-3"
                     >
-                      Diesen Zeitraum anfragen
-                      <ArrowRight aria-hidden="true" className="size-4" />
+                      <span className="tabular flex min-w-0 items-baseline gap-2 text-sm text-current/75">
+                        ab {row.start}
+                        {row.full ? (
+                          <span className="rounded bg-current/10 px-1.5 py-0.5 text-[0.625rem] font-medium tracking-[0.06em] text-current/70 uppercase">
+                            Saison
+                          </span>
+                        ) : null}
+                      </span>
+                      {/* Feste Spaltenbreite: „ab 7 €" ist zwei Ziffern
+                          schmaler als „ab 42 €", und ohne Kasten wandert die
+                          Teilkaskospalte über die zwölf Zeilen hin und her. */}
+                      <span className="tabular flex shrink-0 items-baseline font-display font-bold tracking-tight">
+                        <span className="w-[4.25rem] text-right">
+                          {row.liability}
+                        </span>
+                        <span className="w-[4.25rem] text-right text-current/55">
+                          {row.comprehensive}
+                        </span>
+                      </span>
                     </Link>
                   </li>
                 ))}
               </ul>
+              {/* Die Beschriftung der beiden Zahlenspalten steht unter der
+                  Liste, nicht über jeder Zeile: In der Zeile wäre sie
+                  zwölfmal dasselbe Wortpaar. */}
+              <p className="mt-3 flex justify-end border-t border-current/15 pt-3 text-[0.6875rem] font-medium tracking-[0.08em] text-current/55 uppercase md:hidden">
+                <span className="w-[4.25rem] text-right">Haftpfl.</span>
+                <span className="w-[4.25rem] text-right">Teilkasko</span>
+              </p>
 
               <table className="hidden w-full border-collapse text-left md:table">
                 <caption className="sr-only">
-                  ERGO Tarife für E-Scooter, Saison 2026/2027, nach
-                  Versicherungszeitraum
+                  ERGO Tarife für E-Scooter, Saison 2026/2027. Jeder
+                  Versicherungszeitraum endet am 28.02.2027; der Beitrag gilt
+                  anteilig für den Rest der Saison.
                 </caption>
                 <thead>
                   <tr className="border-b border-current/20">
@@ -201,7 +226,7 @@ export default function InsurancePage() {
                 <tbody>
                   {tariffs.map((row) => (
                     /* Die Zeile hebt sich beim Zeigen an: In einer Tabelle mit
-                     sechs Zeitspannen und zwei Preisspalten verrutscht sonst
+                     zwölf Zeitspannen und zwei Preisspalten verrutscht sonst
                      genau die Zeile, die man vergleicht. */
                     <tr
                       key={row.period}
@@ -209,57 +234,41 @@ export default function InsurancePage() {
                     >
                       <th
                         scope="row"
-                        className="tabular py-5 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
+                        className="tabular py-4 pr-4 font-sans text-sm font-normal text-current/75 sm:pr-6 sm:text-base"
                       >
                         {row.period}
                       </th>
-                      <td className="tabular py-5 pr-4 text-right font-display text-base font-bold tracking-tight text-ink sm:pr-6 sm:text-lg">
+                      <td className="tabular py-4 pr-4 text-right font-display text-base font-bold tracking-tight text-ink sm:pr-6 sm:text-lg">
                         {row.liability}
                       </td>
-                      <td className="tabular py-5 text-right font-display text-base font-bold tracking-tight sm:text-lg">
+                      <td className="tabular py-4 text-right font-display text-base font-bold tracking-tight sm:text-lg">
                         {row.comprehensive}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Die Regel hinter der Reihe, einmal ausgeschrieben. Ohne sie
+                  liest sich die fallende Spalte wie ein Rabatt für späte
+                  Kunden statt wie das, was sie ist: weniger Monate. */}
+              <p className="mt-5 border-t border-current/15 pt-5 text-sm leading-relaxed text-current/65">
+                Alle Zeiträume enden am {seasonEnd}, dem Ende der Saison. Wer
+                später einsteigt, zahlt anteilig nur den Rest – der Schutz
+                endet trotzdem am selben Tag.
+              </p>
             </Reveal>
 
-            {/* Der Aushang aus der Werkstatt – als Beleg, nicht als Inhalt.
-                Die Preise stehen links als Tabelle, weil ein Bild mit Text
-                darin weder durchsuchbar noch vorlesbar noch auf einem
-                Telefon lesbar ist. Das Foto zeigt, dass die Zahlen von einem
-                echten Aushang stammen – und dafür muss man es lesen können.
-                Eine 9-rem-Miniatur neben der Unterschrift war das nicht;
-                deshalb volle Spaltenbreite. */}
-            <Reveal
-              delay={120}
-              as="figure"
-              className="lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1"
-            >
-              <div className="lift-lg overflow-hidden rounded-lg bg-ink">
-                <Image
-                  src="/img/ergo-aushang.jpg"
-                  alt="Preisaushang der Saison 2026/2027: Tabelle mit Haftpflicht- und Teilkaskopreisen je Versicherungszeitraum, Hinweis auf sofortige Mitnahme der Plakette und Zahlung bar oder mit EC-Karte"
-                  width={860}
-                  height={1190}
-                  sizes="(min-width: 1024px) 34vw, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 3rem)"
-                  className="h-auto w-full"
-                />
-              </div>
-              <figcaption className="mt-4 text-sm leading-relaxed text-current/65">
-                Der Preisaushang zur Saison 2026/2027, wie er in der Werkstatt
-                hängt. Maßgeblich sind die Werte in der Tabelle; das Kennzeichen
-                versendet die ERGO per Post.
-              </figcaption>
-            </Reveal>
             {/* Die Karte ist das Gegenstück zur Tabelle: links, was es
                 kostet, rechts, wie man es bekommt. Sie steht unter der Tabelle,
                 der Aushang rechts über beide Reihen – so bleibt links kein
                 Loch unter sechs Zeilen. Die Plakette steht über dem Absatz, der sie
                 beschreibt – das Ergebnis zuerst, die Erklärung darunter.
                 Begründung zur Zeichnung selbst in `components/brand/plate.tsx`. */}
-            <Reveal delay={80} className="lg:col-span-7">
+            <Reveal
+              delay={80}
+              className="lg:col-span-5 lg:col-start-8 lg:row-start-1"
+            >
               {/* Plakette links, Text rechts, die zwei Wege nebeneinander,
                   der Tarifhinweis über die volle Breite: Als Stapel blieb die
                   rechte Hälfte der Karte leer. */}
@@ -273,7 +282,13 @@ export default function InsurancePage() {
                     {/* Zwei Kacheln statt zwei Textspalten ohne Kante, der
                         Versand als eigene Zeile mit Symbol – so liest man
                         drei Aussagen statt einen Block. */}
-                    <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    {/* Zwei Spalten nur, solange die Karte über die volle
+                        Breite läuft. Ab `lg` steht sie in einer 5-Spalten-
+                        Spalte neben der Tabelle; zwei Kacheln darin sind je
+                        220 px breit, und „Rahmennummer" stand bei 1024 px an
+                        der Kante. Dort also untereinander – die Höhe wird
+                        neben zwölf Tarifzeilen ohnehin gebraucht. */}
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                       <div className="rounded-md border border-silver/12 bg-silver/5 p-5">
                         <p className="eyebrow-plain text-current/60">
                           In der Werkstatt
@@ -313,6 +328,99 @@ export default function InsurancePage() {
                 </p>
               </div>
             </Reveal>
+
+            {/* Was die zweite Preisspalte abdeckt.
+
+                Die Tabelle nennt einen Teilkaskobeitrag, und bis zum
+                26.09.2026 stand nirgends, wofür er einspringt und was im
+                Schadensfall selbst zu tragen ist. Ein Kaskopreis ohne
+                Selbstbeteiligung ist eine halbe Preisangabe – beides steht
+                im Aushang der Saison und gehört deshalb auf die Seite.
+
+                Zwei Spalten ab `sm`: Acht Einträge untereinander wären am
+                Telefon eine Liste über den halben Bildschirm, und sie sind
+                kurz genug für zwei Spalten. */}
+            <Reveal
+              delay={100}
+              className="lg:col-span-5 lg:col-start-8 lg:row-start-2"
+            >
+              <div className="rounded-lg border border-current/15 bg-current/4 p-7 md:p-8">
+                <h3 className="text-[length:var(--text-subtitle)]">
+                  Was die Teilkasko abdeckt
+                </h3>
+                <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
+                  {comprehensiveScope.map((item) => (
+                    <li
+                      key={item}
+                      className="flex max-w-none items-center gap-3 border-t border-current/12 py-3 text-current/80"
+                    >
+                      <Check
+                        aria-hidden="true"
+                        className="size-4 shrink-0 text-current/45"
+                        strokeWidth={2.25}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-3 border-t border-current/15 pt-5">
+                  {comprehensiveDeductible.map((row) => (
+                    <div key={row.label} className="flex items-baseline gap-3">
+                      <dt className="text-sm text-current/65">
+                        Selbstbeteiligung, {row.label.toLowerCase()}
+                      </dt>
+                      <dd className="tabular font-display font-bold tracking-tight">
+                        {row.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Beide Seiten des Aushangs, als Beleg unter dem, was sie belegen.
+
+              Sie standen bis zum 26.09.2026 als eine schmale Spalte neben der
+              Tabelle – dort passte genau ein Blatt hinein, und das zweite
+              hätte die Spalte auf 2300 px getrieben, während links nach
+              785 px Tabelle nichts mehr kommt. Als eigene Reihe stehen beide
+              nebeneinander und dürfen jeweils so breit werden, wie die Datei
+              es hergibt.
+
+              Nebeneinander erst ab 1280 px, nicht ab `sm`: Bei 640 px blieben
+              je Spalte 280 px, bei 768 px 328 – die Tariftabelle auf dem
+              zweiten Blatt stünde dort in rund 5 px Schrift. Darunter also
+              untereinander, jedes Blatt in voller Breite bis zum Deckel.
+
+              Der Deckel von 38 rem ist die echte Breite der Dateien
+              (609 px). Ohne ihn liefe jedes Blatt bei 1512 px auf 716 px
+              Anzeigebreite hinaus, bei doppelter Pixeldichte also 1432
+              Gerätepixel aus einer 609-px-Quelle. Ein Blatt aus Schrift
+              verträgt das nicht, und hochrechnen hilft nicht, wo die
+              Kantenzeichnung fehlt.
+              TODO Betreiber: höher aufgelöster Export, dann fällt der Deckel. */}
+          <div className="mt-14 grid gap-8 min-[1280px]:grid-cols-2 min-[1280px]:gap-8">
+            {AUSHANG.map((sheet, i) => (
+              <Reveal key={sheet.src} delay={i * 80}>
+                <div className="lift-lg relative mx-auto max-w-[38rem] overflow-hidden rounded-lg bg-ink">
+                  <Image
+                    src={sheet.src}
+                    alt={sheet.alt}
+                    width={609}
+                    height={1158}
+                    /* Reine Stufen, kein `min()`: Chromium löst es in `sizes`
+                       nicht auf und fällt still auf `100vw` zurück. */
+                    sizes="(min-width: 640px) 38rem, calc(100vw - 3rem)"
+                    className="h-auto w-full"
+                  />
+                  <GeneratedMark
+                    src={sheet.src}
+                    notice={generatedPosterNotice}
+                  />
+                </div>
+              </Reveal>
+            ))}
           </div>
         </Container>
       </Section>
@@ -505,7 +613,7 @@ export default function InsurancePage() {
                 unit: "ANN",
                 from: true,
                 description:
-                  "Haftpflicht zuzüglich Teilkasko mit Diebstahlschutz. Startpreis der günstigsten Risikoklasse für ein volles Versicherungsjahr; einzelne Monate sind günstiger.",
+                  "Haftpflicht zuzüglich Teilkasko mit Diebstahlschutz, Selbstbeteiligung 150 € je Schaden und 300 € bei Totalentwendung. Startpreis der günstigsten Risikoklasse für die volle Saison; wer später einsteigt, zahlt anteilig weniger.",
               },
             ],
           }),
