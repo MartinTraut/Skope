@@ -53,12 +53,22 @@ export default function PrivacyPage() {
         <h2>3. Datenerfassung auf dieser Website</h2>
         <h3>Cookies</h3>
         <p>
-          Unsere Website verwendet Cookies. Das sind kleine Textdateien, die Ihr
-          Webbrowser auf Ihrem Endgerät speichert. Cookies helfen uns dabei,
-          unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen.
-          Einige Cookies sind &bdquo;Session-Cookies&ldquo; und werden nach Ende
-          Ihres Besuchs automatisch gelöscht, andere bleiben gespeichert, bis
-          Sie sie löschen.
+          <strong>Diese Website setzt keine Cookies.</strong> Weder zur
+          Wiedererkennung noch zur Reichweitenmessung und auch nicht zu
+          Werbezwecken. Deshalb gibt es hier auch kein Einwilligungsbanner: Es
+          gibt nichts, wozu wir Ihre Einwilligung bräuchten.
+        </p>
+        <p>
+          Es sind ebenso keine Dienste Dritter eingebunden. Schriftarten,
+          Karte, Video und alle Bilder liegen auf unserem eigenen Server; beim
+          Aufruf einer Seite wird keine Verbindung zu Google, zu einem
+          sozialen Netzwerk oder zu einem Analysedienst aufgebaut. Die Karte
+          auf der Kontaktseite ist ein Bild und keine Einbettung.
+        </p>
+        <p>
+          Eine einzige Angabe wird im Speicher Ihres Browsers abgelegt: Woher
+          Ihr Besuch kam, für die Dauer der Sitzung. Was dort steht, wozu es
+          dient und wann es gelöscht wird, steht unter Punkt&nbsp;5.
         </p>
 
         <h3>Kontakt- und Anfrageformular</h3>

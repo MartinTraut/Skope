@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 
 import { recordEvent } from "@/lib/metrics";
+import { clientKey, limit } from "@/lib/rate-limit";
 
 /**
  * Endpunkt für die zwei Ereignisse, die der Browser melden kann:
@@ -25,33 +25,19 @@ const SOURCE = /^[a-z0-9.-]{1,24}$/;
 const PATH = /^\/[a-z0-9/-]{0,60}$/;
 
 /**
- * Drosselung wie beim Formular: Modul-Zustand, also pro Instanz. Auf Vercel
- * hebelt das ein Angreifer mit genug Aufrufen aus; der Schaden ist eine zu
- * hohe Zahl in einer Abrechnungsübersicht, nicht ein Datenabfluss. Wenn die
- * Zahlen wirklich Geld bewegen, gehört hier dieselbe Upstash-Drosselung hin,
- * die schon als TODO in `app/actions.ts` steht – der Speicher ist dann
- * ohnehin eingerichtet.
+ * Drosselung über `lib/rate-limit.ts`, also geteilt über alle Instanzen,
+ * sobald der Redis-Speicher steht.
+ *
+ * Hier hängt mehr daran als beim Formular: Die Zahlen dieses Endpunkts sind
+ * die Grundlage der Abrechnung. Eine Drosselung im Prozessspeicher ließ sich
+ * auf Vercel mit genug gleichzeitigen Aufrufen aushebeln – der Schaden wäre
+ * kein Datenabfluss, sondern eine zu hohe Zahl in einer Rechnung. Ohne
+ * Speicher bleibt der alte Notbehelf pro Instanz, siehe `limiterMode()`.
+ *
+ * 40 Ereignisse je Minute: Ein Mensch kommt im Normalfall auf eine Handvoll
+ * Seitenaufrufe, und eine schnelle Klickstrecke über zehn Routen bleibt weit
+ * darunter.
  */
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 40;
-const hits = new Map<string, number[]>();
-
-function limited(key: string, now: number) {
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(key, recent);
-    return true;
-  }
-  recent.push(now);
-  hits.set(key, recent);
-  if (hits.size > 5000) {
-    for (const [k, v] of hits) {
-      if (v.every((t) => now - t >= WINDOW_MS)) hits.delete(k);
-    }
-  }
-  return false;
-}
-
 export async function POST(request: Request) {
   const done = new NextResponse(null, { status: 204 });
 
@@ -66,12 +52,8 @@ export async function POST(request: Request) {
   const { event, source, path } = body as Record<string, unknown>;
   if (typeof event !== "string" || !EVENTS.has(event)) return done;
 
-  const h = await headers();
-  const key =
-    h.get("x-vercel-forwarded-for") ??
-    h.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown";
-  if (limited(key, Date.now())) return done;
+  const { ok } = await limit("ereignis", await clientKey(), 40, 60);
+  if (!ok) return done;
 
   const fields = [event];
   if (event === "telefon" && typeof source === "string" && SOURCE.test(source)) {

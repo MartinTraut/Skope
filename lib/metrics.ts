@@ -1,5 +1,7 @@
 import "server-only";
 
+import { redisMode, redisPipeline } from "@/lib/redis";
+
 /**
  * Kennzahlen der Website – Anfragen, Telefontipps, Herkunft.
  *
@@ -52,15 +54,15 @@ const KEY = "skope:tag:";
    beliebig viele Felder mit beliebigen Namen in den Hash schreiben. */
 const FIELD = /^[a-z0-9:._/-]{1,64}$/;
 
-function config() {
-  const url = process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
-  if (!url || !token) return null;
-  return { url: url.replace(/\/+$/, ""), token };
-}
-
+/**
+ * Zählt die Seite überhaupt?
+ *
+ * Es ist dieselbe Frage wie „steht der Speicher", nur unter dem Namen, unter
+ * dem die Kennzahlenseite sie stellt. Ohne Speicher wird nichts gezählt, und
+ * die Seite sagt das, statt Beispielzahlen wie Messwerte aussehen zu lassen.
+ */
 export function metricsMode(): "on" | "off" {
-  return config() ? "on" : "off";
+  return redisMode();
 }
 
 /** Tagesschlüssel in Ortszeit – ein Betrieb rechnet nicht in UTC ab. */
@@ -70,36 +72,8 @@ export function dayKey(date = new Date()) {
   }).format(date);
 }
 
-async function pipeline(commands: string[][]): Promise<unknown[] | null> {
-  const cfg = config();
-  if (!cfg) return null;
-  try {
-    const res = await fetch(`${cfg.url}/pipeline`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${cfg.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(commands),
-      cache: "no-store",
-      // Ohne Deckel hängt eine Server Action am Kennzahlenspeicher, und der
-      // ist für die Anfrage selbst völlig nebensächlich.
-      signal: AbortSignal.timeout(3000),
-    });
-    if (!res.ok) {
-      console.error("[kennzahlen] Speicher antwortet", res.status);
-      return null;
-    }
-    const body = (await res.json()) as { result?: unknown; error?: string }[];
-    return body.map((entry) => entry.result ?? null);
-  } catch (err) {
-    console.error(
-      "[kennzahlen] Speicher nicht erreichbar",
-      err instanceof Error ? err.name : "unknown",
-    );
-    return null;
-  }
-}
+const pipeline = (commands: string[][]) =>
+  redisPipeline(commands, "kennzahlen");
 
 /**
  * Ein Ereignis zählen.

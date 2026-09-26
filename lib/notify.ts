@@ -9,6 +9,9 @@ export type Inquiry = {
   phone?: string;
   scooter?: string;
   message: string;
+  /** Nur bei einer Anfrage zur Winterlagerung gesetzt. */
+  detailing?: boolean;
+  pickupMonth?: string;
   /**
    * Woher der Besuch kam („google", „direkt", …). Steht in der Mail, damit
    * sich eine Anfrage einem Weg zuordnen lässt – die Grundlage der
@@ -50,7 +53,9 @@ function recipient() {
   const to = process.env.INQUIRY_TO?.trim();
   if (!to) return site.email;
   if (EMAIL.test(to)) return to;
-  console.error("[anfrage] INQUIRY_TO ist keine gültige Adresse, nehme site.email");
+  console.error(
+    "[anfrage] INQUIRY_TO ist keine gültige Adresse, nehme site.email",
+  );
   return site.email;
 }
 
@@ -75,6 +80,18 @@ export async function sendInquiry(inquiry: Inquiry): Promise<SendResult> {
     `E-Mail: ${inquiry.email}`,
     inquiry.phone ? `Telefon: ${inquiry.phone}` : null,
     inquiry.scooter ? `Scooter: ${inquiry.scooter}` : null,
+    /* Die Zusatzangaben der Winterlagerung stehen als eigene Zeilen und nicht
+       im Nachrichtentext: Sie sind die beiden Punkte, nach denen der
+       Betreiber die Mail sortiert – braucht das Gerät einen Stellplatz bis
+       April, und ist die Reinigung bestellt. Ein „nein" wird mitgeschickt,
+       weil das Fehlen einer Zeile sonst zwei Dinge heißen könnte: nicht
+       angekreuzt oder nicht gefragt. */
+    inquiry.detailing === undefined
+      ? null
+      : `VIP Detailing: ${inquiry.detailing ? "ja" : "nein"}`,
+    inquiry.pickupMonth
+      ? `Voraussichtliche Abholung: ${inquiry.pickupMonth}`
+      : null,
     `Herkunft: ${inquiry.source || "unbekannt"}`,
     "",
     inquiry.message,

@@ -1,10 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
-
+import { isStoragePickupMonth } from "@/lib/data/storage";
 import { FALLBACK_TOPIC, isKnownTopic } from "@/lib/data/topics";
 import { fieldSlug, recordEvent } from "@/lib/metrics";
 import { sendInquiry } from "@/lib/notify";
+import { clientKey, limit } from "@/lib/rate-limit";
 
 export type InquiryValues = {
   topic: string;
@@ -13,6 +13,14 @@ export type InquiryValues = {
   phone: string;
   scooter: string;
   message: string;
+  /**
+   * Die beiden Zusatzangaben der Winterlagerung. Optional, weil sie nur auf
+   * `/einlagerung` im Formular stehen – auf jeder anderen Seite gibt es die
+   * Felder gar nicht, und ein leerer Wert wäre dort keine Antwort, sondern
+   * eine Zeile ohne Frage.
+   */
+  detailing?: boolean;
+  pickupMonth?: string;
 };
 
 export type FormState = {
@@ -44,56 +52,50 @@ const SUCCESS_MESSAGE =
   "Ihre Anfrage ist angekommen. Wir melden uns schnellstmöglich: bei Reparaturen mit einem Kostenvoranschlag, bei Suchaufträgen, sobald ein passendes Gerät geprüft ist.";
 
 /**
- * Einfache Drosselung pro IP. Der Endpunkt ist unauthentifiziert: ohne Limit
- * könnte ein Skript beliebig viele Mails auslösen und das Postfach des
- * Betreibers sowie das Kontingent des Mail-Providers erschöpfen.
+ * Abwehr gegen Skripte – vier Schichten, keine davon allein ausreichend.
  *
- * TODO Betreiber: Bei Deployment auf mehrere Instanzen (Vercel) reicht
- * Modul-State nicht aus – dann auf @upstash/ratelimit oder @vercel/kv wechseln.
+ * Bewusst **ohne Captcha**: Jedes verfügbare (reCAPTCHA, hCaptcha, Turnstile)
+ * ist ein Drittanbieter-Aufruf aus dem Browser des Kunden. Die CSP dieser
+ * Seite lässt keinen zu, es gäbe eine Einwilligungsfrage, und ein Banner für
+ * ein Formular, das ein paarmal am Tag abgeschickt wird, ist der schlechtere
+ * Handel. Stattdessen:
+ *
+ *  1. **Zwei Honigtöpfe** im Formular (`company_ref`, `website`).
+ *  2. **Zeitfalle** (`gestartet`): Wer in unter drei Sekunden zurückkommt,
+ *     hat nicht getippt. Greift nur, wenn das Feld gesetzt ist – ohne
+ *     JavaScript bleibt es leer, und der Versand ohne JavaScript soll
+ *     funktionieren.
+ *  3. **Inhaltsprüfung**: zwei oder mehr Adressen in der Nachricht sind
+ *     Linkspam. **Eine** ist erlaubt – ein Kunde schickt den Link zu seinem
+ *     Gerät oder zu einer Anzeige, und genau das soll er dürfen.
+ *  4. **Drosselung** über `lib/rate-limit.ts`, geteilt über alle Instanzen,
+ *     sobald der Redis-Speicher steht.
+ *
+ * **Ein erkannter Bot bekommt die Erfolgsmeldung.** Wer eine Abweisung
+ * sieht, probiert das nächste Muster; wer „angekommen" liest, hört auf.
+ * Verschickt und gezählt wird nichts – im Protokoll steht, welche Schicht
+ * gegriffen hat, damit der Betreiber falsch positive Fälle findet.
  */
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 3;
-const hits = new Map<string, number[]>();
+/* Drei Sekunden. Gemessen braucht das Formular mit Anliegen, Name, Adresse
+   und einem Satz Nachricht auch bei flinkem Tippen mehr; eine Maske, die
+   länger offen stand, ist ohnehin unauffällig – nach oben gibt es deshalb
+   keine Grenze. */
+const MIN_FILL_MS = 3000;
 
-function rateLimited(key: string, now: number) {
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(key, recent);
-    return true;
+const URL_PATTERN = /\b(?:https?:\/\/|www\.)\S+|\[url[=\]]/gi;
+
+function botSignal(data: FormData, message: string): string | null {
+  if (str(data, "company_ref") || str(data, "website")) return "honigtopf";
+
+  const started = Number(str(data, "gestartet"));
+  if (Number.isFinite(started) && started > 0) {
+    const elapsed = Date.now() - started;
+    if (elapsed >= 0 && elapsed < MIN_FILL_MS) return "zu-schnell";
   }
-  recent.push(now);
-  hits.set(key, recent);
 
-  // Alte Einträge aufräumen, damit die Map nicht unbegrenzt wächst.
-  if (hits.size > 5000) {
-    for (const [k, v] of hits) {
-      if (v.every((t) => now - t >= WINDOW_MS)) hits.delete(k);
-    }
-  }
-  return false;
-}
+  if ((message.match(URL_PATTERN) ?? []).length >= 2) return "linkspam";
 
-/**
- * Schlüssel für die Drosselung.
- *
- * `x-forwarded-for` ist vom Client frei setzbar: Wer den Header selbst mit
- * einer Zufalls-IP füllt, bekommt bei jedem Aufruf einen neuen Eimer und hebelt
- * das Limit aus. Vertrauenswürdig ist nur der Eintrag, den der eigene Proxy
- * anhängt – das ist der LETZTE, nicht der erste. Auf Vercel steht die geprüfte
- * Adresse zusätzlich in `x-vercel-forwarded-for`; die hat Vorrang.
- *
- * `x-real-ip` steht bewusst nicht in der Reihe: Hinter einem Proxy, der ihn
- * nicht überschreibt (oder ohne Proxy, `next start`), ist er vom Client frei
- * setzbar. Fehlt jeder vertrauenswürdige Header, teilen sich alle Aufrufer
- * einen Eimer – lieber zu streng als gar nicht.
- */
-async function clientKey() {
-  const h = await headers();
-  return (
-    h.get("x-vercel-forwarded-for") ??
-    h.get("x-forwarded-for")?.split(",").at(-1)?.trim() ??
-    "unknown"
-  );
+  return null;
 }
 
 function str(data: FormData, key: string) {
@@ -106,10 +108,29 @@ export async function submitInquiry(
   _prev: FormState,
   data: FormData,
 ): Promise<FormState> {
-  // Honeypot: von Menschen nie ausgefüllt, von Bots fast immer.
-  // Gibt dieselbe Meldung wie der Erfolgsfall zurück, damit ein
-  // fälschlich ausgefülltes Feld keine halbe Bestätigung erzeugt.
-  if (str(data, "company_ref")) {
+  /* Ein weiter Eimer über *allen* Aufrufen, noch vor jeder Prüfung.
+
+     Die Bot-Erkennung darunter weist ab, ohne zu zählen – ein Skript könnte
+     sonst beliebig oft mit gefülltem Honigtopf anklopfen und dabei nie an
+     ein Limit stoßen. Dreißig Aufrufe in zehn Minuten sind großzügig genug,
+     dass ein Mensch mit mehreren Tippfehlern nicht hineinläuft, und eng
+     genug, dass niemand den Endpunkt als Dauerlast benutzt. Der enge Eimer
+     weiter unten (drei *gültige* Anfragen) bleibt davon unberührt. */
+  const caller = await clientKey();
+  const { ok: underBurst } = await limit("anfrage-roh", caller, 30, 10 * 60);
+  if (!underBurst) {
+    console.warn("[anfrage] abgewiesen", { grund: "zu-viele" });
+    return { status: "ok", message: SUCCESS_MESSAGE };
+  }
+
+  /* Die Nachricht wird zweimal gelesen: hier roh für die Inhaltsprüfung,
+     unten getrimmt für die Anfrage selbst. */
+  const rawMessage =
+    typeof data.get("message") === "string" ? String(data.get("message")) : "";
+
+  const signal = botSignal(data, rawMessage);
+  if (signal) {
+    console.warn("[anfrage] abgewiesen", { grund: signal });
     return { status: "ok", message: SUCCESS_MESSAGE };
   }
 
@@ -121,6 +142,23 @@ export async function submitInquiry(
   const source = /^[a-z0-9.-]{1,24}$/.test(sourceRaw) ? sourceRaw : "unbekannt";
 
   const topicRaw = str(data, "topic");
+
+  /* Die beiden Felder der Winterlagerung.
+
+     Der Abholmonat wird gegen die Liste aus `lib/data/storage` geprüft und
+     nicht übernommen, wie er ankommt: Aus einer von Hand zusammengebauten
+     Adresse darf kein erfundener Zeitraum in eine Anfrage wandern –
+     dieselbe Regel wie beim `?zeitraum=` der Versicherungstabelle.
+
+     Beide gelten nur, wenn das Anliegen wirklich die Einlagerung ist. Sonst
+     stünde unter einer Reparaturanfrage „VIP Detailing: ja", weil jemand das
+     Feld von Hand mitgeschickt hat. */
+  const isStorage = topicRaw === "Winterlagerung";
+  const pickupRaw = str(data, "abholmonat");
+  const detailing = isStorage && str(data, "detailing") === "ja";
+  const pickupMonth =
+    isStorage && isStoragePickupMonth(pickupRaw) ? pickupRaw : "";
+
   const inquiry: InquiryValues = {
     topic: isKnownTopic(topicRaw) ? topicRaw : FALLBACK_TOPIC,
     name: str(data, "name"),
@@ -128,10 +166,8 @@ export async function submitInquiry(
     phone: str(data, "phone"),
     scooter: str(data, "scooter"),
     // Die Nachricht ist Body, kein Header – Umbrüche bleiben erhalten.
-    message:
-      typeof data.get("message") === "string"
-        ? String(data.get("message")).trim()
-        : "",
+    message: rawMessage.trim(),
+    ...(isStorage ? { detailing, pickupMonth } : {}),
   };
 
   const errors: Record<string, string> = {};
@@ -158,7 +194,11 @@ export async function submitInquiry(
     return { status: "error", errors, values: { ...inquiry, topic: topicRaw } };
   }
 
-  if (rateLimited(await clientKey(), Date.now())) {
+  /* Drei Anfragen in zehn Minuten je Aufrufer. Der Endpunkt ist
+     unauthentifiziert: Ohne Limit könnte ein Skript beliebig viele Mails
+     auslösen und Postfach wie Versandkontingent erschöpfen. */
+  const { ok: underLimit } = await limit("anfrage", caller, 3, 10 * 60);
+  if (!underLimit) {
     return {
       status: "fallback",
       message:

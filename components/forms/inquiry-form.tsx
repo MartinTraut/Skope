@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
+  Check,
   CheckCircle2,
   ChevronDown,
   Loader2,
@@ -25,7 +26,6 @@ import { visitSource } from "@/lib/source";
 import { cn } from "@/lib/utils";
 
 const initial: FormState = { status: "idle" };
-
 
 /**
  * Gefüllte Felder statt umrandeter.
@@ -64,6 +64,7 @@ function InquiryFormInner({
   defaultTopic,
   topicFromQuery = false,
   periods,
+  storage,
   className,
 }: {
   /**
@@ -86,6 +87,21 @@ function InquiryFormInner({
    * damit kein Zeitraum aus der Adresse übernommen wird, den es nicht gibt.
    */
   periods?: readonly string[];
+  /**
+   * Die beiden Zusatzfelder der Winterlagerung. Nur `/einlagerung` gibt sie
+   * mit – die Vorlage nannte sie „Wunsch-Tarif", aber ein Tarif ist es
+   * nicht: Es gibt genau ein Abo, und die beiden Angaben sind eine
+   * Zusatzleistung und ein Zeitpunkt.
+   *
+   * Als Eigenschaft und nicht als Import, dieselbe Regel wie bei `periods`:
+   * `lib/data/storage` trägt Leistungstexte, Ablauf und die TODO-Liste, und
+   * nichts davon gehört in das Bündel jedes anderen Formulars.
+   */
+  storage?: {
+    months: readonly string[];
+    optionName: string;
+    optionPrice: string;
+  };
   className?: string;
 }) {
   const [state, action, pending] = useActionState(submitInquiry, initial);
@@ -135,7 +151,8 @@ function InquiryFormInner({
      Zeitraum der Tabelle im Nachrichtenfeld. Gemessen: `?zeitraum=2` und
      `?zeitraum=4` schrieben beide die Zeile von Position 0. */
   const rawPeriod = params?.get("zeitraum");
-  const periodIndex = rawPeriod === null || rawPeriod === undefined ? NaN : Number(rawPeriod);
+  const periodIndex =
+    rawPeriod === null || rawPeriod === undefined ? NaN : Number(rawPeriod);
   const period =
     periods && Number.isInteger(periodIndex) && periods[periodIndex]
       ? periods[periodIndex]
@@ -169,11 +186,38 @@ function InquiryFormInner({
   const errorRef = React.useRef<HTMLDivElement>(null);
   const fallbackRef = React.useRef<HTMLDivElement>(null);
   const sourceRef = React.useRef<HTMLInputElement>(null);
+  const startedRef = React.useRef<HTMLInputElement>(null);
+  const monthRef = React.useRef<HTMLSelectElement>(null);
+
+  /**
+   * Der Abholmonat muss nach einem fehlgeschlagenen Absenden von Hand
+   * zurückgeschrieben werden – `defaultValue` reicht bei einem `<select>`
+   * nicht.
+   *
+   * Gemessen: React 19 setzt nach jeder Form-Action `requestFormReset()` ab.
+   * Ein `<input>` fällt dabei auf sein `defaultValue` zurück, und weil React
+   * das bei jedem Rendern neu schreibt, steht der eingegebene Name wieder
+   * da. Ein `<select>` bekommt sein `defaultValue` dagegen **nur beim
+   * Einhängen**; nach dem Reset stand hier wieder „Steht noch nicht fest",
+   * obwohl der Server „März" zurückgab und das Kontrollkästchen daneben
+   * seinen Haken behalten hatte.
+   *
+   * Kein `key` wie beim Anliegen-Feld: Der erzwingt zwar ein Neueinhängen,
+   * aber nur, wenn sich der Wert *ändert* – zwei Fehlversuche hintereinander
+   * mit demselben Monat hätten ihn beim zweiten Mal verloren. Der Effekt
+   * hängt an `state` und läuft damit genau dann, wenn eine Antwort vom
+   * Server kommt, und nie beim Tippen.
+   */
+  React.useEffect(() => {
+    if (monthRef.current)
+      monthRef.current.value = state.values?.pickupMonth ?? "";
+  }, [state]);
 
   /* Die Herkunft steht erst im Browser fest (Verweisadresse, `utm_source`).
      Direkt ins Feld geschrieben statt über den Zustand – siehe das Feld. */
   React.useEffect(() => {
     if (sourceRef.current) sourceRef.current.value = visitSource();
+    if (startedRef.current) startedRef.current.value = String(Date.now());
   }, []);
 
   /**
@@ -251,8 +295,13 @@ function InquiryFormInner({
         className,
       )}
     >
-      {/* Honeypot – für Menschen unsichtbar. Neutraler Feldname, damit
-          Passwortmanager und Autofill ihn nicht befüllen. */}
+      {/* Zwei Honigtöpfe – für Menschen unsichtbar.
+
+          Der erste trägt einen neutralen Namen, damit Passwortmanager und
+          Autofill ihn nicht befüllen. Der zweite heißt ausdrücklich
+          „website": Spam-Skripte suchen nach genau diesem Feld und tragen
+          dort ihre Adresse ein, während sie neutrale Namen häufig auslassen.
+          Ein Mensch sieht keines von beiden. */}
       <div aria-hidden="true" className="absolute -left-[9999px]">
         <label htmlFor="company_ref">Firmenreferenz</label>
         <input
@@ -261,7 +310,20 @@ function InquiryFormInner({
           tabIndex={-1}
           autoComplete="off"
         />
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
+
+      {/* Wann die Maske aufgebaut wurde.
+
+          Ein Mensch braucht für dieses Formular mindestens ein paar
+          Sekunden; ein Skript, das eine gespeicherte Maske abschickt,
+          braucht keine. Der Server verwirft deshalb, was in weniger als drei
+          Sekunden zurückkommt – aber **nur, wenn das Feld gesetzt ist**:
+          Ohne JavaScript bleibt es leer, und der Versand ohne JavaScript ist
+          geprüft und soll funktionieren. Der Wert ist die Uhr des Browsers
+          und damit fälschbar; er ist eine Hürde, kein Beweis. */}
+      <input type="hidden" name="gestartet" ref={startedRef} />
 
       {/* Herkunft der Sitzung, damit in der Mail steht, über welchen Weg die
           Anfrage zustande kam – „google", „direkt", „instagram". Kein
@@ -377,6 +439,109 @@ function InquiryFormInner({
           </p>
         ) : null}
       </div>
+
+      {/* Die beiden Zusatzangaben der Winterlagerung.
+
+          Sie stehen unmittelbar unter dem Anliegen und nicht am Ende des
+          Formulars: Wer „Winterlagerung" gewählt hat, beantwortet hier die
+          zwei Fragen, die zu dieser Wahl gehören – danach folgen Name und
+          E-Mail wie überall sonst. Als eigene Fläche mit `fieldset` und
+          `legend`, damit ein Vorleser die beiden Felder als
+          zusammengehörend ansagt statt als zwei lose Eingaben zwischen
+          Auswahlfeld und Namensfeld.
+
+          Die Zielfläche des Kontrollkästchens ist das ganze `label` und
+          nicht das 20-px-Kästchen – gemessen über 44 px hoch auf jeder
+          Breite, weil die Beschriftung am Telefon ohnehin zweizeilig
+          läuft. */}
+      {storage ? (
+        <fieldset className="flex flex-col gap-5 rounded-lg border border-current/15 bg-current/[0.04] p-5">
+          <legend className={cn(labelClass, "px-1")}>Zur Einlagerung</legend>
+
+          {/* Das Kontrollkästchen ist selbst 44 px groß, nicht die 20 px
+              eines nativen Kästchens mit einem anklickbaren Label darum.
+
+              Gemessen fällt ein `<input type="checkbox">` mit 20 × 20 px
+              durch die Zielflächenprüfung dieser Seite, und dass das Label
+              ihn mitschaltet, sieht man der Messung nicht an – und dem
+              Daumen auch nicht. Es ist damit außerdem dieselbe Bauform wie
+              jedes andere Feld des Formulars: gefüllte Fläche, dünne Kontur,
+              im Fokus die Akzentfarbe.
+
+              Der Radius ist `xs` (8 px) und nicht `lg` wie bei den übrigen
+              Feldern: 28 px auf einer 44-px-Fläche sind ein Kreis, und ein
+              rundes Kontrollfeld liest sich als Auswahlknopf – also als eine
+              Wahl von mehreren, von denen genau eine gilt. Es ist aber ein
+              Kästchen zum Ankreuzen, und das ist eckig.
+
+              `appearance-none` nimmt dem Kästchen seine eigene Zeichnung; das
+              Häkchen liegt als eigenes Element darüber und wird über
+              `peer-checked` eingeblendet. Es steht in Tinte auf der
+              Neonfläche – Neon ist hier Fläche, nie Schrift. */}
+          <label
+            htmlFor="detailing"
+            className="flex cursor-pointer items-center gap-4 leading-relaxed"
+          >
+            <span className="relative grid shrink-0 place-items-center">
+              <input
+                id="detailing"
+                name="detailing"
+                type="checkbox"
+                value="ja"
+                defaultChecked={state.values?.detailing}
+                className="peer size-11 appearance-none rounded-xs border border-current/50 bg-current/8 transition-colors duration-200 checked:border-neon checked:bg-neon focus:border-accent"
+              />
+              <Check
+                aria-hidden="true"
+                strokeWidth={3}
+                className="pointer-events-none absolute size-6 text-ink opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+              />
+            </span>
+            <span>
+              Ja, ich möchte das {storage.optionName} für{" "}
+              <span className="tabular font-semibold">
+                {storage.optionPrice}&nbsp;€
+              </span>{" "}
+              dazu buchen.
+            </span>
+          </label>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="abholmonat" className={labelClass}>
+              Voraussichtlich einlagern bis
+            </label>
+            <div className="relative">
+              <select
+                ref={monthRef}
+                id="abholmonat"
+                name="abholmonat"
+                defaultValue={state.values?.pickupMonth ?? ""}
+                className={cn(fieldClass, "appearance-none pr-12")}
+              >
+                {/* Kein Pflichtfeld: Wer im Oktober anfragt, weiß den Monat
+                    der Abholung oft noch nicht – und eine erzwungene Angabe
+                    wäre dann geraten statt gewusst. */}
+                <option value="" className="bg-ink-800 text-silver on-dark">
+                  Steht noch nicht fest
+                </option>
+                {storage.months.map((month) => (
+                  <option
+                    key={month}
+                    value={month}
+                    className="bg-ink-800 text-silver on-dark"
+                  >
+                    {month}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 opacity-60"
+              />
+            </div>
+          </div>
+        </fieldset>
+      ) : null}
 
       <div className="grid gap-6 sm:grid-cols-2">
         {/* `autoCapitalize="words"` und nicht der Standard: iOS steht auf
