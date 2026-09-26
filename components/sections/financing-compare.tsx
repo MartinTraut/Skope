@@ -98,10 +98,24 @@ export function FinancingCompare({
      Ohne dieses Band war die Tabelle sieben graue Zeilen auf einer grauen
      Fläche, und genau so sah sie aus. Farbe darf hier sein, sie darf nur
      nichts auszeichnen. */
+  /* Am Telefon steht alles auf der Mitte seiner eigenen Spalte, ab `lg`
+     wieder linksbündig.
+
+     Der Grund ist die Zeilenform: Unter `lg` trägt jede Zelle die Kurzfassung
+     („Mit der letzten Rate", „Trägt der Käufer") in rund 170 px Satz, und
+     linksbündig hingen beide Spalten samt Kategorie an ihrer jeweils linken
+     Kante – drei Achsen in einer 342 px breiten Tabelle, und die mittlere
+     lag direkt neben dem Trennstrich. Die Kategorie steht deshalb mittig
+     *über* dem Strich: Sie gilt beiden Zellen, und dort sieht man das.
+
+     Ab `lg` gilt das Gegenteil: Dort steht der volle Satz, die
+     Beschriftungsspalte ist eine eigene Spalte mit Punkt davor, und
+     zentrierter Flattersatz über zwei bis vier Zeilen ist keine Komposition,
+     sondern schlecht lesbar. */
   const head =
-    "flex items-center gap-3 border-b-2 border-neon bg-ink px-3.5 pt-5 pb-4 font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight text-silver lg:px-5 lg:pt-5 lg:pb-4";
+    "flex items-center justify-center gap-3 border-b-2 border-neon bg-ink px-3.5 pt-5 pb-4 text-center font-display text-[length:var(--text-subtitle)] leading-tight font-bold tracking-tight text-silver lg:justify-start lg:px-5 lg:pt-5 lg:pb-4 lg:text-left";
   const cell =
-    "px-3.5 py-3.5 leading-snug text-ink/85 transition-colors duration-200 lg:px-5 lg:py-5";
+    "px-3.5 py-3.5 text-center leading-snug text-ink/85 transition-colors duration-200 lg:px-5 lg:py-5 lg:text-left";
 
   /**
    * Die Zeile, über der die Maus steht.
@@ -185,8 +199,8 @@ export function FinancingCompare({
               <dt
                 className={cn(
                   stripe,
-                  "col-span-2 flex items-center gap-2 px-3.5 pt-3.5 pb-2 font-display text-[0.6875rem] font-bold tracking-[0.12em] text-ink/60 uppercase",
-                  "lg:col-span-1 lg:items-start lg:border-r lg:border-ink/8 lg:bg-ink/[0.045] lg:px-5 lg:py-5 lg:text-sm lg:tracking-normal lg:normal-case",
+                  "col-span-2 flex items-center justify-center gap-2 px-3.5 pt-3.5 pb-2 font-display text-[0.6875rem] font-bold tracking-[0.12em] text-ink/60 uppercase",
+                  "lg:col-span-1 lg:items-start lg:justify-start lg:border-r lg:border-ink/8 lg:bg-ink/[0.045] lg:px-5 lg:py-5 lg:text-sm lg:tracking-normal lg:normal-case",
                   hoverRow,
                   /* Die Kante steht als innerer Schatten, nicht als Rahmen:
                      Ein Rahmen ändert die Box und schöbe beim Überfahren die

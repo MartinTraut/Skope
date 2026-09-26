@@ -203,11 +203,18 @@ export function InventoryCard({
           className,
         )}
       >
-        {/* Feste Bildfläche, damit die Zeilen nicht unterschiedlich hoch
-            werden und beim Laden nichts springt: 115 × 145 sind die
-            Innenmaße, das Verhältnis der Aufnahmen (720 × 960) passt fast
-            genau darauf. */}
-        <div className="relative h-[145px] w-[115px] shrink-0 overflow-hidden rounded-md bg-ink-700">
+        {/* Die Bildfläche ist so hoch wie die Karte, nicht 145 px fest.
+
+            Mit fester Höhe standen unter dem Bild je nach Gerät 0 bis 81 px
+            leere Fläche – gemessen bei 390 px Karten von 176, 195, 211, 219
+            und 226 px Höhe bei immer demselben Bild. Genau das ist der
+            „Hohlraum links neben dem Text". Jetzt trägt die Fläche
+            `self-stretch`, und weil der Textteil darüber unten auf feste
+            Zeilenzahlen gesetzt ist, sind alle Zeilenkarten gleich hoch und
+            alle Bilder gleich groß. Die 145 px bleiben als Untergrenze: Sie
+            sind das Maß, auf das das Verhältnis der Aufnahmen (720 × 960)
+            bei 115 px Breite passt. */}
+        <div className="relative min-h-[145px] w-[115px] shrink-0 self-stretch overflow-hidden rounded-md bg-ink-700">
           <Image
             src={cover.src}
             alt={cover.alt}
@@ -225,18 +232,24 @@ export function InventoryCard({
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <h3 className="text-[1.0625rem] leading-snug font-semibold">
+          {/* Zwei Zeilen, fest. Von dreizehn Modellnamen laufen bei 390 px
+              fünf einzeilig, sechs zweizeilig und zwei über drei Zeilen
+              („Audi Electric Kick Scooter powered by Egret Pro"). Ohne
+              festen Kasten ist jede Zeilenkarte anders hoch. */}
+          <h3 className="line-clamp-2 min-h-[2lh] text-[1.0625rem] leading-snug font-semibold">
             {item.model}
           </h3>
           <p className="tabular mt-1.5 font-display text-lg leading-none font-bold tracking-tight text-accent">
             {item.price}
           </p>
 
-          {/* Kein `line-clamp`: Eine Zeile schnitt zehn von dreizehn
-              Zustandsangaben mitten im Satz ab („Gebraucht, vollständig…").
-              Seit die Karten eines Rasters ohnehin gleich hoch sind, kostet
-              die zweite Zeile nichts – sie steht im leeren Rest. */}
-          {cond ? <p className="mt-2 text-xs text-current/60">{cond}</p> : null}
+          {/* Zwei Zeilen, fest – und **nicht** eine: Mit `line-clamp-1`
+              schnitten zehn von dreizehn Zustandsangaben mitten im Satz ab
+              („Gebraucht, vollständig…"). Zwei Zeilen fassen alle dreizehn,
+              und der Kasten steht auch dort, wo eine reicht. */}
+          <p className="line-clamp-2 mt-2 min-h-[2lh] text-xs text-current/60">
+            {cond}
+          </p>
 
           {/* Nur die zwei Werte, nach denen in einer Liste verglichen wird.
               Tempo steht auf der Geräteseite: Zwölf von dreizehn Geräten
@@ -255,26 +268,18 @@ export function InventoryCard({
             </span>
           </p>
 
+          {/* **Kein zweiter Warnblock.** „Keine ABE" steht eine Zeile
+              darüber in Bernstein; der ausgeschriebene Satz stand darunter
+              noch einmal als eigene Fläche und machte genau die zwei Karten
+              50 px höher als die übrigen elf – auf einer Liste, in der alles
+              andere gleich hoch ist, liest sich das als Fehler und nicht als
+              Warnung. Der volle Wortlaut geht nicht verloren: Er steht hier
+              für Screenreader, als Plakette auf der quadratischen Karte und
+              auf der Geräteseite als eigener Absatz mit Begründung. */}
           {!item.streetLegal ? (
-            /* Die Zeilenkarte trägt die kurze Fassung, und zwar nicht aus
-               Platznot: „Keine ABE" steht eine Zeile darüber, der Satz sagt
-               also, was das heißt, und wiederholt es nicht. Die volle
-               Fassung stünde bei 390 px in 165 px Satz über fünf Zeilen und
-               wäre dort der längste Block einer Zeilenkarte.
-
-               Dieselbe Farbe, dasselbe Zeichen, dieselbe Fläche wie auf der
-               quadratischen Karte – ein Warnhinweis, der auf zwei Karten
-               verschieden aussieht, ist kein zweiter, sondern ein defekter. */
-            <p className="mt-2 flex items-start gap-1.5 rounded bg-amber-300/15 px-2 py-1.5 text-[0.6875rem] leading-snug font-semibold text-amber-200">
-              <AlertTriangle
-                aria-hidden="true"
-                className="mt-px size-3.5 shrink-0"
-                strokeWidth={2.5}
-              />
-              <span className="min-w-0 [hyphens:auto]">
-                Nicht für den öffentlichen Straßenverkehr.
-              </span>
-            </p>
+            <span className="sr-only">
+              Nicht für den öffentlichen Straßenverkehr.
+            </span>
           ) : null}
         </div>
       </Link>

@@ -2878,3 +2878,362 @@ durch dieselbe Werkstatt …" sagte, was die Karten darunter selbst tragen
 (Zustand, Siegel, Gewährleistung), und die Prüfung ist das Thema von
 `Workshop` eine Sektion tiefer. Am Telefon waren es vier Zeilen Fließtext
 zwischen Überschrift und erster Kachel.
+
+## Das Wandern des Kopfbereichs beim Scrollen — 25.09.2026
+
+Auf Ansage („das Hero-Bild und generell die Hero-Sektion bewegen sich beim
+Scrollen"). Es war **nicht** der Fixpunkt von vorhin und keine Animation:
+Gemessen über sieben Scrollpositionen standen Bildoberkante und H1 im
+Prüfbrowser auf demselben Wert. Der Fehler ist im Prüfbrowser prinzipiell
+unsichtbar.
+
+- **Ursache: `env(safe-area-inset-top)` in `--hero-head`.** iOS Safari hält
+  den Wert nicht konstant. Solange die Adressleiste ausgefahren ist, meldet er
+  0; klappt sie beim Scrollen ein, läuft die Seite unter die Statusleiste und
+  er springt auf 59 px. An `--hero-head` hängen Satzspiegel, Oberkante der
+  Bildfläche **und** die Stopps von `.hero-stage-scrim` – Überschrift,
+  Aufnahme und Verlauf sprangen also gemeinsam, und beim Zurückscrollen wieder
+  zurück.
+- **Chromium meldet den Abstand immer als 0.** Jede Messung über den Scrollweg
+  sagt deshalb „0 px Wanderung". **Wer hier das nächste Mal eine Bewegung
+  sucht, die sich nicht reproduzieren lässt, fängt bei `env()` an** – nicht
+  bei `vh`, nicht bei den Animationen.
+- **Der Zuschlag ist jetzt an `@media (display-mode: standalone)` gebunden.**
+  Im Browser ist er weg (dort gibt es die einklappende Leiste, und im
+  Ruhezustand oben ist der Wert ohnehin 0 – zum Zeitpunkt des Sprungs ist die
+  Überschrift längst weggescrollt). Vom Startbildschirm als eigenes Fenster
+  gibt es keine Leiste, die einklappen könnte: Dort ist er konstant 59 px und
+  wird gebraucht, sonst stünde die Überschrift 17 px unter der Kopfzeile.
+- **Dieselbe Sorte Fehler an der KI-Marke:** `bottom-[max(0.5rem,
+  env(safe-area-inset-bottom))]` sprang beim Einklappen der unteren
+  Bedienleiste von 0 auf 34 px, die Marke wanderte 26 px nach oben. Jetzt fest
+  `bottom-2` – im Ruhezustand derselbe Wert, den `max(0.5rem, 0)` liefert.
+  Seitlich bleibt `env()` stehen: Waagerechte Abstände ändern sich beim
+  Scrollen nicht.
+
+Gemessen über 320 / 360 / 390 / 412 / 430 px, Querformat, 768 und 1512 px:
+Geometrie unverändert gegenüber vorher (390 px: H1 und Bildoberkante bei
+148,4 px, Aufnahme 693 px hoch), kein Überlauf, keine Konsolenfehler, über
+sieben Scrollpositionen kein einziger abweichender Wert. Am Schreibtisch
+bewegt sich weiterhin die gewollte Bildfahrt.
+
+## Winterlagerung — neue Route `/einlagerung`, 25.09.2026
+
+Auf Ansage („neue Leistung … baut es mit der Webseite anhand dieser Infos"),
+Grundlage ist eine Tarifvorlage des Betreibers. Die Vorlage sprach von
+„Sektion 4 (Tarife)" und einer „E-Scooter Landingpage" – die gibt es hier
+nicht, die Seite besteht aus benannten Routen. Gebaut ist deshalb eine eigene
+Route und **keine** der bestehenden Tarifseiten angefasst; die Anweisung „wir
+streichen die komplexe Preistabelle" hätte sonst die ERGO-Tabelle oder die
+Wartungsverträge getroffen.
+
+**Was auf der Seite steht, steht in der Auskunft** (`lib/data/storage.ts`):
+29,99 € im Monat als Endpreis, zwei Monate Mindestlaufzeit, vier enthaltene
+Leistungen, VIP Detailing einmalig 49 €. Kein Wort darüber hinaus – keine
+Temperaturangabe, keine Stellplatzzahl, nichts zu Transport, Haftung oder
+Versicherung. Neun offene Punkte stehen als TODO in der Datendatei, nicht
+hier.
+
+- **Die „15 Punkte" des Sicherheitschecks sind der eine Widerspruch.** Die
+  Website führt an vier Stellen den Sicherheits-Checkup mit **sechs**
+  Positionen, und der „27-Punkte-Sicherheitscheck" der Altseite wurde beim
+  Faktenaudit vom 20.08.2026 genau deshalb nicht übernommen: Eine Punktzahl
+  ist eine überprüfbare Tatsachenbehauptung (§ 5 UWG). Die Zahl steht so da,
+  wie der Betreiber sie angegeben hat, und ist als TODO 1 markiert. Wer sie
+  belegt, trägt die Liste nach; wer sie nicht belegt, streicht die Zahl.
+- **Es ist eine Anfrage, keine Buchung.** Ein online abschließbares Abo wäre
+  ein Dauerschuldverhältnis mit Widerrufsbelehrung und Kündigungsknopf nach
+  § 312k BGB. Der Vertrag entsteht vor Ort, das Formular ist dasselbe wie
+  überall.
+- **Zwei neue Formularfelder statt eines „Wunsch-Tarifs".** Es gibt genau ein
+  Abo, also gibt es keinen Tarif zu wünschen: ein Kontrollkästchen für das
+  Detailing und ein Auswahlfeld für den Abholmonat (Februar, März, April).
+  Beide kommen als Eigenschaft `storage` ins Formular, nicht als Import –
+  dieselbe Regel wie bei `periods` auf /versicherung. Serverseitig wird der
+  Monat gegen die Liste geprüft und beides nur übernommen, wenn das Anliegen
+  wirklich „Winterlagerung" ist; sonst stünde unter einer Reparaturanfrage
+  „VIP Detailing: ja", weil jemand das Feld von Hand mitgeschickt hat.
+  Gemessen: erfundener Monat kommt als leer zurück.
+- **`defaultValue` reicht bei einem `<select>` nach einer Form-Action
+  nicht.** React 19 setzt `requestFormReset()` ab; ein `<input>` fällt auf
+  sein `defaultValue` zurück und React schreibt das bei jedem Rendern neu,
+  ein `<select>` bekommt es **nur beim Einhängen**. Gemessen: Nach einem
+  fehlgeschlagenen Absenden behielt das Kontrollkästchen seinen Haken, der
+  Monat stand wieder auf „Steht noch nicht fest", obwohl der Server „März"
+  zurückgab. Jetzt schreibt ein Effekt an `[state]` den Wert zurück. **Kein
+  `key`** wie beim Anliegen-Feld: Der greift nur, wenn sich der Wert ändert –
+  zwei Fehlversuche mit demselben Monat hätten ihn beim zweiten Mal verloren.
+- **Das Kontrollkästchen ist selbst 44 × 44 px**, nicht ein natives 20-px-Feld
+  mit anklickbarem Label. Ein `<input type="checkbox">` fällt sonst durch die
+  Zielflächenprüfung, und dem Daumen sieht man das Label auch nicht an.
+  `appearance-none`, Häkchen als eigenes Element über `peer-checked`, Tinte
+  auf Neonfläche. Radius `xs` (8 px) und nicht `lg` wie bei den übrigen
+  Feldern: 28 px auf 44 px sind ein Kreis, und ein rundes Kontrollfeld liest
+  sich als Auswahlknopf.
+
+**Der achte Navigationspunkt hat den Seitenkopf gesprengt — und das war
+vorhergesagt.** Der Eintrag zum siebten Punkt (16.09.2026) steht genau
+deshalb in dieser Datei. Gemessen bei 1280 px: Die Reihe ist mit
+„Einlagerung" 883 px breit statt 805 (Fahrzeuge 114, Reparatur 90,
+Wartungsvertrag 141, Einlagerung 105, Finanzierung 113, Versicherung 116,
+Recycling 90, Über uns 85, dazu sieben Fugen), und die Aktionsgruppe in
+ihrer kleinsten Fassung braucht 206 px. Ergebnis: **66 px außerhalb des
+Satzspiegels**, plus ein zweites Loch bei 1400 px (11 px, weil dort die
+Bewertung zurückkommt). Der Seitenkopf liegt `fixed` – die Seite meldet
+dafür **keinen waagerechten Überlauf**, und keine der 121 Routenprüfungen
+sieht es.
+
+Alle vier Grenzen sind deshalb um eine Stufe gewandert:
+
+| | vorher | jetzt |
+|---|---|---|
+| Navigation klappt auf | `xl` (1280) | `min-[1366px]` |
+| Bewertung kommt zurück | 1400 | 1440 |
+| Volle Telefonnummer fällt weg | 1280 | 1366 |
+| Telefon-Symbolknopf | 1280–1599 | 1366–1599 |
+
+Gemessen über 1024 / 1279 / 1280 / 1365 / 1366 / 1400 / 1439 / 1440 / 1512 /
+1599 / 1600 / 1920 / 2560: Die Gruppe endet überall innerhalb des
+Satzspiegels, Rest 20 bis 48 px, Fuge zur Navigation 16 bis 86 px. Die beiden
+knappen Stellen sind die Umschaltpunkte selbst (1366 mit 20 px, 1440 mit
+29 px). Zwischen 1280 und 1365 px steht jetzt das Menü hinter dem
+Symbolknopf – mit denselben acht Punkten in derselben Reihenfolge. **Wer hier
+einen neunten Punkt ergänzt, misst `grp.right` gegen `inner.right` nach, sonst
+findet er es nie.**
+
+Gemessen nach dem Durchgang: 121 Prüfungen (11 Routen × 11 Formate,
+320 – 1920 px plus Querformat) – kein waagerechter Überlauf, genau eine H1 je
+Route, kein Bild ohne `alt`, keine Konsolenfehler, keine Zielfläche unter
+44 px, keine Schrift unter 11 px außer der bekannten Plakettenschrift auf
+`/versicherung`. Formular am Telefon durchgespielt: Anliegen vorausgewählt,
+Haken und Monat überstehen den Rückfall, ehrliche Meldung statt stiller
+Verwerfung (der Versand ist weiterhin nicht eingerichtet).
+
+## Ablauf und Abo-Kachel neu komponiert — 26.09.2026
+
+Auf Ansage („mach das besser" / „mach das auch cooler"), beide mit Aufnahme.
+
+**Der nummerierte Ablauf ist ein Register mit Kanten, keine Kette mit
+Neonscheiben** (`components/ui/steps.tsx`, gilt für `/reparatur`,
+`/versicherung` und `/einlagerung` zugleich — ein Baustein, drei Seiten).
+
+- **Vier Neonscheiben waren ein Verstoß gegen die Farbregel.** Neon markiert
+  die Hauptaktion, die harte Zahl und ein Wort je Überschrift. Eine
+  Schrittnummer ist eine Ordnungszahl, keine harte Zahl; auf `/einlagerung`
+  standen dadurch fünf Neonflächen in einem Bild, und die vier Scheiben waren
+  lauter als das ausgezeichnete Wort der Überschrift. Der alte Eintrag
+  begründete sie nur über den Kontrast („Neon als Schrift läge auf Silber bei
+  1,18:1") — das stimmt und beantwortet die falsche Frage.
+- **Der Befund von damals war die Größe, nicht die Farbe:** 13 px bei 25 %
+  Deckkraft, also kleiner und blasser als der Fließtext. Die Nummer steht
+  jetzt im Titelgrad (24 px am Telefon, 34 px am Schreibtisch) in voller
+  Tinte und tabellarisch — größer als die Überschrift daneben.
+- **Die Struktur tragen Haarlinien als Zeilenkanten,** die letzte Zeile
+  zusätzlich unten: eine geschlossene Folge statt vier Absätzen an einem
+  1-px-Faden. Sie laufen beim Scrollen von links ein (`.rule-draw`, dieselbe
+  Mechanik wie an den Eckdaten auf `/ueber-uns`); die senkrechte
+  `.chain-draw`-Linie ist damit weg.
+- **`max-w-none` an jedem `<li>` ist Pflicht.** `globals.css` gibt jedem `li`
+  in `main` ein Lesemaß von 58ch. Hier ist das `li` keine Lesezeile, sondern
+  die ganze Zeile aus Nummer, Überschrift und Absatz — gemessen war die
+  Spalte auf `/einlagerung` bei 1512 px 799 px breit und das `li` darin 622:
+  177 px der Spalte lagen brach, und die Kanten hätten mitten im Satzspiegel
+  geendet. Das Lesemaß gehört an den Absatz. **Derselbe Fehler steckte in der
+  Leistungsliste der Abo-Kachel** — dort schnitt er die Abschlusszeile auf
+  622 px ab, statt sie an die Kartenkante zu führen.
+
+**Die Abo-Kachel auf `/einlagerung`:**
+
+- **Die linke Spalte hatte 250 px Loch.** `justify-between` nagelte den Knopf
+  an den Boden, während der Inhalt darüber kurz ist. Jetzt steht der Block
+  mittig (`justify-center`), und der Preis trägt den Displaygrad statt des
+  Statgrads — er ist die harte Zahl, wegen der die Kachel steht, und die
+  Strecke gehört ihr statt dem Loch.
+- **Die Mindestlaufzeit ist eine Zeile mit zwei Enden** statt eines Satzes:
+  Sie ist die eine Angabe, die jemand mit einem anderen Angebot vergleicht.
+  Der Wert kommt aus `storagePlan.minTerm` — derselbe Wert wie in
+  `minDuration`, nur ohne das Etikett davor, das links schon steht.
+  Was *nach* den zwei Monaten gilt, bleibt der Satz darunter und wird nicht
+  zur Tabellenzeile aufgewertet: Kündbarkeit und Verlängerung sind TODO 6 in
+  `lib/data/storage.ts` und ungeklärt.
+- **Die Häkchen haben ihre grauen Scheiben verloren.** Vier Plaketten neben
+  einer Liste, deren Struktur schon aus den Haarlinien kommt. Neon war hier
+  nie eine Option — auf der Kachel sind Preis und Knopf bereits die beiden
+  zulässigen Marken.
+- **Die Zusatzleistung steht als Abschlusszeile *in* der Kachel,** mit
+  Pluszeichen, eigener Fläche und der Kartenkante (`-mx-7 px-7`, ab `md`
+  `-mx-10`) — derselbe Kartenfuß wie an der Bestandskarte. Vorher war sie ein
+  eigener silberner Kasten unter der Kachel: ein Angebot auf zwei Flächen,
+  und die untere war die auffälligere. Der Einwand, der sie damals nach unten
+  gebracht hat („zwei gleich schwere Karten lesen sich als Wahl zwischen zwei
+  Abos"), bleibt erfüllt — als Zeile in der Liste ist sie der Zusatz zu
+  diesem Abo und kein zweites daneben.
+
+Gemessen über `/einlagerung`, `/reparatur` und `/versicherung` × neun Formate
+(320 – 1920 px plus Querformat) gegen den Produktionsbuild: kein Überlauf,
+genau eine H1 je Route, keine Konsolenfehler, jede Zeile so breit wie ihre
+Spalte. Einziger Treffer unter 11 px ist die bekannte Plakettenschrift auf
+`/versicherung`.
+
+## Bots, Cookies, Datenblatt, Finanzierungstabelle — 26.09.2026
+
+**Bot-Abwehr am Formular, vier Schichten (`app/actions.ts`).** Bewusst **ohne
+Captcha**: Jedes verfügbare ist ein Drittanbieter-Aufruf aus dem Browser des
+Kunden, die CSP lässt keinen zu, und ein Einwilligungsbanner für ein Formular
+mit einer Handvoll Absendungen am Tag ist der schlechtere Handel.
+
+- **Zwei Honigtöpfe.** Neu `website` neben `company_ref` – Spam-Skripte suchen
+  nach genau diesem Namen und lassen neutrale oft aus.
+- **Zeitfalle** über das versteckte Feld `gestartet` (JS schreibt `Date.now()`
+  beim Einhängen): unter 3 s ist niemand fertig. Greift **nur, wenn das Feld
+  gesetzt ist** – ohne JavaScript bleibt es leer, und der Versand ohne
+  JavaScript ist geprüft und soll funktionieren. Gemessen: sofortiges Absenden
+  wird verworfen, nach 3,5 s läuft es durch, mit `javaScriptEnabled:false`
+  ebenfalls.
+- **Linkspam:** zwei oder mehr Adressen in der Nachricht. **Eine** ist
+  erlaubt – ein Kunde schickt den Link zu seinem Gerät.
+- **Ein erkannter Bot bekommt die Erfolgsmeldung.** Wer abgewiesen wird,
+  probiert das nächste Muster. Verschickt und gezählt wird nichts; im
+  Protokoll steht der Grund, damit falsch positive Fälle auffindbar sind.
+
+**Die Drosselung liegt jetzt in Redis, nicht im Prozess** (`lib/rate-limit.ts`,
+`lib/redis.ts`). Die `Map` im Modulzustand war auf einem Server richtig und auf
+Vercel wirkungslos: Jede Lambda-Instanz hält ihre eigene, ein kalter Start
+räumt sie. `INCR` plus `EXPIRE` auf einem Schlüssel mit laufender
+Fensternummer ist atomar und braucht kein Zurücksetzen. Ohne Speicher bleibt
+der alte Notbehelf pro Instanz (`limiterMode()` sagt, was gilt).
+
+- **Der Schlüssel ist ein gekürzter Streuwert der IP, nicht die IP.** Ein
+  Eimer muss wiedererkennen, nicht identifizieren.
+- **Drei Eimer:** `anfrage-roh` (30/10 min, vor jeder Prüfung – sonst könnte
+  ein Skript endlos mit gefülltem Honigtopf anklopfen, ohne je zu zählen),
+  `anfrage` (3 gültige/10 min), `ereignis` (40/min).
+- **`/api/ereignis` war der wichtigere Fall.** Seine Zahlen sind die
+  Abrechnungsgrundlage; eine aushebelbare Drosselung heißt dort nicht
+  Datenabfluss, sondern falsche Rechnung.
+- `lib/redis.ts` ist neu und hält den einen REST-Zugang; `lib/metrics.ts`
+  liest ihn mit.
+
+**Kein Cookie-Banner, und das steht jetzt auch so in der
+Datenschutzerklärung.** Dort stand die Standardfloskel „Unsere Website
+verwendet Cookies" – falsch: Es gibt keinen einzigen. Schriften kommen über
+`next/font` aus dem eigenen Build, die Karte ist ein PNG, der Film liegt
+lokal, die CSP lässt keinen Drittanbieter zu. **Der einzige Zugriff auf das
+Endgerät ist die Herkunftsangabe im `sessionStorage`** (`lib/source.ts`); sie
+steht unter Punkt 5 und ist die eine Stelle, an der § 25 TDDDG überhaupt
+zu prüfen ist. **Offen für den Betreiber:** streng gelesen ist sie nicht
+„unbedingt erforderlich" – entweder Einwilligung (Banner) oder die Herkunft
+nur noch beim Absenden aus `document.referrer` lesen, ohne sie abzulegen. Das
+kostet die Zuordnung über mehrere Seiten hinweg und damit Genauigkeit in der
+Provisionsgrundlage.
+
+**Datenblatt der Geräteseite klappt auf** (`device-page.tsx`, auf Ansage: „lass
+am Anfang nur die wichtigsten stehen"). Sichtbar bleiben Tempo, Reichweite,
+Akku, Motor – und **immer die Zulassung**: Sie ist keine Vergleichszahl,
+sondern die Bedingung, unter der man fahren darf, und gehört nie hinter einen
+Knopf. Der Rest steht in einem nativen `<details>` (kein Zustand, ohne
+JavaScript offen bedienbar, im Dokument für die Suche). Gemessen bei 390 px:
+Kasten 360 statt 925 px, sieben bis acht Zeilen dahinter.
+
+**Zwei Fehler an der Finanzierungsseite, beide gemessen:**
+
+- **Die Modellkarten standen 35 px außerhalb ihrer Spalte.** Das `li` ist
+  Rasterkind und stand auf `min-width: auto`, wurde also so breit wie sein
+  breitester unteilbarer Inhalt: 377 px in einer 342 px breiten Spalte. Weil
+  `html` auf `overflow-x: clip` steht, **meldete die Seite dafür keinen
+  Überlauf** – sichtbar war nur, dass der mittig gesetzte Kartenkopf 17 px
+  rechts von der Achse stand („voll nach rechts verschoben"). `min-w-0`.
+  Derselbe Fehler wie bei den `Related`-Karten; ein Sweep über dreizehn
+  Routen fand sonst keinen zweiten.
+- **Die Vergleichstabelle steht am Telefon auf der Mitte** (auf Ansage): Köpfe
+  und Zellen zentriert, die Kategorie mittig **über dem Trennstrich** statt
+  links – sie gilt beiden Zellen, und dort sieht man das. Ab `lg` bleibt alles
+  linksbündig: Dort steht der volle Satz, und zentrierter Flattersatz über
+  vier Zeilen ist keine Komposition.
+
+**Die Werkstattaufnahmen tragen jetzt einen Platzhalter** (auf Ansage: „die
+Bilder vom Betrieb laden zu lange"). Ursache ist die Bahn: Nur die ein bis
+zwei sichtbaren Kacheln werden geladen, die übrigen liegen rechts außerhalb
+des Fensters, und die Faulladung zählt nur senkrecht – wer wischt, sieht die
+nächste Aufnahme erst *anfordern*. Gemessen 390 px bei DPR 3: 142 kB je
+Kachel. Jetzt `quality={65}` (125 kB; es sind Telefonfotos ohne Schrift und
+feine Kanten) und ein 16-px-WebP als `blurDataURL`, **beim Bauen aus der
+Datei gerechnet** und nicht von Hand eingetragen – ein notierter Platzhalter
+zeigt nach dem ersten Motivtausch die Farbe des alten Bildes. `workshopPhotos()`
+ist dafür asynchron geworden.
+
+Gemessen nach dem Durchgang: 135 Prüfungen (15 Routen × 9 Formate,
+320 – 1920 px plus Querformat) – kein waagerechter Überlauf, genau eine H1 je
+Route, kein Bild ohne `alt`, keine Konsolenfehler, keine Schrift unter 11 px
+außer der bekannten Plakettenschrift auf `/versicherung`.
+
+## FAQ gekürzt — 26.09.2026
+
+Auf Ansage („macht nur das Wesentliche, Wichtige, damit es alles stimmt …
+nicht zu viele unnötige Infos"). Von 32 auf 28 Fragen, Antworten jetzt im
+Schnitt 39 Wörter (längste 69). Gestrichen wurde nicht nach Länge, sondern
+nach Aufgabe: Was auf derselben Seite eine Sektion höher steht, gehört nicht
+noch einmal in die Antwort.
+
+**Zwei Regeln, die dabei entstanden sind:**
+
+- **Keine Aussage über den aktuellen Bestand.** Der Auslöser war „Die meisten
+  ja, **zwei** ausdrücklich nicht" bei der Zulassungsfrage — beim Schreiben
+  richtig, beim nächsten Verkauf falsch, und die beiden Modelle standen
+  namentlich in einer Datei, die niemand anfasst, wenn ein Gerät verkauft
+  wird. Die Antwort sagt jetzt, **wo** es steht (Karte und Geräteseite, von
+  dort aus den Daten). Die sichtbare Kennzeichnung der Ausnahmen ist davon
+  nicht berührt — sie steht weiter an Plakette, Datenband und Geräteseite.
+- **Keine zwei Fragen zum selben Thema.** „Lohnt sich ein Wartungsvertrag"
+  und „Basis oder Premium" waren dieselbe Antwort in anderer Reihenfolge;
+  „Rauslösesumme" und „Ist die Versicherung im Abo enthalten" sind zwei Sätze,
+  die im Vergleich der beiden Finanzierungsmodelle ohnehin stehen müssen.
+
+**Zwei sachliche Fehler sind dabei aufgefallen und behoben:**
+
+- **Die Frage „Kann ich die Plakette im Laden direkt mitnehmen" endete mit
+  „Die sofortige Mitnahme der Plakette gibt es nur bei uns in der
+  Werkstatt".** Das ist der stehengebliebene Rest der Aushang-Auskunft, die am
+  03.09.2026 überall sonst gedreht wurde — und stand im selben Block direkt
+  unter der Antwort, die das Gegenteil sagt. Die Frage ist weg, ihr Inhalt
+  steht vollständig in „Wie lange dauert es, bis ich mein
+  Versicherungskennzeichen bekomme".
+- **„im Januar zum Beispiel ab 49 €"** stand hinter den beiden
+  Jahresbeiträgen und las sich als günstigerer Einstieg. 49 € ist der
+  **Teilkasko**-Wert des Ein-Monats-Zeitraums; die Haftpflicht liegt dort bei
+  75 €, also über dem Jahresbeitrag von 42 €. Genau davor warnt der Kommentar
+  an `tariffs[0].full`. Die Zeiträume stehen vollständig in der
+  Tarifübersicht, die Antwort verweist nur noch dorthin.
+
+Gemessen über sieben FAQ-Routen × 390 / 768 / 1512 px: kein Überlauf, genau
+eine H1 je Route, keine Konsolenfehler. `faqHome` greift weiter auf
+`faqBuy[2]`, `[0]`, `[1]`, `[5]` und `faqRepair[1]` zu — die Indizes sind
+geprüft, keine der fünf Fragen ist entfallen.
+
+## „Auf dem Desktop ist alles kleiner geworden" — 25.09.2026, nachgemessen
+
+Anruf des Betreibers. Gemessen gegen den Produktionsbuild über 1280 / 1366 /
+1440 / 1512 / 1680 / 1920 / 2560 / 3440 px: **nichts ist kleiner geworden.**
+
+| Breite | H1 | H2 | Grundschrift | Satzspiegel | Kopfzeile |
+|---|---|---|---|---|---|
+| 1280 | 79 px | 56 | 17 px | 1280 | 80 px |
+| 1440 | 89 px | 61 | 17 px | 1440 | 80 px |
+| 1512 | 93 px | 64 | 17 px | 1512 | 80 px |
+| 1920 | 104 px | 68 | 17 px | 1664 | 80 px |
+| 2560 | 104 px | 68 | 17 px | 1664 | 80 px |
+
+Das sind exakt die Werte, die unter „Die H1 der Startseite ist größer"
+(24.09.2026) festgehalten sind. Die letzte Änderung am Schreibtischgrad ging
+außerdem in die **andere** Richtung: `--text-hero` ist am 24.09. von
+`5,2vw + 0,4rem` auf `6vw + 0,15rem` gestiegen, der Deckel von 5,6 auf
+6,5 rem – die Überschrift ist bei 1512 px von 85 auf 93 px gewachsen.
+
+Bleiben zwei Erklärungen, und beide liegen außerhalb des Codes: der
+Zoomfaktor des Browsers (Strg/Cmd und Minus bleibt hängen und überlebt den
+Neustart) oder ein sehr breiter Schirm, auf dem der Satzspiegel bei
+**1664 px** gedeckelt ist und der Rest Rand bleibt. Der Deckel ist Absicht
+(`Container`, 104 rem, siehe „Sehr breite Schirme"); auf einem
+49-Zoll-Curved sieht eine Seite dadurch zwangsläufig „klein" aus. Wer das
+ändern will, ändert nicht die Schriftgrade, sondern den Deckel – und
+bekommt dafür Zeilen über 20 Wörter.

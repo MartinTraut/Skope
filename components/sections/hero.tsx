@@ -309,10 +309,20 @@ Seit die Bühne über die ganze Sektion reicht (24.09.2026) steht
             Bühne, die am Kennzahlenband endete.
 
             Ab `sm` wieder oben rechts unter der Kopfzeile, weil die Bühne
-            dort nur 26 rem hoch ist und ihr Fuß im Kennzahlenband steht. */}
+            dort nur 26 rem hoch ist und ihr Fuß im Kennzahlenband steht.
+
+            **Der untere Abstand ist fest, nicht `max(…, env(…))`** – aus
+            demselben Grund wie bei `--hero-head` (siehe `globals.css`):
+            iOS Safari hält `safe-area-inset-bottom` nicht konstant, sondern
+            springt beim Einklappen der Bedienleiste von 0 auf 34 px. Die
+            Marke wanderte damit mitten im Scrollen um 26 px nach oben. Im
+            Ruhezustand ändert sich durch den festen Wert nichts: Dort liefert
+            `max(0.5rem, 0)` genau dieselben 8 px. Seitlich bleibt `env()`
+            stehen – die waagerechten Abstände ändern sich beim Scrollen
+            nicht. */}
         <GeneratedMark
           src="/img/hero-fahrzeuge-hoch.jpg"
-          className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-[max(0.5rem,env(safe-area-inset-bottom))] sm:top-[calc(var(--header-block)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
+          className="right-[max(0.75rem,env(safe-area-inset-right))] bottom-2 sm:top-[calc(var(--header-block)+1rem)] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:bottom-auto"
         />
         <div className="hero-stage-scrim absolute inset-0 sm:bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_45%,transparent)_0%,color-mix(in_oklab,var(--color-ink)_8%,transparent)_38%,color-mix(in_oklab,var(--color-ink)_80%,transparent)_74%,var(--color-ink)_100%)]" />
       </div>

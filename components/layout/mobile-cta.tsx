@@ -65,6 +65,11 @@ const ACTIONS: Record<string, BarAction> = {
     href: "#anfrage",
     icon: MessageSquareText,
   },
+  "/einlagerung": {
+    label: "Einlagerung anfragen",
+    href: "#anfrage",
+    icon: MessageSquareText,
+  },
   "/finanzierung": {
     label: "Finanzierung anfragen",
     href: "#anfrage",
@@ -187,6 +192,24 @@ export function MobileCta({
     let frame = 0;
 
     /**
+     * Gibt es auf dieser Seite einen Block, hinter dem die Leiste erst
+     * beginnen darf, entscheidet **er** und nicht die Bildschirmhöhe.
+     *
+     * Auf der Geräteseite stehen Preis, Hauptaktion und Telefonnummer im
+     * Kopf der Seite. Eine Leiste, die dort schon steht, zeigt dieselben
+     * zwei Angaben ein zweites Mal – bei 390 px liegen beide gleichzeitig im
+     * Bild. Die Leiste hat ihren Sinn erst, wenn dieser Block weg ist und
+     * man im Datenblatt liest; scrollt man zurück, ist er wieder da und sie
+     * geht.
+     *
+     * Der Block meldet sich über `data-cta-after` selbst an, statt dass hier
+     * eine Liste von Routen steht: Die Geräteseite liegt unter vier
+     * Fahrzeugarten, und die fünfte, die jemand anlegt, wüsste von dieser
+     * Datei nichts.
+     */
+    const anchor = document.querySelector<HTMLElement>("[data-cta-after]");
+
+    /**
      * Die Bezugshöhe wird **einmal gemerkt**, nicht bei jeder Messung
      * gelesen.
      *
@@ -209,12 +232,25 @@ export function MobileCta({
      * bei 55 %, hinaus erst bei 45 % – dazwischen liegt eine halbe
      * Fingerbreite Scrollweg, die niemand versehentlich zurücklegt.
      */
-    let visible = false;
+    /* `null` und nicht `false`: Die erste Messung nach einem Seitenwechsel
+       muss den Zustand in jedem Fall setzen. Stand die Leiste auf der alten
+       Seite offen und gehört sie auf der neuen (noch) nicht hin, wäre ein
+       `false === false` sonst ein früher Ausstieg – und sie bliebe stehen. */
+    let visible: boolean | null = null;
 
     const measure = () => {
       frame = 0;
-      const y = window.scrollY;
-      const next = visible ? y > base * 0.45 : y > base * 0.55;
+      /* Dieselbe Hysterese wie unten, nur in Pixeln statt in Prozent: herein,
+         wenn die Unterkante des Blocks 32 px über dem Fensterrand steht,
+         hinaus erst, wenn sie 8 px darunter wieder auftaucht. */
+      const next = anchor
+        ? (() => {
+            const bottom = anchor.getBoundingClientRect().bottom;
+            return visible ? bottom < 8 : bottom < -32;
+          })()
+        : visible
+          ? window.scrollY > base * 0.45
+          : window.scrollY > base * 0.55;
       if (next === visible) return;
       visible = next;
       setShown(next);
@@ -242,7 +278,10 @@ export function MobileCta({
       window.removeEventListener("resize", onResize);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, []);
+    /* An `pathname`, nicht leer: Der Anker wird einmal beim Einhängen
+       gesucht, und nach einem Seitenwechsel ist es der der alten Seite –
+       beziehungsweise keiner, obwohl die neue einen hat. */
+  }, [pathname]);
 
   /* Während getippt wird, ist die Leiste weg.
 

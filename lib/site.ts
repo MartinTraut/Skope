@@ -153,6 +153,7 @@ export const nav = [
   { href: "/e-scooter", label: "Fahrzeuge", group: "vehicles" },
   { href: "/reparatur", label: "Reparatur" },
   { href: "/wartungsvertrag", label: "Wartungsvertrag" },
+  { href: "/einlagerung", label: "Einlagerung" },
   { href: "/finanzierung", label: "Finanzierung" },
   { href: "/versicherung", label: "Versicherung" },
   { href: "/recycling", label: "Recycling" },

@@ -46,12 +46,12 @@ import { workshopPhotos } from "@/lib/data/workshop-photos";
  * (`lib/data/generated-images.ts`). Eine falsche Kennzeichnung ist genauso
  * irreführend wie eine fehlende.
  */
-export function WorkshopGallery({
+export async function WorkshopGallery({
   tone = "silver-200",
 }: {
   tone?: "silver" | "silver-200" | "ink";
 }) {
-  const photos = workshopPhotos();
+  const photos = await workshopPhotos();
 
   /* Keine Datei, keine Sektion. Eine Überschrift über einer leeren Bahn wäre
      ein Fehler, den man erst im Bild sieht. */
@@ -130,6 +130,16 @@ export function WorkshopGallery({
               /* Die Kachel ist am Telefon höchstens 82vw breit, ab `sm`
                  höchstens 22rem × (1600/1205) ≈ 468 px, ab `lg` 553 px. */
               sizes="(min-width: 1024px) 560px, (min-width: 640px) 470px, 82vw"
+              /* 65 statt der voreingestellten 75: Gemessen bei 390 px und
+                 DPR 3 holte eine Kachel 142 kB, und beim Wischen wird sie
+                 in genau dem Moment angefordert, in dem man sie ansehen
+                 will. Es sind Telefonaufnahmen von Containern, Regalen und
+                 einem geöffneten Trittbrett – keine Schrift, keine feinen
+                 Kanten, die eine höhere Stufe rechtfertigen. */
+              quality={65}
+              {...(photo.blur
+                ? { placeholder: "blur" as const, blurDataURL: photo.blur }
+                : {})}
               className="object-cover"
             />
           </div>

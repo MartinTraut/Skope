@@ -44,15 +44,39 @@
  *      Sollzinssatz, Nettobetrag, Gesamtbetrag, Anzahl und Fälligkeit der
  *      Raten, Verzugszinssatz. Beim Ratenkauf ist der Zins vorhanden (§ 2
  *      nennt die Aufschläge), nur nicht beziffert.
- *   3. Die geplante Vermittlung von Bankkrediten braucht eine Erlaubnis nach
- *      § 34c Abs. 1 Nr. 2 GewO. Deshalb steht das Modell hier als „in
- *      Vorbereitung" und ohne Anfragemöglichkeit.
- *      **Welche Bank, ist offen.** Die Auskunft vom 16.09.2026 nannte
- *      Consors Finanz, die vom 17.09.2026 easyCredit (TeamBank) – diese mit
- *      „wahrscheinlich". Deshalb steht auf der Seite kein Name: Ein
- *      genannter Partner ist eine Aussage über eine Geschäftsbeziehung, und
- *      die gibt es noch nicht. Sobald der Vertrag steht, gehört der Name in
- *      die Beschreibung *und* in `knowsAbout`/`sameAs` – vorher nicht.
+ *   3. **Der Partner steht seit dem 25.09.2026 fest: easyCredit
+ *      (TeamBank AG, Nürnberg)** – Auskunft des Betreibers. Die frühere
+ *      Unklarheit (16.09. Consors Finanz, 17.09. easyCredit
+ *      „wahrscheinlich") ist damit erledigt. Das Modell steht hier trotzdem
+ *      weiter als „in Vorbereitung" und ohne Anfragemöglichkeit, weil vier
+ *      Angaben fehlen, ohne die auf der Seite weder der Name noch eine Zahl
+ *      stehen darf:
+ *
+ *      a) **Welches Produkt?** easyCredit hat zwei, und sie schließen sich
+ *         nicht aus: Ratenkauf im stationären Handel (Abschluss im Laden,
+ *         braucht keinen Shop) und Ratenkauf im Onlineshop (Zahlart im
+ *         Checkout, braucht eine Webshop-ID). Nur das zweite kann eine Rate
+ *         an der Bestandskarte anzeigen.
+ *      b) **Die Konditionen aus seinem eigenen Vertrag.** Die öffentlich
+ *         genannten 12,99 % eff. p. a. bei 200 bis 10.000 € (Stand
+ *         02.06.2025) sind die Schaufensterangabe von easyCredit, nicht
+ *         notwendig sein Konditionenblatt. Abgeschrieben wird aus dem
+ *         Vertrag, nicht aus dem Netz.
+ *      c) **Die von easyCredit freigegebenen Pflichttexte.** Sobald eine
+ *         Zahl auf der Seite steht, greift § 16 PAngV mit der vollen Kette –
+ *         effektiver Jahreszins, Sollzins, Nettobetrag, Gesamtbetrag,
+ *         Laufzeit, repräsentatives Beispiel. Diese Texte gibt der Partner
+ *         vor; selbst gerechnet wird hier nichts.
+ *      d) **Die Erlaubnisfrage bleibt offen.** § 34c Abs. 1 Nr. 2 GewO gilt
+ *         der Vermittlung von Darlehen; ob und wie sie den Ratenkauf
+ *         erfasst, sagt easyCredit auf seinen Händlerseiten nicht.
+ *         Anwaltlich klären – dieselbe Frage wie bei § 34d für die
+ *         ERGO-Vermittlung.
+ *
+ *      Sobald a bis c vorliegen, gehört der Name in die Beschreibung *und*
+ *      in `knowsAbout`/`sameAs`, und `available` fällt von `false` auf
+ *      `true`. Vorher nicht: Ein genannter Partner ist eine Aussage über
+ *      eine Geschäftsbeziehung, eine genannte Rate eine über einen Preis.
  *   4. Die im Abo enthaltene Haftpflicht- und Vollkaskoversicherung (§ 3)
  *      fällt unter dieselbe offene Frage wie die ERGO-Vermittlung (§ 34d
  *      GewO, siehe Faktenaudit in CLAUDE.md) – jetzt schriftlich belegt.

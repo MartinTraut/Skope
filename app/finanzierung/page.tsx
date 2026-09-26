@@ -128,7 +128,21 @@ export default function FinancingPage() {
             {available.map((model, i) => {
               const Icon = MODEL_ICONS[model.id];
               return (
-              <Reveal key={model.id} delay={i * 80} as="li" className="flex">
+              /* `min-w-0` ist Pflicht, nicht Vorsorge: Als Rasterkind steht das
+                  `li` auf `min-width: auto` und wird damit so breit wie der
+                  breiteste unteilbare Inhalt darin. Gemessen bei 390 px war es
+                  377 px in einer 342 px breiten Spalte – die Karte lief 35 px
+                  aus dem Satz, und weil `html` auf `overflow-x: clip` steht,
+                  meldete die Seite dafür keinen Überlauf. Sichtbar war nur,
+                  dass der mittig gesetzte Kartenkopf 17 px rechts von der
+                  Achse der Seite stand. Derselbe Fehler wie bei den
+                  `Related`-Karten. */
+              <Reveal
+                key={model.id}
+                delay={i * 80}
+                as="li"
+                className="flex min-w-0"
+              >
                 <div
                   className={cn(
                     "flex w-full flex-col rounded-xl border p-7 md:p-9",

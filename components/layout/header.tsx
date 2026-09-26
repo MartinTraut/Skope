@@ -94,7 +94,9 @@ function VehicleMenu({
         onClick={() => setOpen(!open)}
         className={cn(
           "press relative inline-flex min-h-11 items-center gap-1 rounded-md px-2.5 text-[0.9375rem] font-medium whitespace-nowrap transition-[color,transform] duration-200",
-          active || open ? "text-current" : "text-current/[0.88] hover:text-current",
+          active || open
+            ? "text-current"
+            : "text-current/[0.88] hover:text-current",
         )}
       >
         Fahrzeuge
@@ -302,11 +304,13 @@ export function Header({ rating }: { rating: GoogleRating }) {
      Raute-Verweisen im `ScrollManager`. */
   const toStart = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (pathname !== "/") return;
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+      return;
     event.preventDefault();
     setOpen(false);
-    const instant = window.matchMedia("(prefers-reduced-motion: reduce)")
-      .matches;
+    const instant = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     let frames = 0;
     const go = () => {
       if (document.body.style.position === "fixed" && frames++ < 20) {
@@ -326,7 +330,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
          schirm aus als eigenes Fenster läuft: Dann liegt die Statusleiste des
          Geräts über dem Seitenkopf, und ohne den Abstand steht die Wortmarke
          in der Uhrzeit. */
-      className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]"
+      className="fixed inset-x-0 top-0 z-50 pt-[var(--safe-top)]"
     >
       {/* Die Glasscheibe liegt als eigene Fläche hinter dem Inhalt, nicht auf
           dem <header> selbst. Grund: `backdrop-filter` lässt sich nicht sauber
@@ -369,7 +373,30 @@ export function Header({ rating }: { rating: GoogleRating }) {
           <Logo showSub={false} />
         </Link>
 
-        <nav aria-label="Hauptnavigation" className="hidden shrink-0 xl:block">
+        {/* Die Reihe klappt bei 1366 px auf, nicht mehr bei 1280 (`xl`).
+
+            Mit dem achten Punkt „Einlagerung" misst sie 883 px statt 805
+            (gemessen bei 1280 px: Fahrzeuge 114, Reparatur 90,
+            Wartungsvertrag 141, Einlagerung 105, Finanzierung 113,
+            Versicherung 116, Recycling 90, Über uns 85, dazu sieben Fugen).
+            Die Aktionsgruppe braucht in ihrer kleinsten Fassung – Symbolknopf
+            plus Anfrage – 206 px und stand damit bei 1280 px **66 px
+            außerhalb** des Satzspiegels. Der Seitenkopf liegt `fixed`, also
+            meldet die Seite dafür keinen waagerechten Überlauf; man sieht es
+            nur im Bild oder in der Messung (`grp.right` gegen `inner.right`),
+            und genau davor warnt der Eintrag zur siebten Navigationszeile in
+            CLAUDE.md.
+
+            1366 ist keine runde Zahl, sondern die gemessene Grenze: Dort
+            endet die Gruppe bei 1346 px und hat 20 px Luft. Zwischen 1280 und
+            1365 px trägt das Menü hinter dem Symbolknopf dieselben acht
+            Punkte – vollständig und mit derselben Reihenfolge, nur
+            eingeklappt. Wer hier einen neunten Punkt ergänzt, misst das
+            nach. */}
+        <nav
+          aria-label="Hauptnavigation"
+          className="hidden shrink-0 min-[1366px]:block"
+        >
           <ul className="flex items-center gap-1">
             {nav.map((item) => {
               const active =
@@ -444,12 +471,17 @@ export function Header({ rating }: { rating: GoogleRating }) {
                liegt, meldet die Seite dafür keinen waagerechten Überlauf;
                man sieht es nur im Bild oder in der Messung.
 
-               Zwischen 1280 und 1399 px fällt deshalb die Bewertung weg. Sie
-               ist von den drei Elementen der Gruppe das einzige, das weder
-               Aktion noch Erreichbarkeit ist, und sie steht vollständig in
-               den Kundenstimmen, auf die sie verweist. Unter 1280 px ist die
-               Navigation eingeklappt, dort ist der Platz da. */
-            className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex min-[1280px]:hidden min-[1400px]:inline-flex"
+               Zwischen 1366 und 1439 px fällt deshalb die Bewertung weg.
+               Sie ist von den drei Elementen der Gruppe das einzige, das
+               weder Aktion noch Erreichbarkeit ist, und sie steht
+               vollständig in den Kundenstimmen, auf die sie verweist. Unter
+               1366 px ist die Navigation eingeklappt, dort ist der Platz da.
+
+               **Die Grenzen sind am 25.09.2026 um eine Stufe gewandert**
+               (1280 → 1366 und 1400 → 1440), weil die Reihe mit
+               „Einlagerung" 78 px breiter ist. Gemessen bei 1400 px mit
+               Bewertung: Gruppe bis 1411 px, also 11 px außerhalb. */
+            className="press hidden min-h-11 items-center gap-1.5 rounded-md px-2 whitespace-nowrap transition-[color,background-color,transform] duration-200 hover:bg-current/8 min-[1024px]:inline-flex min-[1366px]:hidden min-[1440px]:inline-flex"
           >
             <Star
               aria-hidden="true"
@@ -463,12 +495,13 @@ export function Header({ rating }: { rating: GoogleRating }) {
 
           <a
             href={site.phone.href}
-            /* Zwischen 1280 und 1400 px ist die Leiste voll: Ab 1280 klappt die
-               Navigation auf (687 px gemessen), zusammen mit Marke, Telefon und
-               Anfrage sind das 1241 px plus 112 px Innenrand – 73 px mehr, als
-               die Seite hergibt, der Anfrage-Knopf stand außerhalb. In diesem
-               Band trägt die Nummer die Aktionsleiste unten und das Menü. */
-            className="press hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-[color,border-color,transform] duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1280px]:hidden min-[1600px]:inline-flex"
+            /* Zwischen 1366 und 1600 px ist die Leiste voll: Ab 1366 klappt
+               die Navigation auf (883 px gemessen), zusammen mit Marke,
+               Telefon und Anfrage ist das mehr, als die Seite hergibt – der
+               Anfrage-Knopf stand außerhalb. In diesem Band trägt die Nummer
+               der Symbolknopf darunter. Unter 1366 px steht sie wieder
+               ausgeschrieben, weil die Navigation dort eingeklappt ist. */
+            className="press hidden items-center gap-2.5 rounded-md border border-current/20 px-4 py-2.5 font-display text-sm font-semibold whitespace-nowrap transition-[color,border-color,transform] duration-200 hover:border-current/50 min-[1024px]:inline-flex min-[1366px]:hidden min-[1600px]:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span className="tabular">{site.phone.display}</span>
@@ -480,10 +513,11 @@ export function Header({ rating }: { rating: GoogleRating }) {
           {/* Zwischen 1280 und 1439 px gab es gar keinen Telefonverweis mehr:
               Die Nummer oben ist dort ausgeblendet (kein Platz, Begründung
               darüber), `PhoneButton` war `lg:hidden` und die untere
-              Aktionsleiste ebenfalls. Gemessen: bei 1279 px sichtbar, bei
-              1280 px weg, ab 1440 px wieder da – und 1280 und 1366 px sind die
-              beiden häufigsten Notebookbreiten. Als Symbolknopf kostet die
-              Nummer dort 44 px statt der 150 px der vollen Schreibweise. */}
+              Aktionsleiste ebenfalls. Als Symbolknopf kostet die Nummer
+              44 px statt der 150 px der vollen Schreibweise. Seit dem
+              25.09.2026 liegt das Band bei 1366 bis 1599 px statt bei 1280
+              bis 1599 – die Navigation klappt eine Stufe später auf, also
+              beginnt auch die Platznot später. */}
           {/* Alle drei Zustände als arbiträre Abfragen, keine gemischt mit
               `lg:`. Gemessen war der Knopf bei 1280 px `display: none`,
               obwohl `min-[1280px]:inline-flex` hinter `lg:hidden` stand:
@@ -494,7 +528,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
               sollte. */}
           <PhoneButton
             iconOnly
-            className="hidden min-[1280px]:inline-flex min-[1600px]:hidden"
+            className="hidden min-[1366px]:inline-flex min-[1600px]:hidden"
           />
 
           <button
@@ -504,7 +538,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
-            className="press inline-flex size-11 items-center justify-center rounded-md border border-current/20 xl:hidden"
+            className="press inline-flex size-11 items-center justify-center rounded-md border border-current/20 min-[1366px]:hidden"
           >
             {open ? (
               <X className="size-5" aria-hidden="true" />
@@ -546,7 +580,7 @@ export function Header({ rating }: { rating: GoogleRating }) {
            der Menüliste an die Seite darunter weiter. Man wischt im Menü und
            bewegt die Seite dahinter – sichtbar, sobald das Menü wieder zugeht. */
         className={cn(
-          "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-block))] min-h-[calc(100svh-var(--header-block))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver xl:hidden on-dark",
+          "absolute inset-x-0 top-full max-h-[calc(100svh-var(--header-block))] min-h-[calc(100svh-var(--header-block))] overflow-y-auto overscroll-contain border-t border-current/10 bg-ink-800 text-silver on-dark min-[1366px]:hidden",
           "transition-[opacity,transform,visibility] duration-300 ease-out-quart motion-reduce:transition-none",
           open
             ? "visible translate-y-0 opacity-100"

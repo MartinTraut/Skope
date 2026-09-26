@@ -1,33 +1,52 @@
+import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
 
 export type Step = { n: string; title: string; text: string };
 
 /**
- * Ein nummerierter Ablauf als Kette mit sichtbaren Gliedern.
+ * Ein nummerierter Ablauf als Register mit waagerechten Kanten.
  *
- * Es gab diesen Baustein zweimal – auf `/reparatur` und auf `/versicherung` –
- * und die beiden Fassungen waren auseinandergelaufen: Spalte `3rem` gegen
- * `2.75rem`, Scheibe `size-12` gegen `size-11`, Linie `left-6`/`top-14` gegen
- * `left-[1.375rem]`/`top-12`, die Zeichenanimation nur auf einer der beiden.
- * Zwei Abläufe auf einer Website müssen gleich aussehen, sonst sind es zwei
- * Bausteine.
+ * Es gibt diesen Baustein dreimal – auf `/reparatur`, `/versicherung` und
+ * `/einlagerung`. Zwei Abläufe auf einer Website müssen gleich aussehen,
+ * sonst sind es zwei Bausteine; genau deshalb steht er hier und nicht je
+ * Seite.
  *
- * **Die Verbindungslinie gibt es erst ab `sm`.** Unter 640 px steht der
- * Fließtext über *beide* Spalten (`col-span-2`), beginnt also am linken Rand
- * der Liste – und die Linie liegt absolut positioniert bei 22 px, malte damit
- * quer durch den Satz. Genau das war am Telefon als „Nummernstrahl
- * überschneidet sich selbst" zu sehen. Die Linie hat erst dann eine Aufgabe,
- * wenn der Text ab `sm` in die zweite Spalte einrückt und links von ihm eine
- * freie Rinne bleibt.
+ * **Bis zum 26.09.2026 war es eine Kette aus vier Neonscheiben mit einer
+ * senkrechten Haarlinie dazwischen.** Zwei Gründe, warum das weg ist:
+ *
+ * - **Die Farbregel erlaubt es nicht.** Neon markiert drei Dinge – die
+ *   Hauptaktion, die harte Zahl, ein Wort je Überschrift. Eine Schrittnummer
+ *   ist keine harte Zahl, sondern eine Ordnungszahl. Auf `/einlagerung`
+ *   standen dadurch fünf Neonflächen in einem Bild: das ausgezeichnete Wort
+ *   der Überschrift und vier Scheiben, die lauter waren als es. Der Eintrag,
+ *   der die Scheiben eingeführt hat, argumentierte nur über den Kontrast
+ *   („Neon als Schrift läge auf Silber bei 1,18:1") – das ist richtig und
+ *   beantwortet die falsche Frage.
+ * - **Der eigentliche Befund von damals war die Größe,** nicht die Farbe: Die
+ *   Ziffer stand bei 13 px und 25 % Deckkraft und war damit blasser und
+ *   kleiner als der Fließtext, den sie ordnen soll. Das löst der Grad. Die
+ *   Nummer steht jetzt im Titelgrad (24 px am Telefon, 34 px am
+ *   Schreibtisch), in voller Tinte und tabellarisch – größer als die
+ *   Überschrift daneben und damit das erste, was man in der Zeile liest.
+ *
+ * **Die Struktur tragen jetzt Kanten, nicht ein Faden.** Jede Zeile hat eine
+ * Haarlinie oben, die letzte zusätzlich eine unten; die Folge ist damit ein
+ * geschlossener Block statt vier freier Absätze, die in einer 1-px-Linie
+ * hängen. Die Linien laufen beim Scrollen von links ein (`.rule-draw`,
+ * dieselbe Mechanik wie an den Eckdaten auf `/ueber-uns`) – die Bewegung
+ * gehört der Zeile, die ankommt, und nicht einer Verzierung daneben.
+ *
+ * **`max-w-none` an `<li>` ist Pflicht und kein Aufräumen.** `globals.css`
+ * gibt jedem `li` in `main` ein Lesemaß von 58ch. Hier ist das `li` keine
+ * Lesezeile, sondern die ganze Zeile aus Nummer, Überschrift und Absatz:
+ * Gemessen war die Spalte auf `/einlagerung` bei 1512 px 799 px breit und das
+ * `li` darin 622 – 177 px der Spalte lagen brach, die Kanten hätten mitten im
+ * Satzspiegel geendet. Das Lesemaß gehört an den Absatz, und dort steht es.
  *
  * **Am Telefon steht die Nummer neben der Überschrift, der Fließtext
  * darunter über die volle Breite.** Als durchgehende zweite Spalte war der
  * Satz bei 390 px nur 274 px breit, in verschachtelten Kästen 234 px –
  * gemessen 23 bis 25 Zeichen je Zeile, wo der Satzspiegel 342 px hergibt.
- *
- * Die Ziffer steht als dunkle Schrift auf einer Neonscheibe: Auf Silber ist
- * Neon Fläche und nie Schrift (1,18:1). Die Linie endet mit dem letzten
- * Schritt, statt ins Leere zu zeigen.
  */
 export function Steps({
   items,
@@ -43,28 +62,39 @@ export function Steps({
           key={step.n}
           delay={i * 70}
           as="li"
-          className="relative grid grid-cols-[2.75rem_1fr] items-center gap-x-4 gap-y-3 pb-12 last:pb-0 sm:grid-cols-[3.5rem_1fr] sm:items-start sm:gap-x-8 sm:gap-y-0"
+          className="relative grid max-w-none grid-cols-[2.5rem_1fr] items-baseline gap-x-4 gap-y-2 py-6 sm:grid-cols-[4rem_1fr] sm:gap-x-7 sm:py-8"
         >
-          {i < items.length - 1 && (
-            <span
-              aria-hidden="true"
-              className="chain-draw absolute bottom-0 hidden w-px bg-ink/20 sm:top-16 sm:left-7 sm:block"
-            />
-          )}
+          <Rule />
+          {i === items.length - 1 && <Rule bottom />}
           <span
             aria-hidden="true"
-            className="tabular grid size-11 place-items-center self-start rounded-full bg-neon font-display text-base font-bold tracking-tight text-ink sm:row-span-2 sm:size-14 sm:text-xl"
+            className="tabular font-display text-[length:var(--text-title)] leading-none font-bold tracking-tight"
           >
             {step.n}
           </span>
           <h3 className="text-[length:var(--text-subtitle)]">{step.title}</h3>
-          <div className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:pt-2.5">
-            <p className="max-w-xl leading-relaxed text-current/65 sm:mt-2.5">
-              {step.text}
-            </p>
-          </div>
+          <p className="col-span-2 min-w-0 leading-relaxed text-current/65 sm:col-span-1 sm:col-start-2">
+            {step.text}
+          </p>
         </Reveal>
       ))}
     </ol>
+  );
+}
+
+/**
+ * Die Kante einer Zeile. Eigenes Element statt `border-t`, weil `.rule-draw`
+ * die Linie über `transform: scaleX()` zeichnet – einen Rahmen kann man nicht
+ * skalieren, ohne das Element mitzunehmen.
+ */
+function Rule({ bottom = false }: { bottom?: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "rule-draw absolute inset-x-0 h-px bg-current/15",
+        bottom ? "bottom-0" : "top-0",
+      )}
+    />
   );
 }

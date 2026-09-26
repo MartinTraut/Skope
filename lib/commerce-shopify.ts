@@ -32,6 +32,23 @@ import { shopifyConfigured } from "@/lib/commerce";
  * 5. Ob verkaufte Geräte im Shop bleiben. Die Seite kann sie führen
  *    (`availability: "sold"`, Aktion abgeschaltet) – dafür muss Shopify sie
  *    aber weiter ausliefern statt sie zu archivieren.
+ * 6. **Wie die easyCredit-Finanzierung an den Kauf kommt** (Partnerschaft
+ *    seit 25.09.2026, siehe `lib/data/financing.ts`). easyCredit führt auf
+ *    seiner Plugin-Liste Shopware, WooCommerce, Magento, JTL, OXID,
+ *    PrestaShop und rund fünfzehn weitere – **Shopify ist nicht dabei.**
+ *    Drei Wege, und nur der erste kostet keine Entwicklung:
+ *      a) Manuelle Zahlart in Shopify plus „Ratenkauf per Link" aus dem
+ *         easyCredit-Händlerportal. Der Kunde bestellt, bekommt den Link,
+ *         durchläuft die Prüfung bei der TeamBank, der Händler gibt die
+ *         Zahlungsanfrage frei (Frist fünf Tage). Preis dafür: Die
+ *         Entscheidung fällt **nach** der Bestellung, nicht im Checkout.
+ *      b) Shopware oder WooCommerce statt Shopify – offizielles Plugin,
+ *         Prüfung im Kaufvorgang, dafür ein Shopwechsel.
+ *      c) Eigene Shopify-Payments-App. Bei dreizehn Einzelstücken
+ *         unverhältnismäßig.
+ *    Diese Datei ist von der Entscheidung nicht betroffen: Sie liest den
+ *    Bestand, sie verkauft nicht. Der Punkt steht hier, weil er zusammen
+ *    mit Punkt 1 beantwortet werden muss.
  */
 
 export class ShopifyNotConfiguredError extends Error {

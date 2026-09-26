@@ -18,6 +18,7 @@ export const CONTACT_TOPICS = [
   "Kostenvoranschlag",
   "Wartungsvertrag Basis",
   "Wartungsvertrag Premium",
+  "Winterlagerung",
   "Versicherung: Haftpflicht",
   "Versicherung: Teilkasko inkl. Diebstahl",
   "Beratung zur Versicherung",
@@ -80,6 +81,10 @@ export const TOPIC_GROUPS = [
     topics: ["Wartungsvertrag Basis", "Wartungsvertrag Premium"],
   },
   {
+    label: "Einlagerung",
+    topics: ["Winterlagerung"],
+  },
+  {
     label: "Versicherung",
     topics: [
       "Versicherung: Haftpflicht",
@@ -120,6 +125,7 @@ export const allTopicsGrouped: AllTopicsGrouped = true;
 export const TOPIC_BY_SLUG: Record<string, ContactTopic> = {
   "wartungsvertrag-basis": "Wartungsvertrag Basis",
   "wartungsvertrag-premium": "Wartungsvertrag Premium",
+  einlagerung: "Winterlagerung",
   reparatur: "Reparatur",
   checkup: "Sicherheits-Checkup (59,99 €)",
   versicherung: "Versicherung: Haftpflicht",

@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import sharp from "sharp";
+
 /**
  * Echte Aufnahmen aus dem Betrieb – Im Kampfrad 3, Neuenstadt am Kocher.
  *
@@ -44,9 +46,24 @@ export type WorkshopPhoto = {
   /** Maße der ausgelieferten Datei. Geben der Kachel ihre Breite. */
   w: number;
   h: number;
+  /**
+   * Vorschaufarbe der Kachel, 16 px breit als WebP in der Adresse.
+   *
+   * Sie steht da, bis die Aufnahme geladen ist. Grund ist die Bahn: Nur die
+   * ein bis zwei sichtbaren Kacheln werden geladen, die übrigen liegen
+   * rechts außerhalb des Fensters, und die Faulladung zählt nur senkrecht.
+   * Wer wischt, sieht die nächste Aufnahme also erst anfordern – gemessen
+   * am Telefon bei DPR 3 rund 140 kB je Kachel. Ohne Platzhalter war das
+   * ein graues Loch, mit ist es das Bild in unscharf.
+   *
+   * Der Wert wird beim Bauen aus der Datei gerechnet, nicht von Hand
+   * eingetragen: Ein hart notierter Platzhalter zeigt nach dem ersten
+   * Motivtausch die Farbe des alten Bildes.
+   */
+  blur: string;
 };
 
-const PHOTOS: WorkshopPhoto[] = [
+const PHOTOS: Omit<WorkshopPhoto, "blur">[] = [
   {
     file: "standort-container.jpg",
     alt: "Zwei dunkelgraue Container auf einem gepflasterten Platz unter Bäumen, davor ein mit Ketten abgesperrtes Kiesfeld und Parkplätze",
@@ -95,7 +112,7 @@ const PHOTOS: WorkshopPhoto[] = [
  * Nur die Motive, deren Datei wirklich liegt. Wird zur Bauzeit ausgewertet –
  * alle Seiten sind statisch vorgebaut.
  */
-export function workshopPhotos(): WorkshopPhoto[] {
+export async function workshopPhotos(): Promise<WorkshopPhoto[]> {
   const dir = path.join(process.cwd(), "public", "img", "werkstatt");
   const found = PHOTOS.filter((photo) => {
     try {
@@ -114,5 +131,26 @@ export function workshopPhotos(): WorkshopPhoto[] {
       "[workshop-photos] Keine Datei in public/img/werkstatt gefunden - die Galerie faellt aus.",
     );
   }
-  return found;
+  /* Sieben Miniaturen von 16 px Breite – beim Bauen einmal gerechnet, weil
+     `/ueber-uns` statisch vorgebaut wird. Schlägt es fehl, steht die Kachel
+     wie bisher auf ihrer Flächenfarbe; ein fehlender Platzhalter ist kein
+     Grund, die Sektion ausfallen zu lassen. */
+  return Promise.all(
+    found.map(async (photo) => ({
+      ...photo,
+      blur: await blurOf(path.join(dir, photo.file)),
+    })),
+  );
+}
+
+async function blurOf(file: string): Promise<string> {
+  try {
+    const buf = await sharp(file)
+      .resize(16, null, { fit: "inside" })
+      .webp({ quality: 40 })
+      .toBuffer();
+    return `data:image/webp;base64,${buf.toString("base64")}`;
+  } catch {
+    return "";
+  }
 }

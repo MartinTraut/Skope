@@ -1,7 +1,13 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, Check, ChevronRight } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
@@ -59,6 +65,44 @@ import { Mark } from "@/components/ui/mark";
  * Reichweite und Akku. Was hier nicht genannt ist, folgt danach in seiner
  * ursprünglichen Reihenfolge; es fällt nichts weg.
  */
+/**
+ * Was ohne Aufklappen dasteht.
+ *
+ * Ein Datenblatt mit zehn bis vierzehn Zeilen ist am Telefon eine Wand: Es
+ * beginnt genau dort, wo jemand nach Preis und Bild weiterliest, und
+ * beantwortet dabei zuerst Fragen, die niemand gestellt hat. Sichtbar bleiben
+ * die vier Werte, an denen zwei Geräte verglichen werden, und die Zulassung –
+ * die ist keine Vergleichszahl, sondern die Bedingung, unter der man das Gerät
+ * überhaupt fahren darf, und gehört deshalb nie hinter einen Knopf.
+ *
+ * Der Rest steht im `<details>` darunter. Nativ und ohne Zustand: So ist er
+ * ohne JavaScript da, im Dokument für die Suche, und die Tastatur bedient ihn
+ * von allein.
+ */
+const SPEC_GRID =
+  "grid gap-x-8 gap-y-3 sm:grid-cols-2 sm:gap-y-4 xl:grid-cols-3";
+
+function SpecRow({ spec }: { spec: { label: string; value: string } }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 border-t border-current/10 pt-3 first:border-0 first:pt-0 sm:block sm:border-0 sm:pt-0">
+      <dt className="eyebrow-plain shrink-0 text-current/55">
+        {SHORT_LABEL[spec.label] ?? spec.label}
+      </dt>
+      <dd className="font-display leading-snug font-semibold tracking-tight hyphens-auto max-sm:text-right sm:mt-1.5">
+        {spec.value}
+      </dd>
+    </div>
+  );
+}
+
+const PRIMARY_SPECS = [
+  "Höchstgeschwindigkeit",
+  "Reichweite",
+  "Akku",
+  "Motor",
+  "Zulassung",
+];
+
 const LEAD_SPECS = [
   "Höchstgeschwindigkeit",
   "Reichweite",
@@ -125,6 +169,13 @@ export function DevicePage({ item }: { item: InventoryItem }) {
     ).filter((spec) => spec !== undefined),
     ...item.specs.filter((spec) => !LEAD_SPECS.includes(spec.label)),
   ];
+
+  const primarySpecs = PRIMARY_SPECS.map((label) =>
+    specs.find((spec) => spec.label === label),
+  ).filter((spec) => spec !== undefined);
+  const restSpecs = specs.filter(
+    (spec) => !PRIMARY_SPECS.includes(spec.label),
+  );
 
   return (
     <>
@@ -342,7 +393,21 @@ export function DevicePage({ item }: { item: InventoryItem }) {
                   Weg zu den Geräten, die es noch gibt. Die Seite selbst
                   bleibt erreichbar: Sie ist indexiert, verlinkt und für
                   Wiederkehrer der Beleg, dass es das Gerät gab. */}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              {/* `data-cta-after` schaltet die untere Aktionsleiste frei.
+
+                  Am Telefon standen hier Preis, „Gerät anfragen" und die
+                  Telefonnummer – und unten im Bild dieselben beiden Angaben
+                  noch einmal als Dock. Zwei Aufforderungen zur selben
+                  Handlung gleichzeitig lesen sich nicht als doppelte Chance,
+                  sondern als Drängeln. Die Leiste kommt deshalb erst, wenn
+                  dieser Block nach oben aus dem Bild gelaufen ist, also ab
+                  dem Datenblatt – und sie geht wieder, sobald er zurück ins
+                  Bild kommt. Auf allen übrigen Routen bleibt es bei der
+                  halben Bildschirmhöhe. */}
+              <div
+                data-cta-after
+                className="mt-6 flex flex-col gap-3 sm:flex-row"
+              >
                 {action.href ? (
                   <Link
                     href={action.href}
@@ -407,21 +472,38 @@ export function DevicePage({ item }: { item: InventoryItem }) {
                    neben seine Beschriftung – dasselbe Muster wie im
                    Datenband der Bestandskarte und in den Kennzahlen des
                    Seitenkopfs. Ab `sm` bleibt das Raster. */
-                <dl className="mt-6 grid gap-x-8 gap-y-3 rounded-xl bg-current/6 p-5 sm:grid-cols-2 sm:gap-y-4 xl:grid-cols-3">
-                  {specs.map((spec) => (
-                    <div
-                      key={spec.label}
-                      className="flex items-baseline justify-between gap-4 border-t border-current/10 pt-3 first:border-0 first:pt-0 sm:block sm:border-0 sm:pt-0"
-                    >
-                      <dt className="eyebrow-plain shrink-0 text-current/55">
-                        {SHORT_LABEL[spec.label] ?? spec.label}
-                      </dt>
-                      <dd className="font-display leading-snug font-semibold tracking-tight hyphens-auto max-sm:text-right sm:mt-1.5">
-                        {spec.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <div className="mt-6 rounded-xl bg-current/6 p-5">
+                  <dl className={SPEC_GRID}>
+                    {primarySpecs.map((spec) => (
+                      <SpecRow key={spec.label} spec={spec} />
+                    ))}
+                  </dl>
+
+                  {restSpecs.length > 0 ? (
+                    <details className="group/specs mt-5 border-t border-current/10 pt-4">
+                      {/* Der Griff ist eine ganze Zeile, kein Textlink: Er
+                          steht am Fuß einer Fläche, und eine Fläche klappt
+                          man an ihrer Kante auf. 44 px hoch, Pfeil rechts. */}
+                      <summary className="press -mx-1 flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-md px-1 font-display text-sm font-bold tracking-tight [&::-webkit-details-marker]:hidden">
+                        <span className="group-open/specs:hidden">
+                          Alle technischen Daten ({restSpecs.length} weitere)
+                        </span>
+                        <span className="hidden group-open/specs:inline">
+                          Weniger anzeigen
+                        </span>
+                        <ChevronDown
+                          aria-hidden="true"
+                          className="size-4 shrink-0 text-current/55 transition-transform duration-200 ease-out-quart group-open/specs:rotate-180"
+                        />
+                      </summary>
+                      <dl className={cn(SPEC_GRID, "mt-4")}>
+                        {restSpecs.map((spec) => (
+                          <SpecRow key={spec.label} spec={spec} />
+                        ))}
+                      </dl>
+                    </details>
+                  ) : null}
+                </div>
               ) : null}
 
               {item.note ? (

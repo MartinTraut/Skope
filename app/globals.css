@@ -420,7 +420,31 @@
      * die Leiste selbst bemisst – ihre eigene Höhe, ihr Innenleben –, nimmt
      * `--header-h`.
      */
-    --header-block: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+    /**
+     * Die Aussparung über der Seite – **null im Browser, echt nur als
+     * eigenes Fenster.**
+     *
+     * `env(safe-area-inset-top)` ist in iOS Safari keine Konstante: Solange
+     * die Adressleiste ausgefahren ist, meldet er 0; klappt sie beim
+     * Scrollen ein, springt er auf 59 px und beim Zurückscrollen zurück.
+     * Jede Länge, die ihn unmittelbar benutzt, wandert damit mitten in der
+     * Bewegung – und zwar unsichtbar für jede Prüfung, weil Chromium den
+     * Wert immer als 0 meldet.
+     *
+     * Gebraucht wird er nur, wenn die Seite vom Startbildschirm als eigenes
+     * Fenster läuft: Dort liegt die Statusleiste über der Seite, es gibt
+     * keine Leiste, die einklappen könnte, und der Wert ist über die ganze
+     * Sitzung konstant. Genau dafür steht er hier hinter
+     * `display-mode: standalone`.
+     *
+     * Wer eine Länge an den oberen Rand des Fensters hängt, nimmt dieses
+     * Token und **nie** `env(safe-area-inset-top)` unmittelbar. Seitlich und
+     * unten gilt das nicht: Waagerechte Abstände ändern sich beim Scrollen
+     * nicht, und die untere Leiste trägt ihre eigene Begründung.
+     */
+    --safe-top: 0px;
+
+    --header-block: calc(var(--header-h) + var(--safe-top));
 
     /**
      * Oberer Rand des Kopfbereichs der Startseite, an einer Stelle.
@@ -434,15 +458,43 @@
      * Er hängt an der Fensterhöhe, nicht an der Breite: Im Querformat eines
      * iPhone (844 × 390) sind 112 px fester Kopfabstand 29 % der Bildhöhe.
      *
-     * Der Sicherheitsabstand oben kommt dazu, weil die Kopfzeile ihn selbst
-     * trägt (`pt-[env(safe-area-inset-top)]`) und damit um die Statusleiste
-     * wächst. Im Browser ist er null; läuft die Seite vom Startbildschirm als
-     * eigenes Fenster, ist die Leiste 59 px hoch – ohne den Zuschlag stünde
-     * die Überschrift 17 px unter der Kopfzeile statt 76.
+     * **Der Wert enthält bewusst kein `env(safe-area-inset-top)` – und das
+     * ist der Riegel gegen das Wandern beim Scrollen.**
+     *
+     * iOS Safari hält diesen Sicherheitsabstand nicht konstant: Solange die
+     * Adressleiste ausgefahren ist, meldet er 0; klappt sie beim Scrollen
+     * ein, läuft die Seite unter die Statusleiste und er springt auf 59 px.
+     * Stand er in `--hero-head`, wuchs der Kopfabstand also **mitten im
+     * Scrollen** um 59 px, und weil an demselben Token Satzspiegel, Oberkante
+     * der Bildfläche und die Stopps von `.hero-stage-scrim` hängen, sprangen
+     * Überschrift, Aufnahme und Verlauf gemeinsam. Auf dem Weg zurück nach
+     * oben dasselbe in der Gegenrichtung.
+     *
+     * **Im Prüfbrowser ist das unsichtbar.** Chromium meldet den Abstand
+     * immer als 0, gleich wie man scrollt – jede Messung über den Scrollweg
+     * sagt deshalb „0 px Wanderung", und der Fehler ist nur auf echter
+     * Hardware zu sehen. Wer hier das nächste Mal eine Bewegung sucht, die
+     * sich nicht reproduzieren lässt, fängt bei `env()` an.
+     *
+     * Der Abstand fehlt damit nicht, er wird nur nicht mehr gebraucht: Zu dem
+     * Zeitpunkt, an dem Safari auf 59 px springt, ist die Überschrift bereits
+     * weggescrollt; im Ruhezustand oben steht der Wert auf 0. Die Kopfzeile
+     * trägt ihren eigenen Abstand weiter selbst (`pt-[env(…)]`).
+     *
+     * **Ausnahme Startbildschirm:** Läuft die Seite als eigenes Fenster, gibt
+     * es keine Adressleiste, die einklappen könnte – der Abstand ist dort
+     * über die ganze Sitzung konstant 59 px und muss dazu, sonst stünde die
+     * Überschrift 17 px unter der Kopfzeile statt 76. Genau das leistet
+     * `--safe-top`; deshalb steht hier ein `calc()` und keine zweite
+     * Fassung des Wertes hinter einer Medienabfrage.
      */
-    --hero-head: calc(
-      env(safe-area-inset-top, 0px) + clamp(6.5rem, 4rem + 10svh, 10rem)
-    );
+    --hero-head: calc(var(--safe-top) + clamp(6.5rem, 4rem + 10svh, 10rem));
+  }
+
+  @media (display-mode: standalone) {
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+    }
   }
 
   @media (width >= 48rem) {

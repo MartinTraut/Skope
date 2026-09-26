@@ -40,8 +40,8 @@ const nextConfig: NextConfig = {
      Kopfbilder trugen `quality={90}`, ausgeliefert wurde auf jeder Breite
      `q=75`. Bei den Felgen und Leuchtbändern der Studioaufnahme sieht man
      das. 75 bleibt in der Liste, weil jedes Bild ohne eigene Angabe darauf
-     fällt. */
-  images: { qualities: [75, 90] },
+     fällt; 65 tragen die sieben Werkstattaufnahmen in der Wischbahn. */
+  images: { qualities: [65, 75, 90] },
   async headers() {
     return [
       {
